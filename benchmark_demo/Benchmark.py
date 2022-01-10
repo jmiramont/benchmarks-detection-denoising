@@ -1,5 +1,5 @@
 import numpy as np
-from signals_bank import SignalBank
+from benchmark_demo.SignalBank import SignalBank
 import pandas as pd
 import json
 import pickle
