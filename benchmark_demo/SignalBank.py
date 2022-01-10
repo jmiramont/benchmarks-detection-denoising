@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import pi as pi
 from matplotlib import pyplot as plt
-from utilstf import *
+from benchmark_demo.utilstf import *
 
 class SignalBank:
     """ Create a bank of signals"""

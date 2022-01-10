@@ -3,11 +3,25 @@ import scipy.stats as spst
 import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy.signal as sg
-
 from math import atan2
 from scipy.spatial import KDTree
 from scipy.spatial import ConvexHull, Delaunay
 
+
+"""This file contains a number of utilities for time-frequency analysis. Some functions has been modified from the supplementary code of:
+    Bardenet, R., Flamant, J., & Chainais, P. (2020). On the zeros of the spectrogram of white noise.
+    Applied and Computational Harmonic Analysis, 48(2), 682-705.
+which can be found in: http://github.com/jflamant/2018-zeros-spectrogram-white-noise.
+  
+Those functions are:
+- getSpectrogram(signal)
+- findCenterEmptyBalls(Sww, pos_exp, radi_seg=1)
+- getConvexHull(Sww, pos_exp, empty_mask, radi_expand=0.5)
+- reconstructionSignal(hull_d, stft)
+
+
+
+"""
 
 def getSpectrogram(signal):
     """
