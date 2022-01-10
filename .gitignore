@@ -1334,3 +1334,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+benchmark_demo/main.py
+benchmark_demo/other_test_notebook.ipynb
+benchmark_demo/pruebas_stft.py
+benchmark_demo/bank_test.py

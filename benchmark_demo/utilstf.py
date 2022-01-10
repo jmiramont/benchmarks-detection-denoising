@@ -1,9 +1,7 @@
 import numpy as np
 import scipy.stats as spst
-import sys
 import matplotlib.pyplot as plt
 import seaborn as sns
-import cmocean
 import scipy.signal as sg
 
 from math import atan2
