@@ -15,22 +15,26 @@ def getSpectrogram(signal):
     """
     Get the round spectrogram of the signal 
     """
-    N = len(signal)
-    Nfft = N
-    # base = int(np.sqrt(Nfft))
-    # sig_aux = np.zeros((2*base+N))
-    # sig_aux[base:N+base] = signal
+    Ni = len(signal)
+    Npad = Ni//2
 
-    # window
-    g = sg.gaussian(Nfft-1, np.sqrt((Nfft)/2/np.pi))
+    signal_pad = np.zeros(Ni+2*Npad)
+    signal_pad[Npad:Npad+Ni] = signal
+    Nfft = Ni
+    
+    # analysis window
+    g = sg.gaussian(Nfft, np.sqrt((Nfft)/2/np.pi))
     g = g/g.sum()
-    _, _, stft = sg.stft(signal, window=g, nperseg=Nfft-1, noverlap = Nfft-2)
-    Sww = np.abs(stft)**2
+
+    # computing STFT
+    _, _, stft = sg.stft(signal_pad, window=g, nperseg=Nfft, noverlap = Nfft-1)
+    Sww = np.abs(stft[:,Npad:Npad+Ni])**2
     # tmin = base
     # tmax = base+N
     # Sww = Sww_t[:, tmin:tmax]
     # stft = stft[:, tmin:tmax]
-    # detection
+
+    # detection of zeros of the spectrogram
     th = 1e-14
     y, x = extr2minth(Sww, th) # Find zero's coordinates
 
@@ -41,13 +45,14 @@ def getSpectrogram(signal):
     pos[:, 0] = u
     pos[:, 1] = v
 
-    return pos, [Sww, stft, x, y]
+    return Sww, stft, pos, Npad #[pos, x, y]
 
 
 def findCenterEmptyBalls(Sww, pos_exp, radi_seg=1):
     Nfft = Sww.shape[1]
     # define a kd-tree with zeros
     kdpos = KDTree(pos_exp)
+
     # define a grid corresponding to the time-frequency paving
     vecx = (np.arange(0, Sww.shape[0])/np.sqrt(Nfft))
     vecy = (np.arange(0, Sww.shape[1])/np.sqrt(Nfft))
@@ -149,16 +154,18 @@ def reconstructionSignal(hull_d, stft):
     t, xr = sg.istft(mask*stft, window=g,  nperseg=Nfft, noverlap=Nfft-1)
     return mask, xr, t 
 
-def reconstructionSignal2(mask, stft):
+def reconstructionSignal2(mask, stft, Npad):
     """ Reconstruction using a mask given as parameter"""
-    Nfft = stft.shape[1]
+    Ni = mask.shape[1]
+    Nfft = Ni
     # reconstruction
-    g = sg.gaussian(Nfft-1, np.sqrt((Nfft)/2/np.pi))
+    g = sg.gaussian(Nfft, np.sqrt((Nfft)/2/np.pi))
     g = g/g.sum()
+    mask_aux = np.zeros(stft.shape)
+    mask_aux[:,Npad:Npad+Ni] = mask
     # t, xorigin = sg.istft(stft, window=g,  nperseg=Nfft, noverlap=Nfft-1)
-    t, xr = sg.istft(mask*stft, window=g, nperseg=Nfft-1, noverlap = Nfft-2)
-    aux = mask*stft
-    return mask, xr, t, aux
+    t, xr = sg.istft(mask_aux*stft, window=g, nperseg=Nfft, noverlap = Nfft-1)
+    return xr[Npad:Npad+Ni], t
 
 
 def extr2minth(M,th):

@@ -6,27 +6,33 @@ import seaborn as sns
 import cmocean
 import scipy.signal as sg
 import utilstf as utils
-
+import signals_bank
 
 N = 256
-signal = np.random.randn(N)
-Nfft = N
-base = int(np.sqrt(Nfft))
-sig_aux = np.zeros((2*base+N))
-sig_aux[base:N+base] = signal
 
-# window
-g = sg.gaussian(Nfft-1, np.sqrt((Nfft)/2/np.pi))
+bank = signals_bank.SignalBank(N = 128)
+signal = bank.linearChirp()
+
+#signal = np.random.randn(N)
+
+
+Ni = len(signal)
+Npad = Ni//2
+
+signal_pad = np.zeros(Ni+2*Npad)
+signal_pad[Npad:Npad+Ni] = signal
+Nfft = Ni
+
+# analysis window
+g = sg.gaussian(Nfft, np.sqrt((Nfft)/2/np.pi))
 g = g/g.sum()
-_, _, stft = sg.stft(sig_aux, window=g, nperseg=Nfft-1, noverlap = Nfft-2)
-Sww1 = np.abs(stft)**2
 
-_, _, stft = sg.stft(signal, window=g, nperseg=Nfft-1, noverlap = Nfft-2)
-Sww2 = np.abs(stft)**2
+# computing STFT
+_, _, stft = sg.stft(signal_pad, window=g, nperseg=Nfft, noverlap = Nfft-1)
+Sww = np.abs(stft)**2
+Sww = np.abs(stft[:,Npad:Npad+Ni])**2
 
-
-fig,axs = plt.subplots(1,2)
-axs[0].imshow(Sww1, origin = 'lower')
-axs[1].imshow(Sww2, origin = 'lower')
+fig,axs = plt.subplots(1,1)
+axs.imshow(Sww, origin = 'lower')
 
 plt.show()
