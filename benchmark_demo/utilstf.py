@@ -8,18 +8,17 @@ from scipy.spatial import KDTree
 from scipy.spatial import ConvexHull, Delaunay
 
 
-"""This file contains a number of utilities for time-frequency analysis. Some functions has been modified from the supplementary code of:
+"""
+This file contains a number of utilities for time-frequency analysis. Some functions has been modified from the supplementary code of:
     Bardenet, R., Flamant, J., & Chainais, P. (2020). On the zeros of the spectrogram of white noise.
     Applied and Computational Harmonic Analysis, 48(2), 682-705.
 which can be found in: http://github.com/jflamant/2018-zeros-spectrogram-white-noise.
-  
+
 Those functions are:
 - getSpectrogram(signal)
 - findCenterEmptyBalls(Sww, pos_exp, radi_seg=1)
 - getConvexHull(Sww, pos_exp, empty_mask, radi_expand=0.5)
 - reconstructionSignal(hull_d, stft)
-
-
 
 """
 
@@ -113,25 +112,6 @@ def getConvexHull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     # print(points.shape)
     
     hull_d = Delaunay(points) # for convenience
-    
-    # plot
-    # hull = ConvexHull(points)
-    # fig, ax = plt.subplots(figsize=(5, 5))
-    # ax.imshow(np.log10(Sww), origin='lower', cmap=cmocean.cm.deep)
-    # ax.scatter(pos_exp[:, 0]*np.sqrt(Nfft), pos_exp[:, 1]*np.sqrt(Nfft), color='w', s=40)
-
-    # for simplex in hull.simplices:
-    #     plt.plot((points[simplex, 1]+tmin), (points[simplex, 0]+fmin), 'g-', lw=4)
-
-    # # ax.set_xlim([tmin, tmax])
-    # # ax.set_ylim([fmin, fmax])
-    # ax.set_xticklabels([])
-    # ax.set_yticklabels([])
-    # ax.set_xticks([])
-    # ax.set_yticks([])
-    # fig.tight_layout()
-    # fig.subplots_adjust(left=0.04, bottom=0.05)
-    
     mask = np.zeros(Sww.shape)
     mask[fmin:fmax, tmin:tmax] = sub_empty
     return hull_d, mask
@@ -256,10 +236,10 @@ def hardThresholding(F):
 
 
 def emptyBalls(signal, radi_seg = 1):
-    pos, [Sww, stft, x, y] = getSpectrogram(signal)
+    Sww, stft, pos, Npad = getSpectrogram(signal)
     empty_mask = findCenterEmptyBalls(Sww, pos, radi_seg)
     hull_d , sub_empty= getConvexHull(Sww, pos, empty_mask) 
-    mask, xr, t, aux = reconstructionSignal2(sub_empty, stft)
+    mask, xr, t, aux = reconstructionSignal2(sub_empty, stft, Npad)
     return xr
 
 
