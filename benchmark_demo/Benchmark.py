@@ -92,8 +92,8 @@ class Benchmark:
         
         # Save dictionary in disc to use later.
         # json.dump( method_dic, open( "results_benchmark.json", 'w' ) )  
-        with open('saved_dictionary.pkl', 'wb') as f:
-            pickle.dump(results_dic, f)
+        # with open('saved_dictionary.pkl', 'wb') as f:
+        #     pickle.dump(results_dic, f)
 
 
         self.results = results_dic # Save results for later.
@@ -102,8 +102,12 @@ class Benchmark:
         return results_dic
 
 
-    def getResults(self):
-        df = dic2df(self.results)
+    def getResults(self, results = None):
+        if results is None:
+            df = dic2df(self.results)
+        else:
+            df = dic2df(self.results)
+
         df = pd.concat({param: df[param] for param in df.columns})
         df = df.unstack(level=2)
         df = df.reset_index()
