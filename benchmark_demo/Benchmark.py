@@ -4,31 +4,52 @@ from benchmark_demo.SignalBank import SignalBank
 import pandas as pd
 import json
 import pickle
+import sys
 
 class Benchmark:
     """This class performs a number of tasks for methods comparison."""
 
-    def __init__(self, task = 'denoising', methods = None, N = None, parameters = None, SNRin = None, repetitions = None):
+    def __init__(self, task = 'denoising', methods = None, N = 256, parameters = None, SNRin = None, repetitions = None, checks = True):
+        self.task = task
         self.methods = methods
+        self.N = N
         self.repetitions = repetitions
-        # self.parameters = {i: param for i,param in enumerate(parameters)}
-        # self.parameters = {'Param'+str(i): param for i,param in enumerate(parameters)}
         self.parameters = parameters
-        self.bank = SignalBank(N)
         self.SNRin = SNRin
+
+        # Check input parameters.
+        if checks:
+            self.inputsCheck()
+                    
+        self.bank = SignalBank(N)
         self.comparisonFunction = self.setComparisonFunction(task)
         self.results = None
         
-        if not self.inputsControl():
-            print('Something went wrong, check input paramaters!')
 
-    def inputsControl(self):
+
+    def inputsCheck(self):
+        """ This function checks the input parameters of the constructor."""
         # Check both dictionaries have the same keys:
         if not (self.methods.keys() == self.parameters.keys()):
-            print('Both methods and parameters dictionaries should have the same keys.')
-            return False    
+            # sys.stderr.write
+            raise ValueError("Both methods and parameters dictionaries should have the same keys.\n")
 
-        return True
+        # Check the task is either 'denoising' or 'detecting'
+        if (self.task != 'denoising' and self.task != 'detecting'):
+            # sys.stderr.write
+            raise ValueError("The tasks should be either 'denoising' or 'detecting'.\n")    
+
+        return True    
+
+    def methodsOutputCheck(self,output,input):
+        if self.task == 'denoising':
+            if output.shape != input.shape:
+                raise ValueError("Method's output should have the same shape as input for task='denoising'.\n")
+        
+
+        
+
+        
 
     def setComparisonFunction(self, task):
         """Define different comparison functions for each task."""
@@ -55,6 +76,8 @@ class Benchmark:
                 for method in self.methods:                        
                     for p,params in enumerate(self.parameters[method]):    
                         method_output = self.methods[method](noisy_signals,params)
+                        self.methodsOutputCheck(method_output,noisy_signals) # Just checking if the output its valid.   
+
                         result =  self.comparisonFunction(base_signal, method_output)             
                         params_dic['Params'+str(p)] = result
                     
