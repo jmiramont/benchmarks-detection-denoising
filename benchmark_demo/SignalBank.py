@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import pi as pi
-from benchmark_demo.utilstf import *
+import scipy.signal as sg
+# from benchmark_demo.utilstf import *
 # from matplotlib import pyplot as plt
 
 class SignalBank:
@@ -111,7 +112,7 @@ class SignalBank:
 
 if __name__ == '__main__':
     from matplotlib import pyplot as plt
-    
+    from utilstf import *
 
     N = 1024
     banco = SignalBank(N)
