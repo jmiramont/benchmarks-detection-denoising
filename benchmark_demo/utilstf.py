@@ -119,7 +119,7 @@ def getConvexHull(Sww, pos_exp, empty_mask, radi_expand=0.5):
 
 
 def reconstructionSignal(hull_d, stft):
-    """ Recontstruction using the convex hull
+    """ Reconstruction using the convex hull
     """
     Nfft = stft.shape[1]
     tmin = int(np.sqrt(Nfft))
