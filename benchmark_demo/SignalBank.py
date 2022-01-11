@@ -1,10 +1,13 @@
 import numpy as np
 from numpy import pi as pi
-from matplotlib import pyplot as plt
 from benchmark_demo.utilstf import *
+# from matplotlib import pyplot as plt
 
 class SignalBank:
-    """ Create a bank of signals"""
+    """
+    Create a bank of signals. This class encapsulates the signal generation code, and returns different methods to generate signals
+    as well as a dictionary of those methods that can be used later.
+    """
 
     def __init__(self,N = 2**8):
         self.N = N
@@ -18,6 +21,8 @@ class SignalBank:
             # 'multiComponentHarmonic2' : lambda: self.multiComponentHarmonic(a1 = 4, b1 = 1.2*np.sqrt(N)),
         }
         
+    def getSignalIds(self):
+        return self.SignalDict.keys()
 
     def linearChirp(self, a=None, b=None, instfreq = False):
         N = self.N        
@@ -103,12 +108,11 @@ class SignalBank:
 
         return signals
 
-    # def createSignals(self, types = 'all'):
-    #     for type in types:
-            
-
 
 if __name__ == '__main__':
+    from matplotlib import pyplot as plt
+    
+
     N = 1024
     banco = SignalBank(N)
     # signal1,_ = banco.linearChirp(a = -N/8, b = N/2 - N/8)
@@ -116,14 +120,12 @@ if __name__ == '__main__':
     signal = banco.cosChirp()
     # signal = banco.crossedLinearChirps()
     # signal = banco.multiComponentHarmonic(a1 = N/32)
-    # signal1 = banco.dumpedCos()
-    # signal2 = banco.sharpAttackCos()
+    # signal = banco.dumpedCos()
+    # signal = banco.sharpAttackCos()
     
-    pos, [Sww1, stft, x, y] = getSpectrogram(signal)
-    # pos, [Sww2, stft, x, y] = getSpectrogram(signal2)
+    Sww, stft, pos, Npad = getSpectrogram(signal)
 
     fig, ax = plt.subplots(1,2)
     ax[0].plot(signal)
-    ax[1].imshow(Sww1)
-
+    ax[1].imshow(Sww, origin = 'lower')
     plt.show()
