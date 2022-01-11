@@ -26,22 +26,28 @@ class SignalBank:
         return self.SignalDict.keys()
 
     def linearChirp(self, a=None, b=None, instfreq = False):
-        N = self.N        
+        N = self.N
+        t = np.arange(N)/N
+
         tmin = int(np.sqrt(N))
+        tmax = N-tmin
+        
         Nsub = N-2*tmin
         
         if a is None:
-            a = Nsub/8
+            a = N/8
         if b is None:
-            b = Nsub/8
+            b = N/8
 
 
-        tsub = np.arange(Nsub)/Nsub
-        phase = b*tsub + a*(tsub**2)
+        tsub = t[tmin:tmax]
+        phase = b*tsub + a*(tsub**2) - b*tmin
         instf = b + 2*a*tsub
+
         x = np.cos(2*pi*phase)*sg.tukey(Nsub) 
         signal = np.zeros((N,))
-        signal[tmin:tmin+Nsub] = x
+        signal[tmin:tmax] = x
+
         if instfreq:
             return signal, instf
         else:
@@ -92,14 +98,19 @@ class SignalBank:
 
     def cosChirp(self):
         N = self.N
+        t = np.arange(N)/N
+
         tmin = int(np.sqrt(N))
+        tmax = N-tmin
         Nsub = N-2*tmin
-        tsub = np.arange(Nsub)/Nsub
-        phase = N/4*tsub + N/8*np.sin(2*pi*tsub)/2/pi
-        instf = N/4 + N/8*np.cos(2*pi*tsub)
-        x = np.cos(2*pi*phase)    
+        tsub = t[tmin:tmax]
+        
+        phase = N/4*tsub + N/8*np.sin(2*pi*np.arange(Nsub)/Nsub)/2/pi - N/4*tmin
+        # instf = N/4 + N/8*np.cos(2*pi*tsub)
+        x = np.cos(2*pi*phase)*sg.tukey(Nsub)     
+
         signal = np.zeros((N,))
-        signal[tmin:tmin+Nsub] = x
+        signal[tmin:tmax] = x
         return signal
     
     def getAllSignals(self):
@@ -116,8 +127,9 @@ if __name__ == '__main__':
 
     N = 1024
     banco = SignalBank(N)
-    # signal1,_ = banco.linearChirp(a = -N/8, b = N/2 - N/8)
-    # signal2,_ = banco.linearChirp(a = N/8, b = N/8)
+    # signal = banco.linearChirp(a = -N/8, b = N/2 - N/8)
+    # signal = banco.linearChirp(a = N/8, b = N/8)
+    # signal = banco.linearChirp(a = 0, b = N/4)
     signal = banco.cosChirp()
     # signal = banco.crossedLinearChirps()
     # signal = banco.multiComponentHarmonic(a1 = N/32)
