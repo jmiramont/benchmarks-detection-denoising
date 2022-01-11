@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 from benchmark_demo.SignalBank import SignalBank
 import pandas as pd
@@ -17,6 +18,17 @@ class Benchmark:
         self.SNRin = SNRin
         self.comparisonFunction = self.setComparisonFunction(task)
         self.results = None
+        
+        if not self.inputsControl():
+            print('Something went wrong, check input paramaters!')
+
+    def inputsControl(self):
+        # Check both dictionaries have the same keys:
+        if not (self.methods.keys() == self.parameters.keys()):
+            print('Both methods and parameters dictionaries should have the same keys.')
+            return False    
+
+        return True
 
     def setComparisonFunction(self, task):
         """Define different comparison functions for each task."""
