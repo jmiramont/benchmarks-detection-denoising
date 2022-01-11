@@ -1,58 +1,108 @@
-import warnings
 import numpy as np
 from benchmark_demo.SignalBank import SignalBank
 import pandas as pd
-import json
-import pickle
-import sys
+import numbers
+
+# import json
+# import pickle
+# import sys
+# import warnings
+
 
 class Benchmark:
-    """This class performs a number of tasks for methods comparison."""
+    """
+    This class performs a number of tasks for methods comparison.
+    """
 
     def __init__(self, task = 'denoising', methods = None, N = 256, parameters = None, SNRin = None, repetitions = None, checks = True):
-        self.task = task
-        self.methods = methods
-        self.N = N
-        self.repetitions = repetitions
-        self.parameters = parameters
-        self.SNRin = SNRin
-
-        # Check input parameters.
-        if checks:
-            self.inputsCheck()
-                    
-        self.bank = SignalBank(N)
-        self.comparisonFunction = self.setComparisonFunction(task)
+        """
+        This constructor parse the inputs and instantiate the object attributes
+        """
+        # Objects attributes
+        self.task = None
+        self.methods = None
+        self.N = None
+        self.repetitions = None
+        self.SNRin = None
         self.results = None
+
+        # Check input parameters and initialize the object attributes
+        self.inputParsing(task, methods, N, parameters, SNRin, repetitions)
+
+        # Generates a dictionary of signals
+        self.bank = SignalBank(N)
+
+        # Set the performance function according to the selected task
+        self.comparisonFunction = self.setComparisonFunction(task)
         
 
+    def inputParsing(self, task, methods, N, parameters, SNRin, repetitions):
+        """
+        Check input parameters and initialize the object attributes
+        """
 
-    def inputsCheck(self):
-        """ This function checks the input parameters of the constructor."""
-        # Check both dictionaries have the same keys:
+        # Check the task is either 'denoising' or 'detecting'
+        if (task != 'denoising' and task != 'detecting'):
+            raise ValueError("The tasks should be either 'denoising' or 'detecting'.\n")
+        else:
+            self.task = task
+
+        # Check methods is a dictionary
+        if type(methods) is not dict:
+            raise ValueError("Methods should be a dictionary.\n")
+        else:
+            self.methods = methods
+
+        # If no parameters are given to test.
+        if parameters is None:
+            self.parameters = {key: None for key in methods.keys}
+        else:
+            if type(methods) is dict:
+                self.parameters = parameters
+            else:
+                raise ValueError("Parameters should be a dictionary or None.\n")
+
+        #Check both dictionaries have the same keys:
         if not (self.methods.keys() == self.parameters.keys()):
             # sys.stderr.write
             raise ValueError("Both methods and parameters dictionaries should have the same keys.\n")
 
-        # Check the task is either 'denoising' or 'detecting'
-        if (self.task != 'denoising' and self.task != 'detecting'):
-            # sys.stderr.write
-            raise ValueError("The tasks should be either 'denoising' or 'detecting'.\n")    
+        # Check if N is an entire:
+        if type(N) is int:
+            self.N = N
+        else:
+            raise ValueError("N should be an entire.\n")
 
-        return True    
+        # Check if SNRin is a tuple or list, and if so, check if there are only numerical variables.
+        if (type(SNRin) is tuple) or (type(SNRin) is list):
+            for i in SNRin:
+                if not isinstance(i, numbers.Number):
+                    raise ValueError("All elements in SNRin should be real numbers.\n")
+
+            self.SNRin = SNRin
+        else:
+            raise ValueError("SNRin should be a tuple or a list.\n")
+
+        # Check if repetitions is an entire:
+        if type(repetitions) is int:
+            self.repetitions = repetitions
+        else:
+            raise ValueError("Repetitions should be an entire.\n")
+
 
     def methodsOutputCheck(self,output,input):
         if self.task == 'denoising':
+            if type(output) is not np.ndarray:
+                raise ValueError("Method's output should be a numpy array for task='denoising'.\n")
+
             if output.shape != input.shape:
                 raise ValueError("Method's output should have the same shape as input for task='denoising'.\n")
-        
 
-        
-
-        
 
     def setComparisonFunction(self, task):
-        """Define different comparison functions for each task."""
+        """
+        Define different comparison functions for each task.
+        """
         compFuncs = {
             'denoising': snrComparison,
             'detection': lambda base_signal, method_output: method_output 
@@ -61,14 +111,18 @@ class Benchmark:
 
 
     def runTest(self, verbosity = False):
-        """ Run benchmark with the set parameters."""
+        """
+        Run benchmark with the set parameters.
+        """
         print('Running benchmark...')
+
+        # Dictionaries for the results. This helps to express the results later using a DataFrame.
         results_dic = dict()
         params_dic = dict()
         method_dic = dict()
         SNR_dic = dict()
 
-        
+        # These loops run all the experiments and save the results in nested dictionaries.
         for signal_id in self.bank.signalDict:
             base_signal = self.bank.signalDict[signal_id]()
             for SNR in self.SNRin:
@@ -97,7 +151,6 @@ class Benchmark:
 
 
         self.results = results_dic # Save results for later.
-
         print('The test has finished.')
         return results_dic
 
@@ -118,8 +171,12 @@ class Benchmark:
 
 # Pendientes: Guardar resultados, guardar senales y el ruido, guardar parametros en archivo. Verbosity.
 
+
+# Other functions:
 def dic2df(midic):
-    """Transforms a dictionary of arbitrary depth into a pandas' DataFrame object."""
+    """
+    This function transforms a dictionary of arbitrary depth into a pandas' DataFrame object.
+    """
     auxdic = dict()
     for key in midic:
         if isinstance(midic[key], dict):
@@ -158,9 +215,9 @@ def add_snr_block(x,snr,K = 1):
 
 
 def snrComparison(x,x_hat):
-    """ Quality reconstruction factor for denoising performance characterization.
     """
-    
+    Quality reconstruction factor for denoising performance characterization.
+    """
     qrf = np.zeros((x_hat.shape[0],))
     for i in range(x_hat.shape[0]):
         qrf[i] = 10*np.log10(np.sum(x**2)/np.sum((x_hat[i,:]-x)**2))
