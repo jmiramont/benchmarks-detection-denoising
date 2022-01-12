@@ -55,9 +55,9 @@ class Benchmark:
 
         # If no parameters are given to test.
         if parameters is None:
-            self.parameters = {key: None for key in methods.keys}
+            self.parameters = {key: [0,] for key in methods.keys()}
         else:
-            if type(methods) is dict:
+            if type(parameters) is dict:
                 self.parameters = parameters
             else:
                 raise ValueError("Parameters should be a dictionary or None.\n")
