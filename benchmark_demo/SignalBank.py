@@ -13,19 +13,19 @@ class SignalBank:
     def __init__(self,N = 2**8):
         self.N = N
         self.signalDict = {
-            'linearChirp': self.linearChirp,
-            'cosChirp': self.cosChirp,
-            'crossedLinearChirps': self.crossedLinearChirps,
-            'dumpedCos': self.dumpedCos,
-            'sharpAttackCos': self.sharpAttackCos,
-            'multiComponentHarmonic' : self.multiComponentHarmonic,
-            # 'multiComponentHarmonic2' : lambda: self.multiComponentHarmonic(a1 = 4, b1 = 1.2*np.sqrt(N)),
+            'linearChirp': self.linear_chirp,
+            'cosChirp': self.cos_chirp,
+            'crossedLinearChirps': self.crossing_linear_chirps,
+            'dumpedCos': self.dumped_cos,
+            'sharpAttackCos': self.sharp_attack_cos,
+            'multiComponentHarmonic' : self.multi_component_harmonic,
+            'syntheticMixture' : self.synthetic_mixture,
         }
         
-    def getSignalIds(self):
+    def get_signal_id(self):
         return self.SignalDict.keys()
 
-    def linearChirp(self, a=None, b=None, instfreq = False):
+    def linear_chirp(self, a=None, b=None, instfreq = False):
         N = self.N
         t = np.arange(N)/N
 
@@ -53,31 +53,31 @@ class SignalBank:
         else:
             return signal
 
-    def crossedLinearChirps(self):
+    def crossing_linear_chirps(self):
         N = self.N
-        chirp1 = self.linearChirp(a = -N/8, b = N/2 - N/8)
-        chirp2 = self.linearChirp(a = N/8, b = N/8)
+        chirp1 = self.linear_chirp(a = -N/8, b = N/2 - N/8)
+        chirp2 = self.linear_chirp(a = N/8, b = N/8)
         return chirp1 + chirp2
 
-    def multiComponentHarmonic(self, a1=0, b1 = None):
+    def multi_component_harmonic(self, a1=0, b1 = None):
         N = self.N
         if b1 is None:
             b1 = 2*np.sqrt(N)
     
         k = 1
         aux = np.zeros((N,))
-        chirp,instf = self.linearChirp(a = a1, b = b1, instfreq=True)
+        chirp,instf = self.linear_chirp(a = a1, b = b1, instfreq=True)
         fn = instf[-1]
 
         while fn < (N/2-1*np.sqrt(N)):
             aux += chirp
             k += 1
             # print(k*b1) 
-            chirp,instf = self.linearChirp(a = a1*k, b = b1*k, instfreq=True)
+            chirp,instf = self.linear_chirp(a = a1*k, b = b1*k, instfreq=True)
             fn = instf[-1]
         return aux
 
-    def dumpedCos(self):
+    def dumped_cos(self):
         N = self.N
         eps = 1e-6
         t = np.arange(N)+eps
@@ -86,17 +86,17 @@ class SignalBank:
         alfa = -np.log(prec*N/((N-c)**2))/N
         e = np.exp(-alfa*t)*((t-c)**2/t)
         e[0] = 0
-        chirp = self.linearChirp(a = 0, b = N/4)
+        chirp = self.linear_chirp(a = 0, b = N/4)
         return e*chirp
 
-    def sharpAttackCos(self):
+    def sharp_attack_cos(self):
         N = self.N
-        dumpcos = self.dumpedCos()
+        dumpcos = self.dumped_cos()
         indmax = np.argmax(dumpcos)
         dumpcos[0:indmax] = 0
         return dumpcos    
 
-    def cosChirp(self):
+    def cos_chirp(self):
         N = self.N
         t = np.arange(N)/N
 
@@ -113,30 +113,59 @@ class SignalBank:
         signal[tmin:tmax] = x
         return signal
     
-    def getAllSignals(self):
+    def synthetic_mixture(self):
+        N = self.N
+        signal = np.zeros((N,))
+        Nchirp = int(N*0.88)
+        # print(Nchirp)
+        # print(N-Nchirp)
+        imp_loc_1 = int((N-Nchirp)/4)
+        imp_loc_2 = int(2*(N-Nchirp)/3)
+        t = np.arange(Nchirp)
+            
+        chirp1 = np.cos(2*pi*0.1*t)
+        b = 0.12
+        a = (0.3-0.12)/Nchirp/2
+        chirp2 = np.cos(2*pi*(a*t**2 + b*t))
+        
+        signal[imp_loc_1] = 10
+        signal[imp_loc_2] = 10
+
+        instf = 0.35 + 0.05*np.cos(2*pi*1.25*t/Nchirp + pi)
+        coschirp = np.cos(2*pi*np.cumsum(instf))
+        signal[N-Nchirp:N] = chirp1+chirp2+coschirp
+        # signal[N-Nchirp:N] = coschirp
+        return signal
+
+        
+
+    
+    def get_all_signals(self):
         signals = np.zeros((len(self.signalDict),self.N))
         for k, key in enumerate(self.signalDict):
             signals[k] = self.signalDict[key]()
-
         return signals
+
+    
 
 
 if __name__ == '__main__':
     from matplotlib import pyplot as plt
     from utilstf import *
 
-    N = 1024
+    N = 512
     banco = SignalBank(N)
     # signal = banco.linearChirp(a = -N/8, b = N/2 - N/8)
     # signal = banco.linearChirp(a = N/8, b = N/8)
     # signal = banco.linearChirp(a = 0, b = N/4)
-    signal = banco.cosChirp()
+    # signal = banco.cosChirp()
+    signal = banco.synthetic_mixture()
     # signal = banco.crossedLinearChirps()
     # signal = banco.multiComponentHarmonic(a1 = N/32)
     # signal = banco.dumpedCos()
     # signal = banco.sharpAttackCos()
     
-    Sww, stft, pos, Npad = getSpectrogram(signal)
+    Sww, stft, pos, Npad = get_spectrogram(signal)
 
     fig, ax = plt.subplots(1,2)
     ax[0].plot(signal)
