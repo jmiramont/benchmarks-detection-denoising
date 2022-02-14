@@ -90,7 +90,7 @@ class Benchmark:
             raise ValueError("Repetitions should be an entire.\n")
 
 
-    def check_methods_outpu(self,output,input):
+    def check_methods_output(self,output,input):
         if self.task == 'denoising':
             if type(output) is not np.ndarray:
                 raise ValueError("Method's output should be a numpy array for task='denoising'.\n")
@@ -130,7 +130,7 @@ class Benchmark:
                 for method in self.methods:                        
                     for p,params in enumerate(self.parameters[method]):    
                         method_output = self.methods[method](noisy_signals,params)
-                        self.check_methods_outpu(method_output,noisy_signals) # Just checking if the output its valid.   
+                        self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
 
                         result =  self.comparisonFunction(base_signal, method_output)             
                         params_dic['Params'+str(p)] = result
