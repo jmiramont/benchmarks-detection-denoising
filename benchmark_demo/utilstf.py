@@ -22,7 +22,7 @@ Those functions are:
 
 """
 
-def getSpectrogram(signal):
+def get_spectrogram(signal):
     """
     Get the round spectrogram of the signal 
     """
@@ -59,7 +59,7 @@ def getSpectrogram(signal):
     return Sww, stft, pos, Npad #[pos, x, y]
 
 
-def findCenterEmptyBalls(Sww, pos_exp, radi_seg=1):
+def find_center_empty_balls(Sww, pos_exp, radi_seg=1):
     Nfft = Sww.shape[1]
     # define a kd-tree with zeros
     kdpos = KDTree(pos_exp)
@@ -78,7 +78,7 @@ def findCenterEmptyBalls(Sww, pos_exp, radi_seg=1):
     return empty_mask
 
 
-def getConvexHull(Sww, pos_exp, empty_mask, radi_expand=0.5):
+def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     # extract region of interest
     Nfft = Sww.shape[1]
     fmin = 1#int(np.sqrt(Nfft))
@@ -118,7 +118,7 @@ def getConvexHull(Sww, pos_exp, empty_mask, radi_expand=0.5):
    
 
 
-def reconstructionSignal(hull_d, stft):
+def reconstruct_signal(hull_d, stft):
     """ Reconstruction using the convex hull
     """
     Nfft = stft.shape[1]
@@ -146,7 +146,7 @@ def reconstructionSignal(hull_d, stft):
     t, xr = sg.istft(mask*stft, window=g,  nperseg=Nfft, noverlap=Nfft-1)
     return mask, xr, t 
 
-def reconstructionSignal2(mask, stft, Npad):
+def reconstruct_signal_2(mask, stft, Npad):
     """ Reconstruction using a mask given as parameter"""
     Ni = mask.shape[1]
     Nfft = Ni
@@ -175,7 +175,7 @@ def extr2minth(M,th):
     return x, y
 
 
-def snrComparison(x,x_hat):
+def snr_comparison(x,x_hat):
     qrf = 10*np.log10(np.sum(x**2)/np.sum((x-x_hat)**2))
     return qrf
 
@@ -226,20 +226,12 @@ def add_snr(x,snr,K = 1):
     return x+n
 
 
-def hardThresholding(F):
-    stdNoise = np.median(np.abs(np.real(F)))/0.6745
-    thr = 3*stdNoise
-    mask = np.abs(F)
-    mask[mask<=thr] = 0
-    mask[mask>thr] = 1
-    return F*mask
 
-
-def emptyBalls(signal, radi_seg = 1):
-    Sww, stft, pos, Npad = getSpectrogram(signal)
-    empty_mask = findCenterEmptyBalls(Sww, pos, radi_seg)
-    hull_d , sub_empty= getConvexHull(Sww, pos, empty_mask) 
-    mask, xr, t, aux = reconstructionSignal2(sub_empty, stft, Npad)
+def empty_balls(signal, radi_seg = 1):
+    Sww, stft, pos, Npad = get_spectrogram(signal)
+    empty_mask = find_center_empty_balls(Sww, pos, radi_seg)
+    hull_d , sub_empty= get_convex_hull(Sww, pos, empty_mask) 
+    mask, xr, t, aux = reconstruct_signal_2(sub_empty, stft, Npad)
     return xr
 
 

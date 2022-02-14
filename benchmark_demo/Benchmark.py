@@ -27,16 +27,16 @@ class Benchmark:
         self.results = None
 
         # Check input parameters and initialize the object attributes
-        self.inputParsing(task, methods, N, parameters, SNRin, repetitions)
+        self.input_parsing(task, methods, N, parameters, SNRin, repetitions)
 
         # Generates a dictionary of signals
         self.bank = SignalBank(N)
 
         # Set the performance function according to the selected task
-        self.comparisonFunction = self.setComparisonFunction(task)
+        self.comparisonFunction = self.set_comparison_function(task)
         
 
-    def inputParsing(self, task, methods, N, parameters, SNRin, repetitions):
+    def input_parsing(self, task, methods, N, parameters, SNRin, repetitions):
         """
         Check input parameters and initialize the object attributes
         """
@@ -90,7 +90,7 @@ class Benchmark:
             raise ValueError("Repetitions should be an entire.\n")
 
 
-    def methodsOutputCheck(self,output,input):
+    def check_methods_outpu(self,output,input):
         if self.task == 'denoising':
             if type(output) is not np.ndarray:
                 raise ValueError("Method's output should be a numpy array for task='denoising'.\n")
@@ -99,18 +99,18 @@ class Benchmark:
                 raise ValueError("Method's output should have the same shape as input for task='denoising'.\n")
 
 
-    def setComparisonFunction(self, task):
+    def set_comparison_function(self, task):
         """
         Define different comparison functions for each task.
         """
         compFuncs = {
-            'denoising': snrComparison,
+            'denoising': snr_comparison,
             'detection': lambda base_signal, method_output: method_output 
         }
         return compFuncs[task]    
 
 
-    def runTest(self, verbosity = False):
+    def run_test(self, verbosity = False):
         """
         Run benchmark with the set parameters.
         """
@@ -130,7 +130,7 @@ class Benchmark:
                 for method in self.methods:                        
                     for p,params in enumerate(self.parameters[method]):    
                         method_output = self.methods[method](noisy_signals,params)
-                        self.methodsOutputCheck(method_output,noisy_signals) # Just checking if the output its valid.   
+                        self.check_methods_outpu(method_output,noisy_signals) # Just checking if the output its valid.   
 
                         result =  self.comparisonFunction(base_signal, method_output)             
                         params_dic['Params'+str(p)] = result
@@ -155,7 +155,7 @@ class Benchmark:
         return results_dic
 
 
-    def getResults(self, results = None):
+    def get_results(self, results = None):
         if results is None:
             df = dic2df(self.results)
         else:
@@ -214,7 +214,7 @@ def add_snr_block(x,snr,K = 1):
     return x+n.T, n.T
 
 
-def snrComparison(x,x_hat):
+def snr_comparison(x,x_hat):
     """
     Quality reconstruction factor for denoising performance characterization.
     """
