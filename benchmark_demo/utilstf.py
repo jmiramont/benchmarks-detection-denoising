@@ -8,10 +8,10 @@ from scipy.spatial import KDTree
 from scipy.spatial import ConvexHull, Delaunay
 
 
-"""
-This file contains a number of utilities for time-frequency analysis. Some functions has been modified from the supplementary code of:
-    Bardenet, R., Flamant, J., & Chainais, P. (2020). On the zeros of the spectrogram of white noise.
-    Applied and Computational Harmonic Analysis, 48(2), 682-705.
+""" This file contains a number of utilities for time-frequency analysis.
+Some functions has been modified from the supplementary code of:
+Bardenet, R., Flamant, J., & Chainais, P. (2020). On the zeros of the spectrogram of white noise.
+Applied and Computational Harmonic Analysis, 48(2), 682-705.
 which can be found in: http://github.com/jflamant/2018-zeros-spectrogram-white-noise.
 
 Those functions are:
@@ -22,41 +22,51 @@ Those functions are:
 
 """
 
-def get_spectrogram(signal):
-    """
-    Get the round spectrogram of the signal 
-    """
-    Ni = len(signal)
-    Npad = Ni//2
-
-    signal_pad = np.zeros(Ni+2*Npad)
-    signal_pad[Npad:Npad+Ni] = signal
-    Nfft = Ni
-    
+def get_round_window(Nfft):
     # analysis window
     g = sg.gaussian(Nfft, np.sqrt((Nfft)/2/np.pi))
     g = g/g.sum()
+    T = np.sqrt(Nfft)
+    return g, T
 
+
+def get_stft(signal, window):
+    """ Compute the STFT of the signal. Signal is padded with zeros.
+    The outputs corresponds to the STFT with the regular size and also the
+    zero padded version.
+
+    """
+
+    N = np.max(signal.shape)
+    Npad = N//2
+    Nfft = len(window)
+    signal_pad = np.zeros(N+2*Npad)
+    signal_pad[Npad:Npad+N] = signal
+    
     # computing STFT
-    _, _, stft = sg.stft(signal_pad, window=g, nperseg=Nfft, noverlap = Nfft-1)
-    Sww = np.abs(stft[:,Npad:Npad+Ni])**2
-    # tmin = base
-    # tmax = base+N
-    # Sww = Sww_t[:, tmin:tmax]
-    # stft = stft[:, tmin:tmax]
+    _, _, stft_padded = sg.stft(signal_pad, window=window, nperseg=Nfft, noverlap = Nfft-1)
+    stft = stft_padded[:,Npad:Npad+N]
+    return stft, stft_padded, Npad
 
+
+def get_spectrogram(signal,window):
+    """
+    Get the round spectrogram of the signal 
+    """
+    stft, stft_padded, Npad = get_stft(signal, window)
+    S = np.abs(stft)**2
+    return S, stft, stft_padded, Npad
+
+
+def find_zeros_of_spectrogram(S):
     # detection of zeros of the spectrogram
     th = 1e-14
-    y, x = extr2minth(Sww, th) # Find zero's coordinates
-
-    u = (np.array(x))/np.sqrt(Nfft) # Normalize the coordinates.
-    v = (np.array(y))/np.sqrt(Nfft)
-
+    y, x = extr2minth(S, th) # Find zero's coordinates
     pos = np.zeros((len(x), 2)) # Position of zeros in norm. coords.
-    pos[:, 0] = u
-    pos[:, 1] = v
-
-    return Sww, stft, pos, Npad #[pos, x, y]
+    pos[:, 0] = y
+    pos[:, 1] = x
+    # 2/15 Quedaron invertidos!!!!
+    return pos
 
 
 def find_center_empty_balls(Sww, pos_exp, radi_seg=1):
@@ -85,7 +95,6 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     fmax = empty_mask.shape[0] - fmin
     tmin = 1#int(np.sqrt(Nfft))
     tmax = empty_mask.shape[1] - tmin
-
     sub_empty = empty_mask[fmin:fmax, tmin:tmax]
 
     
@@ -147,7 +156,8 @@ def reconstruct_signal(hull_d, stft):
     return mask, xr, t 
 
 def reconstruct_signal_2(mask, stft, Npad):
-    """ Reconstruction using a mask given as parameter"""
+    """ Reconstruction using a mask given as parameter
+    """
     Ni = mask.shape[1]
     Nfft = Ni
     # reconstruction
@@ -157,12 +167,12 @@ def reconstruct_signal_2(mask, stft, Npad):
     mask_aux[:,Npad:Npad+Ni] = mask
     # t, xorigin = sg.istft(stft, window=g,  nperseg=Nfft, noverlap=Nfft-1)
     t, xr = sg.istft(mask_aux*stft, window=g, nperseg=Nfft, noverlap = Nfft-1)
-    return xr[Npad:Npad+Ni], t
+    xr = xr[Npad:Npad+Ni]
+    return xr, t
 
 
 def extr2minth(M,th):
-    """
-    Finds the minima of the spectrogram matrix M
+    """ Finds the minima of the spectrogram matrix M
     """
     C,R = M.shape
     Mid_Mid = np.zeros((C,R), dtype=bool)
@@ -206,8 +216,8 @@ def add_snr_block(x,snr,K = 1):
     return x+n.T, n.T
 
 def add_snr(x,snr,K = 1):
-    """
-    Adds noise to a signal x with SNR equal to snr. SNR is defined as SNR (dB) = 10 * log10(Ex/En)
+    """ Adds noise to a signal x with SNR equal to snr.
+    SNR is defined as SNR (dB) = 10 * log10(Ex/En)
     """
     N = len(x)
     x = x - np.mean(x)

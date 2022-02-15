@@ -53,7 +53,7 @@ class Benchmark:
         else:
             self.methods = methods
 
-        # If no parameters are given to test.
+        # If no parameters are given to the benchmark.
         if parameters is None:
             self.parameters = {key: [0,] for key in methods.keys()}
         else:
