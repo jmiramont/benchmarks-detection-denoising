@@ -1,12 +1,5 @@
 import numpy as np
-import scipy.stats as spst
-import matplotlib.pyplot as plt
-import seaborn as sns
 import scipy.signal as sg
-from math import atan2
-from scipy.spatial import KDTree
-from scipy.spatial import ConvexHull, Delaunay
-
 
 """ This file contains a number of utilities for time-frequency analysis.
 Some functions has been modified from the supplementary code of:
@@ -67,64 +60,6 @@ def find_zeros_of_spectrogram(S):
     pos[:, 1] = x
     # 2/15 Quedaron invertidos!!!!
     return pos
-
-
-def find_center_empty_balls(Sww, pos_exp, radi_seg=1):
-    Nfft = Sww.shape[1]
-    # define a kd-tree with zeros
-    kdpos = KDTree(pos_exp)
-
-    # define a grid corresponding to the time-frequency paving
-    vecx = (np.arange(0, Sww.shape[0])/np.sqrt(Nfft))
-    vecy = (np.arange(0, Sww.shape[1])/np.sqrt(Nfft))
-    g = np.transpose(np.meshgrid(vecy, vecx))
-    result = kdpos.query_ball_point(g, radi_seg).T
-
-    empty_mask = np.zeros(result.shape, dtype=bool)
-    for i in range(len(vecx)):
-        for j in range(len(vecy)):
-            empty_mask[i,j] = len(result[i, j]) < 1
-
-    return empty_mask
-
-
-def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
-    # extract region of interest
-    Nfft = Sww.shape[1]
-    fmin = 1#int(np.sqrt(Nfft))
-    fmax = empty_mask.shape[0] - fmin
-    tmin = 1#int(np.sqrt(Nfft))
-    tmax = empty_mask.shape[1] - tmin
-    sub_empty = empty_mask[fmin:fmax, tmin:tmax]
-
-    
-    vecx = (np.arange(0, sub_empty.shape[0]))
-    vecy = (np.arange(0, sub_empty.shape[1]))
-    g = np.transpose(np.meshgrid(vecx, vecy))
-
-    u, v = np.where(sub_empty)
-    kdpos = KDTree(np.array([u, v]).T)
-    result = kdpos.query_ball_point(g, radi_expand*np.sqrt(Nfft))
-
-    # print(result.shape)
-
-    sub_empty = np.zeros(result.shape, dtype=bool)
-    for i in range(sub_empty.shape[1]):
-        for j in range(sub_empty.shape[0]):
-            sub_empty[j, i] = len(result[j, i]) > 0
-
-    # plt.figure()
-    # plt.imshow(sub_empty, origin = 'lower')
-
-    u, v = np.where(sub_empty)
-    points = np.array([u, v]).T
-    # print(points.shape)
-    
-    hull_d = Delaunay(points) # for convenience
-    mask = np.zeros(Sww.shape)
-    mask[fmin:fmax, tmin:tmax] = sub_empty
-    return hull_d, mask
-   
 
 
 def reconstruct_signal(hull_d, stft):
@@ -237,11 +172,11 @@ def add_snr(x,snr,K = 1):
 
 
 
-def empty_balls(signal, radi_seg = 1):
-    Sww, stft, pos, Npad = get_spectrogram(signal)
-    empty_mask = find_center_empty_balls(Sww, pos, radi_seg)
-    hull_d , sub_empty= get_convex_hull(Sww, pos, empty_mask) 
-    mask, xr, t, aux = reconstruct_signal_2(sub_empty, stft, Npad)
-    return xr
+# def empty_balls(signal, radi_seg = 1):
+#     Sww, stft, pos, Npad = get_spectrogram(signal)
+#     empty_mask = find_center_empty_balls(Sww, pos, radi_seg)
+#     hull_d , sub_empty= get_convex_hull(Sww, pos, empty_mask) 
+#     mask, xr, t, aux = reconstruct_signal_2(sub_empty, stft, Npad)
+#     return xr
 
 

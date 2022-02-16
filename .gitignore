@@ -11,3 +11,12 @@ benchmark_demo/__pycache__/utilstf.cpython-38.pyc
 .gitignore
 benchmark_demo/__pycache__/__init__.cpython-38.pyc
 .venv
+benchmark_assess.py
+demo_methods.ipynb
+exp_methods.ipynb
+pendings
+saved_dictionary.pkl
+benchmark_demo/bank_signal_mwe.py
+benchmark_demo/prueba_metodo_HT.py
+benchmark_demo/prueba_metodo_patrick.py
+benchmark_demo/prueba_metodo_remi.py

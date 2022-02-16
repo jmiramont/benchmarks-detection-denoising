@@ -31,7 +31,6 @@ def delaunay_triangulation_denoising(signal,params):
     if len(signal.shape) == 1:
         signal = np.resize(signal,(1,len(signal)))
 
-    signals_output = np.zeros(signal.shape)
     Nfft = signal.shape[1]
     g, T = get_round_window(Nfft)
     stft, stft_padded, Npad = get_stft(signal,g)
@@ -50,13 +49,16 @@ def delaunay_triangulation_denoising(signal,params):
 
 
 class NewMethod(MethodTemplate):
-    def method(self,signals,params):
+    def method(self,signals,params = None):
+        if len(signals.shape) == 1:
+            signals = np.resize(signals,(1,len(signals)))
+        
         signals_output = np.zeros(signals.shape)
         for i, signal in enumerate(signals):
             signals_output[i],_ = delaunay_triangulation_denoising(signal,params)
         return signals_output
 
-def return_method_instance():
+def instantiate_method():
     return NewMethod('denoising','delaunay_triangulation')
 
 

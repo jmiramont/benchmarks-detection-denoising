@@ -8,5 +8,5 @@ class NewMethod(MethodTemplate):
         
 
 
-def return_method_instance():
+def instantiate_method():
     return NewMethod('denoising','a_method')
