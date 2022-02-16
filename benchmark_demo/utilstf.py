@@ -23,29 +23,37 @@ def get_round_window(Nfft):
     return g, T
 
 
-def get_stft(signal, window):
+def get_stft(signal, window = None):
     """ Compute the STFT of the signal. Signal is padded with zeros.
     The outputs corresponds to the STFT with the regular size and also the
     zero padded version.
 
     """
-
+    
     N = np.max(signal.shape)
+    if window is None:
+        Nfft = N
+        window, _ = get_round_window(Nfft)
+
     Npad = N//2
     Nfft = len(window)
     signal_pad = np.zeros(N+2*Npad)
     signal_pad[Npad:Npad+N] = signal
-    
     # computing STFT
     _, _, stft_padded = sg.stft(signal_pad, window=window, nperseg=Nfft, noverlap = Nfft-1)
     stft = stft_padded[:,Npad:Npad+N]
     return stft, stft_padded, Npad
 
 
-def get_spectrogram(signal,window):
+def get_spectrogram(signal,window=None):
     """
     Get the round spectrogram of the signal 
     """
+    N = np.max(signal.shape)
+    if window is None:
+        Nfft = N
+        window, _ = get_round_window(Nfft)
+
     stft, stft_padded, Npad = get_stft(signal, window)
     S = np.abs(stft)**2
     return S, stft, stft_padded, Npad

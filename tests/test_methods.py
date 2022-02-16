@@ -4,6 +4,7 @@ from methods import *
 import pytest
 from benchmark_demo.SignalBank import SignalBank
 from benchmark_demo.utilstf import add_snr
+from methods.MethodTemplate import MethodTemplate
 
 #-------------------------------------------------------------------------------------------------------
 """ This collects all the methods in the folder/ module "methods" and make a global list of them."""
@@ -30,6 +31,14 @@ def dummy_input():
     for i in range(5):
         dummy_input[i,:] = add_snr(signal_bank.linear_chirp(),15)
     return dummy_input
+
+
+# Test method inheritance of class MethodTemplate
+def test_methods_inheritance():
+        for method_instance in list_of_methods:
+            method_id = method_instance.get_method_id()
+            assert isinstance(method_instance, MethodTemplate), method_id +' should inherit MethodTemplate.'
+            
 
 # Test the shape of the outputs
 def test_methods_outputs_shape(dummy_input):
