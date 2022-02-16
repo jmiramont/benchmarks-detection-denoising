@@ -1,15 +1,9 @@
+.gitignore
 .vscode/launch.json
 benchmark_demo/main.py
 benchmark_demo/other_test_notebook.ipynb
 benchmark_demo/pruebas_stft.py
 benchmark_demo/bank_test.py
-benchmark_demo\__pycache__
-.gitignore
-benchmark_demo/__pycache__/SignalBank.cpython-38.pyc
-benchmark_demo/__pycache__/signals_bank.cpython-38.pyc
-benchmark_demo/__pycache__/utilstf.cpython-38.pyc
-.gitignore
-benchmark_demo/__pycache__/__init__.cpython-38.pyc
 .venv
 benchmark_assess.py
 demo_methods.ipynb
@@ -20,3 +14,4 @@ benchmark_demo/bank_signal_mwe.py
 benchmark_demo/prueba_metodo_HT.py
 benchmark_demo/prueba_metodo_patrick.py
 benchmark_demo/prueba_metodo_remi.py
+__pycache__
