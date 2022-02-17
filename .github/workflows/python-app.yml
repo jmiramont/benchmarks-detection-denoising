@@ -80,9 +80,9 @@ jobs:
       #----------------------------------------------
       #    run test suite and output coverage file
       #----------------------------------------------
-      - name: Run the Benchmark
+      # - name: Run the Benchmark
         # Configuration of pytest [tool.pytest.ini_options] in pyproject.toml
         # https://docs.pytest.org/en/latest/reference/customize.html#pyproject-toml
         # In the template repository options passed are
         # -ra -q -vv --cov=spatstat_interface --cov-report=xml
-        run: poetry run python run_this_benchmark.py
+        # run: poetry run python run_this_benchmark.py
