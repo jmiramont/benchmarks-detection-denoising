@@ -28,7 +28,8 @@ By doing this, you must then implement the class method:
 
 method(self, signal, params)
 
-which should receive the signals and any parameters that you desire.
+which should receive the signals and any parameters
+that you desire to pass to your method.
 """
 class NewMethod(MethodTemplate):
 
