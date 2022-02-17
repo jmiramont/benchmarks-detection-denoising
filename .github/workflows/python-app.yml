@@ -76,3 +76,13 @@ jobs:
         # In the template repository options passed are
         # -ra -q -vv --cov=spatstat_interface --cov-report=xml
         run: poetry run pytest
+        
+      #----------------------------------------------
+      #    run test suite and output coverage file
+      #----------------------------------------------
+      - name: Run the Benchmark
+        # Configuration of pytest [tool.pytest.ini_options] in pyproject.toml
+        # https://docs.pytest.org/en/latest/reference/customize.html#pyproject-toml
+        # In the template repository options passed are
+        # -ra -q -vv --cov=spatstat_interface --cov-report=xml
+        run: python run_this_benchmark.py
