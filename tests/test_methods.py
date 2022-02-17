@@ -43,10 +43,20 @@ def test_methods_inheritance():
 # Test the shape of the outputs
 def test_methods_outputs_shape(dummy_input):
         for method_instance in list_of_methods:
-            method_id = method_instance.get_method_id()
-            print(method_id)
-            output = method_instance.method(dummy_input, params=None)
-            assert (output.shape == dummy_input.shape), method_id +' output should have the same shape as input.'
+            if method_instance.get_task() == 'denoising':
+                method_id = method_instance.get_method_id()
+                print(method_id)
+                output = method_instance.method(dummy_input, params=None)
+                assert (output.shape == dummy_input.shape), method_id +' output should have the same shape as input.'
+
+            if method_instance.get_task() == 'detection':
+                method_id = method_instance.get_method_id()
+                print(method_id)
+                output = method_instance.method(dummy_input, params=None)
+                assert (output.shape[0] == dummy_input.shape[0]), method_id +' output shape[0] should be the same as input.shape[0].'
+                assert all(isinstance(i,bool) for i in output), method_id +' output should be an array of booleans.'
+
+
 
 
 # Test the type of the outputs

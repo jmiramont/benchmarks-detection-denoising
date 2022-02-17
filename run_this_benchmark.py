@@ -33,8 +33,7 @@ my_benchmark = Benchmark(task = 'denoising',
                         SNRin = SNRin,
                         using_signals=signal_names, 
                         repetitions = 10,
-                        verbosity=1)
+                        verbosity=3)
 my_results = my_benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
 df = my_benchmark.get_results() # This formats the results on a DataFrame
-
 print(df)
