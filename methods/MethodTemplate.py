@@ -10,6 +10,9 @@ class MethodTemplate(ABC):
     def method(self):
         ...
 
+    def get_parameters(self):
+        return [None,]
+
     def get_method_id(self):
         return self.id
     

@@ -14,7 +14,7 @@ class Benchmark:
     This class performs a number of tasks for methods comparison.
     """
 
-    def __init__(self, task = 'denoising', methods = None, N = 256, parameters = None, SNRin = None, repetitions = None, checks = True):
+    def __init__(self, task='denoising', methods=None, N=256, parameters=None, SNRin=None, repetitions=None, using_signals='all', checks=True, verbosity=0):
         """
         This constructor parse the inputs and instantiate the object attributes
         """
@@ -25,21 +25,34 @@ class Benchmark:
         self.repetitions = None
         self.SNRin = None
         self.results = None
+        self.verbostiy = None
+        
 
         # Check input parameters and initialize the object attributes
-        self.input_parsing(task, methods, N, parameters, SNRin, repetitions)
+        if checks:
+            self.input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity)
 
         # Generates a dictionary of signals
-        self.bank = SignalBank(N)
+        signal_bank = SignalBank(N)
+        self.signal_dic = signal_bank.signalDict
+
+        if using_signals == 'all':
+            self.signal_ids = self.signal_dic.keys()
+        else:
+            self.signal_ids = using_signals
+
 
         # Set the performance function according to the selected task
         self.comparisonFunction = self.set_comparison_function(task)
         
 
-    def input_parsing(self, task, methods, N, parameters, SNRin, repetitions):
+    def input_parsing(self, task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity):
         """
         Check input parameters and initialize the object attributes
         """
+        # Check verbosity
+        assert isinstance(verbosity,int) and 0<=verbosity<5 , 'Verbosity should be an integer between 0 and 4'
+        self.verbostiy = verbosity
 
         # Check the task is either 'denoising' or 'detecting'
         if (task != 'denoising' and task != 'detecting'):
@@ -90,6 +103,13 @@ class Benchmark:
             raise ValueError("Repetitions should be an entire.\n")
 
 
+        # Check what to do with list of signals:
+        if using_signals !='all':
+            if isinstance(using_signals,tuple) or isinstance(using_signals,list):
+                signal_bank = SignalBank(N)
+                llaves = signal_bank.signalDict.keys()
+                assert all(signal_id in llaves for signal_id in using_signals)
+
     def check_methods_output(self,output,input):
         if self.task == 'denoising':
             if type(output) is not np.ndarray:
@@ -110,11 +130,12 @@ class Benchmark:
         return compFuncs[task]    
 
 
-    def run_test(self, verbosity = False):
+    def run_test(self):
         """
         Run benchmark with the set parameters.
         """
-        print('Running benchmark...')
+        if self.verbostiy > 0:
+            print('Running benchmark...')
 
         # Dictionaries for the results. This helps to express the results later using a DataFrame.
         results_dic = dict()
@@ -123,11 +144,20 @@ class Benchmark:
         SNR_dic = dict()
 
         # These loops run all the experiments and save the results in nested dictionaries.
-        for signal_id in self.bank.signalDict:
-            base_signal = self.bank.signalDict[signal_id]()
+        for signal_id in self.signal_ids:
+            if self.verbostiy > 1:
+                print('- Signal '+ signal_id)
+
+            base_signal = self.signal_dic[signal_id]()
             for SNR in self.SNRin:
+                if self.verbostiy > 2:
+                    print('-- SNR: {} dB'.format(SNR))
+
                 noisy_signals, noise = add_snr_block(base_signal,SNR,self.repetitions)
-                for method in self.methods:                        
+                for method in self.methods:    
+                    if self.verbostiy > 3:
+                        print('--- Method: '+ method)                    
+
                     for p,params in enumerate(self.parameters[method]):    
                         method_output = self.methods[method](noisy_signals,params)
                         self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
@@ -151,7 +181,9 @@ class Benchmark:
 
 
         self.results = results_dic # Save results for later.
-        print('The test has finished.')
+        if self.verbostiy > 0:
+            print('The test has finished.')
+
         return results_dic
 
 
@@ -191,7 +223,7 @@ def dic2df(midic):
     return df
 
 
-def add_snr_block(x,snr,K = 1):
+def add_snr_block(x, snr, K=1, complex_noise=False):
     """
     Creates K realizations of the signal x with white Gaussian noise, with SNR equal to snr.
     SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En are the energy of the signal
