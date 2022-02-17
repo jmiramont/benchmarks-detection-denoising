@@ -85,4 +85,4 @@ jobs:
         # https://docs.pytest.org/en/latest/reference/customize.html#pyproject-toml
         # In the template repository options passed are
         # -ra -q -vv --cov=spatstat_interface --cov-report=xml
-        run: python run_this_benchmark.py
+        run: poetry run python run_this_benchmark.py
