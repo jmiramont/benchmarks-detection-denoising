@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import pi as pi
 import scipy.signal as sg
-# from benchmark_demo.utilstf import *
+from benchmark_demo.utilstf import hermite_fun
 # from matplotlib import pyplot as plt
 
 class SignalBank:
@@ -15,12 +15,14 @@ class SignalBank:
         self.signalDict = {
             'linearChirp': self.linear_chirp,
             'cosChirp': self.cos_chirp,
+            'doubleCosChirp': self.double_cos_chirp,
             'crossedLinearChirps': self.crossing_linear_chirps,
             'dumpedCos': self.dumped_cos,
             'sharpAttackCos': self.sharp_attack_cos,
             'multiComponentHarmonic' : self.multi_component_harmonic,
             'multiComponentPureTones': self.multi_component_pure_tones,
-            'syntheticMixture' : self.synthetic_mixture,
+            'syntheticMixture': self.synthetic_mixture,
+            'hermiteFunction': self.hermite_function,
         }
         
     def get_signal_id(self):
@@ -102,7 +104,6 @@ class SignalBank:
     def cos_chirp(self, omega = 1.5):
         N = self.N
         t = np.arange(N)/N
-
         tmin = int(np.sqrt(N))
         tmax = N-tmin
         Nsub = tmax-tmin
@@ -112,7 +113,26 @@ class SignalBank:
         x = np.cos(2*pi*phase)*sg.tukey(Nsub,0.25)     
         signal = np.zeros((N,))
         signal[tmin:tmax] = x
+        return signal
 
+
+    def double_cos_chirp(self):
+        N = self.N
+        t = np.arange(N)/N
+        tmin = int(np.sqrt(N))
+        tmax = N-tmin
+        Nsub = tmax-tmin
+        tsub = np.arange(Nsub)
+        omega1 = 1.5
+        omega2 = 1.8
+        instf1 = 0.35 + 0.08*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)    
+        instf2 = 0.15 + 0.08*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)    
+        phase1 = np.cumsum(instf1)
+        phase2 = np.cumsum(instf2)
+        x = np.cos(2*pi*phase1) + np.cos(2*pi*phase2)
+        x = x*sg.tukey(Nsub,0.25)     
+        signal = np.zeros((N,))
+        signal[tmin:tmax] = x
         return signal
 
     
@@ -140,7 +160,14 @@ class SignalBank:
         # signal[N-Nchirp:N] = coschirp
         return signal
 
-    
+    def hermite_function(self, order = 15, t0 = 0.5, f0 = 0.25):
+        N = self.N
+        t0 = int(N*t0)
+        t = np.arange(N)-t0
+        return hermite_fun(N, order, t=t)*np.cos(2*pi*f0*t)
+
+
+
     def get_all_signals(self):
         signals = np.zeros((len(self.signalDict),self.N))
         for k, key in enumerate(self.signalDict):
