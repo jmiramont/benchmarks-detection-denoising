@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.signal as sg
-
+from math import factorial
+from numpy import pi as pi
 """ This file contains a number of utilities for time-frequency analysis.
 Some functions has been modified from the supplementary code of:
 Bardenet, R., Flamant, J., & Chainais, P. (2020). On the zeros of the spectrogram of white noise.
@@ -98,6 +99,7 @@ def reconstruct_signal(hull_d, stft):
     t, xr = sg.istft(mask*stft, window=g,  nperseg=Nfft, noverlap=Nfft-1)
     return mask, xr, t 
 
+
 def reconstruct_signal_2(mask, stft, Npad):
     """ Reconstruction using a mask given as parameter
     """
@@ -157,6 +159,7 @@ def add_snr_block(x,snr,K = 1):
     snr_out = 10 * np.log10(Px / Pn)
     # print(snr_out)
     return x+n.T, n.T
+    
 
 def add_snr(x,snr,K = 1):
     """ Adds noise to a signal x with SNR equal to snr.
@@ -177,6 +180,26 @@ def add_snr(x,snr,K = 1):
     snr_out = 10 * np.log10(Px / Pn)
     # print(snr_out)
     return x+n
+
+
+def hermite_poly(t,n):
+    if n == 0:
+        return np.ones((len(t),))
+    else:
+        if n == 1:
+            return 2*t
+        else:
+            return 2*t*hermite_poly(t,n-1) - 2*(n-1)*hermite_poly(t,n-2)
+
+
+def hermite_fun(N,q, t = None):
+    if t is None:
+        t = np.arange(N)-N//2
+    T = np.sqrt(N)
+    gaussian_basic = np.exp(-pi*(t/T)**2)/np.sqrt(T)
+    # gaussian_basic /= np.sum(gaussian_basic)
+    h_func = gaussian_basic*hermite_poly(np.sqrt(2*pi)*t/T, q-1)/np.sqrt(factorial(q-1)*(2**(q-1-0.5)))
+    return h_func
 
 
 
