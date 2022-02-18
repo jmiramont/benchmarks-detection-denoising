@@ -18,6 +18,7 @@ import numpy as np
 dictionary_of_methods = dict()
 dictionary_of_parameters = dict()
 
+
 for method_instance in list_of_methods:
     method_id = method_instance.get_method_id()
     dictionary_of_methods[method_id] = method_instance.method
