@@ -1,3 +1,4 @@
+import numpy as np
 from methods.MethodTemplate import MethodTemplate
 # You must import the MethodTemplate abstract class.
 
@@ -35,6 +36,9 @@ class NewMethod(MethodTemplate):
 
     def method(self,signals,params = None): # Implement this method.
         return signals
+
+    def get_parameters(self):
+        return np.array([[0,1],[1,0],[3,0]])
         
 
 """ Here you can define the task your new method is devoted to 

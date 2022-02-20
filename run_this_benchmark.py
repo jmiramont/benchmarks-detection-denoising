@@ -13,6 +13,7 @@ for mod_name in modules:
 
 from benchmark_demo.Benchmark import *
 import numpy as np
+from benchmark_demo.ResultsInterpreter import ResultsInterpreter
 
 
 dictionary_of_methods = dict()
@@ -24,17 +25,28 @@ for method_instance in list_of_methods:
     dictionary_of_methods[method_id] = method_instance.method
     dictionary_of_parameters[method_id] = method_instance.get_parameters()
 
+print(dictionary_of_methods)
+print(dictionary_of_parameters)
 
-SNRin = [10, 20]
-signal_names = ['linearChirp', 'cosChirp']
+SNRin = [10, 20, 30]
+signal_names = ['linearChirp', 'cosChirp', 'multiComponentPureTones']
 my_benchmark = Benchmark(task = 'denoising',
                         methods = dictionary_of_methods,
                         N = 256,
                         parameters = dictionary_of_parameters, 
                         SNRin = SNRin,
                         using_signals=signal_names, 
-                        repetitions = 10,
-                        verbosity=3)
+                        repetitions = 5,
+                        verbosity=4)
 my_results = my_benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
-df = my_benchmark.get_results() # This formats the results on a DataFrame
-print(df)
+# df = my_benchmark.get_results_as_df() # This formats the results on a DataFrame
+# print(df)
+# my_benchmark.save_to_file()
+
+results_interpreter = ResultsInterpreter(my_benchmark)
+results_interpreter.write_to_file()
+
+# print(my_benchmark.methods_and_params_dic)
+
+
+  
