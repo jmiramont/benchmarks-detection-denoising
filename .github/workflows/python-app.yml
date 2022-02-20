@@ -82,3 +82,15 @@ jobs:
       #----------------------------------------------
       - name: Run the Benchmark
         run: poetry run python run_this_benchmark.py
+  
+      - name: Commit files
+        run: |
+          git config --local user.email "some_user@github.com"
+          git config --local user.name "Me"
+          git commit -m "Add changes" -a
+          
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
