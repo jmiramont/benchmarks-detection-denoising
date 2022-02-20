@@ -44,7 +44,11 @@ my_results = my_benchmark.run_test() # Run the test. my_results is a nested dict
 # my_benchmark.save_to_file()
 
 results_interpreter = ResultsInterpreter(my_benchmark)
-results_interpreter.write_to_file()
+output_string = results_interpreter.write_to_file()
+with open('README.md', 'a') as f:
+    f.write(output_string)
+
+
 
 # print(my_benchmark.methods_and_params_dic)
 
