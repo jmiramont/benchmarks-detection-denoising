@@ -28,7 +28,7 @@ for method_instance in list_of_methods:
 print(dictionary_of_methods)
 print(dictionary_of_parameters)
 
-SNRin = [-50, 20, 30]
+SNRin = [10, 20, 30]
 signal_names = ['linearChirp', 'cosChirp', 'multiComponentPureTones']
 my_benchmark = Benchmark(task = 'denoising',
                         methods = dictionary_of_methods,
@@ -39,13 +39,13 @@ my_benchmark = Benchmark(task = 'denoising',
                         repetitions = 5,
                         verbosity=4)
 my_results = my_benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
-# df = my_benchmark.get_results_as_df() # This formats the results on a DataFrame
-# print(df)
+df = my_benchmark.get_results_as_df() # This formats the results on a DataFrame
+print(df)
 # my_benchmark.save_to_file()
 
 results_interpreter = ResultsInterpreter(my_benchmark)
 output_string = results_interpreter.write_to_file()
-with open('README.md', 'a') as f:
+with open('RESULTS.md', 'a') as f:
     f.write(output_string)
 
 

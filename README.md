@@ -19,31 +19,83 @@ There two ways of using this benchmark to test new methods:
 
 ### 1. Benchmark new methods by branching this repository
 
+The benchmark runs every time a new branch of the default repository is created. This way, a new method can be tested against others simply by adding it to the folder of methods functions. To do this, you method must first met the following signature:
+
+```python
+    def a_new_method(signals, params):
+        ...
+```
+
+Methods should receive an `M`x`N` numpy array of signals, where `M` is the number of signals, and `N` is the number of their time samples. Additionally, they should receive a second parameter `params` to allow testing different combinations of input parameters. The shape of the output depends on the task (denoising or detecting). The output of your method must be of a certain shape and type, regarding the task your method is devoted to:
+
+* For Denoising: The output must be a numpy array and have the same shape as the input (an array of shape `M`x`N`).
+* For Detection: The output must be an array of `M` boolean values.
+
+Following this, you have to add a file with your method in the folder `src/methods`. To make this easier, there is a file called `method_new.py` you can use as a template. Let us see how to use this file.
+
+In the first part of the file you can either import a function with your method, or implement everything in this file:
+
+```python
+from methods.MethodTemplate import MethodTemplate
+# You must import the MethodTemplate abstract class.
+
+"""
+|
+| Import here all the modules you need.
+| Remark: Make sure that neither of those modules starts with "method_".
+|
+"""
+
+""" 
+|
+| Put here all the functions that your method uses.
+| Remark: Make sure that this file starts with "method_".
+|
+| def a_function_of_my_method(signal,params):
+|   ...
+|
+"""
+```
+
+Then, your method is encapsulated in a new class called `NewMethod`. This class must inherit from the abstract class `MethodTemplate`. Abstract classes are not implemented but they serve the purpose of establishing a template for new classes by forcing the implementation of abstract methods. This simply means that you will have to implement a class method called -unsurprisingly- `method`:
+
+```python
+
+""" Create here a new class that will encapsulate your method.
+This class should inherit the abstract class MethodTemplate.
+By doing this, you must then implement the class method: 
+
+def method(self, signal, params)
+
+which should receive the signals and any parameters
+that you desire to pass to your method.You can use this file as an example.
+"""
+
+class NewMethod(MethodTemplate):
+
+    def method(self, signals, params = None): # Implement this method.
+        ...
+
+    # def get_parameters(self):            # Use it to parametrize your method.
+    #     return [None,]      
+
+```
+
+If you want to test your method using different sets of parameters, you can make the function `get_parameters()` to return a list with the desired input parameters.
+
+In the last part of the file you can define a task and a name for your method:
+
+```python
+""" Here you can define the task your new method is devoted to 
+(detecting or denoising). You can also choose a method name.
+"""
+method_task = 'denoising' # 'denoising' or 'detection'
+method_name = 'a_new_method'
+
+def instantiate_method():
+    return NewMethod(method_task,method_name)
+```
+
+As you can see, the last function instantiates an object that encapsulates all your method. This will be used later to automatically benchmark your new method.
+
 ### 2. Cloning and running this benchmark locally
-### Signal: linearChirp
-|    | Method + Param         |   SNRin: -50dB |   SNRin: 20dB |   SNRin: 30dB |
-|---:|:-----------------------|---------------:|--------------:|--------------:|
-|  0 | delaunay_triangulation |       -31.1297 |       26.202  |       35.8604 |
-|  1 | empty_space            |       -37.7192 |       24.8603 |       34.3735 |
-|  2 | hard_thresholding      |         0      |       27.1632 |       36.7898 |
-|  3 | a_new_method+Params0   |       -50      |       20      |       30      |
-|  4 | a_new_method+Params1   |       -50      |       20      |       30      |
-|  5 | a_new_method+Params2   |       -50      |       20      |       30      |
-### Signal: cosChirp
-|    | Method + Param         |   SNRin: -50dB |   SNRin: 20dB |   SNRin: 30dB |
-|---:|:-----------------------|---------------:|--------------:|--------------:|
-|  0 | delaunay_triangulation |       -30.3277 |       24.4131 |       34.3496 |
-|  1 | empty_space            |       -37.8673 |       22.6722 |       32.209  |
-|  2 | hard_thresholding      |         0      |       25.9435 |       35.3299 |
-|  3 | a_new_method+Params0   |       -50      |       20      |       30      |
-|  4 | a_new_method+Params1   |       -50      |       20      |       30      |
-|  5 | a_new_method+Params2   |       -50      |       20      |       30      |
-### Signal: multiComponentPureTones
-|    | Method + Param         |   SNRin: -50dB |   SNRin: 20dB |   SNRin: 30dB |
-|---:|:-----------------------|---------------:|--------------:|--------------:|
-|  0 | delaunay_triangulation |      -31.2621  |       6.6086  |      13.3122  |
-|  1 | empty_space            |      -37.2331  |       7.83731 |       5.28348 |
-|  2 | hard_thresholding      |       -2.41078 |      19.4922  |      23.4906  |
-|  3 | a_new_method+Params0   |      -50       |      20       |      30       |
-|  4 | a_new_method+Params1   |      -50       |      20       |      30       |
-|  5 | a_new_method+Params2   |      -50       |      20       |      30       |

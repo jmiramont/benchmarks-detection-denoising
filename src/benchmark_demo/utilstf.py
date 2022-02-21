@@ -19,7 +19,7 @@ Those functions are:
 def get_round_window(Nfft):
     # analysis window
     g = sg.gaussian(Nfft, np.sqrt((Nfft)/2/np.pi))
-    g = g/g.sum()
+    g = g/np.sqrt(np.sum(g**2))
     T = np.sqrt(Nfft)
     return g, T
 
@@ -170,7 +170,7 @@ def add_snr(x,snr,K = 1):
     Px = np.sum(x ** 2)
 
     n = np.random.rand(N)
-    n = n - np.mean(n)
+    
     Pn = np.sum(n ** 2)
     n = n / np.sqrt(Pn)
 
