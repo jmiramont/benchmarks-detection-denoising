@@ -20,3 +20,30 @@ There two ways of using this benchmark to test new methods:
 ### 1. Benchmark new methods by branching this repository
 
 ### 2. Cloning and running this benchmark locally
+### Signal: linearChirp
+|    | Method + Param         |   SNRin: -50dB |   SNRin: 20dB |   SNRin: 30dB |
+|---:|:-----------------------|---------------:|--------------:|--------------:|
+|  0 | delaunay_triangulation |       -31.1297 |       26.202  |       35.8604 |
+|  1 | empty_space            |       -37.7192 |       24.8603 |       34.3735 |
+|  2 | hard_thresholding      |         0      |       27.1632 |       36.7898 |
+|  3 | a_new_method+Params0   |       -50      |       20      |       30      |
+|  4 | a_new_method+Params1   |       -50      |       20      |       30      |
+|  5 | a_new_method+Params2   |       -50      |       20      |       30      |
+### Signal: cosChirp
+|    | Method + Param         |   SNRin: -50dB |   SNRin: 20dB |   SNRin: 30dB |
+|---:|:-----------------------|---------------:|--------------:|--------------:|
+|  0 | delaunay_triangulation |       -30.3277 |       24.4131 |       34.3496 |
+|  1 | empty_space            |       -37.8673 |       22.6722 |       32.209  |
+|  2 | hard_thresholding      |         0      |       25.9435 |       35.3299 |
+|  3 | a_new_method+Params0   |       -50      |       20      |       30      |
+|  4 | a_new_method+Params1   |       -50      |       20      |       30      |
+|  5 | a_new_method+Params2   |       -50      |       20      |       30      |
+### Signal: multiComponentPureTones
+|    | Method + Param         |   SNRin: -50dB |   SNRin: 20dB |   SNRin: 30dB |
+|---:|:-----------------------|---------------:|--------------:|--------------:|
+|  0 | delaunay_triangulation |      -31.2621  |       6.6086  |      13.3122  |
+|  1 | empty_space            |      -37.2331  |       7.83731 |       5.28348 |
+|  2 | hard_thresholding      |       -2.41078 |      19.4922  |      23.4906  |
+|  3 | a_new_method+Params0   |      -50       |      20       |      30       |
+|  4 | a_new_method+Params1   |      -50       |      20       |      30       |
+|  5 | a_new_method+Params2   |      -50       |      20       |      30       |
