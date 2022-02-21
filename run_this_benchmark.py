@@ -28,7 +28,7 @@ for method_instance in list_of_methods:
 print(dictionary_of_methods)
 print(dictionary_of_parameters)
 
-SNRin = [10, 20, 30]
+SNRin = [-50, 20, 30]
 signal_names = ['linearChirp', 'cosChirp', 'multiComponentPureTones']
 my_benchmark = Benchmark(task = 'denoising',
                         methods = dictionary_of_methods,

@@ -15,7 +15,7 @@ class Benchmark:
     """
 
     def __init__(self, task='denoising', methods=None, N=256, parameters=None,
-                SNRin=None, repetitions=None, using_signals='all', checks=True, verbosity=0,
+                SNRin=None, repetitions=None, using_signals='all', checks=True, verbosity=1,
                 from_file = None):
         """
         This constructor parse the inputs and instantiate the object attributes
@@ -165,8 +165,13 @@ class Benchmark:
                     if self.verbosity > 3:
                         print('--- Method: '+ method)                    
 
-                    for p,params in enumerate(self.parameters[method]):    
-                        method_output = self.methods[method](noisy_signals,params)
+                    for p,params in enumerate(self.parameters[method]):
+                        try:    
+                            method_output = self.methods[method](noisy_signals,params)
+                        except BaseException as err:
+                            print(f"Unexpected {err=}, {type(err)=}. Watch out for NaN values.")
+                            method_output = np.empty(noisy_signals.shape)
+                            method_output[:] = np.nan
                         self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
 
                         result =  self.comparisonFunction(base_signal, method_output)             
