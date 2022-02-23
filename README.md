@@ -14,8 +14,9 @@ The `notebook` folder contains a number of minimal working examples to understan
 
 There two ways of using this benchmark to test new methods:
 
-1. Create a new branch of this repository
-2. Running the benchmark locally
+[1. Benchmark new methods by branching this repository](#1-benchmark-new-methods-by-branching-this-repository)
+
+[2. Cloning and running this benchmark locally](#2-cloning-and-running-this-benchmark-locally)
 
 ### 1. Benchmark new methods by branching this repository
 
@@ -31,9 +32,9 @@ Methods should receive an `M`x`N` numpy array of signals, where `M` is the numbe
 * For Denoising: The output must be a numpy array and have the same shape as the input (an array of shape `M`x`N`).
 * For Detection: The output must be an array of `M` boolean values.
 
-Following this, you have to add a file with your method in the folder `src/methods`. To make this easier, there is a file called `method_new.py` you can use as a template. Let us see how to use this file.
+Following this, you have to add a file with your method in the folder `src/methods`. To make this easier, [there is a file called `method_new.py` you can use as a template.](./new_method_example/method_new.py).
 
-In the first part of the file you can either import a function with your method, or implement everything in this file:
+Let us see how to use this file. In the first part of the file you can either import a function with your method, or implement everything in this file:
 
 ```python
 from methods.MethodTemplate import MethodTemplate

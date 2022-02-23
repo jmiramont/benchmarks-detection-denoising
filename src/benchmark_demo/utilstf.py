@@ -170,6 +170,7 @@ def add_snr(x,snr,K = 1):
     Px = np.sum(x ** 2)
 
     n = np.random.rand(N)
+    n = n-np.mean(n)
     
     Pn = np.sum(n ** 2)
     n = n / np.sqrt(Pn)
