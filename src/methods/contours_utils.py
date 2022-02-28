@@ -133,20 +133,32 @@ def my_rm(x,sigma,K=None,fmax=0.5):
         K = N
     fhat, F = sst_freq_op(x, sigma, K, fmax)
     that, F = sst_temp_op(x, sigma, K, fmax)
+    S = np.abs(F)**2
+    S = S/np.sum(S)*np.sum(np.abs(x)**2)
     R = np.zeros(F.shape)
     reassignment_pos = np.zeros((F.size,2))
     k = 0
+
+    Ex = np.mean(np.abs(x)**2)
+    Threshold = 1.0e-6*Ex
+
+
     for i in range(F.shape[0]):
         for j in range(F.shape[1]):
-            f_ind = int(np.round(fhat[i, j]*K))
-            t_ind = int(np.round(that[i, j]))
-            # print(t_ind)
-            reassignment_pos[k] = [f_ind,t_ind]
-            k += 1
+            if S[i,j] > Threshold:
+                f_ind = int(np.round(fhat[i, j]*K))
+                t_ind = int(np.round(that[i, j]))
+                # print(t_ind)
+                reassignment_pos[k] = [f_ind,t_ind]
+                
 
-            if 0 <= f_ind < F.shape[0]:
-                if 0 <= t_ind < F.shape[1]:
-                    R[f_ind, t_ind] += np.abs(F[i, j])**2
+                if 0 <= f_ind < F.shape[0]:
+                    if 0 <= t_ind < F.shape[1]:
+                        R[f_ind, t_ind] += S[i, j]
+            else:
+                reassignment_pos[k] = [i,j]
+
+            k += 1
     return R, F, fhat, that, reassignment_pos
 
 
