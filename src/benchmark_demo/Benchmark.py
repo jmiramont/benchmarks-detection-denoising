@@ -20,35 +20,31 @@ class Benchmark:
         """
         This constructor parse the inputs and instantiate the object attributes
         """
-        if from_file is not None:
-            self = self.load_from_file(filename = from_file)
+        # Objects attributes
+        self.task = None
+        self.methods = None
+        self.N = None
+        self.repetitions = None
+        self.SNRin = None
+        self.results = None
+        self.verbosity = None
+        self.methods_and_params_dic = dict()
+        # Check input parameters and initialize the object attributes
+        if checks:
+            self.input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity)
 
+        # Generates a dictionary of signals
+        signal_bank = SignalBank(N)
+        self.signal_dic = signal_bank.signalDict
+
+        if using_signals == 'all':
+            self.signal_ids = [llave for llave in self.signal_dic]
         else:
-            # Objects attributes
-            self.task = None
-            self.methods = None
-            self.N = None
-            self.repetitions = None
-            self.SNRin = None
-            self.results = None
-            self.verbosity = None
-            self.methods_and_params_dic = dict()
-            # Check input parameters and initialize the object attributes
-            if checks:
-                self.input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity)
-
-            # Generates a dictionary of signals
-            signal_bank = SignalBank(N)
-            self.signal_dic = signal_bank.signalDict
-
-            if using_signals == 'all':
-                self.signal_ids = [llave for llave in self.signal_dic]
-            else:
-                self.signal_ids = using_signals
+            self.signal_ids = using_signals
 
 
-            # Set the performance function according to the selected task
-            self.comparisonFunction = self.set_comparison_function(task)
+        # Set the performance function according to the selected task
+        self.comparisonFunction = self.set_comparison_function(task)
         
 
     def input_parsing(self, task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity):
@@ -220,13 +216,13 @@ class Benchmark:
         return True
 
 
-    def load_from_file(self, filename = None):
-        """ Save results to file with filename"""
-        if filename is None:
-            filename = 'a_benchmark'
+    # def load_from_file(self, filename = None):
+    #     """ Save results to file with filename"""
+    #     if filename is None:
+    #         filename = 'a_benchmark'
 
-        with open(filename + '.pkl', 'rb') as f:
-            benchmark = pickle.load(f)
+    #     with open(filename + '.pkl', 'rb') as f:
+    #         benchmark = pickle.load(f)
 
         # self = benchmark
         # self.task = benchmark_dict['task']

@@ -193,10 +193,13 @@ def hermite_poly(t,n):
             return 2*t*hermite_poly(t,n-1) - 2*(n-1)*hermite_poly(t,n-2)
 
 
-def hermite_fun(N,q, t = None):
+def hermite_fun(N,q, t = None, T = None):
     if t is None:
         t = np.arange(N)-N//2
-    T = np.sqrt(N)
+
+    if T is None:
+        T = np.sqrt(N)
+
     gaussian_basic = np.exp(-pi*(t/T)**2)/np.sqrt(T)
     # gaussian_basic /= np.sum(gaussian_basic)
     h_func = gaussian_basic*hermite_poly(np.sqrt(2*pi)*t/T, q-1)/np.sqrt(factorial(q-1)*(2**(q-1-0.5)))

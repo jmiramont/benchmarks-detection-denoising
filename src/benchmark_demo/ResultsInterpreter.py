@@ -21,12 +21,12 @@ class ResultsInterpreter:
         self.signal_ids = a_benchmark.signal_ids
         self.methods_and_params_dic  = a_benchmark.methods_and_params_dic
 
-
         # self.parameters  # TODO parameters collecting for each method.
 
 
-    def rearrange_data_frame(self, results):
-        df = self.get_results_as_df()
+    def rearrange_data_frame(self, results = None):
+        """ Rearrange DataFrame table for using seaborn library. """
+        df = self.benchmark.get_results_as_df()
         aux_dic = dict()
         new_columns = df.columns.values[0:5].copy()
         new_columns[-1] = 'SNRout'
@@ -43,7 +43,8 @@ class ResultsInterpreter:
         return df3
 
 
-    def write_to_file(self, filename = None):
+    def get_table_means(self, filename = None):
+        """ Write table of mean results to .md file. """
         if filename is None:
             filename = 'results'
 
@@ -90,3 +91,19 @@ class ResultsInterpreter:
 
         return output_string
 
+
+    def write_to_file(self, filename = 'report_benchmark.md'):
+        lines = ['# Benchmark Report \n', '## Configuration \n', 'Length of signals: ' + str(self.N) + '\n', 'Repetitions: '+ str(self.repetitions) + '\n', 'SNRin values: ']
+        lines = lines + [str(val) + ', ' for val in self.snr_values] + ['\n']
+        lines = lines + ['### Methods  \n'] + ['* ' + methid +' \n' for methid in self.methods_ids]
+        lines = lines + ['### Signals  \n'] + ['* ' + signid +' \n' for signid in self.signal_ids] 
+        lines = lines + ['## Mean results tables: \n']
+       
+        with open(filename, 'w') as f:
+            f.write('\n'.join(lines))
+            # f.writelines(lines)
+
+        output_string = self.get_table_means()
+
+        with open(filename, 'a') as f:
+          f.write(output_string)
