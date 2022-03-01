@@ -8,7 +8,7 @@
   - [How to use this benchmark?](#how-to-use-this-benchmark)
     - [Cloning this repository](#cloning-this-repository)
     - [Using a template file for your method](#using-a-template-file-for-your-method)
-    - [Adding your method's dependencies with Poetry](#adding-your-methods-dependencies-with-poetry)
+    - [Adding your method's dependencies with ```poetry```](#adding-your-methods-dependencies-with-poetry)
     - [Checking everything is in order with ```pytest```](#checking-everything-is-in-order-with-pytest)
   - [Branching the repository](#branching-the-repository)
   - [Running this benchmark locally](#running-this-benchmark-locally)
@@ -131,7 +131,7 @@ Finally, **you have to move the file** with all the modifications to the folder 
 
 ### Adding your method's dependencies with ```poetry```
 
-Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add them using [```poetry```](https://python-poetry.org/docs/), a tool for dependency management and packaging in python. First install ```poetry``` following the steps described [here](https://python-poetry.org/docs/#installation). Once you're done with this, open a terminal in the directory where you clone the benchmark (or use the console in your preferred IDE) and make poetry create a virtual environment and install all the current dependencies of the benchmark:
+Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add them using [```poetry```](https://python-poetry.org/docs/), a tool for dependency management and packaging in python. First install ```poetry``` following the steps described [here](https://python-poetry.org/docs/#installation). Once you're done with this, open a terminal in the directory where you clone the benchmark (or use the console in your preferred IDE) and make ```poetry``` create a virtual environment and install all the current dependencies of the benchmark:
 
 ```bash
 poetry install 
@@ -147,7 +147,7 @@ matplotlib = "^3.5.1"
 pandas = "^1.3.5"
 ```
 
-A more convenient and interactive way to do this interactively is by using poetry, for example:
+A more convenient and interactive way to do this interactively is by using ```poetry```, for example:
 
 ```bash
 poetry add numpy
