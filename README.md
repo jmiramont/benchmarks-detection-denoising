@@ -129,9 +129,9 @@ This last function, `instantiate_method()`, creates and initialize an object of 
 
 Finally, **you have to move the file** with all the modifications to the folder [/src/methods](./src/methods). We suggest to change the name of the file, but **the file's name must start with ```method_``` to be recognizable**.
 
-### Adding your method's dependencies with Poetry
+### Adding your method's dependencies with ```poetry```
 
-Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add them using [Poetry](https://python-poetry.org/docs/), a tool for dependency management and packaging in python. First install poetry following the steps described [here](https://python-poetry.org/docs/#installation). Once you're done with this, open a terminal in the directory where you clone the benchmark (or use the console in your preferred IDE) and make poetry create a virtual environment and install all the current dependencies of the benchmark:
+Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add them using [```poetry```](https://python-poetry.org/docs/), a tool for dependency management and packaging in python. First install ```poetry``` following the steps described [here](https://python-poetry.org/docs/#installation). Once you're done with this, open a terminal in the directory where you clone the benchmark (or use the console in your preferred IDE) and make poetry create a virtual environment and install all the current dependencies of the benchmark:
 
 ```bash
 poetry install 
@@ -155,7 +155,7 @@ poetry add numpy
 
 and following the instructions prompted in the console.
 
-*Remark: Notice that the use of Poetry for adding the dependencies of your packet is key for running the benchmark using [GitHub Actions](./.github/workflows), please consider this while adding your method.*
+*Remark: Notice that the use of ```poetry``` for adding the dependencies of your packet is key for running the benchmark using [GitHub Actions](./.github/workflows), please consider this while adding your method.*
 
 ### Checking everything is in order with ```pytest```
 
