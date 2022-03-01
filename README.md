@@ -23,7 +23,7 @@ Nevertheless, the methods to compare, the tests, and the performance evaluation 
 
 You can use this benchmark to test a new method against others. There are at least two ways of doing this. You can either make a new branch of this repository and push a new method to test, or you can clone this repository and benchmark your own method locally, i.e. in your computer. In the first case, a workflow using GitHub actions will automatically detect your new method and run the standard benchmark tests. In the second case you can run the benchmark with all the modifications you need.
 
-The [*notebooks*](./notebooks/) folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, [*demo_benchmark.ipynb*](./notebooks/demo_benchmark.ipynb) gives two minimal working examples to introduce the basic functionality of the `Benchmark` class, and the notebook *demo_signal_bank.ipynb* showcases the signals produced by the `SignalBank` class.
+The [*notebooks*](./notebooks/) folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, [*demo_benchmark.ipynb*](./notebooks/demo_benchmark.ipynb) gives two minimal working examples to introduce the basic functionality of the `Benchmark` class, and the notebook [*demo_signal_bank.ipynb*](./notebooks/demo_signal_bank.ipynb) showcases the signals produced by the `SignalBank` class.
 
 The instructions below will help you to add a new method run the benchmark afterwards.
 
@@ -127,7 +127,7 @@ This last function, `instantiate_method()`, creates and initialize an object of 
 
 *Remark: Please do not modify the abstract class `MethodTemplate` or the function `instantiate_method()` at the end of the template file.*
 
-Finally, **you have to move the file** with all the modifications to the folder [/src/methods](./src/methods). We suggest to change the name of the file, but **the file's name must start with ```method_``` to be recognizable**.
+Finally, **you have to move the file** with all the modifications to the folder [/src/methods](./src/methods). Changing the name of the file is possible, but keep in mind that **the file's name must start with "*method_*" to be recognizable**.
 
 ### Adding your method's dependencies with Poetry
 

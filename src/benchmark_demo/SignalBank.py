@@ -115,16 +115,16 @@ class SignalBank:
         return dumpcos    
 
 
-    def signal_cos_chirp(self, omega = 1.5):
+    def signal_cos_chirp(self, omega = 1.5, a1=1, f0=0.25, a2=0.125):
         N = self.N
         t = np.arange(N)/N
         tmin = int(np.sqrt(N))
         tmax = N-tmin
         Nsub = tmax-tmin
         tsub = np.arange(Nsub)
-        instf = 0.25 + 0.125*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        instf = f0 + a2*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
         phase = np.cumsum(instf)
-        x = np.cos(2*pi*phase)*sg.tukey(Nsub,0.25)     
+        x = a1*np.cos(2*pi*phase)*sg.tukey(Nsub,0.25)     
         signal = np.zeros((N,))
         signal[tmin:tmax] = x
         return signal
@@ -174,11 +174,15 @@ class SignalBank:
     def signal_mc_synthetic_mixture(self):
         N = self.N
         signal = np.zeros((N,))
-        Nchirp = int(N*0.88)
+        tmin = int(np.sqrt(N))
+        tmax = N-tmin
+        Nsub = tmax-tmin
         # print(Nchirp)
         # print(N-Nchirp)
-        imp_loc_1 = int((N-Nchirp)/4)
-        imp_loc_2 = int(2*(N-Nchirp)/3)
+        imp_loc_1 = 2*tmin
+        imp_loc_2 = 3*tmin
+        
+        Nchirp = Nsub-4*tmin
         t = np.arange(Nchirp)
             
         chirp1 = np.cos(2*pi*0.1*t)
@@ -191,12 +195,12 @@ class SignalBank:
 
         instf = 0.35 + 0.05*np.cos(2*pi*1.25*t/Nchirp + pi)
         coschirp = np.cos(2*pi*np.cumsum(instf))
-        signal[N-Nchirp:N] = chirp1+chirp2+coschirp
+        signal[4*tmin:4*tmin+Nchirp] = chirp1+chirp2+coschirp
         # signal[N-Nchirp:N] = coschirp
         return signal
 
     
-    def signal_hermite_function(self, order = 15, t0 = 0.5, f0 = 0.25):
+    def signal_hermite_function(self, order = 30, t0 = 0.5, f0 = 0.25):
         N = self.N
         t0 = int(N*t0)
         t = np.arange(N)-t0
@@ -211,6 +215,21 @@ class SignalBank:
 
 
     def signal_mc_triple_impulse(self, Nimpulses = 3):
+        N = self.N
+        tmin = int(np.sqrt(N))
+        tmax = N-tmin
+        Nsub = tmax-tmin
+        dloc = Nsub/(Nimpulses+1)
+        impulses = np.zeros((Nsub,))
+        signal = np.zeros((N,))
+        for i in range(Nimpulses):
+            impulses[int((i+1)*dloc -1 )] = 10
+        
+        signal[tmin:tmax] = impulses
+        return signal
+
+
+    def signal_mc_triple_impulse_2(self, Nimpulses = 3):
         N = self.N
         tmin = int(np.sqrt(N))
         tmax = N-tmin
@@ -241,6 +260,7 @@ class SignalBank:
             return signal, instf, tmin, tmax
         else:
             return signal
+
            
     def signal_mc_exp_chirps(self,  max_freq = 0.43):
         N = self.N
@@ -272,6 +292,89 @@ class SignalBank:
 
             aux += signal
         return aux
+
+
+    def signal_mc_modulated_tones(self):
+        x1 = self.signal_cos_chirp(omega = 8, a1=1, f0=0.10, a2=0.04)
+        x2 = self.signal_cos_chirp(omega = 6, a1=1, f0=0.25, a2=0.03)       
+        x3 = self.signal_cos_chirp(omega = 4, a1=1, f0=0.40, a2=0.02)       
+        # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
+        return x1+x2+x3
+
+
+    def signal_mc_modulated_tones_2(self):
+        x1 = self.signal_cos_chirp(omega = 5, a1=1.5, f0=0.10, a2=0.04)
+        x2 = self.signal_cos_chirp(omega = 5, a1=1.2, f0=0.25, a2=0.03)       
+        x3 = self.signal_cos_chirp(omega = 5, a1=1, f0=0.40, a2=0.02)       
+        # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
+        return x1+x2+x3
+
+
+    def signal_mc_synthetic_mixture_2(self):
+        N = self.N
+        t = np.arange(N)/N
+        tmin = int(np.sqrt(N))
+        tmax = N-tmin
+        Nsub = tmax-tmin
+        tsub = np.arange(Nsub)
+        fmax = 0.43
+
+        omega = 7
+        f0 = 0.07 + 0.07*tsub/Nsub
+        f1 = 0.11 + 0.25*tsub/Nsub
+        f2 = 0.15 + 0.53*tsub/Nsub
+        instf0 = f0 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
+        instf1 = f1 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        instf2 = f2 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        instf0 = instf0[np.where(instf0<fmax)]    
+        instf1 = instf1[np.where(instf1<fmax)]    
+        instf2 = instf2[np.where(instf2<fmax)]    
+        
+        phase0 = np.cumsum(instf0)
+        phase1 = np.cumsum(instf1)
+        phase2 = np.cumsum(instf2)
+
+        signal = np.zeros((N,))
+        x0 = np.zeros_like(signal)
+        x1 = np.zeros_like(signal)
+        x2 = np.zeros_like(signal)
+
+        x0[tmin:tmin+len(phase0)] = np.cos(2*pi*phase0)*sg.tukey(len(phase0),0.25)
+        x1[tmin:tmin+len(phase1)] = np.cos(2*pi*phase1)*sg.tukey(len(phase1),0.25) 
+        x2[tmin:tmin+len(phase2)] = np.cos(2*pi*phase2)*sg.tukey(len(phase2),0.25) 
+
+        signal = 2*x0+x1+0.5*x2 
+        return signal
+
+
+    def signal_mc_on_off_tones(self):
+        N = self.N
+        b1 = 0.12
+
+        tmin = int(np.sqrt(N))
+        tmax = N-tmin
+        Nsub = tmax-tmin
+        
+        N3 = N//3
+        N4 = N//4
+        N7 = N//7
+        N9 = N//9
+        
+        chirp1, instf, tmin, _ = self.signal_linear_chirp(a = 0, b = b1, instfreq=True)
+        chirp2, instf, tmin, _ = self.signal_linear_chirp(a = 0, b = 2*b1, instfreq=True)
+        chirp3, instf, tmin, _ = self.signal_linear_chirp(a = 0, b = 3*b1, instfreq=True)
+
+        chirp1[0:2*N7] = 0
+        chirp1[5*N7:-1] = 0
+        chirp1[2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.25)    
+
+        chirp2[0:N9] = 0
+        chirp2[4*N9:5*N9] = 0
+        chirp2[8*N9:-1] = 0
+        chirp2[N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
+        chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25)    
+
+        return chirp1+chirp2+chirp3
 
 
 
