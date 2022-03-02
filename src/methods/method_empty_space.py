@@ -28,9 +28,9 @@ def find_center_empty_balls(Sww, pos_exp, a, radi_seg=1):
 def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     # extract region of interest
     Nfft = Sww.shape[1]
-    fmin = 1#int(np.sqrt(Nfft))
+    fmin = int(np.sqrt(Nfft))//2
     fmax = empty_mask.shape[0] - fmin
-    tmin = 1#int(np.sqrt(Nfft))
+    tmin = int(np.sqrt(Nfft))//2
     tmax = empty_mask.shape[1] - tmin
     sub_empty = empty_mask[fmin:fmax, tmin:tmax]
     vecx = (np.arange(0, sub_empty.shape[0]))
@@ -52,7 +52,7 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     return hull_d, mask
 
 
-def empty_space_denoising(signal, params=None):
+def empty_space_denoising(signal, params=None, return_dic=False):
     if len(signal.shape) == 1:
         signal = np.resize(signal,(1,len(signal)))
 
@@ -63,10 +63,16 @@ def empty_space_denoising(signal, params=None):
     pos_aux = pos.copy()
     pos_aux[:,0] = pos[:,1]/a
     pos_aux[:,1] = pos[:,0]/a
-    empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=1)
-    hull_d , mask = get_convex_hull(Sww, pos_aux, empty_mask)
+    empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=0.8)
+    hull_d , mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=0.5)
     xr, t = reconstruct_signal_2(mask, stft_padded, Npad)
-    return xr, mask
+
+    if return_dic:
+        return {'s_r': xr,
+                'mask': mask,
+                'zeros':pos}
+    else:
+        return xr
 
 
 class NewMethod(MethodTemplate):
@@ -76,7 +82,7 @@ class NewMethod(MethodTemplate):
 
         signals_output = np.zeros(signals.shape)
         for i, signal in enumerate(signals):
-            signals_output[i], _ = empty_space_denoising(signal,params)
+            signals_output[i] = empty_space_denoising(signal,params)
         return signals_output
         
 

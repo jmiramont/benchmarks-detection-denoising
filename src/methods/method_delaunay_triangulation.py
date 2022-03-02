@@ -27,35 +27,64 @@ def mask_triangles(F, tri, selection):
 
     return mask
 
-def delaunay_triangulation_denoising(signal,params):
+def delaunay_triangulation_denoising(signal, params = None, return_dic = False):
     if len(signal.shape) == 1:
         signal = np.resize(signal,(1,len(signal)))
+
+    if params is None:
+        LB, UB = 2, 3
+    else:
+        LB, UB = params[:]
 
     Nfft = signal.shape[1]
     g, T = get_round_window(Nfft)
     stft, stft_padded, Npad = get_stft(signal,g)
+    margin = 2
+
     S = np.abs(stft)**2
-    pos = find_zeros_of_spectrogram(S)
-    vertices = pos/T # Normalize
-    tri = Delaunay(pos)
-    sides, max_side = counting_edges(tri,vertices)
-    LB = 2
-    UB = 3
-    selection = np.where((LB < max_side) & (UB > max_side))
-    tri_select = tri.simplices[selection]
-    mask = mask_triangles(stft, tri, selection)  
+    zeros = find_zeros_of_spectrogram(S)
+    valid_ceros = np.zeros((zeros.shape[0],),dtype=bool)
+    valid_ceros[(margin<zeros[:,0]) 
+                & ((S.shape[0]-margin)>zeros[:,0])
+                & ((S.shape[1]-margin)>zeros[:,1])
+                & (margin<zeros[:,1]) ] = True
+    
+    vertices = zeros/T # Normalize
+    delaunay_graph = Delaunay(zeros)
+    tri = delaunay_graph.simplices
+    valid_tri = np.zeros((tri.shape[0],),dtype=bool)
+    selection = np.zeros((tri.shape[0],),dtype=bool)
+    sides, max_side = counting_edges(delaunay_graph,vertices)
+
+    for i,_ in enumerate(tri):
+        valid_tri[i] = np.all(valid_ceros[tri[i]])
+        side = sides[i]
+        selection[i] = np.any(LB < side) & np.all(UB > side) & valid_tri[i]
+
+
+    # selection = np.where((LB < max_side) & (UB > max_side))
+    # selection =  & valid_tri
+    tri_select = tri[selection]
+    mask = mask_triangles(stft, delaunay_graph, np.where(selection))  
     signal_r, t = reconstruct_signal_2(mask, stft_padded, Npad)
-    return signal_r, mask
+    if return_dic:
+        return {'s_r': signal_r,
+                'mask': mask,
+                'tri': tri,
+                'tri_select': tri_select,
+                'zeros': zeros}
+    else:
+        return signal_r
 
 
 class NewMethod(MethodTemplate):
-    def method(self,signals,params = None):
+    def method(self,signals, params = None):
         if len(signals.shape) == 1:
             signals = np.resize(signals,(1,len(signals)))
         
         signals_output = np.zeros(signals.shape)
         for i, signal in enumerate(signals):
-            signals_output[i],_ = delaunay_triangulation_denoising(signal,params)
+            signals_output[i] = delaunay_triangulation_denoising(signal,params)
         return signals_output
 
 def instantiate_method():

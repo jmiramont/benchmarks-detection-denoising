@@ -26,9 +26,10 @@ for mod_name in modules:
 @pytest.fixture
 def dummy_input():
     N = 256
-    dummy_input = np.zeros((5,N))
+    Nsignals = 2
+    dummy_input = np.zeros((Nsignals,N))
     signal_bank = SignalBank(N)
-    for i in range(2):
+    for i in range(Nsignals):
         dummy_input[i,:] = add_snr(signal_bank.signal_linear_chirp(),15)
     return dummy_input
 
@@ -81,3 +82,5 @@ def test_methods_outputs_type(dummy_input):
             
             if method_instance.get_task() == 'detection': # ! This has to be implemented.
                 assert True
+
+# test_methods_outputs_shape(dummy_input())

@@ -3,8 +3,8 @@ from benchmark_demo.SignalBank import SignalBank
 import pandas as pd
 import numbers
 import pickle
+import multiprocessing
 # import json
-
 # import sys
 # import warnings
 
@@ -16,7 +16,7 @@ class Benchmark:
 
     def __init__(self, task='denoising', methods=None, N=256, parameters=None,
                 SNRin=None, repetitions=None, using_signals='all', checks=True, verbosity=1,
-                from_file = None):
+                from_file = None, parallelize = False):
         """
         This constructor parse the inputs and instantiate the object attributes
         """
@@ -29,6 +29,7 @@ class Benchmark:
         self.results = None
         self.verbosity = None
         self.methods_and_params_dic = dict()
+        self.parallel_flag = parallelize
         # Check input parameters and initialize the object attributes
         if checks:
             self.input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity)
@@ -133,6 +134,22 @@ class Benchmark:
         return compFuncs[task]    
 
 
+    def inner_loop(self, benchmark_parameters):
+        method, params, noisy_signals = benchmark_parameters
+        try:    
+            method_output = self.methods[method](noisy_signals,params)
+        except BaseException as err:
+            print(f"Unexpected {err=}, {type(err)=} in method {method}. Watch out for NaN values.")
+            method_output = np.empty(noisy_signals.shape)
+            method_output[:] = np.nan
+
+        self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
+        return method_output
+
+
+
+
+
     def run_test(self):
         """
         Run benchmark with the set parameters.
@@ -157,22 +174,35 @@ class Benchmark:
                     print('-- SNR: {} dB'.format(SNR))
 
                 noisy_signals, noise = self.add_snr_block(base_signal,SNR,self.repetitions)
+
+                if self.parallel_flag:
+                    parallel_list = list()
+                    for method in self.methods:                                               
+                        for p,params in enumerate(self.parameters[method]):
+                            parallel_list.append([method, params, noisy_signals])
+
+                    # Here implement the parallel stuff
+                    pool = multiprocessing.Pool(processes=8) 
+                    parallel_results = pool.map(self.inner_loop, parallel_list) 
+                    pool.close() 
+                    pool.join()    
+                    print('Parallel loop finished.') 
+
+                k = 0
                 for method in self.methods:    
                     if self.verbosity > 3:
                         print('--- Method: '+ method)                    
 
-                    for p,params in enumerate(self.parameters[method]):
-                        try:    
-                            method_output = self.methods[method](noisy_signals,params)
-                        except BaseException as err:
-                            print(f"Unexpected {err=}, {type(err)=}. Watch out for NaN values.")
-                            method_output = np.empty(noisy_signals.shape)
-                            method_output[:] = np.nan
-                        self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
-
+                    for p, params in enumerate(self.parameters[method]):
+                        if self.parallel_flag:
+                            method_output = parallel_results[k]
+                            k += 1     
+                        else:    
+                            method_output = self.inner_loop([method, params, noisy_signals])        
+                        
                         result =  self.comparisonFunction(base_signal, method_output)             
                         params_dic['Params'+str(p)] = result
-                    
+
                     self.methods_and_params_dic[method] = [llave for llave in params_dic]
                     method_dic[method] = params_dic    
                     params_dic = dict()
