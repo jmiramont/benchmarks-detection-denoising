@@ -10,8 +10,10 @@
     - [Using a template file for your method](#using-a-template-file-for-your-method)
     - [Adding your method's dependencies with ```poetry```](#adding-your-methods-dependencies-with-poetry)
     - [Checking everything is in order with ```pytest```](#checking-everything-is-in-order-with-pytest)
-  - [Branching the repository](#branching-the-repository)
-  - [Running this benchmark locally](#running-this-benchmark-locally)
+    - [Branching the repository](#branching-the-repository)
+    - [Running this benchmark locally](#running-this-benchmark-locally)
+  - [Standard benchmark for denoising methods](#standard-benchmark-for-denoising-methods)
+  - [Standard benchmark for detection methods](#standard-benchmark-for-detection-methods)
 
 ## What is this benchmark?
 
@@ -172,7 +174,7 @@ This will check a series of important points for running the benchmark online, m
 
 Once the tests are passed, you can now either branch the repository or run the benchmark locally.
 
-## Branching the repository
+### Branching the repository
 
 First, create a new branch using:
 
@@ -190,10 +192,14 @@ This should create a new branch called ```new_branch```, that stems from the def
 
 *Remark: Notice that ```pytest``` is also run again in this workflow. Therefore, keep in mind that if your method didn't pass the tests locally, it won't pass them at this stage either.*
 
-## Running this benchmark locally
+### Running this benchmark locally
 
 If you prefer to run the benchmark locally, you can use:
 
 ```bash
 poetry run run_this_benchmark.py
 ```
+
+## Standard benchmark for denoising methods
+
+## Standard benchmark for detection methods

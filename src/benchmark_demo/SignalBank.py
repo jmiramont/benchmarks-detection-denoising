@@ -14,18 +14,23 @@ class SignalBank:
     def __init__(self,N = 2**8):
         self.N = N
         self.generate_signal_dict()
-        # self.signalDict2 = {
-        #     'linearChirp': self.signal_linear_chirp,
-        #     'cosChirp': self.signal_cos_chirp,
-        #     'doubleCosChirp': self.signal_double_cos_chirp,
-        #     'crossedLinearChirps': self.signal_crossing_linear_chirps,
-        #     'dumpedCos': self.signal_dumped_cos,
-        #     'sharpAttackCos': self.signal_sharp_attack,
-        #     'multiComponentHarmonic' : self.signal_mc_harmonic,
-        #     'multiComponentPureTones': self.signal_mc_pure_tones,
-        #     'syntheticMixture': self.signal_synthetic_mixture,
-        #     'hermiteFunction': self.signal_hermite_function,
-        # }
+        self.tmin = int(np.sqrt(N))
+        self.tmax = N-self.tmin
+        self.fmin = 1.5*self.tmin/N
+        # if N<=2**8:
+            # self.fmin = 1.5*self.tmin/N
+        # else:
+        #     self.fmin = 2*self.tmin/N
+
+        self.fmax = 0.5-self.fmin
+        self.fmid = (self.fmax-self.fmin)/2 + self.fmin
+
+        print(self.fmin)
+        print(self.fmax)
+
+    def check_frec_margins(self, instf):
+        assert np.all(instf<=self.fmax), 'instf>fmax'
+        assert np.all(instf>=self.fmin), 'instf<fmin'
     
 
     def generate_signal_dict(self):
@@ -42,16 +47,24 @@ class SignalBank:
         return self.SignalDict.keys()
 
 
-    def signal_linear_chirp(self, a=0.25, b=0.125, instfreq = False):
+    def signal_linear_chirp(self, a=None, b=None, instfreq = False):
         N = self.N
-        t = np.arange(N)/N
 
-        tmin = 1*int(np.sqrt(N))
+        if a is None:
+            a = self.fmax-self.fmin
+        if b is None:
+            b = self.fmin
+
+        tmin = self.tmin
         tmax = N-tmin        
         Nsub = tmax-tmin
 
         tsub = np.arange(Nsub)
         instf = b + a*tsub/Nsub
+
+        if not instfreq:
+            self.check_frec_margins(instf)
+
         phase = np.cumsum(instf)
 
         x = np.cos(2*pi*phase)*sg.tukey(Nsub,0.25) 
@@ -66,16 +79,28 @@ class SignalBank:
 
     def signal_mc_crossing_chirps(self):
         N = self.N
-        chirp1 = self.signal_linear_chirp(a = -0.25, b = 0.5 - 0.125)
-        chirp2 = self.signal_linear_chirp(a = 0.25, b = 0.125)
+        
+        a = self.fmax-self.fmin
+        b = self.fmin
+        
+        chirp1 = self.signal_linear_chirp(a = -a, b = 0.5 - b)
+        chirp2 = self.signal_linear_chirp(a = a, b = b)
         return chirp1 + chirp2
 
 
-    def signal_mc_pure_tones(self, ncomps=5, max_freq=0.43, a1=0, b1 = 0.12):
+    def signal_mc_pure_tones(self, ncomps=5, a1=None, b1=None):
         N = self.N
         k = 1
         aux = np.zeros((N,))
+        max_freq = self.fmax
         
+        if a1 is None:
+            a1=0
+        if b1 is None:
+            b1 = self.fmid/2
+            if b1 < self.fmin:
+                b1 = self.fmin
+
         for i in range(ncomps):
             chirp, instf, tmin, _ = self.signal_linear_chirp(a = a1*(i+1), b = b1*(i+1), instfreq=True)
             if instf[0] >= max_freq:
@@ -90,8 +115,10 @@ class SignalBank:
             aux += chirp
         return aux
 
-    def signal_mc_harmonic(self, ncomps=5, max_freq=0.43, a1=0.07, b1=0.07):
-       return self.signal_mc_pure_tones(ncomps=ncomps, max_freq=max_freq, a1=a1, b1=b1)
+    def signal_mc_harmonic(self, ncomps=5):
+        a1=self.fmin/1.3
+        b1=self.fmin
+        return self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)
 
 
     def signal_tone_dumped(self):
@@ -115,14 +142,16 @@ class SignalBank:
         return dumpcos    
 
 
-    def signal_cos_chirp(self, omega = 1.5, a1=1, f0=0.25, a2=0.125):
+    def signal_cos_chirp(self, omega = 1.5, a1=1, f0=0.25, a2=0.125, checkinstf = True):
         N = self.N
-        t = np.arange(N)/N
-        tmin = int(np.sqrt(N))
+        tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
         tsub = np.arange(Nsub)
-        instf = f0 + a2*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        instf = f0 + a2*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
+        if checkinstf:
+            self.check_frec_margins(instf)    
+
         phase = np.cumsum(instf)
         x = a1*np.cos(2*pi*phase)*sg.tukey(Nsub,0.25)     
         signal = np.zeros((N,))
@@ -133,14 +162,18 @@ class SignalBank:
     def signal_mc_double_cos_chirp(self):
         N = self.N
         t = np.arange(N)/N
-        tmin = int(np.sqrt(N))
+        tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
         tsub = np.arange(Nsub)
         omega1 = 1.5
         omega2 = 1.8
-        instf1 = 0.35 + 0.08*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)    
-        instf2 = 0.15 + 0.08*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)    
+        
+        instf1 = self.fmax-0.075 + 0.05*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)
+        self.check_frec_margins(instf1)    
+        instf2 = self.fmin+0.075 + 0.06*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)
+        self.check_frec_margins(instf2)
+
         phase1 = np.cumsum(instf1)
         phase2 = np.cumsum(instf2)
         x = np.cos(2*pi*phase1) + np.cos(2*pi*phase2)
@@ -152,15 +185,20 @@ class SignalBank:
 
     def signal_mc_cos_plus_tone(self):
         N = self.N
-        tmin = int(np.sqrt(N))
+        tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
         tsub = np.arange(Nsub)
         omega1 = 1.5
         omega2 = 1.8
-        instf1 = 0.36 + 0.04*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)    
-        instf2 = 0.23 + 0.05*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)
-        instf3 = 0.1 * np.ones((Nsub,))    
+
+        instf1 = self.fmax-0.05 + 0.04*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)    
+        self.check_frec_margins(instf1)
+        instf2 = self.fmid + 0.04*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)
+        self.check_frec_margins(instf2)
+        instf3 = 1.2*self.fmin * np.ones((Nsub,))    
+        self.check_frec_margins(instf3)
+        
         phase1 = np.cumsum(instf1)
         phase2 = np.cumsum(instf2)
         phase3 = np.cumsum(instf3)
@@ -174,7 +212,7 @@ class SignalBank:
     def signal_mc_synthetic_mixture(self):
         N = self.N
         signal = np.zeros((N,))
-        tmin = int(np.sqrt(N))
+        tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
         # print(Nchirp)
@@ -200,7 +238,7 @@ class SignalBank:
         return signal
 
     
-    def signal_hermite_function(self, order = 30, t0 = 0.5, f0 = 0.25):
+    def signal_hermite_function(self, order = 18, t0 = 0.5, f0 = 0.25):
         N = self.N
         t0 = int(N*t0)
         t = np.arange(N)-t0
@@ -216,7 +254,7 @@ class SignalBank:
 
     def signal_mc_triple_impulse(self, Nimpulses = 3):
         N = self.N
-        tmin = int(np.sqrt(N))
+        tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
         dloc = Nsub/(Nimpulses+1)
@@ -231,7 +269,7 @@ class SignalBank:
 
     def signal_mc_triple_impulse_2(self, Nimpulses = 3):
         N = self.N
-        tmin = int(np.sqrt(N))
+        tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
         dloc = Nsub/(Nimpulses+1)
@@ -244,13 +282,24 @@ class SignalBank:
         return signal
 
 
-    def signal_exp_chirp(self, finit=0.1, fend=0.43, exponent=2, r_instf=False):
+    def signal_exp_chirp(self, finit=None, fend=None, exponent=2, r_instf=False):
         N = self.N
         tmin = 1*int(np.sqrt(N))
         tmax = N-tmin
         Nsub = tmax-tmin
         tsub = np.arange(Nsub)/Nsub
-        instf =  finit*np.exp(np.log(fend/finit)*tsub**exponent)    
+
+        if finit is None:
+            finit=self.fmin
+
+        if fend is None:    
+            fend=self.fmax
+
+        instf =  finit*np.exp(np.log(fend/finit)*tsub**exponent)
+
+        if not r_instf:    
+            self.check_frec_margins(instf)
+
         phase = np.cumsum(instf)
         x = np.cos(2*pi*phase)
         signal = np.zeros((N,))
@@ -262,28 +311,31 @@ class SignalBank:
             return signal
 
            
-    def signal_mc_exp_chirps(self,  max_freq = 0.43):
+    def signal_mc_exp_chirps(self):
         N = self.N
         signal = np.zeros((N,))
         aux = np.zeros((N,))
         exponents = [4, 3, 2]
-        finits = [0.07, 0.18, 0.3]
+        finits = [self.fmin, 1.8*self.fmin, 2.5*self.fmin]
         fends = [0.3, 0.8, 1.2]
         ncomps = len(fends)
+
+        max_freq = self.fmax
+
         for i in range(ncomps):
             _, instf, tmin, tmax = self.signal_exp_chirp(finit=finits[i],
                                                          fend=fends[i],
                                                          exponent=exponents[i],
                                                          r_instf=True)    
 
-            instf2 = instf
-            
+            instf2 = instf            
             if instf[0] >= max_freq:
                 break
             
             instf2 = instf2[np.where(instf2 < max_freq)]
             tukwin = sg.windows.tukey(len(instf2),0.25)
-            
+
+            self.check_frec_margins(instf2)
             phase = np.cumsum(instf2)
             x = np.cos(2*pi*phase)
             tukwin = sg.windows.tukey(len(x),0.25)
@@ -295,17 +347,17 @@ class SignalBank:
 
 
     def signal_mc_modulated_tones(self):
-        x1 = self.signal_cos_chirp(omega = 8, a1=1, f0=0.10, a2=0.04)
-        x2 = self.signal_cos_chirp(omega = 6, a1=1, f0=0.25, a2=0.03)       
-        x3 = self.signal_cos_chirp(omega = 4, a1=1, f0=0.40, a2=0.02)       
+        x1 = self.signal_cos_chirp(omega = 8, a1=1, f0=self.fmin+0.04, a2=0.03)
+        x2 = self.signal_cos_chirp(omega = 6, a1=1, f0=self.fmid, a2=0.02)       
+        x3 = self.signal_cos_chirp(omega = 4, a1=1, f0=self.fmax-0.03, a2=0.02)       
         # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
         return x1+x2+x3
 
 
     def signal_mc_modulated_tones_2(self):
-        x1 = self.signal_cos_chirp(omega = 5, a1=1.5, f0=0.10, a2=0.04)
-        x2 = self.signal_cos_chirp(omega = 5, a1=1.2, f0=0.25, a2=0.03)       
-        x3 = self.signal_cos_chirp(omega = 5, a1=1, f0=0.40, a2=0.02)       
+        x1 = self.signal_cos_chirp(omega = 5, a1=1.5,   f0=self.fmin+0.04, a2=0.03)
+        x2 = self.signal_cos_chirp(omega = 5, a1=1.2,   f0=self.fmid, a2=0.02)   
+        x3 = self.signal_cos_chirp(omega = 5, a1=1,     f0=self.fmax-0.03, a2=0.02)       
         # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
         return x1+x2+x3
 
@@ -313,22 +365,27 @@ class SignalBank:
     def signal_mc_synthetic_mixture_2(self):
         N = self.N
         t = np.arange(N)/N
-        tmin = int(np.sqrt(N))
+        tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
         tsub = np.arange(Nsub)
-        fmax = 0.43
+        fmax = self.fmax
 
         omega = 7
-        f0 = 0.07 + 0.07*tsub/Nsub
-        f1 = 0.11 + 0.25*tsub/Nsub
-        f2 = 0.15 + 0.53*tsub/Nsub
-        instf0 = f0 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
-        instf1 = f1 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
-        instf2 = f2 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        f0 = self.fmin + 0.07*tsub/Nsub
+        f1 = 1.2*self.fmin + 0.25*tsub/Nsub
+        f2 = 1.3*self.fmin + 0.53*tsub/Nsub
+
+        instf0 = f0+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
+        instf1 = f1+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        instf2 = f2+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
         instf0 = instf0[np.where(instf0<fmax)]    
         instf1 = instf1[np.where(instf1<fmax)]    
         instf2 = instf2[np.where(instf2<fmax)]    
+        
+        self.check_frec_margins(instf0)
+        self.check_frec_margins(instf1)
+        self.check_frec_margins(instf2)
         
         phase0 = np.cumsum(instf0)
         phase1 = np.cumsum(instf1)
@@ -343,15 +400,18 @@ class SignalBank:
         x1[tmin:tmin+len(phase1)] = np.cos(2*pi*phase1)*sg.tukey(len(phase1),0.25) 
         x2[tmin:tmin+len(phase2)] = np.cos(2*pi*phase2)*sg.tukey(len(phase2),0.25) 
 
-        signal = 2*x0+x1+0.5*x2 
+        signal = x0+x1+x2 
         return signal
 
 
     def signal_mc_on_off_tones(self):
         N = self.N
-        b1 = 0.12
+        b1 = self.fmid/2
 
-        tmin = int(np.sqrt(N))
+        if b1 < self.fmin:
+            b1 = self.fmin
+
+        tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
         
