@@ -33,12 +33,12 @@ SNRin = [0, 10, 20, 30]
 # Standard test:
 signal_names = ['LinearChirp', 'CosChirp', 'McPureTones', # Single-component signals
                 'McCrossingChirps',                       # Crossing-components  
-                'McHarmonic','McPureTones',               # Multi-Component Harmonic signals  
-                'McModulatedTones','McDoubleCosChirp',    # Multi-Component Non-Harmonic  
-                'McSyntheticMixture','McSyntheticMixture2',
-                'HermiteFunction','HermiteElipse',        # Hermite type signals  
-                'ToneDumped','ToneSharpAttack',           # Dumped and Sharps attacks  
-                'McOnOffTones']                           # Modes that born and die
+                'McHarmonic','McPureTones',]               # Multi-Component Harmonic signals  
+                # 'McModulatedTones','McDoubleCosChirp',    # Multi-Component Non-Harmonic  
+                # 'McSyntheticMixture','McSyntheticMixture2',
+                # 'HermiteFunction','HermiteElipse',        # Hermite type signals  
+                # 'ToneDumped','ToneSharpAttack',           # Dumped and Sharps attacks  
+                # 'McOnOffTones']                           # Modes that born and die
 
 if __name__ == "__main__":
     my_benchmark = Benchmark(task = 'denoising',
