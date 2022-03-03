@@ -44,42 +44,42 @@ SNRin values:
 ### Signal: LinearChirp
 |    | Method + Param         |   SNRin: 0dB |   SNRin: 10dB |   SNRin: 20dB |   SNRin: 30dB |
 |---:|:-----------------------|-------------:|--------------:|--------------:|--------------:|
-|  0 | contour_filtering      |      5.25526 |       14.8983 |       24.3755 |       34.2228 |
-|  1 | delaunay_triangulation |      0.2365  |        6.4637 |       26.2923 |       34.4135 |
-|  2 | empty_space            |      4.50075 |       15.3304 |       24.8752 |       34.5495 |
-|  3 | hard_thresholding      |      3.45633 |       18.1912 |       27.1993 |       36.5214 |
+|  0 | contour_filtering      |     5.37611  |      14.8291  |       24.3335 |       34.0039 |
+|  1 | delaunay_triangulation |     0.194121 |       6.21441 |       26.4098 |       34.6288 |
+|  2 | empty_space            |     4.63164  |      15.2044  |       24.8991 |       34.3039 |
+|  3 | hard_thresholding      |     3.67097  |      17.6747  |       27.347  |       36.2795 |
 ### Signal: CosChirp
 |    | Method + Param         |   SNRin: 0dB |   SNRin: 10dB |   SNRin: 20dB |   SNRin: 30dB |
 |---:|:-----------------------|-------------:|--------------:|--------------:|--------------:|
-|  0 | contour_filtering      |     5.40821  |      14.6312  |       23.9438 |       33.3107 |
-|  1 | delaunay_triangulation |     0.135958 |       3.84224 |       25.1173 |       34.2644 |
-|  2 | empty_space            |     4.02329  |      14.9703  |       24.4234 |       34.097  |
-|  3 | hard_thresholding      |     2.16104  |      16.554   |       26.2753 |       35.4414 |
+|  0 | contour_filtering      |    5.5957    |      14.7418  |       24.1067 |       33.4723 |
+|  1 | delaunay_triangulation |    0.0879361 |       3.67727 |       24.6274 |       34.2047 |
+|  2 | empty_space            |    3.76604   |      14.9898  |       24.4756 |       34.195  |
+|  3 | hard_thresholding      |    2.20706   |      16.6787  |       26.2546 |       35.514  |
 ### Signal: McPureTones
 |    | Method + Param         |   SNRin: 0dB |   SNRin: 10dB |   SNRin: 20dB |   SNRin: 30dB |
 |---:|:-----------------------|-------------:|--------------:|--------------:|--------------:|
-|  0 | contour_filtering      |    3.63424   |      12.9234  |       21.9137 |       30.1896 |
-|  1 | delaunay_triangulation |   -0.0218288 |       1.10634 |       11.038  |       26.1393 |
-|  2 | empty_space            |    2.50488   |      13.5484  |       23.0763 |       31.5372 |
-|  3 | hard_thresholding      |    0.0716206 |       9.52896 |       21.7404 |       28.6445 |
+|  0 | contour_filtering      |    3.87527   |      12.9026  |       21.9228 |       30.0082 |
+|  1 | delaunay_triangulation |   -0.0233088 |       1.22631 |       12.2098 |       26.0067 |
+|  2 | empty_space            |    2.50962   |      13.5099  |       23.0143 |       31.2732 |
+|  3 | hard_thresholding      |    0.0865319 |       9.63334 |       21.651  |       28.3862 |
 ### Signal: McCrossingChirps
 |    | Method + Param         |   SNRin: 0dB |   SNRin: 10dB |   SNRin: 20dB |   SNRin: 30dB |
 |---:|:-----------------------|-------------:|--------------:|--------------:|--------------:|
-|  0 | contour_filtering      |   4.60322    |      11.6056  |      20.6873  |      26.1638  |
-|  1 | delaunay_triangulation |  -0.00915737 |       1.57517 |       5.64882 |       7.53595 |
-|  2 | empty_space            |   2.75053    |      11.0876  |      16.4024  |      19.2933  |
-|  3 | hard_thresholding      |   0.576684   |      13.1484  |      24.5467  |      33.9678  |
+|  0 | contour_filtering      |   4.35822    |      11.4017  |      21.1465  |      26.2595  |
+|  1 | delaunay_triangulation |   0.00563507 |       1.66056 |       5.68825 |       7.61849 |
+|  2 | empty_space            |   2.54744    |      10.7743  |      15.9499  |      21.3545  |
+|  3 | hard_thresholding      |   0.543605   |      13.087   |      24.6301  |      33.9669  |
 ### Signal: McHarmonic
 |    | Method + Param         |   SNRin: 0dB |   SNRin: 10dB |   SNRin: 20dB |   SNRin: 30dB |
 |---:|:-----------------------|-------------:|--------------:|--------------:|--------------:|
-|  0 | contour_filtering      |    4.28066   |      12.7663  |      18.6313  |      20.5168  |
-|  1 | delaunay_triangulation |   -0.0384117 |       1.21922 |       5.71179 |       7.05813 |
-|  2 | empty_space            |    2.95065   |      13.5437  |      22.4804  |      28.2918  |
-|  3 | hard_thresholding      |    0.109989  |       9.47571 |      20.3174  |      27.4824  |
+|  0 | contour_filtering      |    3.99975   |      12.7871  |      18.6917  |      20.7394  |
+|  1 | delaunay_triangulation |   -0.0155313 |       1.04961 |       5.65763 |       6.98011 |
+|  2 | empty_space            |    2.83425   |      13.4911  |      22.5239  |      28.2773  |
+|  3 | hard_thresholding      |    0.135767  |       9.36493 |      20.4358  |      27.5871  |
 ### Signal: McPureTones
 |    | Method + Param         |   SNRin: 0dB |   SNRin: 10dB |   SNRin: 20dB |   SNRin: 30dB |
 |---:|:-----------------------|-------------:|--------------:|--------------:|--------------:|
-|  0 | contour_filtering      |    3.63424   |      12.9234  |       21.9137 |       30.1896 |
-|  1 | delaunay_triangulation |   -0.0218288 |       1.10634 |       11.038  |       26.1393 |
-|  2 | empty_space            |    2.50488   |      13.5484  |       23.0763 |       31.5372 |
-|  3 | hard_thresholding      |    0.0716206 |       9.52896 |       21.7404 |       28.6445 |
+|  0 | contour_filtering      |    3.87527   |      12.9026  |       21.9228 |       30.0082 |
+|  1 | delaunay_triangulation |   -0.0233088 |       1.22631 |       12.2098 |       26.0067 |
+|  2 | empty_space            |    2.50962   |      13.5099  |       23.0143 |       31.2732 |
+|  3 | hard_thresholding      |    0.0865319 |       9.63334 |       21.651  |       28.3862 |
