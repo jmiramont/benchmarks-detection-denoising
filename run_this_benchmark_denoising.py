@@ -28,26 +28,26 @@ for method_instance in list_of_methods:
         dictionary_of_methods[method_id] = method_instance.method
         dictionary_of_parameters[method_id] = method_instance.get_parameters()
 
-SNRin = [0, 5]#, 10, 20, 30]
+SNRin = [0, 10, 20, 30]
 
 # Standard test:
 signal_names = ['LinearChirp', 'CosChirp', 'McPureTones', # Single-component signals
                 'McCrossingChirps',                       # Crossing-components  
-                'McHarmonic','McPureTones',]               # Multi-Component Harmonic signals  
-                # 'McModulatedTones','McDoubleCosChirp',    # Multi-Component Non-Harmonic  
-                # 'McSyntheticMixture','McSyntheticMixture2',
-                # 'HermiteFunction','HermiteElipse',        # Hermite type signals  
-                # 'ToneDumped','ToneSharpAttack',           # Dumped and Sharps attacks  
-                # 'McOnOffTones']                           # Modes that born and die
+                'McHarmonic','McPureTones',               # Multi-Component Harmonic signals  
+                'McModulatedTones','McDoubleCosChirp',    # Multi-Component Non-Harmonic  
+                'McSyntheticMixture','McSyntheticMixture2',
+                'HermiteFunction','HermiteElipse',        # Hermite type signals  
+                'ToneDumped','ToneSharpAttack',           # Dumped and Sharps attacks  
+                'McOnOffTones']                           # Modes that born and die
 
 if __name__ == "__main__":
     my_benchmark = Benchmark(task = 'denoising',
                             methods = dictionary_of_methods,
-                            N = 512,
+                            N = 256,
                             parameters = dictionary_of_parameters, 
                             SNRin = SNRin,
                             using_signals=signal_names, 
-                            repetitions = 10,
+                            repetitions = 30,
                             verbosity=4,
                             parallelize=True)
 
@@ -57,11 +57,11 @@ if __name__ == "__main__":
     print("The time of execution of above program is :", end-start)
     df = my_benchmark.get_results_as_df() # This formats the results on a DataFrame
     print(df)
-    # my_benchmark.signal_ids
+    
+    # Save the benchmark to a file. Notice that only the methods_ids are saved.
     my_benchmark.save_to_file()
-
     results_interpreter = ResultsInterpreter(my_benchmark)
-    results_interpreter.write_to_file()
+    results_interpreter.save_report()
     # output_string = results_interpreter.get_table_means()
     # with open('RESULTS.md', 'w') as f:
     #     f.write(output_string)

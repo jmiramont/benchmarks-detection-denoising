@@ -15,8 +15,8 @@ class Benchmark:
     """
 
     def __init__(self, task='denoising', methods=None, N=256, parameters=None,
-                SNRin=None, repetitions=None, using_signals='all', checks=True, verbosity=1,
-                from_file = None, parallelize = False):
+                SNRin=None, repetitions=None, using_signals='all', verbosity=1,
+                parallelize = False):
         """
         This constructor parse the inputs and instantiate the object attributes
         """
@@ -30,14 +30,20 @@ class Benchmark:
         self.verbosity = None
         self.methods_and_params_dic = dict()
         self.parallel_flag = parallelize
+
         # Check input parameters and initialize the object attributes
-        if checks:
-            self.input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity)
+        self.input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity, parallelize)
+
+        # Inform parallelize parameters
+        if parallelize:
+            if self.verbosity > 1:
+                print("Number of processors: ", multiprocessing.cpu_count())    
+                print('Parallel pool: {}'.format(self.processes))
+
 
         # Generates a dictionary of signals
         signal_bank = SignalBank(N)
         self.signal_dic = signal_bank.signalDict
-
         if using_signals == 'all':
             self.signal_ids = [llave for llave in self.signal_dic]
         else:
@@ -48,7 +54,7 @@ class Benchmark:
         self.comparisonFunction = self.set_comparison_function(task)
         
 
-    def input_parsing(self, task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity):
+    def input_parsing(self, task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity, parallelize):
         """
         Check input parameters and initialize the object attributes
         """
@@ -105,7 +111,6 @@ class Benchmark:
         else:
             raise ValueError("Repetitions should be an entire.\n")
 
-
         # Check what to do with list of signals:
         if using_signals !='all':
             if isinstance(using_signals,tuple) or isinstance(using_signals,list):
@@ -113,6 +118,11 @@ class Benchmark:
                 llaves = signal_bank.signalDict.keys()
                 assert all(signal_id in llaves for signal_id in using_signals)
 
+        # Handle parallelization parameters:
+        if parallelize:
+            available_proc = multiprocessing.cpu_count()    
+            self.processes = np.max((1, available_proc//2 ))
+                
 
     def check_methods_output(self,output,input):
         if self.task == 'denoising':
@@ -147,9 +157,6 @@ class Benchmark:
         return method_output
 
 
-
-
-
     def run_test(self):
         """
         Run benchmark with the set parameters.
@@ -175,35 +182,40 @@ class Benchmark:
 
                 noisy_signals, noise = self.add_snr_block(base_signal,SNR,self.repetitions)
 
+                # Parallel loop.
                 if self.parallel_flag:
+                    
+ 
                     parallel_list = list()
                     for method in self.methods:                                               
                         for p,params in enumerate(self.parameters[method]):
                             parallel_list.append([method, params, noisy_signals])
 
                     # Here implement the parallel stuff
-                    pool = multiprocessing.Pool(processes=8) 
+                    pool = multiprocessing.Pool(processes=self.processes) 
                     parallel_results = pool.map(self.inner_loop, parallel_list) 
                     pool.close() 
-                    pool.join()    
-                    print('Parallel loop finished.') 
+                    pool.join()
+                    if self.verbosity > 1:    
+                        print('Parallel loop finished.') 
 
-                k = 0
+                k = 0  # This is used to get the parallel results if its the case.
                 for method in self.methods:    
                     if self.verbosity > 3:
                         print('--- Method: '+ method)                    
 
                     for p, params in enumerate(self.parameters[method]):
-                        if self.parallel_flag:
+                        if self.parallel_flag:  # Get results from parallel...
                             method_output = parallel_results[k]
                             k += 1     
-                        else:    
+                        else:                   # Or from serial computation.
                             method_output = self.inner_loop([method, params, noisy_signals])        
                         
+                        # Either way, results are saved in a nested dictionary.
                         result =  self.comparisonFunction(base_signal, method_output)             
                         params_dic['Params'+str(p)] = result
 
-                    self.methods_and_params_dic[method] = [llave for llave in params_dic]
+                    self.methods_and_params_dic[method] = [key for key in params_dic] 
                     method_dic[method] = params_dic    
                     params_dic = dict()
            
@@ -225,48 +237,13 @@ class Benchmark:
         """ Save results to file with filename"""
         if filename is None:
             filename = 'a_benchmark'
+
         a_copy = self
         a_copy.methods = None
-        # benchmark_dict = {  'task': self.task,
-        #                     'methods': self.methods,
-        #                     'N': self.N,
-        #                     'repetitions': self.repetitions,
-        #                     'SNRin': self.SNRin,
-        #                     'results': self.results,
-        #                     'verbosity': self.verbosity,
-        #                     'results': self.results,
-        #                     'signal_dic': self.signal_dic,
-        #                     'signal_ids': self.signal_ids
-        # }
-
-
         with open(filename + '.pkl', 'wb') as f:
             pickle.dump(a_copy, f)    
 
         return True
-
-
-    # def load_from_file(self, filename = None):
-    #     """ Save results to file with filename"""
-    #     if filename is None:
-    #         filename = 'a_benchmark'
-
-    #     with open(filename + '.pkl', 'rb') as f:
-    #         benchmark = pickle.load(f)
-
-        # self = benchmark
-        # self.task = benchmark_dict['task']
-        # # self.methods = benchmark_dict['methods']
-        # self.N = benchmark_dict['N']
-        # self.repetitions = benchmark_dict['repetitions']
-        # self.SNRin = benchmark_dict['SNRin']
-        # self.results = benchmark_dict['results']
-        # self.verbosity = benchmark_dict['verbosity']  
-        # self.results = benchmark_dict['results']  
-        # self.signal_dic = benchmark_dict['signal_dic']  
-        # self.signal_ids = benchmark_dict['signal_ids']  
-        
-        return benchmark
 
 
     def get_results_as_df(self, results = None):

@@ -55,7 +55,7 @@ print(df)
 # my_benchmark.save_to_file()
 
 results_interpreter = ResultsInterpreter(my_benchmark)
-results_interpreter.write_to_file()
+results_interpreter.save_report()()
 # output_string = results_interpreter.get_table_means()
 # with open('RESULTS.md', 'w') as f:
 #     f.write(output_string)

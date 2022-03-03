@@ -3,6 +3,10 @@ import seaborn as sns
 from benchmark_demo.Benchmark import Benchmark
 import pickle
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import ImageGrid
+import string
+
 
 class ResultsInterpreter:
     
@@ -43,10 +47,10 @@ class ResultsInterpreter:
         return df3
 
 
-    def get_table_means(self, filename = None):
+    def get_table_means(self):
         """ Write table of mean results to .md file. """
-        if filename is None:
-            filename = 'results'
+        # if filename is None:
+            # filename = 'results'
 
         df = self.benchmark.get_results_as_df()
         column_names = ['Method + Param'] + [col for col in df.columns.values[4::]]
@@ -84,19 +88,28 @@ class ResultsInterpreter:
             # print(df_means.to_markdown())
             aux_string = '### Signal: '+ signal_id +'\n'+df_means.to_markdown() + '\n'
             output_string += aux_string
-            with open(filename + '.md', 'a') as f:
-                f.write(aux_string)
+            # with open(filename + '.md', 'a') as f:
+                # f.write(aux_string)
                 # f.write('/### Signal: '+ signal_id +'\n'+df_means.to_markdown() + '\n')
                 # f.write(df_means.to_markdown() + '\n')
 
         return output_string
 
 
-    def write_to_file(self, filename = 'report_benchmark.md'):
-        lines = ['# Benchmark Report \n', '## Configuration \n', 'Length of signals: ' + str(self.N) + '\n', 'Repetitions: '+ str(self.repetitions) + '\n', 'SNRin values: ']
+    def save_report(self, filename = 'results/report_benchmark.md'):
+        self.get_summary_plots()
+
+        lines = ['# Benchmark Report \n',
+                '## Configuration \n',
+                # 'Parallelize' + str(self.benchmark.parallel_flag) + '\n',
+                'Length of signals: ' + str(self.N) + '\n', 
+                'Repetitions: '+ str(self.repetitions) + '\n',
+                'SNRin values: ']
+
         lines = lines + [str(val) + ', ' for val in self.snr_values] + ['\n']
         lines = lines + ['### Methods  \n'] + ['* ' + methid +' \n' for methid in self.methods_ids]
-        lines = lines + ['### Signals  \n'] + ['* ' + signid +' \n' for signid in self.signal_ids] 
+        lines = lines + ['### Signals  \n'] + ['* ' + signid +' \n' for signid in self.signal_ids]
+        lines = lines + ['## Figures:\n ![Summary of results](results_plots.png) \n'] 
         lines = lines + ['## Mean results tables: \n']
        
         with open(filename, 'w') as f:
@@ -107,3 +120,47 @@ class ResultsInterpreter:
 
         with open(filename, 'a') as f:
           f.write(output_string)
+
+    def get_snr_plot(self, df, x=None, y=None, hue=None, axis = None):
+        aux = np.unique(df[hue].to_numpy())
+        for i in aux:
+            df_aux = df[df[hue]==i]
+            u = np.unique(df_aux[x].to_numpy())
+            v = np.zeros_like(u)
+            label = ''.join([c for c in string.capwords(i, sep = '_') if c.isupper()])
+            for uind, j in enumerate(u):
+                df_aux2 = df_aux[df_aux[x]==j]
+                v[uind] = np.mean(df_aux2[y].to_numpy())
+
+            axis.plot(u,v,'-d', ms = 3, linewidth = 1.0, label=label)
+            axis.set_xticks(u)
+            axis.set_yticks(u)
+
+
+    def get_summary_plots(self):
+        Nsignals = len(self.signal_ids)
+        df_rearr = self.rearrange_data_frame()
+
+        fig = plt.figure(figsize=(10., 10.))
+        grid = ImageGrid(fig, 111,  # similar to subplot(111)
+                        nrows_ncols=(3,Nsignals//3),  # creates 2x2 grid of axes
+                        axes_pad=0.5,  # pad between axes in inch.
+                        )
+
+        # _, axis2 = plt.subplots(1,1)
+        # axis2.plot(u,v,'-d', ms = 3, linewidth = 1.0, label=label)
+
+        for signal_id, ax in zip(self.signal_ids, grid):
+            print(signal_id) 
+            sns.set_theme() 
+            df_aux = df_rearr[df_rearr['Signal_id']==signal_id]
+            self.get_snr_plot(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
+            ax.grid(linewidth = 0.5)
+            ax.set_title(signal_id)
+            ax.legend(loc='upper left', frameon=False, fontsize = 'xx-small')
+            # sns.despine(offset=10, trim=True)
+
+        fig.set_size_inches((10,7))
+        # plt.title(title, fontsize = 15)
+        plt.savefig('results/results_plots' +'.png',bbox_inches='tight')# , format='svg')
+        return fig
