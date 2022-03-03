@@ -15,20 +15,21 @@ seaborn = "^0.11.2"
 cmocean = "^2.0"
 pytest = "^7.0.1"
 
-# Documentation
-# configuration in docs/conf.py
-Sphinx = { version = "^4.0.3", optional = true }
-# Sphinx extensions https://www.sphinx-doc.org/en/master/usage/extensions/index.html
-# Manage bibliography .bib files
-# https://github.com/mcmtroffaes/sphinxcontrib-bibtex
-sphinxcontrib-bibtex = { version = "^2.3.0", optional = true }
-# Checks syntax of reStructuredText and code blocks nested within it https://github.com/myint/rstcheck
-rstcheck = { version = "^3.3.1", optional = true }
 tabulate = "^0.8.9"
 rpy2 = "^3.4.5"
 spatstat-interface = "^0.1.2"
 
 [tool.poetry.extras]
+# Documentation
+# configuration in docs/conf.py
+# rstcheck = { version = "^3.3.1", optional = true }
+# Sphinx = { version = "^4.0.3", optional = true }
+# Sphinx extensions https://www.sphinx-doc.org/en/master/usage/extensions/index.html
+# Manage bibliography .bib files
+# https://github.com/mcmtroffaes/sphinxcontrib-bibtex
+# sphinxcontrib-bibtex = { version = "^2.3.0", optional = true }
+# Checks syntax of reStructuredText and code blocks nested within it https://github.com/myint/rstcheck
+
 # Jupyter notebooks to be edited in VSCode
 # notebook = ["jupyter"]
 
@@ -38,7 +39,7 @@ spatstat-interface = "^0.1.2"
 # - online either with
 #     - ReadTheDocs see .readthedocs.yaml file
 #     - GitHub pages see .github/workflows/docs.yml
-docs = ["Sphinx", "sphinxcontrib-bibtex", "rstcheck"]
+# docs = ["Sphinx", "sphinxcontrib-bibtex", "rstcheck"]
 
 
 [tool.poetry.dev-dependencies]

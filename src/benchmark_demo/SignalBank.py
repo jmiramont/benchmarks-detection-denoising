@@ -25,8 +25,8 @@ class SignalBank:
         self.fmax = 0.5-self.fmin
         self.fmid = (self.fmax-self.fmin)/2 + self.fmin
 
-        print(self.fmin)
-        print(self.fmax)
+        # print(self.fmin)
+        # print(self.fmax)
 
     def check_frec_margins(self, instf):
         assert np.all(instf<=self.fmax), 'instf>fmax'
@@ -42,6 +42,7 @@ class SignalBank:
         for i, signal_id in enumerate(signal_ids):
             self.signalDict[signal_id] = getattr(self, fun_names[i])
         return self.signalDict
+
 
     def get_signal_id(self):
         return self.SignalDict.keys()

@@ -27,7 +27,7 @@ You can use this benchmark to test a new method against others. There are at lea
 
 The [*notebooks*](./notebooks/) folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, [*demo_benchmark.ipynb*](./notebooks/demo_benchmark.ipynb) gives two minimal working examples to introduce the basic functionality of the `Benchmark` class, and the notebook [*demo_signal_bank.ipynb*](./notebooks/demo_signal_bank.ipynb) showcases the signals produced by the `SignalBank` class.
 
-The instructions below will help you to add a new method run the benchmark afterwards.
+The instructions below will help you to add a new method and run the benchmark afterwards.
 
 ### Cloning this repository
 
