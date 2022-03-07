@@ -11,17 +11,24 @@ class SignalBank:
     as well as a dictionary of those methods that can be used later.
     """
 
-    def __init__(self,N = 2**8):
+    def __init__(self, N = 2**8, Nsub = None):
+
         self.N = N
         self.generate_signal_dict()
-        self.tmin = int(np.sqrt(N))
-        self.tmax = N-self.tmin
-        self.fmin = 1.5*self.tmin/N
-        # if N<=2**8:
-            # self.fmin = 1.5*self.tmin/N
-        # else:
-        #     self.fmin = 2*self.tmin/N
 
+        if Nsub is None:
+            self.tmin = int(np.sqrt(N))
+        
+        else:
+            if isinstance(Nsub,int):
+                if Nsub < N:
+                    self.tmin = (N-Nsub)//2
+        
+        self.tmax = N-self.tmin
+        self.Nsub = self.tmax-self.tmin
+        
+        
+        self.fmin = 1.5*np.sqrt(N)/N
         self.fmax = 0.5-self.fmin
         self.fmid = (self.fmax-self.fmin)/2 + self.fmin
 
@@ -57,8 +64,8 @@ class SignalBank:
             b = self.fmin
 
         tmin = self.tmin
-        tmax = N-tmin        
-        Nsub = tmax-tmin
+        tmax = self.tmax      
+        Nsub = self.Nsub
 
         tsub = np.arange(Nsub)
         instf = b + a*tsub/Nsub
@@ -146,8 +153,8 @@ class SignalBank:
     def signal_cos_chirp(self, omega = 1.5, a1=1, f0=0.25, a2=0.125, checkinstf = True):
         N = self.N
         tmin = self.tmin
-        tmax = N-tmin
-        Nsub = tmax-tmin
+        tmax = self.tmax      
+        Nsub = self.Nsub
         tsub = np.arange(Nsub)
         instf = f0 + a2*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
         if checkinstf:
@@ -164,8 +171,8 @@ class SignalBank:
         N = self.N
         t = np.arange(N)/N
         tmin = self.tmin
-        tmax = N-tmin
-        Nsub = tmax-tmin
+        tmax = self.tmax      
+        Nsub = self.Nsub
         tsub = np.arange(Nsub)
         omega1 = 1.5
         omega2 = 1.8
@@ -285,9 +292,9 @@ class SignalBank:
 
     def signal_exp_chirp(self, finit=None, fend=None, exponent=2, r_instf=False):
         N = self.N
-        tmin = 1*int(np.sqrt(N))
-        tmax = N-tmin
-        Nsub = tmax-tmin
+        tmin = self.tmin
+        tmax = self.tmax      
+        Nsub = self.Nsub
         tsub = np.arange(Nsub)/Nsub
 
         if finit is None:

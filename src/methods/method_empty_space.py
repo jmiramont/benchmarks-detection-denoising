@@ -63,7 +63,7 @@ def empty_space_denoising(signal, params=None, return_dic=False):
     pos_aux = pos.copy()
     pos_aux[:,0] = pos[:,1]/a
     pos_aux[:,1] = pos[:,0]/a
-    empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=0.8)
+    empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=1.0)
     hull_d , mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=0.5)
     xr, t = reconstruct_signal_2(mask, stft_padded, Npad)
 
@@ -76,6 +76,11 @@ def empty_space_denoising(signal, params=None, return_dic=False):
 
 
 class NewMethod(MethodTemplate):
+    def __init__(self):
+        self.id = 'empty_space'
+        self.task = 'denoising'
+        
+
     def method(self,signals,params = None):
         if len(signals.shape) == 1:
             signals = np.resize(signals,(1,len(signals)))
@@ -85,6 +90,3 @@ class NewMethod(MethodTemplate):
             signals_output[i] = empty_space_denoising(signal,params)
         return signals_output
         
-
-def instantiate_method():
-    return NewMethod('denoising','empty_space')

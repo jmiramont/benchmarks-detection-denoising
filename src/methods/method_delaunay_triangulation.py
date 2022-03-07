@@ -54,11 +54,11 @@ def delaunay_triangulation_denoising(signal, params = None, return_dic = False):
     tri = delaunay_graph.simplices
     valid_tri = np.zeros((tri.shape[0],),dtype=bool)
     selection = np.zeros((tri.shape[0],),dtype=bool)
-    sides, max_side = counting_edges(delaunay_graph,vertices)
+    sides, max_sides = counting_edges(delaunay_graph,vertices)
 
     for i,_ in enumerate(tri):
         valid_tri[i] = np.all(valid_ceros[tri[i]])
-        side = sides[i]
+        side = max_sides[i]
         selection[i] = np.any(LB < side) & np.all(UB > side) & valid_tri[i]
 
 
@@ -78,6 +78,10 @@ def delaunay_triangulation_denoising(signal, params = None, return_dic = False):
 
 
 class NewMethod(MethodTemplate):
+    def __init__(self):
+        self.id = 'delaunay_triangulation'
+        self.task = 'denoising'
+
     def method(self,signals, params = None):
         if len(signals.shape) == 1:
             signals = np.resize(signals,(1,len(signals)))
@@ -86,8 +90,5 @@ class NewMethod(MethodTemplate):
         for i, signal in enumerate(signals):
             signals_output[i] = delaunay_triangulation_denoising(signal,params)
         return signals_output
-
-def instantiate_method():
-    return NewMethod('denoising','delaunay_triangulation')
 
 

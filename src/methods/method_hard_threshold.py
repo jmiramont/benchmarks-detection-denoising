@@ -23,6 +23,11 @@ def hard_thresholding(signal, params=None):
 
 
 class NewMethod(MethodTemplate):
+    def __init__(self):
+        self.id = 'hard_thresholding'
+        self.task = 'denoising'
+
+
     def method(self,signals,params = None):
         if len(signals.shape) == 1:
             signals = np.resize(signals,(1,len(signals)))
@@ -32,7 +37,3 @@ class NewMethod(MethodTemplate):
             signals_output[i], _ = hard_thresholding(signal,params)
 
         return signals_output
-        
-        
-def instantiate_method():
-    return NewMethod('denoising','hard_thresholding')

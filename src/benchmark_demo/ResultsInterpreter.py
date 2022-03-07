@@ -96,8 +96,8 @@ class ResultsInterpreter:
         return output_string
 
 
-    def save_report(self, filename = 'results/report_benchmark.md'):
-        self.get_summary_plots()
+    def save_report(self, filename = 'results/readme.md'):
+        self.get_summary_grid()
 
         lines = ['# Benchmark Report \n',
                 '## Configuration \n',
@@ -122,8 +122,11 @@ class ResultsInterpreter:
           f.write(output_string)
 
     def get_snr_plot(self, df, x=None, y=None, hue=None, axis = None):
+        markers = ['o','d','s','*']
         aux = np.unique(df[hue].to_numpy())
-        for i in aux:
+        # fig, axis2 = plt.subplots(1,1)
+
+        for i, marker in zip(aux,markers):
             df_aux = df[df[hue]==i]
             u = np.unique(df_aux[x].to_numpy())
             v = np.zeros_like(u)
@@ -132,27 +135,29 @@ class ResultsInterpreter:
                 df_aux2 = df_aux[df_aux[x]==j]
                 v[uind] = np.mean(df_aux2[y].to_numpy())
 
-            axis.plot(u,v,'-d', ms = 3, linewidth = 1.0, label=label)
+            axis.plot(u,v,'-'+ marker, ms = 5, linewidth = 1.0, label=label)
+            axis.plot([np.min(u), np.max(u)],[np.min(u), np.max(u)],'--r', linewidth = 0.5)
             axis.set_xticks(u)
             axis.set_yticks(u)
+            axis.set_xlabel(x + ' (dB)')
+            axis.set_ylabel(y + ' (dB)')
+        return 
 
-
-    def get_summary_plots(self):
+    def get_summary_grid(self):
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
 
-        fig = plt.figure(figsize=(10., 10.))
+        fig = plt.figure()
+        
+
         grid = ImageGrid(fig, 111,  # similar to subplot(111)
                         nrows_ncols=(3,Nsignals//3),  # creates 2x2 grid of axes
                         axes_pad=0.5,  # pad between axes in inch.
                         )
-
-        # _, axis2 = plt.subplots(1,1)
-        # axis2.plot(u,v,'-d', ms = 3, linewidth = 1.0, label=label)
-
+        
         for signal_id, ax in zip(self.signal_ids, grid):
             print(signal_id) 
-            sns.set_theme() 
+            # sns.set_theme() 
             df_aux = df_rearr[df_rearr['Signal_id']==signal_id]
             self.get_snr_plot(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
             ax.grid(linewidth = 0.5)
@@ -162,5 +167,32 @@ class ResultsInterpreter:
 
         fig.set_size_inches((10,7))
         # plt.title(title, fontsize = 15)
-        plt.savefig('results/results_plots' +'.png',bbox_inches='tight')# , format='svg')
+        fig.savefig('results/results_plots' +'.png',bbox_inches='tight')# , format='svg')
+        
         return fig
+
+
+    def get_summary_plots(self):
+        Nsignals = len(self.signal_ids)
+        df_rearr = self.rearrange_data_frame()
+
+        # grid = ImageGrid(fig, 111,  # similar to subplot(111)
+        #                 nrows_ncols=(3,Nsignals//3),  # creates 2x2 grid of axes
+        #                 axes_pad=0.5,  # pad between axes in inch.
+        #                 )
+        
+        for signal_id in self.signal_ids:
+            fig,ax = plt.subplots(1,1)
+            print(signal_id) 
+            # sns.set_theme() 
+            df_aux = df_rearr[df_rearr['Signal_id']==signal_id]
+            self.get_snr_plot(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
+            ax.grid(linewidth = 0.5)
+            ax.set_title(signal_id)
+            ax.legend(loc='upper left', frameon=False, fontsize = 'small')
+            # sns.despine(offset=10, trim=True)
+
+            fig.set_size_inches((3,3))
+            fig.savefig('results/results_plots'+ signal_id +'.png',bbox_inches='tight')# , format='svg')
+            
+        return fig    

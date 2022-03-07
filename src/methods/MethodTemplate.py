@@ -2,21 +2,33 @@ from abc import ABC, abstractmethod
 
 class MethodTemplate(ABC):
 
-    def __init__(self, task, id):
-        self.task = task
-        self.id = id
+    @abstractmethod
+    def __init__(self):
+        ...
 
     @abstractmethod
     def method(self):
         ...
 
+    @property
+    def id(self):
+        return self._id
+    
+    @id.setter
+    def id(self, id):
+        self._id = id
+    
+    @property
+    def task(self):
+        return self._task
+    
+    @task.setter
+    def task(self, task):
+        self._task = task
+
     def get_parameters(self):
         return [None,]
 
-    def get_method_id(self):
-        return self.id
-    
-    def get_task(self):
-        return self.task
+
 
         

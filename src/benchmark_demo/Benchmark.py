@@ -29,13 +29,13 @@ class Benchmark:
         self.results = None
         self.verbosity = None
         self.methods_and_params_dic = dict()
-        self.parallel_flag = parallelize
+        
 
         # Check input parameters and initialize the object attributes
         self.input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity, parallelize)
 
         # Inform parallelize parameters
-        if parallelize:
+        if self.parallel_flag:
             if self.verbosity > 1:
                 print("Number of processors: ", multiprocessing.cpu_count())    
                 print('Parallel pool: {}'.format(self.processes))
@@ -62,7 +62,7 @@ class Benchmark:
         assert isinstance(verbosity,int) and 0<=verbosity<5 , 'Verbosity should be an integer between 0 and 4'
         self.verbosity = verbosity
 
-        # Check the task is either 'denoising' or 'detecting'
+        # Check the task is either 'denoising' or 'detecting'.
         if (task != 'denoising' and task != 'detecting'):
             raise ValueError("The tasks should be either 'denoising' or 'detecting'.\n")
         else:
@@ -119,9 +119,22 @@ class Benchmark:
                 assert all(signal_id in llaves for signal_id in using_signals)
 
         # Handle parallelization parameters:
-        if parallelize:
-            available_proc = multiprocessing.cpu_count()    
-            self.processes = np.max((1, available_proc//2 ))
+        max_processes = multiprocessing.cpu_count()
+
+        if isinstance(parallelize,int):
+            if parallelize < max_processes:
+                self.processes = parallelize
+            else:
+                self.processes = max_processes
+            self.parallel_flag = True
+        else:
+            if isinstance(parallelize,bool):
+                if parallelize:   
+                    available_proc = multiprocessing.cpu_count()    
+                    self.processes = np.max((1, available_proc//2 ))
+                    self.parallel_flag = True
+                else:
+                    self.parallel_flag = False
                 
 
     def check_methods_output(self,output,input):

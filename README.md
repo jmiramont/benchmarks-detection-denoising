@@ -1,4 +1,5 @@
 # A benchmark for time-frequency denoising/ detecting methods
+[![forthebadge](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjUuNzkiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAxNjUuNzkgMzUiPjxyZWN0IGNsYXNzPSJzdmdfX3JlY3QiIHg9IjAiIHk9IjAiIHdpZHRoPSI2NS4xMyIgaGVpZ2h0PSIzNSIgZmlsbD0iIzMxQzRGMyIvPjxyZWN0IGNsYXNzPSJzdmdfX3JlY3QiIHg9IjYzLjEzIiB5PSIwIiB3aWR0aD0iMTAyLjY2IiBoZWlnaHQ9IjM1IiBmaWxsPSIjMzg5QUQ1Ii8+PHBhdGggY2xhc3M9InN2Z19fdGV4dCIgZD0iTTE2LjUxIDIyTDEzLjQ2IDEzLjQ3TDE1LjA4IDEzLjQ3TDE3LjIyIDIwLjE0TDE5LjM5IDEzLjQ3TDIxLjAyIDEzLjQ3TDE3Ljk1IDIyTDE2LjUxIDIyWk0yNi41MyAyMkwyNS4wNiAyMkwyNS4wNiAxMy40N0wyNi41MyAxMy40N0wyNi41MyAyMlpNMzYuOTIgMjJMMzEuMzQgMjJMMzEuMzQgMTMuNDdMMzYuODggMTMuNDdMMzYuODggMTQuNjZMMzIuODMgMTQuNjZMMzIuODMgMTcuMDJMMzYuMzMgMTcuMDJMMzYuMzMgMTguMTlMMzIuODMgMTguMTlMMzIuODMgMjAuODJMMzYuOTIgMjAuODJMMzYuOTIgMjJaTTQyLjUwIDIyTDQwLjUzIDEzLjQ3TDQyLjAwIDEzLjQ3TDQzLjMzIDE5Ljg4TDQ0Ljk2IDEzLjQ3TDQ2LjIwIDEzLjQ3TDQ3LjgxIDE5Ljg5TDQ5LjEyIDEzLjQ3TDUwLjU5IDEzLjQ3TDQ4LjYyIDIyTDQ3LjIxIDIyTDQ1LjU4IDE1Ljc3TDQzLjkyIDIyTDQyLjUwIDIyWiIgZmlsbD0iI0ZGRkZGRiIvPjxwYXRoIGNsYXNzPSJzdmdfX3RleHQiIGQ9Ik03OS43MCAyMkw3Ny4zMiAyMkw3Ny4zMiAxMy42MEw4MS4xNiAxMy42MFE4Mi4zMCAxMy42MCA4My4xNCAxMy45OFE4My45OCAxNC4zNSA4NC40NCAxNS4wNlE4NC44OSAxNS43NiA4NC44OSAxNi43MUw4NC44OSAxNi43MVE4NC44OSAxNy42MiA4NC40NyAxOC4zMFE4NC4wNCAxOC45OCA4My4yNSAxOS4zNkw4My4yNSAxOS4zNkw4NS4wNiAyMkw4Mi41MiAyMkw4MC45OSAxOS43N0w3OS43MCAxOS43N0w3OS43MCAyMlpNNzkuNzAgMTUuNDdMNzkuNzAgMTcuOTNMODEuMDIgMTcuOTNRODEuNzUgMTcuOTMgODIuMTIgMTcuNjFRODIuNDkgMTcuMjkgODIuNDkgMTYuNzFMODIuNDkgMTYuNzFRODIuNDkgMTYuMTIgODIuMTIgMTUuNzlRODEuNzUgMTUuNDcgODEuMDIgMTUuNDdMODEuMDIgMTUuNDdMNzkuNzAgMTUuNDdaTTk2LjQzIDIyTDg5LjY4IDIyTDg5LjY4IDEzLjYwTDk2LjI3IDEzLjYwTDk2LjI3IDE1LjQ0TDkyLjA0IDE1LjQ0TDkyLjA0IDE2Ljg1TDk1Ljc3IDE2Ljg1TDk1Ljc3IDE4LjYzTDkyLjA0IDE4LjYzTDkyLjA0IDIwLjE3TDk2LjQzIDIwLjE3TDk2LjQzIDIyWk0xMDAuNjQgMjEuMjRMMTAwLjY0IDIxLjI0TDEwMS40MiAxOS40OVExMDEuOTkgMTkuODYgMTAyLjczIDIwLjA5UTEwMy40NyAyMC4zMiAxMDQuMTkgMjAuMzJMMTA0LjE5IDIwLjMyUTEwNS41NiAyMC4zMiAxMDUuNTcgMTkuNjRMMTA1LjU3IDE5LjY0UTEwNS41NyAxOS4yOCAxMDUuMTggMTkuMTFRMTA0Ljc5IDE4LjkzIDEwMy45MiAxOC43NEwxMDMuOTIgMTguNzRRMTAyLjk3IDE4LjUzIDEwMi4zMyAxOC4zMFExMDEuNzAgMTguMDYgMTAxLjI0IDE3LjU1UTEwMC43OSAxNy4wMyAxMDAuNzkgMTYuMTZMMTAwLjc5IDE2LjE2UTEwMC43OSAxNS4zOSAxMDEuMjEgMTQuNzdRMTAxLjYzIDE0LjE1IDEwMi40NiAxMy43OVExMDMuMzAgMTMuNDMgMTA0LjUxIDEzLjQzTDEwNC41MSAxMy40M1ExMDUuMzMgMTMuNDMgMTA2LjE0IDEzLjYyUTEwNi45NCAxMy44MCAxMDcuNTYgMTQuMTdMMTA3LjU2IDE0LjE3TDEwNi44MyAxNS45M1ExMDUuNjIgMTUuMjggMTA0LjQ5IDE1LjI4TDEwNC40OSAxNS4yOFExMDMuNzggMTUuMjggMTAzLjQ2IDE1LjQ5UTEwMy4xNCAxNS43MCAxMDMuMTQgMTYuMDRMMTAzLjE0IDE2LjA0UTEwMy4xNCAxNi4zNyAxMDMuNTIgMTYuNTRRMTAzLjkxIDE2LjcxIDEwNC43NiAxNi44OUwxMDQuNzYgMTYuODlRMTA1LjcyIDE3LjEwIDEwNi4zNSAxNy4zM1ExMDYuOTggMTcuNTYgMTA3LjQ0IDE4LjA3UTEwNy45MCAxOC41OCAxMDcuOTAgMTkuNDZMMTA3LjkwIDE5LjQ2UTEwNy45MCAyMC4yMSAxMDcuNDggMjAuODNRMTA3LjA3IDIxLjQ0IDEwNi4yMyAyMS44MFExMDUuMzggMjIuMTcgMTA0LjE4IDIyLjE3TDEwNC4xOCAyMi4xN1ExMDMuMTYgMjIuMTcgMTAyLjIwIDIxLjkyUTEwMS4yNCAyMS42NyAxMDAuNjQgMjEuMjRaTTExMi40MSAxOC4yNkwxMTIuNDEgMTguMjZMMTEyLjQxIDEzLjYwTDExNC43OSAxMy42MEwxMTQuNzkgMTguMTlRMTE0Ljc5IDIwLjIwIDExNi4zOCAyMC4yMEwxMTYuMzggMjAuMjBRMTE3Ljk2IDIwLjIwIDExNy45NiAxOC4xOUwxMTcuOTYgMTguMTlMMTE3Ljk2IDEzLjYwTDEyMC4zMSAxMy42MEwxMjAuMzEgMTguMjZRMTIwLjMxIDIwLjEzIDExOS4yNyAyMS4xNVExMTguMjMgMjIuMTcgMTE2LjM2IDIyLjE3TDExNi4zNiAyMi4xN1ExMTQuNDggMjIuMTcgMTEzLjQ1IDIxLjE1UTExMi40MSAyMC4xMyAxMTIuNDEgMTguMjZaTTEzMS43OCAyMkwxMjUuMzkgMjJMMTI1LjM5IDEzLjYwTDEyNy43NyAxMy42MEwxMjcuNzcgMjAuMTFMMTMxLjc4IDIwLjExTDEzMS43OCAyMlpNMTM3Ljk5IDE1LjQ4TDEzNS40MSAxNS40OEwxMzUuNDEgMTMuNjBMMTQyLjkzIDEzLjYwTDE0Mi45MyAxNS40OEwxNDAuMzYgMTUuNDhMMTQwLjM2IDIyTDEzNy45OSAyMkwxMzcuOTkgMTUuNDhaTTE0Ni43MiAyMS4yNEwxNDYuNzIgMjEuMjRMMTQ3LjUwIDE5LjQ5UTE0OC4wNiAxOS44NiAxNDguODAgMjAuMDlRMTQ5LjU1IDIwLjMyIDE1MC4yNyAyMC4zMkwxNTAuMjcgMjAuMzJRMTUxLjYzIDIwLjMyIDE1MS42NCAxOS42NEwxNTEuNjQgMTkuNjRRMTUxLjY0IDE5LjI4IDE1MS4yNSAxOS4xMVExNTAuODYgMTguOTMgMTQ5Ljk5IDE4Ljc0TDE0OS45OSAxOC43NFExNDkuMDQgMTguNTMgMTQ4LjQxIDE4LjMwUTE0Ny43NyAxOC4wNiAxNDcuMzIgMTcuNTVRMTQ2Ljg2IDE3LjAzIDE0Ni44NiAxNi4xNkwxNDYuODYgMTYuMTZRMTQ2Ljg2IDE1LjM5IDE0Ny4yOCAxNC43N1ExNDcuNzAgMTQuMTUgMTQ4LjU0IDEzLjc5UTE0OS4zNyAxMy40MyAxNTAuNTggMTMuNDNMMTUwLjU4IDEzLjQzUTE1MS40MCAxMy40MyAxNTIuMjEgMTMuNjJRMTUzLjAyIDEzLjgwIDE1My42MyAxNC4xN0wxNTMuNjMgMTQuMTdMMTUyLjkwIDE1LjkzUTE1MS43MCAxNS4yOCAxNTAuNTcgMTUuMjhMMTUwLjU3IDE1LjI4UTE0OS44NiAxNS4yOCAxNDkuNTMgMTUuNDlRMTQ5LjIxIDE1LjcwIDE0OS4yMSAxNi4wNEwxNDkuMjEgMTYuMDRRMTQ5LjIxIDE2LjM3IDE0OS42MCAxNi41NFExNDkuOTggMTYuNzEgMTUwLjgzIDE2Ljg5TDE1MC44MyAxNi44OVExNTEuNzkgMTcuMTAgMTUyLjQyIDE3LjMzUTE1My4wNSAxNy41NiAxNTMuNTEgMTguMDdRMTUzLjk4IDE4LjU4IDE1My45OCAxOS40NkwxNTMuOTggMTkuNDZRMTUzLjk4IDIwLjIxIDE1My41NiAyMC44M1ExNTMuMTQgMjEuNDQgMTUyLjMwIDIxLjgwUTE1MS40NiAyMi4xNyAxNTAuMjYgMjIuMTdMMTUwLjI2IDIyLjE3UTE0OS4yNCAyMi4xNyAxNDguMjcgMjEuOTJRMTQ3LjMxIDIxLjY3IDE0Ni43MiAyMS4yNFoiIGZpbGw9IiNGRkZGRkYiIHg9Ijc2LjEzIi8+PC9zdmc+)](./results/readme.md)
 
 ## Summary
 
@@ -84,7 +85,7 @@ from methods.MethodTemplate import MethodTemplate
 """
 ```
 
-In the next part of the file, your method is encapsulated in a new class called `NewMethod` (you can change this name if you prefer to). The only requisite for the class that represents your method is that it inherits from the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate`. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes by forcing the implementation of certain *abstract* methods. This simply means that you will have to implement a class method called -unsurprisingly- `method()`:
+In the next part of the file, your method is encapsulated in a new class called `NewMethod` (you can change this name if you prefer to). The only requisite for the class that represents your method is that it inherits from the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate`. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes by forcing the implementation of certain *abstract* methods. This simply means that you will have to implement the class constructor and a class method called -unsurprisingly- `method()`:
 
 ```python
 
@@ -99,6 +100,9 @@ that you desire to pass to your method.You can use this file as an example.
 """
 
 class NewMethod(MethodTemplate):
+    def __init__(self):
+      self.id = 'a_new_method'
+      self.task = 'denoising'  # Should be either 'denoising' or 'detection'
 
     def method(self, signals, params = None): # Implement this method.
         ...
@@ -108,26 +112,14 @@ class NewMethod(MethodTemplate):
 
 ```
 
-This function could act as a wrapper of your method, or you might implement everything in the same function, this is up to you :).
+The constructor function ```__init__(self)``` must initialize the attributes ```self.id``` and ```self.task```. The first is an string to identify your method in the benchmark. The second is the name of the task your method is devoted to. This can be either ```'denoising'``` or ```'detection'```. Notice that if you fail to use such names this will prevent you from benchmarking your method.
+
+Lastly, as anticipated above, you have to implement the class function ```method(self, signals, params)```. This function may act as a wrapper of your method, i.e. you implement your method elsewhere and call it from this function, or you could implement it directly here, this is up to you :).
 
 If you want to test your method using different sets of parameters, you can also implement the function `get_parameters()` to return a list with the desired input parameters (you can find an example of this [here](./new_method_example/method_new_with_parameters.py)).
 
-In the last part of the file you can define a task and a name for your method:
 
-```python
-""" Here you can define the task your new method is devoted to 
-(denoising or detection). You can also choose a method name.
-"""
-method_task = 'denoising' # 'denoising' or 'detection'
-method_name = 'a_new_method'
-
-def instantiate_method():
-    return NewMethod(method_task,method_name)
-```
-
-This last function, `instantiate_method()`, creates and initialize an object of the class that encapsulates all your method. This will be used later to automatically recognize valid methods to benchmark. It's not necessary to modify this function since it uses the constructor that it's already implemented in the abstract class.
-
-*Remark: Please do not modify the abstract class `MethodTemplate` or the function `instantiate_method()` at the end of the template file.*
+*Remark: Do not modify the abstract class `MethodTemplate`*.
 
 Finally, **you have to move the file** with all the modifications to the folder [/src/methods](./src/methods). Changing the name of the file is possible, but keep in mind that **the file's name must start with "*method_*" to be recognizable**.
 

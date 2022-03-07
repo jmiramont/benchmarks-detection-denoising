@@ -24,6 +24,9 @@ that you desire to pass to your method.You can use this file as an example.
 """
 
 class NewMethodWithParameters(MethodTemplate):
+    def __init__(self):
+        self.id = 'a_new_method_with_parameters'
+        self.task = 'denoising'  # Should be either 'denoising' or 'detection'
 
 # This simple method returns the same set of signals multiplied by a number
 # and summing a constant. These values are passed as input parameters.
@@ -39,15 +42,3 @@ class NewMethodWithParameters(MethodTemplate):
 
     def get_parameters(self):            # Use it to parametrize your method.
          return ((1, 2),(3, 4),)
-        
-
-""" Here you can define the task your new method is devoted to 
-(detecting or denoising). You can also choose a method name.
-"""
-method_task = 'denoising' # 'denoising' in this case.
-method_name = 'a_new_method_with_parameters' # This name will be used to identify the method.
-
-
-# Returns an object of the previously defined class.
-def instantiate_method():
-    return NewMethodWithParameters(method_task,method_name)
