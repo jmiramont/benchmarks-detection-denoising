@@ -12,11 +12,21 @@ def is_minimum(F):
     else:
         return False
 
+
+def is_maximum(F):
+    F = F.reshape((F.shape[0]*F.shape[1],))
+    ind_min = np.argmax(F)
+    if ind_min == 4:
+        return True
+    else:
+        return False
+
+
 def zeros_finder(F):
     N = F.shape[0]
     M = F.shape[1]
     S = np.ones((N+2, M+2))*float("inf")
-    S[1:N+1,1:M+1] = np.abs(F)**2
+    S[1:N+1,1:M+1] = np.abs(F)
     zeros = np.zeros((1,2))
 
     skip_next_flag = False
@@ -34,6 +44,26 @@ def zeros_finder(F):
 
     zeros = zeros[1::]
     return np.array(zeros)
+
+
+def max_finder(F):
+    N = F.shape[0]
+    M = F.shape[1]
+    S = np.zeros((N+2, M+2))
+    S[1:N+1,1:M+1] = np.abs(F)
+    maxima = np.zeros((1,2))
+
+    skip_next_flag = False
+    for i in range(1,F.shape[0]):
+        for j in range(1, F.shape[1]):
+            aux = S[i-1:i+2,j-1:j+2]
+            if is_maximum(aux):
+                new_zero = np.array([i,j]).reshape((1,2))
+                maxima = np.append(maxima,new_zero, axis=0)
+
+    maxima = maxima[1::]
+    return np.array(maxima)
+
 
 def my_fft(x,K=None):
     if K == None:
@@ -113,11 +143,11 @@ def sst_temp_op(x,sigma,K=None,fmax=0.5):
     return that, F
 
 
-def my_sst(x,sigma,K=None,fmax=0.5):
+def my_sst(x,T,K=None,fmax=0.5):
     N = len(x)
     if K == None:
         K = N
-    fhat, F = sst_freq_op(x, sigma, K, fmax)
+    fhat, F = sst_freq_op(x, T, K, fmax)
     ssF = np.zeros(F.shape, dtype='complex')
     for i in range(F.shape[0]):
         for j in range(F.shape[1]):
@@ -127,12 +157,12 @@ def my_sst(x,sigma,K=None,fmax=0.5):
     return ssF, F
 
 
-def my_rm(x,sigma,K=None,fmax=0.5):
+def my_rm(x,T,K=None,fmax=0.5):
     N = len(x)
     if K == None:
         K = N
-    fhat, F = sst_freq_op(x, sigma, K, fmax)
-    that, F = sst_temp_op(x, sigma, K, fmax)
+    fhat, F = sst_freq_op(x, T, K, fmax)
+    that, F = sst_temp_op(x, T, K, fmax)
     S = np.abs(F)**2
     S = S/np.sum(S)*np.sum(np.abs(x)**2)
     R = np.zeros(F.shape)
@@ -141,8 +171,6 @@ def my_rm(x,sigma,K=None,fmax=0.5):
 
     Ex = np.mean(np.abs(x)**2)
     Threshold = 1.0e-6*Ex
-
-
     for i in range(F.shape[0]):
         for j in range(F.shape[1]):
             if S[i,j] > Threshold:
@@ -210,7 +238,7 @@ def compute_contours(x, T=None, Nfft=None, fmax=0.5):
 
     for cero in ceros:
         cero = cero.astype(int)
-        indicator[cero[0]-2:cero[0]+2:, cero[1]-2:cero[1]+2:] = 0
+        indicator[cero[0]-2:cero[0]+3:, cero[1]-2:cero[1]+3:] = 0
 
     return indicator,F, reassignment_pos
 
@@ -305,7 +333,15 @@ def contours_filtering(signal, q = None, Nbasins = None):
     return x_hat, mask, contours, basins
 
 
+def ridges_sst_filtering(signal,):
+    N = len(signal)
+    if T is None:
+        T = pi/N
 
+    if Nfft is None:
+        Nfft = N
+        
+    ssF,F = my_sst(signal, T, Nfft, fmax=0.5)
 
 
 # if __name__ == '__main__':

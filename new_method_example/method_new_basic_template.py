@@ -33,19 +33,12 @@ that you desire to pass to your method.You can use this file as an example.
 """
 
 class NewMethod(MethodTemplate):
+    def __init__(self):
+        self.id = 'a_new_method'
+        self.task = 'denoising'  # Should be either 'denoising' or 'detection'
 
     def method(self, signals, params = None): # Implement this method.
         ...
 
     # def get_parameters(self):            # Use it to parametrize your method.
     #     return [None,]
-        
-
-""" Here you can define the task your new method is devoted to 
-(detecting or denoising). You can also choose a method name.
-"""
-method_task = 'denoising' # 'denoising' or 'detection'
-method_name = 'a_new_method'
-
-def instantiate_method():
-    return NewMethod(method_task,method_name)
