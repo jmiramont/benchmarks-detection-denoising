@@ -16,7 +16,6 @@ for mod_name in modules:
         method_class = getattr(mod, a_class[0])
         class_parent = method_class.__bases__[0]
         if class_parent == MethodTemplate:
-            elmetodo = method_class()
             list_of_methods.append(method_class())
 
 
@@ -36,12 +35,12 @@ for method_instance in list_of_methods:
         dictionary_of_methods[method_id] = method_instance.method
         dictionary_of_parameters[method_id] = method_instance.get_parameters()
 
-SNRin = [0, 10, 20, 30]
+SNRin = [10, 20]
 
 # Standard test:
-signal_names = ['LinearChirp', 'CosChirp', 'ExpChirp', # Single-component signals
-                'McCrossingChirps',                       # Crossing-components  
-                'McHarmonic','McPureTones',]               # Multi-Component Harmonic signals  
+signal_names = ['LinearChirp', 'CosChirp', 'ExpChirp',] # Single-component signals
+                # 'McCrossingChirps',                       # Crossing-components  
+                # 'McHarmonic','McPureTones',]               # Multi-Component Harmonic signals  
                 # 'McModulatedTones','McDoubleCosChirp',    # Multi-Component Non-Harmonic  
                 # 'McSyntheticMixture','McSyntheticMixture2',
                 # 'HermiteFunction','HermiteElipse',        # Hermite type signals  
@@ -55,7 +54,7 @@ if __name__ == "__main__":
                             parameters = dictionary_of_parameters, 
                             SNRin = SNRin,
                             using_signals=signal_names, 
-                            repetitions = 30,
+                            repetitions = 10,
                             verbosity=4,
                             parallelize=4)
 

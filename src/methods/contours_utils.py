@@ -288,7 +288,7 @@ def get_contours_and_basins(indicator, reassignment_pos):
     return contours, basins
   
 
-def contours_filtering(signal, q = None, Nbasins = None):
+def contours_filtering(signal, q = None, Nbasins = None, dict_output=False):
     if q is None and Nbasins is None:
         Nbasins = 3
     else:
@@ -330,7 +330,10 @@ def contours_filtering(signal, q = None, Nbasins = None):
     F_hat = F*mask
     x_hat = 2*np.real(np.sum(F_hat, axis = 0))   
 
-    return x_hat, mask, contours, basins
+    if dict_output:
+        return {'x_hat': x_hat, 'mask': mask, 'contours': contours,'basins': basins}
+    else:
+        return x_hat
 
 
 def ridges_sst_filtering(signal,):

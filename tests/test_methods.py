@@ -63,8 +63,8 @@ def test_methods_parameters():
         assert isinstance(parameters, list) or isinstance(parameters, tuple) , method_id +"'s parameters should be a list or a tuple."
 
 
-# Test the shape of the outputs
-def test_methods_outputs_shape(dummy_input):
+# Test the shape of the outputs for denoising methods
+def test_denoising_methods_outputs_shape(dummy_input):
     for method_instance in list_of_methods:
         if method_instance.task == 'denoising':
             method_id = method_instance.id
@@ -74,13 +74,18 @@ def test_methods_outputs_shape(dummy_input):
                 output = method_instance.method(dummy_input, params=params)
                 assert (output.shape == dummy_input.shape), method_id +' output should have the same shape as input.'
 
+
+# Test the shape of the outputs for detection methods
+def test_detection_methods_outputs_shape(dummy_input):
+    for method_instance in list_of_methods:
         if method_instance.task == 'detection':
-            assert True
-            # method_id = method_instance.id
-            # print(method_id)
-            # output = method_instance.method(dummy_input, params=None)
-            # assert (output.shape[0] == dummy_input.shape[0]), method_id +' output shape[0] should be the same as input.shape[0].'
-            # assert all(isinstance(i,bool) for i in output), method_id +' output should be an array of booleans.'
+            method_id = method_instance.id
+            print(method_id)
+            parameters = method_instance.get_parameters()
+            for params in parameters:
+                output = method_instance.method(dummy_input, params=params)
+                assert (output.size == dummy_input.shape[0]), method_id +' output should have one value per signal.'
+                # assert all(isinstance(i,bool) for i in output), method_id +' output should be an array of booleans.'
 
 
 # Test the type of the outputs

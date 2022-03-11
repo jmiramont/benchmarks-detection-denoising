@@ -4,7 +4,7 @@ from numpy import pi as pi
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
 
-def hard_thresholding(signal, params=None):
+def hard_thresholding(signal, coeff=3, dict_output=False):
     if len(signal.shape) == 1:
         signal = np.resize(signal,(1,len(signal)))
 
@@ -13,13 +13,17 @@ def hard_thresholding(signal, params=None):
     S, stft, stft_padded, Npad = get_spectrogram(signal,g)
 
     gamma = np.median(np.abs(np.real(stft)))/0.6745
-    thr = 3*np.sqrt(2)*gamma
+    thr = coeff*np.sqrt(2)*gamma
     mask = np.abs(stft)
     mask[mask<thr] = 0
     mask[mask>=thr] = 1
 
     xr, t = reconstruct_signal_2(mask, stft_padded, Npad)
-    return xr, mask
+
+    if dict_output:
+        return {'xr': xr, 'mask': mask} 
+    else:
+        return xr
 
 
 class NewMethod(MethodTemplate):
@@ -28,12 +32,15 @@ class NewMethod(MethodTemplate):
         self.task = 'denoising'
 
 
-    def method(self,signals,params = None):
+    def method(self, signals, params):
         if len(signals.shape) == 1:
             signals = np.resize(signals,(1,len(signals)))
 
         signals_output = np.zeros(signals.shape)
         for i, signal in enumerate(signals):
-            signals_output[i], _ = hard_thresholding(signal,params)
+            if params is None:
+                signals_output[i] = hard_thresholding(signal)
+            else:
+                signals_output[i] = hard_thresholding(signal, **params)          
 
         return signals_output
