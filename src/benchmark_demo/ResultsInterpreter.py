@@ -66,7 +66,7 @@ class ResultsInterpreter:
                 aux = df2[df2['Method']==metodo]
                 if len(self.methods_and_params_dic[metodo])>1:
                     for params in self.methods_and_params_dic[metodo]:
-                        methods_names.append(tag+'+'+params)
+                        methods_names.append(tag+'+ \n\n'+params)
                         valores = df2[(df2['Method']==metodo)&(df2['Parameter']==params)]
                         valores = valores.iloc[:,4::].to_numpy().mean(axis = 0)
                         valores.resize((1,valores.shape[0]))

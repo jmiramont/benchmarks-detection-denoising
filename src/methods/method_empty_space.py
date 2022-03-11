@@ -52,7 +52,7 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     return hull_d, mask
 
 
-def empty_space_denoising(signal, params=None, return_dic=False):
+def empty_space_denoising(signal, radi_seg=1.0, radi_expand=0.5, return_dic=False):
     if len(signal.shape) == 1:
         signal = np.resize(signal,(1,len(signal)))
 
@@ -63,8 +63,8 @@ def empty_space_denoising(signal, params=None, return_dic=False):
     pos_aux = pos.copy()
     pos_aux[:,0] = pos[:,1]/a
     pos_aux[:,1] = pos[:,0]/a
-    empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=1.0)
-    hull_d , mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=0.5)
+    empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
+    hull_d , mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=radi_expand)
     xr, t = reconstruct_signal_2(mask, stft_padded, Npad)
 
     if return_dic:
@@ -81,12 +81,15 @@ class NewMethod(MethodTemplate):
         self.task = 'denoising'
         
 
-    def method(self,signals,params = None):
+    def method(self, signals, params):
         if len(signals.shape) == 1:
             signals = np.resize(signals,(1,len(signals)))
 
         signals_output = np.zeros(signals.shape)
         for i, signal in enumerate(signals):
-            signals_output[i] = empty_space_denoising(signal,params)
+            if params is None:
+                signals_output[i] = empty_space_denoising(signal)
+            else:
+                signals_output[i] = empty_space_denoising(signal, **params)    
         return signals_output
         

@@ -63,7 +63,7 @@ class Benchmark:
         self.verbosity = verbosity
 
         # Check the task is either 'denoising' or 'detecting'.
-        if (task != 'denoising' and task != 'detecting'):
+        if (task != 'denoising' and task != 'detection'):
             raise ValueError("The tasks should be either 'denoising' or 'detecting'.\n")
         else:
             self.task = task
@@ -152,7 +152,7 @@ class Benchmark:
         """
         compFuncs = {
             'denoising': snr_comparison,
-            'detection': lambda base_signal, method_output: method_output 
+            'detection': detection_perf_function,
         }
         return compFuncs[task]    
 
@@ -226,7 +226,8 @@ class Benchmark:
                         
                         # Either way, results are saved in a nested dictionary.
                         result =  self.comparisonFunction(base_signal, method_output)             
-                        params_dic['Params'+str(p)] = result
+                        # params_dic['Params'+str(p)] = result
+                        params_dic[str(params)] = result
 
                     self.methods_and_params_dic[method] = [key for key in params_dic] 
                     method_dic[method] = params_dic    
@@ -334,3 +335,7 @@ def snr_comparison(x,x_hat):
         qrf[i] = 10*np.log10(np.sum(x**2)/np.sum((x_hat[i,:]-x)**2))
     
     return qrf
+
+
+def detection_perf_function(original_signal, detection_output):
+    return detection_output
