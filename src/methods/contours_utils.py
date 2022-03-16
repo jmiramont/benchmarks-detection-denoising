@@ -170,7 +170,7 @@ def my_rm(x,T,K=None,fmax=0.5):
     k = 0
 
     Ex = np.mean(np.abs(x)**2)
-    Threshold = 1.0e-6*Ex
+    Threshold = 1.0e-4*Ex
     for i in range(F.shape[0]):
         for j in range(F.shape[1]):
             if S[i,j] > Threshold:
@@ -289,12 +289,13 @@ def get_contours_and_basins(indicator, reassignment_pos):
   
 
 def contours_filtering(signal, q = None, Nbasins = None, dict_output=False):
+    
     if q is None and Nbasins is None:
-        Nbasins = 3
+        q = 0.9
     else:
         if q is not None and Nbasins is not None:
-            q = None
-            Nbasins = 3
+            q = 0.9
+            Nbasins = None
             print('Please choose only one criterion for basins selection.')
 
     indicator, F, reassignment_pos = compute_contours(signal)

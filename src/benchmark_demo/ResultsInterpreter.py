@@ -33,7 +33,7 @@ class ResultsInterpreter:
         df = self.benchmark.get_results_as_df()
         aux_dic = dict()
         new_columns = df.columns.values[0:5].copy()
-        new_columns[-1] = 'SNRout'
+        new_columns[-1] = 'QRF'
         for i in range(4,df.shape[1]):
             idx = [j for j in range(4)]+[i]
             df_aux = df.iloc[:,idx]
@@ -124,50 +124,78 @@ class ResultsInterpreter:
     def get_snr_plot(self, df, x=None, y=None, hue=None, axis = None):
         markers = ['o','d','s','*']
         aux = np.unique(df[hue].to_numpy())
+        # print(aux)
         # fig, axis2 = plt.subplots(1,1)
-
-        for i, marker in zip(aux,markers):
-            df_aux = df[df[hue]==i]
+        
+        plots = [(method_name, markers[np.mod(i,4)]) for i, method_name in enumerate(aux)]
+        for method_name, marker in plots:
+            df_aux = df[df[hue]==method_name]
             u = np.unique(df_aux[x].to_numpy())
             v = np.zeros_like(u)
-            label = ''.join([c for c in string.capwords(i, sep = '_') if c.isupper()])
+            label = ''.join([c for c in string.capwords(method_name, sep = '_') if c.isupper()])
+            if method_name.find('-') > -1:
+                label= label+method_name[method_name.find('-')::]
+
             for uind, j in enumerate(u):
                 df_aux2 = df_aux[df_aux[x]==j]
-                v[uind] = np.mean(df_aux2[y].to_numpy())
+                v[uind] = np.nanmean(df_aux2[y].to_numpy())
 
             axis.plot(u,v,'-'+ marker, ms = 5, linewidth = 1.0, label=label)
-            axis.plot([np.min(u), np.max(u)],[np.min(u), np.max(u)],'--r', linewidth = 0.5)
+            axis.plot([np.min(u), np.max(u)],[np.min(u), np.max(u)],'r',
+                                                linestyle = (0, (5, 10)),
+                                                linewidth = 0.75)
             axis.set_xticks(u)
             axis.set_yticks(u)
             axis.set_xlabel(x + ' (dB)')
             axis.set_ylabel(y + ' (dB)')
-        return 
+        return
+
+    def get_snr_plot2(self, df, x=None, y=None, hue=None, axis = None):
+        markers = ['o','d','s','*']
+        line_style = ['--' for i in self.methods_ids]
+        sns.pointplot(x="SNRin", y="QRF", hue="Method",
+                    capsize=0.15, height=10, aspect=0.6, dodge=0.5,
+                    kind="point", data=df, errwidth = 0.7,
+                    linestyles=line_style, ax = axis)
+            
+            # axis.set_xticks(u)
+            # axis.set_yticks(u)
+            # axis.set_xlabel(x + ' (dB)')
+            # axis.set_ylabel(y + ' (dB)')
+        
 
     def get_summary_grid(self):
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
-
-        fig = plt.figure()
+        sns.set(style="ticks", rc={"lines.linewidth": 0.7})
         
-
+        fig = plt.figure()
         grid = ImageGrid(fig, 111,  # similar to subplot(111)
-                        nrows_ncols=(3,Nsignals//3),  # creates 2x2 grid of axes
+                        nrows_ncols=(int(np.ceil(Nsignals/4)),4),  # creates 2x2 grid of axes
                         axes_pad=0.5,  # pad between axes in inch.
                         )
-        
+
+        # fig, grid = plt.subplots(Nsignals//3,3)#, constrained_layout=True) #sharex=True, sharey=True, 
         for signal_id, ax in zip(self.signal_ids, grid):
-            print(signal_id) 
+            print(signal_id)
             # sns.set_theme() 
             df_aux = df_rearr[df_rearr['Signal_id']==signal_id]
-            self.get_snr_plot(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
+            indexes = df_aux['Parameter']!='None'
+            df_aux.loc[indexes,'Method'] = df_aux.loc[indexes,'Method'] +'-'+ df_aux.loc[indexes,'Parameter']  
+            # print(df_aux)
+
+            self.get_snr_plot(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
+            # self.get_snr_plot2(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
             ax.grid(linewidth = 0.5)
             ax.set_title(signal_id)
-            ax.legend(loc='upper left', frameon=False, fontsize = 'xx-small')
+            # ax.set_box_aspect(1)
             # sns.despine(offset=10, trim=True)
-
-        fig.set_size_inches((10,7))
+            ax.legend([],[], frameon=False)
+            ax.legend(loc='upper left', frameon=False, fontsize = 'xx-small')
+        
+        fig.set_size_inches((12,4*Nsignals//4))
         # plt.title(title, fontsize = 15)
-        fig.savefig('results/results_plots' +'.png',bbox_inches='tight')# , format='svg')
+        fig.savefig('results/figures/plots_grid_' +'.png',bbox_inches='tight')# , format='svg')
         
         return fig
 
@@ -186,13 +214,15 @@ class ResultsInterpreter:
             print(signal_id) 
             # sns.set_theme() 
             df_aux = df_rearr[df_rearr['Signal_id']==signal_id]
-            self.get_snr_plot(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
+            indexes = df_aux['Parameter']!='None'
+            df_aux.loc[indexes,'Method'] = df_aux.loc[indexes,'Method'] +'-'+ df_aux.loc[indexes,'Parameter']  
+            self.get_snr_plot(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
             ax.grid(linewidth = 0.5)
             ax.set_title(signal_id)
             ax.legend(loc='upper left', frameon=False, fontsize = 'small')
             # sns.despine(offset=10, trim=True)
 
             fig.set_size_inches((3,3))
-            fig.savefig('results/results_plots'+ signal_id +'.png',bbox_inches='tight')# , format='svg')
+            fig.savefig('results/figures/plot_'+ signal_id +'.pdf',bbox_inches='tight')# , format='svg')
             
         return fig    

@@ -121,20 +121,21 @@ class Benchmark:
         # Handle parallelization parameters:
         max_processes = multiprocessing.cpu_count()
 
-        if isinstance(parallelize,int):
-            if parallelize < max_processes:
-                self.processes = parallelize
-            else:
-                self.processes = max_processes
-            self.parallel_flag = True
+        if parallelize is False:
+            self.parallel_flag = False
         else:
-            if isinstance(parallelize,bool):
-                if parallelize:   
-                    available_proc = multiprocessing.cpu_count()    
-                    self.processes = np.max((1, available_proc//2 ))
+            if parallelize is True:
+                    if parallelize:   
+                        available_proc = multiprocessing.cpu_count()    
+                        self.processes = np.max((1, available_proc//2 ))
+                        self.parallel_flag = True
+            else:    
+                if isinstance(parallelize,int):
+                    if parallelize < max_processes:
+                        self.processes = parallelize
+                    else:
+                        self.processes = max_processes
                     self.parallel_flag = True
-                else:
-                    self.parallel_flag = False
                 
 
     def check_methods_output(self,output,input):

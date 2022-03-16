@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import pi as pi
 import scipy.signal as sg
-from benchmark_demo.utilstf import hermite_fun
+from benchmark_demo.utilstf import hermite_fun, get_stft, reconstruct_signal_2
 import string
 # from matplotlib import pyplot as plt
 
@@ -29,6 +29,7 @@ class SignalBank:
         
         
         self.fmin = 1.5*np.sqrt(N)/N
+        # self.fmin = 1*self.tmin/N
         self.fmax = 0.5-self.fmin
         self.fmid = (self.fmax-self.fmin)/2 + self.fmin
 
@@ -272,10 +273,16 @@ class SignalBank:
             impulses[int((i+1)*dloc -1 )] = 10
         
         signal[tmin:tmax] = impulses
-        return signal
 
 
-    def signal_mc_triple_impulse_2(self, Nimpulses = 3):
+        stft, stft_padded, Npad = get_stft(signal)
+        for i in range(stft.shape[1]):
+            stft[:,i] *= sg.windows.tukey(stft.shape[0],0.95)
+
+        xr, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
+        return xr
+
+    def signal_mc_impulses(self, Nimpulses = 7):
         N = self.N
         tmin = self.tmin
         tmax = N-tmin
@@ -284,10 +291,16 @@ class SignalBank:
         impulses = np.zeros((Nsub,))
         signal = np.zeros((N,))
         for i in range(Nimpulses):
-            impulses[int((i+1)*dloc -1 )] = 10*(i+1)
+            impulses[int((i+1)*dloc -1 )] = 2*(i+1)
         
         signal[tmin:tmax] = impulses
-        return signal
+
+        stft, stft_padded, Npad = get_stft(signal)
+        for i in range(stft.shape[1]):
+            stft[:,i] *= sg.windows.tukey(stft.shape[0],0.95)
+
+        xr, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
+        return xr
 
 
     def signal_exp_chirp(self, finit=None, fend=None, exponent=2, r_instf=False):
@@ -298,7 +311,7 @@ class SignalBank:
         tsub = np.arange(Nsub)/Nsub
 
         if finit is None:
-            finit=self.fmin
+            finit=1.5*self.fmin
 
         if fend is None:    
             fend=self.fmax
@@ -311,7 +324,7 @@ class SignalBank:
         phase = np.cumsum(instf)
         x = np.cos(2*pi*phase)
         signal = np.zeros((N,))
-        signal[tmin:tmax] = x
+        signal[tmin:tmax] = x*sg.windows.tukey(Nsub,0.25)
 
         if r_instf:
             return signal, instf, tmin, tmax
@@ -445,6 +458,36 @@ class SignalBank:
         return chirp1+chirp2+chirp3
 
 
+
+    def signal_mc_synthetic_mixture_3(self):
+        N = self.N
+        tmin = self.tmin
+        tmax = self.tmax
+        Nsub = self.Nsub
+        tmid = Nsub//2
+        # tmid = tmid +(tmax-tmid)//5
+        tsub = np.arange(Nsub)
+        
+        sigma = 0.005
+        
+        instf = self.fmin + 1*(tsub/Nsub-0.05)**2
+        instf = instf[np.where(instf<self.fmax)]
+        instf = instf[np.where(self.fmin<instf)]
+        phase = np.cumsum(instf)
+        x = np.cos(2*pi*phase)*sg.windows.tukey(len(phase),0.25)
+
+        instf = np.ones((Nsub,))*(self.fmid-self.fmin)/2
+        instf = instf[tmid::]
+        phase = np.cumsum(instf)
+        x2 = np.cos(2*pi*phase)*sg.windows.tukey(len(phase),0.25)
+
+        signal = np.zeros((N,))
+        signal[tmin:tmin+len(x)] = x
+        signal[tmid:tmid+len(x2)] = signal[tmid:tmid+len(x2)] + x2
+        return signal
+
+
+    
 
     def get_all_signals(self):
         signals = np.zeros((len(self.signalDict),self.N))

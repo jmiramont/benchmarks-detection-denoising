@@ -52,7 +52,7 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     return hull_d, mask
 
 
-def empty_space_denoising(signal, radi_seg=1.0, radi_expand=0.5, return_dic=False):
+def empty_space_denoising(signal, radi_seg=0.9, radi_expand=0.5, return_dic=False):
     if len(signal.shape) == 1:
         signal = np.resize(signal,(1,len(signal)))
 

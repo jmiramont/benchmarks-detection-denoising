@@ -36,16 +36,8 @@ def puntosEnTriangulos(S,TRI,vertices):
     return mascara
     
 
-def adyacent_triangle(tri,first_tri = None):
-    if first_tri is None:
-        first_tri=tri[0]
-        c1 = first_tri.copy()
-        c1.resize((1,3))
-        tri = tri[1::]
-        flag_one_argument = True
-    else:
-        flag_one_argument = False
-
+def adjacent_triangle(tri, first_tri = None):
+    # Find adjacent triangles of first_tri.
     Nselect=tri.shape[0]
     ladosCompartidos = np.zeros((Nselect,3))
     for i in range(3):
@@ -53,38 +45,62 @@ def adyacent_triangle(tri,first_tri = None):
             ladosCompartidos[:,i] = ladosCompartidos[:,i] + (tri[:,i]==first_tri[j])
 
     triangulos_adyacentes= np.sum(ladosCompartidos,axis=1) >= 2
+
+    first_tri = np.resize(first_tri, (1,3))
+    # If no adjacent triangles are found, just return first_tri.
     if sum(triangulos_adyacentes)==0:
-        c = None
-    else:        
-        c=tri[triangulos_adyacentes,:]
+        return None, tri
+    else:
+    # Otherwise, save adjacent triangles, and look for their own adjacent.        
+        this_adjacent = tri[triangulos_adyacentes,:]
         tri = np.delete(tri, triangulos_adyacentes, axis = 0)
-        for i in range (c.shape[0]):
-            aux = adyacent_triangle(tri,c[i,:])
-            if aux is not None:
-                c = np.concatenate((c, aux), axis=0)
-            # c=[c; trianguloAdyacente(lista_tri,c(i,:))];
-
-    if flag_one_argument:
-        if c is None:
-            c = c1
-        else:
-            c = np.concatenate((c1, c), axis=0)
-
-    return c
+        return this_adjacent, tri
     
-def grouping_triangles(S, zeros, tri, ngroups=1, min_group_size=1):
+def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
     groups_of_triangles = list()
+    ntri = tri.shape[0]
+
+    if q is None and ngroups is None:
+        ngroups = 'all'
+
+    if q is not None:
+        ngroups = None
+
+    if ngroups is not None:
+        q = None
+
+    current_triangles=tri[0]
+    current_triangles = np.resize(current_triangles,(1,3))
+    tri = tri[1::]
+    saved_triangles = np.zeros((1,3))
     while tri.size > 0:
-        cluster = adyacent_triangle(tri)
-        cluster.astype(int)
-        for cluster_triangle in cluster:
-            for i,triangle in enumerate(tri):
-                if np.all(cluster_triangle==triangle):
-                    tri = np.delete(tri,i,axis=0)
-                    break
+        next_triangles = np.zeros((1,3))
+        for triangle in current_triangles:
+            adjacent_tri, tri = adjacent_triangle(tri, triangle)
+            if adjacent_tri is not None:
+                next_triangles = np.concatenate((next_triangles,adjacent_tri),axis=0)
         
-        if cluster.shape[0] >= min_group_size:
-            groups_of_triangles.append(cluster)
+        saved_triangles = np.concatenate((saved_triangles,current_triangles),axis=0)
+        
+        if np.all(next_triangles == 0):
+            if saved_triangles.shape[0] >= min_group_size+1:
+                groups_of_triangles.append(saved_triangles[1::])
+            
+            saved_triangles = np.zeros((1,3))
+            current_triangles = tri
+            current_triangles=tri[0]
+            current_triangles = np.resize(current_triangles,(1,3))
+            tri = tri[1::]
+            if tri.size == 0:
+                saved_triangles = np.concatenate((saved_triangles,current_triangles),axis=0)
+                groups_of_triangles.append(saved_triangles[1::])
+
+        else:
+            current_triangles = next_triangles[1::]
+        
+        
+
+    ntri2 = sum(len(i) for i in groups_of_triangles) # control ntri1==ntri2
 
     energy_per_group = list()
     masks_of_each_group = list()
@@ -97,14 +113,19 @@ def grouping_triangles(S, zeros, tri, ngroups=1, min_group_size=1):
         energy_per_group.append(np.sum(S*mask))
         masks_of_each_group.append(mask)
 
-    
-    if ngroups == 'all' or ngroups > len(groups_of_triangles):
-        ngroups = len(groups_of_triangles)
-    
+    if q is not None:
+        ind_group = np.where(energy_per_group > np.quantile(energy_per_group,q))
+        groups_of_triangles = [groups_of_triangles[i] for i in ind_group[0]]
+        masks_of_each_group = [masks_of_each_group[i] for i in ind_group[0]]
 
-    order_energy_basins = np.argsort(energy_per_group)[-1:0:-1]
-    groups_of_triangles = [groups_of_triangles[i] for i in order_energy_basins[0:ngroups]]
-    masks_of_each_group = [masks_of_each_group[i] for i in order_energy_basins[0:ngroups]]
+    if ngroups is not None:
+        if ngroups == 'all' or ngroups > len(groups_of_triangles):
+            ngroups = len(groups_of_triangles)
+    
+        order_energy_basins = np.argsort(energy_per_group)[-1:0:-1]
+        groups_of_triangles = [groups_of_triangles[i] for i in order_energy_basins[0:ngroups]]
+        masks_of_each_group = [masks_of_each_group[i] for i in order_energy_basins[0:ngroups]]
+    
     mask = sum(masks_of_each_group)
     mask[np.where(mask>1)] = 1  
 
@@ -134,7 +155,9 @@ def mask_triangles(F, tri, selection):
 
     return mask
 
-def delaunay_triangulation_denoising(signal, LB=1.75, UB=3, return_dic = False, grouping=True, ngroups=3, min_group_size=1):
+def delaunay_triangulation_denoising(signal, LB=1.85, UB=3, return_dic = False,
+                                    grouping=True, ngroups=None, min_group_size=1,
+                                    q = None):
     if len(signal.shape) == 1:
         signal = np.resize(signal,(1,len(signal)))
 
@@ -168,7 +191,10 @@ def delaunay_triangulation_denoising(signal, LB=1.75, UB=3, return_dic = False, 
     # selection =  & valid_tri
     tri_select = tri[selection]
     if grouping:
-        groups_of_triangles,mask = grouping_triangles(S, zeros, tri_select, ngroups=ngroups, min_group_size=min_group_size)
+        groups_of_triangles, mask = grouping_triangles(S, zeros, tri_select,
+                                                        ngroups=ngroups,
+                                                        min_group_size=min_group_size,
+                                                        q = q)
     else:
         mask = mask_triangles(stft, delaunay_graph, np.where(selection))  
 
@@ -200,5 +226,6 @@ class NewMethod(MethodTemplate):
                 signals_output[i] = delaunay_triangulation_denoising(signal, **params)    
 
         return signals_output
+
 
 
