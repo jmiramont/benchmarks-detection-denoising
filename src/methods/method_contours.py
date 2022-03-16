@@ -22,6 +22,7 @@ class NewMethod(MethodTemplate):
 
         return signals_output
 
-    def get_parameters(self):            # Use it to parametrize your method.
-        return [{'q': i} for i in (0.99, 0.95, 0.9)]
+    # def get_parameters(self):            # Use it to parametrize your method.
+    #   return [{'q': 0.95}, ]    
+        # return [{'q': i} for i in (0.99, 0.95, 0.9)]
         
