@@ -50,14 +50,14 @@ SNRin = [0, 10, 20, 30]
 
 
 # Standard test:
-signal_names = ['CosChirp',]# 'ExpChirp',      # Single-component signals
-                # 'ToneSharpAttack',           # Dumped and Sharps attacks
-                # 'McCrossingChirps',                         # Crossing-components  
-                # 'McMultiLinear', 'McCosPlusTone',                 # Multi-Component signals  
-                # 'McMultiCos',     # Multi-Component Non-Harmonic  
-                # 'McSyntheticMixture2','McSyntheticMixture3',
-                # 'HermiteFunction',                          # Hermite type signals  
-                # 'McImpulses','McTripleImpulse']
+signal_names = ['CosChirp', 'ExpChirp',      # Single-component signals
+                'ToneSharpAttack',           # Dumped and Sharps attacks
+                'McCrossingChirps',                         # Crossing-components  
+                'McMultiLinear', 'McCosPlusTone',                 # Multi-Component signals  
+                'McMultiCos',     # Multi-Component Non-Harmonic  
+                'McSyntheticMixture2','McSyntheticMixture3',
+                'HermiteFunction',                          # Hermite type signals  
+                'McImpulses','McTripleImpulse']
                 # 'McOnOffTones']                           # Modes that born and die
 
 
@@ -85,9 +85,6 @@ if __name__ == "__main__":
     my_benchmark.save_to_file(filename = 'results/last_benchmark')
     results_interpreter = ResultsInterpreter(my_benchmark)
     results_interpreter.save_report()
-    # output_string = results_interpreter.get_table_means()
-    # with open('RESULTS.md', 'w') as f:
-    #     f.write(output_string)
-
+    results_interpreter.get_summary_plots(size=(3,2))
 
   
