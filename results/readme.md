@@ -48,7 +48,7 @@ SNRin values:
 * McTripleImpulse 
 
 ## Figures:
- ![Summary of results](results_plots.png) 
+ ![Summary of results](results/../figures/plots_grid.png) 
 
 ## Mean results tables: 
 ### Signal: CosChirp

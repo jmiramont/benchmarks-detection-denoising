@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 import string
+import os
 
 
 class ResultsInterpreter:
@@ -24,8 +25,10 @@ class ResultsInterpreter:
         self.snr_values = a_benchmark.SNRin
         self.signal_ids = a_benchmark.signal_ids
         self.methods_and_params_dic  = a_benchmark.methods_and_params_dic
+        self.path_results = os.path.join('results')
+        self.path_results_figures = os.path.join('results', 'figures')
 
-        # self.parameters  # TODO parameters collecting for each method.
+        # self.parameters  
 
     def get_benchmark_as_data_frame(self):
         return self.benchmark.get_results_as_df()    
@@ -98,7 +101,7 @@ class ResultsInterpreter:
         return output_string
 
 
-    def save_report(self, filename = 'results/readme.md'):
+    def save_report(self, filename = None):
         self.get_summary_grid()
 
         lines = ['# Benchmark Report \n',
@@ -111,9 +114,12 @@ class ResultsInterpreter:
         lines = lines + [str(val) + ', ' for val in self.snr_values] + ['\n']
         lines = lines + ['### Methods  \n'] + ['* ' + methid +' \n' for methid in self.methods_ids]
         lines = lines + ['### Signals  \n'] + ['* ' + signid +' \n' for signid in self.signal_ids]
-        lines = lines + ['## Figures:\n ![Summary of results](results_plots.png) \n'] 
+        lines = lines + ['## Figures:\n ![Summary of results](results/../figures/plots_grid.png) \n'] 
         lines = lines + ['## Mean results tables: \n']
        
+        if filename is None:
+            filename = os.path.join('results','readme.md')
+
         with open(filename, 'w') as f:
             f.write('\n'.join(lines))
             # f.writelines(lines)
@@ -166,7 +172,7 @@ class ResultsInterpreter:
             # axis.set_ylabel(y + ' (dB)')
         
 
-    def get_summary_grid(self):
+    def get_summary_grid(self, filename = None):
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
         sns.set(style="ticks", rc={"lines.linewidth": 0.7})
@@ -196,9 +202,11 @@ class ResultsInterpreter:
             ax.legend(loc='upper left', frameon=False, fontsize = 'xx-small')
         
         fig.set_size_inches((12,4*Nsignals//4))
-        # plt.title(title, fontsize = 15)
-        fig.savefig('results/figures/plots_grid_' +'.png',bbox_inches='tight')# , format='svg')
         
+        if filename is None:
+            filename = os.path.join('results','figures','plots_grid.png')
+
+        fig.savefig(filename,bbox_inches='tight')# , format='svg')
         return fig
 
 
@@ -227,4 +235,10 @@ class ResultsInterpreter:
             fig.set_size_inches(size)
             fig.savefig('results/figures/plot_'+ signal_id +'.pdf',bbox_inches='tight')# , format='svg')
             
-        return fig    
+        return fig
+
+    def save_csv_files(self, filename=None):
+            df1 = self.get_benchmark_as_data_frame()
+            
+            df2 = self.rearrange_data_frame()
+
