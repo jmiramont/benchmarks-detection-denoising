@@ -87,7 +87,7 @@ jobs:
         run: |
           git config --local user.email "MeBot@github.com"
           git config --local user.name "MeBot"
-            git add .\results --all
+            git add results --all
           git commit -m "Add changes" -a
           
       - name: Push changes
