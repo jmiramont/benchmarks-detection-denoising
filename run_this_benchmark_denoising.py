@@ -50,14 +50,14 @@ SNRin = [0, 10, 20, 30]
 
 
 # Standard test:
-signal_names = ['CosChirp', 'ExpChirp',      # Single-component signals
-                'ToneSharpAttack',           # Dumped and Sharps attacks
+signal_names = ['CosChirp',]# 'ExpChirp',      # Single-component signals
+                # 'ToneSharpAttack',           # Dumped and Sharps attacks
                 # 'McCrossingChirps',                         # Crossing-components  
-                'McMultiLinear', 'McCosPlusTone',                 # Multi-Component signals  
-                'McMultiCos',     # Multi-Component Non-Harmonic  
-                'McSyntheticMixture2','McSyntheticMixture3',
-                'HermiteFunction',                          # Hermite type signals  
-                'McImpulses','McTripleImpulse']
+                # 'McMultiLinear', 'McCosPlusTone',                 # Multi-Component signals  
+                # 'McMultiCos',     # Multi-Component Non-Harmonic  
+                # 'McSyntheticMixture2','McSyntheticMixture3',
+                # 'HermiteFunction',                          # Hermite type signals  
+                # 'McImpulses','McTripleImpulse']
                 # 'McOnOffTones']                           # Modes that born and die
 
 
