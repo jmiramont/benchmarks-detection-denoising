@@ -27,6 +27,8 @@ class ResultsInterpreter:
 
         # self.parameters  # TODO parameters collecting for each method.
 
+    def get_benchmark_as_data_frame(self):
+        return self.benchmark.get_results_as_df()    
 
     def rearrange_data_frame(self, results = None):
         """ Rearrange DataFrame table for using seaborn library. """
@@ -200,7 +202,7 @@ class ResultsInterpreter:
         return fig
 
 
-    def get_summary_plots(self):
+    def get_summary_plots(self, size=(3,3)):
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
 
@@ -222,7 +224,7 @@ class ResultsInterpreter:
             ax.legend(loc='upper left', frameon=False, fontsize = 'small')
             # sns.despine(offset=10, trim=True)
 
-            fig.set_size_inches((3,3))
+            fig.set_size_inches(size)
             fig.savefig('results/figures/plot_'+ signal_id +'.pdf',bbox_inches='tight')# , format='svg')
             
         return fig    
