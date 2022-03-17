@@ -124,12 +124,14 @@ class SignalBank:
             aux += chirp
         return aux
 
-    def signal_mc_harmonic(self, ncomps=5):
+    def signal_mc_multi_linear(self, ncomps=5):
         a1=self.fmin/1.3
         b1=self.fmin
         return self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)
 
-
+    def signal_mc_harmonic(self,ncomps=5):
+        return self.signal_mc_multi_linear(ncomps)
+        
     def signal_tone_dumped(self):
         N = self.N
         eps = 1e-6
@@ -366,8 +368,15 @@ class SignalBank:
             aux += signal
         return aux
 
-
     def signal_mc_modulated_tones(self):
+        return self.signal_mc_multi_cos()
+
+
+    def signal_mc_modulated_tones_2(self):
+        return self.signal_mc_multi_cos_2()
+
+
+    def signal_mc_multi_cos(self):
         x1 = self.signal_cos_chirp(omega = 8, a1=1, f0=self.fmin+0.04, a2=0.03)
         x2 = self.signal_cos_chirp(omega = 6, a1=1, f0=self.fmid, a2=0.02)       
         x3 = self.signal_cos_chirp(omega = 4, a1=1, f0=self.fmax-0.03, a2=0.02)       
@@ -375,7 +384,7 @@ class SignalBank:
         return x1+x2+x3
 
 
-    def signal_mc_modulated_tones_2(self):
+    def signal_mc_multi_cos_2(self):
         x1 = self.signal_cos_chirp(omega = 5, a1=1.5,   f0=self.fmin+0.04, a2=0.03)
         x2 = self.signal_cos_chirp(omega = 5, a1=1.2,   f0=self.fmid, a2=0.02)   
         x3 = self.signal_cos_chirp(omega = 5, a1=1,     f0=self.fmax-0.03, a2=0.02)       

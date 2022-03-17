@@ -24,7 +24,6 @@ import numpy as np
 from benchmark_demo.ResultsInterpreter import ResultsInterpreter
 
 
-
 dictionary_of_methods = dict()
 dictionary_of_parameters = dict()
 
@@ -54,8 +53,8 @@ SNRin = [0, 10, 20, 30]
 signal_names = ['CosChirp', 'ExpChirp',      # Single-component signals
                 'ToneSharpAttack',           # Dumped and Sharps attacks
                 # 'McCrossingChirps',                         # Crossing-components  
-                'McHarmonic', 'McCosPlusTone',                 # Multi-Component Harmonic signals  
-                'McModulatedTones',     # Multi-Component Non-Harmonic  
+                'McMultiLinear', 'McCosPlusTone',                 # Multi-Component signals  
+                'McMultiCos',     # Multi-Component Non-Harmonic  
                 'McSyntheticMixture2','McSyntheticMixture3',
                 'HermiteFunction',                          # Hermite type signals  
                 'McImpulses','McTripleImpulse']

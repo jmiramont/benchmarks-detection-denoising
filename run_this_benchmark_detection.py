@@ -37,7 +37,7 @@ for method_instance in list_of_methods:
 SNRin = [10, 20]
 
 # Standard test:
-signal_names = ['LinearChirp', 'CosChirp', 'ExpChirp',] # Single-component signals
+signal_names = ['LinearChirp'] # Single-component signals
                 # 'McCrossingChirps',                       # Crossing-components  
                 # 'McHarmonic','McPureTones',]               # Multi-Component Harmonic signals  
                 # 'McModulatedTones','McDoubleCosChirp',    # Multi-Component Non-Harmonic  
@@ -47,15 +47,16 @@ signal_names = ['LinearChirp', 'CosChirp', 'ExpChirp',] # Single-component signa
                 # 'McOnOffTones']                           # Modes that born and die
 
 if __name__ == "__main__":
+    np.random.seed(0) 
     my_benchmark = Benchmark(task = 'detection',
                             methods = dictionary_of_methods,
                             N = 256,
                             parameters = dictionary_of_parameters, 
                             SNRin = SNRin,
                             using_signals=signal_names, 
-                            repetitions = 10,
+                            repetitions=200,
                             verbosity=4,
-                            parallelize=4)
+                            parallelize=12)
 
     start = time.time()
     my_results = my_benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
@@ -65,9 +66,9 @@ if __name__ == "__main__":
     print(df)
     
     # Save the benchmark to a file. Notice that only the methods_ids are saved.
-    my_benchmark.save_to_file(filename = 'results/last_benchmark')
-    results_interpreter = ResultsInterpreter(my_benchmark)
-    results_interpreter.save_report()
+    my_benchmark.save_to_file(filename = 'results/last_benchmark_detection')
+    # results_interpreter = ResultsInterpreter(my_benchmark)
+    # results_interpreter.save_report()
     # output_string = results_interpreter.get_table_means()
     # with open('RESULTS.md', 'w') as f:
     #     f.write(output_string)
