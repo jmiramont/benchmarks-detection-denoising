@@ -65,6 +65,7 @@ def empty_space_denoising(signal, radi_seg=0.9, radi_expand=0.5, return_dic=Fals
     pos_aux[:,1] = pos[:,0]/a
     empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
     hull_d , mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=radi_expand)
+    # mask[:] = 1
     xr, t = reconstruct_signal_2(mask, stft_padded, Npad)
 
     if return_dic:

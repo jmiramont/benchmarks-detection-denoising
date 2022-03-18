@@ -18,6 +18,7 @@ def hard_thresholding(signal, coeff=3, dict_output=False):
     mask[mask<thr] = 0
     mask[mask>=thr] = 1
 
+    # mask[:] = 1
     xr, t = reconstruct_signal_2(mask, stft_padded, Npad)
 
     if dict_output:
