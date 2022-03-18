@@ -87,7 +87,7 @@ jobs:
   #    run the benchmark
   #----------------------------------------------  
   benchmark:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs: [test]
     steps:
       - uses: actions/checkout@v2
