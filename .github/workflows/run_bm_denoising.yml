@@ -13,11 +13,11 @@ on: [push]
 jobs:
   # This workflow contains a single job called "test"
   test:
-    # The type of runner that the job will run on
+  # The type of runner that the job will run on
     strategy:
       matrix:
-        os: ["ubuntu-latest", "macos-latest"]
-#         os: ["ubuntu-latest"]
+#         os: ["ubuntu-latest", "macos-latest"]
+        os: ["ubuntu-latest"]
         # python-version: ["3.7", "3.8", "3.9"]
         python-version: ["3.8"]
     runs-on: ${{ matrix.os }}
@@ -76,16 +76,23 @@ jobs:
       #----------------------------------------------
       #    run test suite and output coverage file
       #----------------------------------------------
-      - name: Test with pytest
+#       - name: Test with pytest
         # Configuration of pytest [tool.pytest.ini_options] in pyproject.toml
         # https://docs.pytest.org/en/latest/reference/customize.html#pyproject-toml
         # In the template repository options passed are
         # -ra -q -vv --cov=spatstat_interface --cov-report=xml
+#         run: poetry run pytest
+  
+  #----------------------------------------------
+  #    run the benchmark
+  #----------------------------------------------  
+  benchmark:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - name: Test with pytest
         run: poetry run pytest
         
-      #----------------------------------------------
-      #    run the benchmark
-      #----------------------------------------------
 #       - name: Run the Benchmark
 #         run: poetry run python run_this_benchmark_denoising.py
   
