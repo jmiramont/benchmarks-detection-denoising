@@ -147,7 +147,7 @@ def compute_mc_sim(signal, sc=None, Nfft=None,  MC_reps = 199, statistic='L',
     simulation_pos = list()
 
     # Compute noise distribution of zeros.
-    # start = time.time()
+    start = time.time()
     for i in range(MC_reps):   
         x = np.random.randn(N)
         stf, _, _, _ = get_spectrogram(x, window=g)
@@ -155,8 +155,8 @@ def compute_mc_sim(signal, sc=None, Nfft=None,  MC_reps = 199, statistic='L',
         pos = zeros_finder(stf)/T    
         simulation_pos.append(pos)
 
-    # end = time.time()
-    # print(end-start)
+    end = time.time()
+    print(end-start)
     
     output = dict()
     for sts in statistic:

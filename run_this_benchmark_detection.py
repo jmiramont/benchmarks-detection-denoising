@@ -56,7 +56,7 @@ if __name__ == "__main__":
                             using_signals=signal_names, 
                             repetitions=200,
                             verbosity=4,
-                            parallelize=12)
+                            parallelize=False)
 
     start = time.time()
     my_results = my_benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
