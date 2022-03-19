@@ -239,6 +239,5 @@ class ResultsInterpreter:
 
     def save_csv_files(self, filename=None):
             df1 = self.get_benchmark_as_data_frame()
-            
             df2 = self.rearrange_data_frame()
 
