@@ -37,6 +37,7 @@ class NewMethod(MethodTemplate):
 
         reject_H0 = np.zeros((signals.shape[0],), dtype = bool)
         for i, signal in enumerate(signals):
+            print(i)
             if params is None:
                 reject_H0[i] = compute_hyp_test(signal, sc=self.sc, rmax=2.0)
             else:
