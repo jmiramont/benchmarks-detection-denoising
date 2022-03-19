@@ -76,12 +76,12 @@ jobs:
       #----------------------------------------------
       #    run test suite and output coverage file
       #----------------------------------------------
-#       - name: Test with pytest
+      - name: Test with pytest
 #         # Configuration of pytest [tool.pytest.ini_options] in pyproject.toml
 #         # https://docs.pytest.org/en/latest/reference/customize.html#pyproject-toml
 #         # In the template repository options passed are
 #         # -ra -q -vv --cov=spatstat_interface --cov-report=xml
-#         run: poetry run pytest
+        run: poetry run pytest
   
   #----------------------------------------------
   #    run the benchmark
@@ -127,24 +127,24 @@ jobs:
       - name: Install package
         run: poetry install
         
-      - name: Test with pytest
-        run: poetry run pytest
+      # - name: Test with pytest
+        # run: poetry run pytest
 
-#       - name: Run the Benchmark
-#         run: poetry run python run_this_benchmark_denoising.py
+      - name: Run the Benchmark
+        run: poetry run python run_this_benchmark_denoising.py
   
-#       - name: Commit files
-#         run: |
-#           git config --local user.email "MeBot@github.com"
-#           git config --local user.name "MeBot"
-#           git add results --all
-#           git commit -m "Add changes" -a
+      - name: Commit files
+        run: |
+          git config --local user.email "MeBot@github.com"
+          git config --local user.name "MeBot"
+          git add results --all
+          git commit -m "Add changes" -a
           
-#       - name: Push changes
-#         uses: ad-m/github-push-action@master
-#         with:
-#           github_token: ${{ secrets.GITHUB_TOKEN }}
-#           branch: ${{ github.ref }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
 
 
   benchmark_detection:
@@ -189,22 +189,21 @@ jobs:
       - name: Install package
         run: poetry install
 
-      - name: Test with pytest
-        run: poetry run pytest
+      # - name: Test with pytest
+        # run: poetry run pytest
 
-
-#       - name: Run the Benchmark
-#         run: poetry run python run_this_benchmark_detection.py
+      - name: Run the Benchmark
+        run: poetry run python run_this_benchmark_detection.py
   
-#       - name: Commit files
-#         run: |
-#           git config --local user.email "MeBot@github.com"
-#           git config --local user.name "MeBot"
-#           git add results --all
-#           git commit -m "Add changes" -a
+      - name: Commit files
+        run: |
+          git config --local user.email "MeBot@github.com"
+          git config --local user.name "MeBot"
+          git add results --all
+          git commit -m "Add changes" -a
           
-#       - name: Push changes
-#         uses: ad-m/github-push-action@master
-#         with:
-#           github_token: ${{ secrets.GITHUB_TOKEN }}
-#           branch: ${{ github.ref }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
