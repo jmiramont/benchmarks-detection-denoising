@@ -30,12 +30,12 @@ dictionary_of_parameters = dict()
 # Select only those methods for denoising.
 
 for method_instance in list_of_methods:
-    if method_instance.task == 'denoising':
+    if method_instance.task == 'detection':
         method_id = method_instance.id
         dictionary_of_methods[method_id] = method_instance.method
         dictionary_of_parameters[method_id] = method_instance.get_parameters()
 
-SNRin = [0, 10, 20, 30]
+SNRin = [10, 20]
 
 # Standard test:
 # signal_names = ['LinearChirp', 'CosChirp', 'ExpChirp',      # Single-component signals
@@ -66,11 +66,11 @@ if __name__ == "__main__":
     np.random.seed(0) 
     my_benchmark = Benchmark(task = 'denoising',
                             methods = dictionary_of_methods,
-                            N = 512,
+                            N = 256,
                             parameters = dictionary_of_parameters, 
                             SNRin = SNRin,
                             using_signals=signal_names, 
-                            repetitions = 30,
+                            repetitions = 200,
                             verbosity=4,
                             parallelize=5)
 
