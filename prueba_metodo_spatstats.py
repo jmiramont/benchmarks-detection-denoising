@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import cmocean
 from benchmark_demo.utilstf import *
-from methods.spatstats_utils import *
+from methods.spatstats_utils import ComputeStatistics, compute_hyp_test
 from math import atan2
 from benchmark_demo.SignalBank import SignalBank
 
