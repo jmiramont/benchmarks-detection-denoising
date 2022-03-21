@@ -1,3 +1,4 @@
+print('Loading benchmark modules..,')
 import importlib
 from methods import *
 from methods.MethodTemplate import MethodTemplate as MethodTemplate

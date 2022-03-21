@@ -18,22 +18,22 @@ class ComputeStatistics():
     
     def __init__(self):
         print('Starting spatstat-interface...')
-        self.spatstat = SpatstatInterface(update=False)  
+        self.spatstat = SpatstatInterface(update=True)  
         print('Importing packages...')
-        self.spatstat.import_package("core", "geom", update=False)
+        self.spatstat.import_package("core", "geom", update=True)
         print('Finished.')
 
 
     def compute_positions_and_bounds(self, pos):
-        u_r = robjects.FloatVector(pos[:, 1])                       # Crea los vectores para pasarle a R.
+        u_r = robjects.FloatVector(pos[:, 1])                       
         v_r = robjects.FloatVector(pos[:, 0])
-        bounds_u = np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]) # Calcula los límites del plano (la ventana)
+        bounds_u = np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]) 
         bounds_v = np.array([np.min(pos[:, 0]), np.max(pos[:, 0])])
 
         return u_r, v_r, bounds_u, bounds_v
 
     def compute_Lest(self, pos, r_des):
-        radius_r = robjects.FloatVector(r_des)                      # Vector con los radios que se usan.
+        radius_r = robjects.FloatVector(r_des)                      
 
         u_r, v_r, bounds_u, bounds_v = self.compute_positions_and_bounds(pos)
         b_u = robjects.FloatVector(bounds_u)        
