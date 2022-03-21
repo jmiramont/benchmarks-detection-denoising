@@ -44,8 +44,7 @@ jobs:
           cache-version: 2
           extra-packages: |
             any::spatstat
-            #any::ggplot2
-            #any::rcmdcheck
+
       
       #----------------------------------------------
       #  -----  install & configure poetry  -----
