@@ -1,4 +1,4 @@
-print('Loading benchmark modules..,')
+print('Loading benchmark modules...')
 import importlib
 from methods import *
 from methods.MethodTemplate import MethodTemplate as MethodTemplate
@@ -51,6 +51,7 @@ signal_names = ['LinearChirp',] # Single-component signals
                 # 'McOnOffTones']                           # Modes that born and die
 
 if __name__ == "__main__":
+    print('Starting benchmark...')
     np.random.seed(0) 
     my_benchmark = Benchmark(task = 'detection',
                             methods = dictionary_of_methods,
