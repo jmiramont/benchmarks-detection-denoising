@@ -34,10 +34,18 @@ jobs:
           python-version: ${{ matrix.python-version }}
           
       - name: Install R
-#         uses: actions/checkout@v2
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: "4.1.0" # The R version to download (if necessary) and use.
+          
+      - name: Install R pack
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 2
+          extra-packages: |
+            any::spatstat
+            #any::ggplot2
+            #any::rcmdcheck
       
       #----------------------------------------------
       #  -----  install & configure poetry  -----
