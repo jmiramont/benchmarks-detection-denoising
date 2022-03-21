@@ -32,7 +32,7 @@ class NewMethod(MethodTemplate):
         # A shared class attribute
         print('Creating Compute Statistics object...')
         self.sc = ComputeStatistics()
-        print('Finished')
+        print('Finished.')
 
     def method(self, signals, params): # Implement this method.
         if len(signals.shape) == 1:
