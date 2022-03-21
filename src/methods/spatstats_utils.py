@@ -10,9 +10,9 @@ from rpy2.robjects import numpy2ri
 print('Finished.')
 # numpy2ri.activate() #numpy2ri.deactivate()
 # from spatstat_interface.utils import to_pandas_data_frame
-print('Importing SpatstatInterface...')
-from spatstat_interface.interface import SpatstatInterface
-print('Finished.')
+# print('Importing SpatstatInterface...')
+# from spatstat_interface.interface import SpatstatInterface
+# print('Finished.')
 
 from benchmark_demo.utilstf import *
 # import time
@@ -22,9 +22,10 @@ from methods.contours_utils import zeros_finder
 
 class ComputeStatistics():
     
-    def __init__(self):
-        print('Starting spatstat-interface...')
-        self.spatstat = SpatstatInterface(update=False)  
+    def __init__(self, spatstat):
+        self.spatstat = spatstat
+        # print('Starting spatstat-interface...')
+        # self.spatstat = SpatstatInterface(update=False)  
         print('Importing packages...')
         self.spatstat.import_package("core", "geom", update=False)
         print('Finished.')
