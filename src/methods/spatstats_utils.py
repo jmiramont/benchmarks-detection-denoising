@@ -17,8 +17,11 @@ from methods.contours_utils import zeros_finder
 class ComputeStatistics():
     
     def __init__(self):
+        print('Starting spatstat-interface...')
         self.spatstat = SpatstatInterface(update=False)  
+        print('Importing packages...')
         self.spatstat.import_package("core", "geom", update=False)
+        print('Finished.')
 
 
     def compute_positions_and_bounds(self, pos):
