@@ -1,3 +1,4 @@
+print('Loading method_spatstats module...')
 from methods.MethodTemplate import MethodTemplate # You must import the MethodTemplate abstract class.
 
 """
@@ -29,8 +30,9 @@ class NewMethod(MethodTemplate):
         self.task = 'detection'
 
         # A shared class attribute
-        
+        print('Creating Compute Statistics object...')
         self.sc = ComputeStatistics()
+        print('Finished')
 
     def method(self, signals, params): # Implement this method.
         if len(signals.shape) == 1:
