@@ -8,8 +8,10 @@ modules = dir()
 modules = [mod_name for mod_name in modules if mod_name.startswith('method_')]
 global list_of_methods # Use with caution.
 
+print('Collecting methods...')
 list_of_methods = list()    
 for mod_name in modules:
+    print(mod_name)
     mod = importlib.import_module('methods.' + mod_name)
     classes_in_mod = inspect.getmembers(mod, inspect.isclass)
     for a_class in classes_in_mod:
@@ -18,6 +20,7 @@ for mod_name in modules:
         if class_parent == MethodTemplate:
             list_of_methods.append(method_class())
 
+print('Finished.')
 
 from benchmark_demo.Benchmark import *
 import numpy as np
