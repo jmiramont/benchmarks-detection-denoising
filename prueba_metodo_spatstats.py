@@ -47,7 +47,8 @@ for SNRin in SNRs:
         print(j)
         hyp_test_dict = compute_hyp_test(signal, sc=sc, MC_reps = 199, alpha = 0.05,
                                     statistic=statistics, pnorm = pnorm,
-                                    radius = radius)
+                                    radius = radius, rmax = 3.0)
+        print(hyp_test_dict)
         for sts in statistics:
             output[sts].append(hyp_test_dict[sts])
         
