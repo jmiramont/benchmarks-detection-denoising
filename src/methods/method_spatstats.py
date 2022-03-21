@@ -29,6 +29,7 @@ class NewMethod(MethodTemplate):
         self.task = 'detection'
 
         # A shared class attribute
+        
         self.sc = ComputeStatistics()
 
     def method(self, signals, params): # Implement this method.
