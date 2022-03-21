@@ -28,7 +28,6 @@ dictionary_of_methods = dict()
 dictionary_of_parameters = dict()
 
 # Select only those methods for denoising.
-
 for method_instance in list_of_methods:
     if method_instance.task == 'detection':
         method_id = method_instance.id
@@ -37,29 +36,7 @@ for method_instance in list_of_methods:
 
 SNRin = [10, 20]
 
-# Standard test:
-# signal_names = ['LinearChirp', 'CosChirp', 'ExpChirp',      # Single-component signals
-#                 'ToneDumped','ToneSharpAttack',           # Dumped and Sharps attacks
-#                 'McCrossingChirps',                         # Crossing-components  
-#                 'McHarmonic','McPureTones',                 # Multi-Component Harmonic signals  
-#                 'McModulatedTones','McDoubleCosChirp',     # Multi-Component Non-Harmonic  
-#                 'McSyntheticMixture','McSyntheticMixture2',
-#                 'HermiteFunction',                          # Hermite type signals  
-#                 'McTripleImpulse2',
-#                 'McOnOffTones']                           # Modes that born and die
-
-
-# Standard test:
-signal_names = ['CosChirp', 'ExpChirp',      # Single-component signals
-                'ToneSharpAttack',           # Dumped and Sharps attacks
-                'McCrossingChirps',                         # Crossing-components  
-                'McMultiLinear', 'McCosPlusTone',                 # Multi-Component signals  
-                'McMultiCos',     # Multi-Component Non-Harmonic  
-                'McSyntheticMixture2','McSyntheticMixture3',
-                'HermiteFunction',                          # Hermite type signals  
-                'McImpulses','McTripleImpulse']
-                # 'McOnOffTones']                           # Modes that born and die
-
+signal_names = ['LinearChirp',]
 
 
 if __name__ == "__main__":
@@ -82,9 +59,9 @@ if __name__ == "__main__":
     print(df)
     
     # Save the benchmark to a file. Notice that only the methods_ids are saved.
-    my_benchmark.save_to_file(filename = 'results/last_benchmark')
+    my_benchmark.save_to_file(filename = 'results/last_benchmark_detection')
     results_interpreter = ResultsInterpreter(my_benchmark)
-    results_interpreter.save_report()
-    results_interpreter.get_summary_plots(size=(3,2))
+    # results_interpreter.save_report()
+    # results_interpreter.get_summary_plots(size=(3,2))
 
   

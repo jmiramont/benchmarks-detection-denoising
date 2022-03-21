@@ -12,7 +12,7 @@ print('Finished.')
 # from spatstat_interface.utils import to_pandas_data_frame
 print('Importing SpatstatInterface...')
 from spatstat_interface.interface import SpatstatInterface
-print('Finished,')
+print('Finished.')
 
 from benchmark_demo.utilstf import *
 # import time
