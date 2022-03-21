@@ -31,7 +31,7 @@ class NewMethod(MethodTemplate):
 
         # A shared class attribute
         print('Creating Compute Statistics object...')
-        self.sc = ComputeStatistics()
+        # self.sc = ComputeStatistics()
         print('Finished.')
 
     def method(self, signals, params): # Implement this method.
@@ -42,9 +42,9 @@ class NewMethod(MethodTemplate):
         for i, signal in enumerate(signals):
             print(i)
             if params is None:
-                reject_H0[i] = compute_hyp_test(signal, sc=self.sc, rmax=2.0)
+                reject_H0[i] = compute_hyp_test(signal, sc=None, rmax=2.0)
             else:
-                reject_H0[i] = compute_hyp_test(signal, sc=self.sc, **params)
+                reject_H0[i] = compute_hyp_test(signal, sc=None, **params)
 
         return reject_H0
         
