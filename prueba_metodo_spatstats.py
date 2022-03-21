@@ -34,8 +34,9 @@ plt.show()
 SNRs = (5, 10, 15, 20)
 radius = np.arange(0.0, 4.0, 0.01)
 radius = np.linspace(0.0, 3.0)
+print('Starting ComputeStatistics.')
+sc = ComputeStatistics()
 print('Hi.')
-# sc = ComputeStatistics()
 # # output = np.zeros((reps,len(radius)))
 # for SNRin in SNRs:
 #     output = {sts:list() for sts in statistics}
