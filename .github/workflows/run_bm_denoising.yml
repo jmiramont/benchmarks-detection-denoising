@@ -88,8 +88,9 @@ jobs:
       #    run the benchmark
       #----------------------------------------------  
       - name: Run the Benchmark
-        run: poetry run python run_this_benchmark_detection.py
-  
+        # run: poetry run python run_this_benchmark_detection.py 
+        run: poetry run python prueba_metodo_spatstats.py
+
       - name: Commit files
         run: |
           git config --local user.email "MeBot@github.com"
