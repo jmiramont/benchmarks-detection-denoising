@@ -37,7 +37,7 @@ radius = np.arange(0.0, 4.0, 0.01)
 # radius = np.linspace(0.0, 3.0)
 
 print('Instantiating SpatstatInterface...')
-spatstat = SpatstatInterface(update=False)  
+spatstat = SpatstatInterface(update=False);  
 sc = ComputeStatistics(spatstat=spatstat)
 # output = np.zeros((reps,len(radius)))
 for SNRin in SNRs:
