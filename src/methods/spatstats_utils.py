@@ -11,7 +11,7 @@ print('Finished.')
 # numpy2ri.activate() #numpy2ri.deactivate()
 # from spatstat_interface.utils import to_pandas_data_frame
 # print('Importing SpatstatInterface...')
-# from spatstat_interface.interface import SpatstatInterface
+from spatstat_interface.interface import SpatstatInterface
 # print('Finished.')
 
 from benchmark_demo.utilstf import *
@@ -22,13 +22,16 @@ from methods.contours_utils import zeros_finder
 
 class ComputeStatistics():
     
-    def __init__(self, spatstat):
-        self.spatstat = spatstat
+    def __init__(self, spatstat=None):
+        if spatstat is None:
+            
         # print('Starting spatstat-interface...')
-        # self.spatstat = SpatstatInterface(update=False)  
-        print('Importing packages...')
+            self.spatstat = SpatstatInterface(update=False)  
+        else:
+            self.spatstat = spatstat
+        
         self.spatstat.import_package("core", "geom", update=False)
-        print('Finished.')
+        
 
 
     def compute_positions_and_bounds(self, pos):
