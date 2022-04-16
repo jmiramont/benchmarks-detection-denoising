@@ -1,3 +1,7 @@
+"""
+
+"""
+
 from methods.MethodTemplate import MethodTemplate
 # You must import the MethodTemplate abstract class.
 
