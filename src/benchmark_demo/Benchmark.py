@@ -12,14 +12,55 @@ import multiprocessing
 class Benchmark:
     """
     This class performs a number of tasks for methods comparison.
+
+    Methods
+    -------
+    input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity, parallelize):
+        Parse input parameters of the constructor of class Benchmark.
+    
+    check_methods_output(output,input):
+        Check that the outputs of the method to benchmark fulfill the required type and shape.
+    
+    set_comparison_function(task):
+        Set the performance function for the selected task (future tasks could easily add new performance functions)
+    
+    inner_loop(benchmark_parameters):
+        Main loop of the Benchmark.
+
+    run_test(self):
+        Run the benchmark.
+
+    save_to_file(self,filename = None):
+        Save the results to a binary file that encodes the benchmark object.
+        Notice that the methods associated with the benchmark, not being pickable objects,
+        are NOT saved.
+
+    get_results_as_df(self, results = None):
+        Get a pandas DataFrame object with the results of the benchmark.
+    
     """
 
     def __init__(self, task='denoising', methods=None, N=256, parameters=None,
                 SNRin=None, repetitions=None, using_signals='all', verbosity=1,
                 parallelize = False):
+        """ Initialize the main parameters of the test bench before running the benchmark.
+
+        Args:
+            task (str, optional): The task to test the methods. Defaults to 'denoising'.
+            methods (dict, optional): A dictionary of functions. Defaults to None.
+            N (int, optional): Lengths of the signals. Defaults to 256.
+            parameters (dict, optional): A dictionary of parameters for the methods
+            to run. The keys of this dictionary must be same as the methods dictionary. Defaults to None.
+            SNRin (tuple, optional): List or tuple with the SNR values. Defaults to None.
+            repetitions (int, optional): Number of times each method is applied for each value of SNR.
+            This value is the number of noise realizations that are used to assess the methods.
+            Defaults to None.
+            using_signals (tuple, optional): Tuple or list of the signal ids from the SignalBank class. Defaults to 'all'.
+            verbosity (int, optional): Number from 0 to 4. It determines the number of messages
+            passed to the console informing the progress of the benchmarking process. Defaults to 1.
+            parallelize (bool, optional): If True, tries to run the process in parallel. Defaults to False.
         """
-        This constructor parse the inputs and instantiate the object attributes
-        """
+
         # Objects attributes
         self.task = None
         self.methods = None
@@ -30,7 +71,6 @@ class Benchmark:
         self.verbosity = None
         self.methods_and_params_dic = dict()
         
-
         # Check input parameters and initialize the object attributes
         self.input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity, parallelize)
 
@@ -55,8 +95,25 @@ class Benchmark:
         
 
     def input_parsing(self, task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity, parallelize):
-        """
-        Check input parameters and initialize the object attributes
+        """Parse input parameters of the constructor of class Benchmark.
+
+        Args:
+            task (str, optional): The task to test the methods. Defaults to 'denoising'.
+            methods (dict, optional): A dictionary of functions. Defaults to None.
+            N (int, optional): Lengths of the signals. Defaults to 256.
+            parameters (dict, optional): A dictionary of parameters for the methods
+            to run. The keys of this dictionary must be same as the methods dictionary. Defaults to None.
+            SNRin (tuple, optional): List or tuple with the SNR values. Defaults to None.
+            repetitions (int, optional): Number of times each method is applied for each value of SNR.
+            This value is the number of noise realizations that are used to assess the methods.
+            Defaults to None.
+            using_signals (tuple, optional): Tuple or list of the signal ids from the SignalBank class. Defaults to 'all'.
+            verbosity (int, optional): Number from 0 to 4. It determines the number of messages
+            passed to the console informing the progress of the benchmarking process. Defaults to 1.
+            parallelize (bool, optional): If True, tries to run the process in parallel. Defaults to False.
+        
+        Raises:
+            ValueError: If any parameter is not correctly parsed.
         """
         # Check verbosity
         assert isinstance(verbosity,int) and 0<=verbosity<5 , 'Verbosity should be an integer between 0 and 4'
@@ -138,7 +195,16 @@ class Benchmark:
                     self.parallel_flag = True
                 
 
-    def check_methods_output(self,output,input):
+    def check_methods_output(self, output, input):
+        """Check that the outputs of the method to benchmark fulfill the required type and shape.
+
+        Args:
+            output: Output from the method. The type and shape depends on the task.
+            input: Input passed to the method to produce output.
+
+        Raises:
+            ValueError: If the output does not comply with the required type and shape for the selected task.
+        """
         if self.task == 'denoising':
             if type(output) is not np.ndarray:
                 raise ValueError("Method's output should be a numpy array for task='denoising'.\n")
@@ -149,8 +215,9 @@ class Benchmark:
 
     def set_comparison_function(self, task):
         """
-        Define different comparison functions for each task.
+        Set the performance function for the selected task (future tasks could easily add new performance functions)
         """
+        
         compFuncs = {
             'denoising': snr_comparison,
             'detection': detection_perf_function,
@@ -159,6 +226,15 @@ class Benchmark:
 
 
     def inner_loop(self, benchmark_parameters):
+        """Main loop of the Benchmark.
+
+        Args:
+            benchmark_parameters (tuple): Tuple or list with the parameters of the benchmark.
+
+        Returns:
+            narray: Return a numpy array, the shape of which depends on the selected task.
+        """
+
         method, params, noisy_signals = benchmark_parameters
         try:    
             method_output = self.methods[method](noisy_signals,params)
@@ -172,8 +248,10 @@ class Benchmark:
 
 
     def run_test(self):
-        """
-        Run benchmark with the set parameters.
+        """Run the benchmark.
+
+        Returns:
+            dict: Returns nested dictionaries with the results of the benchmark.
         """
         if self.verbosity > 0:
             print('Running benchmark...')
@@ -246,10 +324,19 @@ class Benchmark:
 
         return results_dic
 
-
         
     def save_to_file(self,filename = None):
-        """ Save results to file with filename"""
+        """Save the results to a binary file that encodes the benchmark object.
+        Notice that the methods associated with the benchmark, not being pickable objects,
+        are NOT saved.
+
+        Args:
+            filename (str, optional): Path and filename. Defaults to None.
+
+        Returns:
+            bool: True if the file was succesfully created.
+        """
+
         if filename is None:
             filename = 'a_benchmark'
 
@@ -262,6 +349,14 @@ class Benchmark:
 
 
     def get_results_as_df(self, results = None):
+        """Get a pandas DataFrame object with the results of the benchmark.
+
+        Args:
+            results (dict, optional): Nested dictionary with the results of the benchmark. Defaults to None.
+
+        Returns:
+            DataFrame: Returns a pandas DataFrame with the results.
+        """
         if results is None:
             df = self.dic2df(self.results)
         else:

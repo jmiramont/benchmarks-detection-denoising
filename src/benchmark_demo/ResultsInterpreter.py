@@ -10,6 +10,13 @@ import os
 
 
 class ResultsInterpreter:
+    """_summary_
+        
+    Methods
+    -------
+    
+    
+    """
     
     def __init__(self, a_benchmark):
         if isinstance(a_benchmark,Benchmark):
