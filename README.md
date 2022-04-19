@@ -33,7 +33,7 @@ The instructions below will help you to add a new method and run the benchmark a
 First you should have a local copy of this repository to add and modify files.
 For this, [fork this repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo), for example by using the "Fork" button above:
 
-![Repository header](doc/../docs/header_repo.png)
+![Repository header](docs/header_repo.png)
 
 This will create a copy of the repository in your own GitHub account, the URL of which should look like
 
@@ -170,15 +170,34 @@ This will check a series of important points for running the benchmark online, m
 1. Your method class inherits the ```MethodTemplate``` abstract class.
 2. The inputs and outputs of your method follows the required format according to the designated task.
 
-Once the tests are passed, you can now either create a pull request, or [run the benchmark locally](#running-this-benchmark-locally)
+Once the tests are passed, you can now either create a pull request to run the benchmark remotely, or [run the benchmark locally](#running-this-benchmark-locally).
 
 ### Create a pull request
 
-You can create a new pull request by using 
+In order to run the benchmark remotely, you can request the addition of your method for benchmarking along with other existing ones. This can be done by creating a [Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests). First, you need to update the remote version of your fork, now that you have added your new method and tested that it is working with ```pytest```. To do this, commit the changes and then push them to your remote repository:
+
+```bash
+git commit --all -m "Uploading a new method"
+git push origin new_method
+```
+
+Now you can create a [new pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) by using the "Contribute" button from the fork we have created before:
+
+![Start a pull request.](docs/start_a_pull_request.png)
+
+and then "Open a Pull Request". There you will need to select the branch where your changes are going to be made in the original repository of the benchmark. Please choose here "new_methods_branch":
+
+![Choose the right branch.](docs/pull_request_branch.png)
+
+Finally, send the pull request by clicking on "Create pull request":
+
+![Create you pull request.](docs/finishing_pull_request.png)
+
+You can also add an small comment in the "Write" field. A short explanation of the new method and related references (notes, articles, etc.) will be appreciated.
 
 Once this is done, the benchmark is run remotely using [GitHub Actions](./.github/workflows) provided that the pull request is approved.
 
-*Remark: Notice that ```pytest``` is also run again in this workflow. Therefore, keep in mind that if your method didn't pass the tests locally, it won't pass them at this stage either.*
+*Remark: Notice that ```pytest``` is also run again in this workflow. Therefore, keep in mind that if your method didn't pass the tests locally, it won't pass them at this stage either, and the pull request will not be approved*.
 
 ### Running this benchmark locally
 
