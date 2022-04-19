@@ -6,11 +6,12 @@
   - [Summary](#summary)
   - [What is this benchmark?](#what-is-this-benchmark)
   - [How to use this benchmark?](#how-to-use-this-benchmark)
-    - [Cloning this repository](#cloning-this-repository)
+    - [Forking this repository](#forking-this-repository)
+    - [Installation using ```poetry```](#installation-using-poetry)
+  - [Benchmarking your own method](#benchmarking-your-own-method)
     - [Using a template file for your method](#using-a-template-file-for-your-method)
-    - [Adding your method's dependencies with ```poetry```](#adding-your-methods-dependencies-with-poetry)
     - [Checking everything is in order with ```pytest```](#checking-everything-is-in-order-with-pytest)
-    - [Branching the repository](#branching-the-repository)
+    - [Create a pull request](#create-a-pull-request)
     - [Running this benchmark locally](#running-this-benchmark-locally)
 
 ## What is this benchmark?
@@ -27,107 +28,43 @@ The [*notebooks*](./notebooks/) folder contains a number of minimal working exam
 
 The instructions below will help you to add a new method and run the benchmark afterwards.
 
-### Cloning this repository
+### Forking this repository
 
-First you should have a local copy of this repository to add and modify files. For this, open a terminal in the directory you prefer and use:
+First you should have a local copy of this repository to add and modify files.
+For this, [fork this repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo), for example by using the "Fork" button above:
+
+![Repository header](doc/../docs/header_repo.png)
+
+This will create a copy of the repository in your own GitHub account, the URL of which should look like
 
 ```bash
-git clone https://github.com/jmiramont/benchmark-test.git
+https://github.com/YOUR-USERNAME/benchmark-test
 ```
 
-A new method can be tested against others simply by adding a file that contains it into the folder [src/methods](./src/methods). To do this, you method must first have the following signature:
+Now, let's create a local copy, i.e. in your computer, of the repository you have just forked. Open a terminal in a directory of your preference and use
 
-```python
-    def a_new_method(signals, params):
-        ...
+```bash
+git clone https://github.com/YOUR-USERNAME/benchmark-test.git
 ```
 
-Methods should receive an `M`x`N` numpy array of signals, where `M` is the number of signals, and `N` is the number of their time samples. Additionally, they should receive a second parameter `params` to allow testing different combinations of input parameters. The shape of the output depends on the task (*denoising* or *detection*). The output of your method must be of a certain shape and type, regarding the task your method is devoted to:
+When one fork a repository, a copy of all the branches existing in the original one are also created. It would be better if you create a new branch to work in your own changes, mainly adding your new method to be tested. For this, create a new branch using:
 
-- For Denoising: The output must be a numpy array and have the same shape as the input (an array of shape `M`x`N`).
-- For Detection: The output must be an array whose first dimension is equal to `M`.
-
-Now you have to add a file with your method in the folder [src/methods](./src/methods/). Let's see how to do this in the following section.
-
-### Using a template file for your method
-
-The name of the file with your method must start with *method_* and have certain content to help the benchmark to automatically discover new added methods:
-
-1. The file should encapsulate your method in a new class that inherits from a template called `NewMethod`.
-2. The file must include a the definition of a function `instantiate_method()` that instantiates an object of the class that represent your method.
-
-This is much easier than it sounds :). To make it simpler, [a file called *method_new_basic_template.py* is provided](./new_method_example/method_new_basic_template.py) which you can use as a template. You just have to fill in the parts that implement your method.
-
-Let's take a look at the different parts of the template file  *method_new_basic_template.py*. In the first section of the template file you can either import a function with your method, or implement everything in this file:
-
-```python
-from methods.MethodTemplate import MethodTemplate
-# You must import the MethodTemplate abstract class.
-
-"""
-|
-| Import here all the modules you need.
-| Remark: Make sure that neither of those modules starts with "method_".
-|
-"""
-
-""" 
-|
-| Put here all the functions that your method uses.
-| Remark: Make sure that this file starts with "method_".
-|
-| def a_function_of_my_method(signal,params):
-|   ...
-|
-"""
+```bash
+git branch new_method
+git checkout new_method
 ```
 
-In the next part of the file, your method is encapsulated in a new class called `NewMethod` (you can change this name if you prefer to). The only requisite for the class that represents your method is that it inherits from the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate`. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes by forcing the implementation of certain *abstract* methods. This simply means that you will have to implement the class constructor and a class method called -unsurprisingly- `method()`:
+### Installation using ```poetry```
 
-```python
-
-""" Create here a new class that will encapsulate your method.
-This class should inherit the abstract class MethodTemplate.
-By doing this, you must then implement the class method: 
-
-def method(self, signal, params)
-
-which should receive the signals and any parameters
-that you desire to pass to your method.You can use this file as an example.
-"""
-
-class NewMethod(MethodTemplate):
-    def __init__(self):
-      self.id = 'a_new_method'
-      self.task = 'denoising'  # Should be either 'denoising' or 'detection'
-
-    def method(self, signals, params = None): # Implement this method.
-        ...
-
-    # def get_parameters(self):            # Use it to parametrize your method.
-    #     return [None,]      
-
-```
-
-The constructor function ```__init__(self)``` must initialize the attributes ```self.id``` and ```self.task```. The first is an string to identify your method in the benchmark. The second is the name of the task your method is devoted to. This can be either ```'denoising'``` or ```'detection'```. Notice that if you fail to use such names this will prevent you from benchmarking your method.
-
-Lastly, as anticipated above, you have to implement the class function ```method(self, signals, params)```. This function may act as a wrapper of your method, i.e. you implement your method elsewhere and call it from this function, or you could implement it directly here, this is up to you :).
-
-If you want to test your method using different sets of parameters, you can also implement the function `get_parameters()` to return a list with the desired input parameters (you can find an example of this [here](./new_method_example/method_new_with_parameters.py)).
-
-*Remark: Do not modify the abstract class `MethodTemplate`*.
-
-Finally, **you have to move the file** with all the modifications to the folder [/src/methods](./src/methods). Changing the name of the file is possible, but keep in mind that **the file's name must start with "*method_*" to be recognizable**.
-
-### Adding your method's dependencies with ```poetry```
-
-Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add them using [```poetry```](https://python-poetry.org/docs/), a tool for dependency management and packaging in python. First install ```poetry``` following the steps described [here](https://python-poetry.org/docs/#installation). Once you're done with this, open a terminal in the directory where you clone the benchmark (or use the console in your preferred IDE) and make ```poetry``` create a virtual environment and install all the current dependencies of the benchmark:
+Before starting to make changes in the repository, we need to install the basic dependencies of the benchmark. With that in mind, we use [```poetry```](https://python-poetry.org/docs/), a tool for dependency management and packaging in python. First install ```poetry``` following the steps described [here](https://python-poetry.org/docs/#installation). Once you're done with this, open a terminal in the directory where you clone the benchmark (or use the console in your preferred IDE). Then, make ```poetry``` create a virtual environment and install all the current dependencies of the benchmark using:
 
 ```bash
 poetry install 
 ```
 
-After this, add all your dependencies by modifying the ```.toml``` file in the folder, under the ```[tool.poetry.dependencies]``` section. For example:
+Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add them using [```poetry```](https://python-poetry.org/docs/).
+
+You can add all your dependencies by modifying the ```.toml``` file in the folder, under the ```[tool.poetry.dependencies]``` section. For example:
 
 ```bash
 [tool.poetry.dependencies]
@@ -147,6 +84,79 @@ and following the instructions prompted in the console.
 
 *Remark: Notice that the use of ```poetry``` for adding the dependencies of your packet is key for running the benchmark using [GitHub Actions](./.github/workflows), please consider this while adding your method.*
 
+## Benchmarking your own method
+
+A new method can be tested against others by adding a file into the folder [src/methods](./src/methods) containing the definition of a class with some specific characteristics. We shall see how to do this in the following sections.
+
+First, the function implementing your method must have the following signature:
+
+```python
+    def a_new_method(signals, params):
+        ...
+```
+
+Methods should receive an `M`x`N` numpy array of signals, where `M` is the number of signals, and `N` is the number of their time samples. Additionally, they should receive a second parameter `params` to allow testing different combinations of input parameters. The shape and type of the output depends on the task (*denoising* or *detection*):
+
+- For Denoising: The output must be a numpy array and have the same shape as the input (an array of shape `M`x`N`).
+- For Detection: The output must be an array whose first dimension is equal to `M`.
+
+In the following section, we will see how to create a class that compartmentalize your method and some information needed to run the benchmark.
+
+### Using a template file for your method
+
+The name of the file with your method must start with *method_* and have certain content to be automatically discovered by the benchmark functionality. For starters, the file should encapsulate your method in a new class. This is much easier than it sounds :). To make it simpler, [a file called *method_new_basic_template.py* is made available](./new_method_example/method_new_basic_template.py) which you can use as a template. You just have to fill in the parts that implement your method.
+
+The template file *method_new_basic_template.py* is divided in three sections. In the first section, you can import a function with your method or implement everything in the same file:
+
+```python
+""" First section ----------------------------------------------------------------------
+| Import here all the modules you need.
+| Remark: Make sure that neither of those modules starts with "method_".
+"""
+from methods.MethodTemplate import MethodTemplate # Import the template!
+```
+
+Additionally, the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate` is imported here. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes, by forcing the implementation of certain *abstract* methods. We will see later that the class that encapsulates your method must inherit from this template.
+
+The second section of the file should include all the functions your method needs to work. This functions could also be defined in a separate module imported in the previous section as well. Although it is not mandatory to add them here, but we recommend it so as to keep everything in a single file.
+
+In the third and final section, your method is encapsulated in a new class called `NewMethod` (you can change this name if you prefer to, but it is not strictly necessary.). As mentioned before, the only requisite for the class that represents your method is that it inherits from the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate`. This simply means that you will have to implement the class constructor and a class function called -unsurprisingly- `method()`:
+
+```python
+""" Third section ----------------------------------------------------------------------
+| Create here a new class that will encapsulate your method.
+| This class should inherit the abstract class MethodTemplate.
+| You must then implement the class function: 
+
+def method(self, signal, params)
+    ...
+| which should receive the signals and any parameters that you desire to pass to your
+| method.
+"""
+
+class NewMethod(MethodTemplate):
+    def __init__(self):
+        self.id = 'a_new_method'
+        self.task = 'denoising'  # Should be either 'denoising' or 'detection'
+
+    def method(self, signals, params = None): # Implement this method.
+        ...
+
+    # def get_parameters(self):            # Use it to parametrize your method.
+    #     return [None,]
+
+```
+
+The constructor function ```__init__(self)``` must initialize the attributes ```self.id``` and ```self.task```. The first is a string to identify your method in the benchmark. The second is the name of the task your method is devoted to. This can be either ```'denoising'``` or ```'detection'```. Notice that if you fail to use such names this will prevent you from benchmarking your method.
+
+Lastly, as anticipated above, you have to implement the class function ```method(self, signals, params)```. This function may act as a wrapper of your method, i.e. you implement your method elsewhere and call it from this function, or you could implement it directly here. This is up to you :).
+
+If you want to test your method using different sets of parameters, you can also implement the function `get_parameters()` to return a list with the desired input parameters (you can find an example of this [here](./new_method_example/method_new_with_parameters.py)).
+
+*Remark: Do not modify the abstract class `MethodTemplate`*.
+
+Finally, **you have to move the file** with all the modifications to the folder [/src/methods](./src/methods). Changing the name of the file is possible, but keep in mind that **the file's name must start with "*method_*" to be recognizable**.
+
 ### Checking everything is in order with ```pytest```
 
 Once your dependencies are ready, you should check that everything is in order using the ```pytest``` testing suit. To do this, simply run the following in a console located in your local version of the repository:
@@ -160,23 +170,13 @@ This will check a series of important points for running the benchmark online, m
 1. Your method class inherits the ```MethodTemplate``` abstract class.
 2. The inputs and outputs of your method follows the required format according to the designated task.
 
-Once the tests are passed, you can now either branch the repository or run the benchmark locally.
+Once the tests are passed, you can now either create a pull request, or [run the benchmark locally](#running-this-benchmark-locally)
 
-### Branching the repository
+### Create a pull request
 
-First, create a new branch using:
+You can create a new pull request by using 
 
-```bash
-git branch new_branch
-```
-
-After this, you can upload your new branch with:
-
-```bash
-git push origin new_branch
-```
-
-This should create a new branch called ```new_branch```, that stems from the default repository. Once this is done, the benchmark is run remotely using GitHub Actions.
+Once this is done, the benchmark is run remotely using [GitHub Actions](./.github/workflows) provided that the pull request is approved.
 
 *Remark: Notice that ```pytest``` is also run again in this workflow. Therefore, keep in mind that if your method didn't pass the tests locally, it won't pass them at this stage either.*
 
