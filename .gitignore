@@ -15,7 +15,6 @@ benchmark_demo/prueba_metodo_HT.py
 benchmark_demo/prueba_metodo_patrick.py
 benchmark_demo/prueba_metodo_remi.py
 __pycache__
-docs
 src/benchmark_demo/bank_signal_mwe.py
 src/benchmark_demo/prueba_metodo_HT.py
 src/benchmark_demo/prueba_metodo_patrick.py
