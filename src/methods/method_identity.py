@@ -14,6 +14,6 @@ class NewMethod(MethodTemplate):
         if len(signals.shape) == 1:
             signals = np.resize(signals,(1,len(signals)))
 
-        signals_output = signals
+        signals_output = 2*signals
    
         return signals_output
