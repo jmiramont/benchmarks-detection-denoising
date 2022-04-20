@@ -62,9 +62,7 @@ Before starting to make changes in the repository, we need to install the basic 
 poetry install 
 ```
 
-Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add them using [```poetry```](https://python-poetry.org/docs/).
-
-You can add all your dependencies by modifying the ```.toml``` file in the folder, under the ```[tool.poetry.dependencies]``` section. For example:
+Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add all your dependencies by modifying the ```.toml``` file in the folder, under the ```[tool.poetry.dependencies]``` section. For example:
 
 ```bash
 [tool.poetry.dependencies]
@@ -81,6 +79,14 @@ poetry add numpy
 ```
 
 and following the instructions prompted in the console.
+
+Afer this, run
+
+```bash
+poetry update
+```
+
+to update the .locl file in the folder.
 
 *Remark: Notice that the use of ```poetry``` for adding the dependencies of your packet is key for running the benchmark using [GitHub Actions](./.github/workflows), please consider this while adding your method.*
 
