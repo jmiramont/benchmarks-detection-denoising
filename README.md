@@ -120,6 +120,15 @@ Additionally, the [abstract class](https://docs.python.org/3/library/abc.html) `
 
 The second section of the file should include all the functions your method needs to work. This functions could also be defined in a separate module imported in the previous section as well. Although it is not mandatory to add them here, but we recommend it so as to keep everything in a single file.
 
+```python
+""" Second section ---------------------------------------------------------------------
+| Put here all the functions that your method uses.
+| 
+| def a_function_of_my_method(signal,params):
+|   ...
+"""
+```
+
 In the third and final section, your method is encapsulated in a new class called `NewMethod` (you can change this name if you prefer to, but it is not strictly necessary.). As mentioned before, the only requisite for the class that represents your method is that it inherits from the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate`. This simply means that you will have to implement the class constructor and a class function called -unsurprisingly- `method()`:
 
 ```python
@@ -204,5 +213,5 @@ Once this is done, the benchmark is run remotely using [GitHub Actions](./.githu
 If you prefer to run the benchmark locally, you can use:
 
 ```bash
-poetry run run_this_benchmark.py
+poetry run python run_this_benchmark.py
 ```
