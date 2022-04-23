@@ -33,7 +33,7 @@ The instructions below will help you to add a new method and run the benchmark a
 First you should have a local copy of this repository to add and modify files.
 For this, [fork this repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo), for example by using the "Fork" button above:
 
-![Repository header](docs/header_repo.png)
+![Repository header](docs/readme_figures/header_repo.png)
 
 This will create a copy of the repository in your own GitHub account, the URL of which should look like
 
@@ -198,15 +198,15 @@ git push origin new_method
 
 Now you can create a [new pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) by using the "Contribute" button from the fork we have created before:
 
-![Start a pull request.](docs/start_a_pull_request.png)
+![Start a pull request.](docs/readme_figures/start_a_pull_request.png)
 
 and then "Open a Pull Request". There you will need to select the branch where your changes are going to be made in the original repository of the benchmark. Please choose here "new_methods_branch":
 
-![Choose the right branch.](docs/pull_request_branch.png)
+![Choose the right branch.](docs/readme_figures/pull_request_branch.png)
 
 Finally, send the pull request by clicking on "Create pull request":
 
-![Create you pull request.](docs/finishing_pull_request.png)
+![Create you pull request.](docs/readme_figures/finishing_pull_request.png)
 
 You can also add an small comment in the "Write" field. A short explanation of the new method and related references (notes, articles, etc.) will be appreciated.
 
