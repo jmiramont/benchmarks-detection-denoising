@@ -2,12 +2,12 @@ import numpy as np
 from scipy.integrate import cumtrapz
 
 # for R to work
-print('Importing modules for R to work...')
+# print('Importing modules for R to work...')
 import rpy2.robjects as robjects
 # from rpy2.robjects.packages import importr
 # Activate automatic conversion of numpy floats and arrays to corresponding R objects
 from rpy2.robjects import numpy2ri
-print('Finished.')
+# print('Finished.')
 # numpy2ri.activate() #numpy2ri.deactivate()
 # from spatstat_interface.utils import to_pandas_data_frame
 # print('Importing SpatstatInterface...')
