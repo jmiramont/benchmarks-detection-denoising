@@ -9,8 +9,8 @@ class SignalBank:
     """
     Create a bank of signals. This class encapsulates the signal generation code,
     and returns different methods to generate signals as well as a dictionary of those 
-    methods that can be used later. Methods starting with "signal_" generate
-    monocomponent signals. Methods starting with "signal_mc_" generate multicomponent 
+    methods that can be used later. Methods starting with "signal" generate
+    monocomponent signals. Methods starting with "signal_mc" generate multicomponent 
     signals.
 
     Both types of signals al generated with a length "N" passed as input parameter at

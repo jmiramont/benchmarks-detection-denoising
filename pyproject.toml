@@ -17,6 +17,8 @@ tabulate = "^0.8.9"
 rpy2 = "^3.4.5"
 spatstat-interface = "^0.1.2"
 ipykernel = {version = "^6.6.1", optional = true}
+Sphinx = {version = "^4.5.0", optional = true}
+sphinx-rtd-theme = {version = "^1.0.0", optional = true}
 
 [tool.poetry.extras]
 # Documentation
@@ -31,6 +33,7 @@ ipykernel = {version = "^6.6.1", optional = true}
 
 # Jupyter notebooks to be edited in VSCode
 notebooks = ["ipykernel"]
+docs = ["Sphinx", "sphinx-rtd-theme"]
 
 # Documentation is generated with Sphinx
 # https://www.sphinx-doc.org/en/master/index.html

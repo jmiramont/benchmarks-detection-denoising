@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>benchmark_demo.utilstf &#8212; benchmark-demo  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for benchmark_demo.utilstf</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="nn">sg</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">factorial</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span> <span class="k">as</span> <span class="n">pi</span>
+<span class="sd">&quot;&quot;&quot; This file contains a number of utilities for time-frequency analysis.</span>
+<span class="sd">Some functions has been modified from the supplementary code of:</span>
+<span class="sd">Bardenet, R., Flamant, J., &amp; Chainais, P. (2020). On the zeros of the spectrogram of white noise.</span>
+<span class="sd">Applied and Computational Harmonic Analysis, 48(2), 682-705.</span>
+<span class="sd">which can be found in: http://github.com/jflamant/2018-zeros-spectrogram-white-noise.</span>
+
+<span class="sd">Those functions are:</span>
+<span class="sd">- getSpectrogram(signal)</span>
+<span class="sd">- findCenterEmptyBalls(Sww, pos_exp, radi_seg=1)</span>
+<span class="sd">- getConvexHull(Sww, pos_exp, empty_mask, radi_expand=0.5)</span>
+<span class="sd">- reconstructionSignal(hull_d, stft)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="get_round_window"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.get_round_window">[docs]</a><span class="k">def</span> <span class="nf">get_round_window</span><span class="p">(</span><span class="n">Nfft</span><span class="p">):</span>
+    <span class="c1"># analysis window</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">Nfft</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">Nfft</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">g</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nfft</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g</span><span class="p">,</span> <span class="n">T</span></div>
+
+
+<div class="viewcode-block" id="get_stft"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.get_stft">[docs]</a><span class="k">def</span> <span class="nf">get_stft</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Compute the STFT of the signal. Signal is padded with zeros.</span>
+<span class="sd">    The outputs corresponds to the STFT with the regular size and also the</span>
+<span class="sd">    zero padded version.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Nfft</span> <span class="o">=</span> <span class="n">N</span>
+        <span class="n">window</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_round_window</span><span class="p">(</span><span class="n">Nfft</span><span class="p">)</span>
+
+    <span class="n">Npad</span> <span class="o">=</span> <span class="n">N</span><span class="o">//</span><span class="mi">2</span>
+    <span class="n">Nfft</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">signal_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">Npad</span><span class="p">)</span>
+    <span class="n">signal_pad</span><span class="p">[</span><span class="n">Npad</span><span class="p">:</span><span class="n">Npad</span><span class="o">+</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span>
+    <span class="c1"># computing STFT</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">stft_padded</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">stft</span><span class="p">(</span><span class="n">signal_pad</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">nperseg</span><span class="o">=</span><span class="n">Nfft</span><span class="p">,</span> <span class="n">noverlap</span> <span class="o">=</span> <span class="n">Nfft</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">stft</span> <span class="o">=</span> <span class="n">stft_padded</span><span class="p">[:,</span><span class="n">Npad</span><span class="p">:</span><span class="n">Npad</span><span class="o">+</span><span class="n">N</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">stft</span><span class="p">,</span> <span class="n">stft_padded</span><span class="p">,</span> <span class="n">Npad</span></div>
+
+
+<div class="viewcode-block" id="get_spectrogram"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.get_spectrogram">[docs]</a><span class="k">def</span> <span class="nf">get_spectrogram</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the round spectrogram of the signal </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Nfft</span> <span class="o">=</span> <span class="n">N</span>
+        <span class="n">window</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_round_window</span><span class="p">(</span><span class="n">Nfft</span><span class="p">)</span>
+
+    <span class="n">stft</span><span class="p">,</span> <span class="n">stft_padded</span><span class="p">,</span> <span class="n">Npad</span> <span class="o">=</span> <span class="n">get_stft</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">stft</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">S</span><span class="p">,</span> <span class="n">stft</span><span class="p">,</span> <span class="n">stft_padded</span><span class="p">,</span> <span class="n">Npad</span></div>
+
+
+<div class="viewcode-block" id="find_zeros_of_spectrogram"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.find_zeros_of_spectrogram">[docs]</a><span class="k">def</span> <span class="nf">find_zeros_of_spectrogram</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+    <span class="c1"># detection of zeros of the spectrogram</span>
+    <span class="n">th</span> <span class="o">=</span> <span class="mf">1e-14</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">extr2minth</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span> <span class="c1"># Find zero&#39;s coordinates</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span> <span class="c1"># Position of zeros in norm. coords.</span>
+    <span class="n">pos</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">pos</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="c1"># 2/15 Quedaron invertidos!!!!</span>
+    <span class="k">return</span> <span class="n">pos</span></div>
+
+
+<div class="viewcode-block" id="reconstruct_signal"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.reconstruct_signal">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_signal</span><span class="p">(</span><span class="n">hull_d</span><span class="p">,</span> <span class="n">stft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Reconstruction using the convex hull</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Nfft</span> <span class="o">=</span> <span class="n">stft</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">tmin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nfft</span><span class="p">))</span>
+    <span class="n">tmax</span> <span class="o">=</span> <span class="n">stft</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">tmin</span>
+    <span class="n">fmin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nfft</span><span class="p">))</span>
+    <span class="n">fmax</span> <span class="o">=</span> <span class="n">stft</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">fmin</span>
+
+    <span class="c1"># sub mask : check which points are in the convex hull</span>
+    <span class="n">vecx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stft</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nfft</span><span class="p">))))</span>
+    <span class="n">vecy</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stft</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nfft</span><span class="p">))))</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">vecx</span><span class="p">,</span> <span class="n">vecy</span><span class="p">))</span>
+    <span class="n">sub_mask</span> <span class="o">=</span> <span class="n">hull_d</span><span class="o">.</span><span class="n">find_simplex</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">stft</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">mask</span><span class="p">[</span><span class="n">fmin</span><span class="p">:</span><span class="n">fmax</span><span class="p">,</span> <span class="n">tmin</span><span class="p">:</span><span class="n">tmax</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_mask</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mascara:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="c1"># create a mask</span>
+    <span class="c1">#mask = np.zeros(stft.shape, dtype=bool)</span>
+    <span class="c1">#mask[fmin:fmax, base+tmin:base+tmax] = sub_mask</span>
+
+    <span class="c1"># reconstruction</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">Nfft</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">Nfft</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">/</span><span class="n">g</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="c1"># t, xorigin = sg.istft(stft, window=g,  nperseg=Nfft, noverlap=Nfft-1)</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">xr</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">istft</span><span class="p">(</span><span class="n">mask</span><span class="o">*</span><span class="n">stft</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">g</span><span class="p">,</span>  <span class="n">nperseg</span><span class="o">=</span><span class="n">Nfft</span><span class="p">,</span> <span class="n">noverlap</span><span class="o">=</span><span class="n">Nfft</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">t</span> </div>
+
+
+<div class="viewcode-block" id="reconstruct_signal_2"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.reconstruct_signal_2">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_signal_2</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">stft</span><span class="p">,</span> <span class="n">Npad</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Reconstruction using a mask given as parameter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Ni</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Nfft</span> <span class="o">=</span> <span class="n">Ni</span>
+    <span class="c1"># reconstruction</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">Nfft</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">Nfft</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">/</span><span class="n">g</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">mask_aux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">stft</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">mask_aux</span><span class="p">[:,</span><span class="n">Npad</span><span class="p">:</span><span class="n">Npad</span><span class="o">+</span><span class="n">Ni</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
+    <span class="c1"># t, xorigin = sg.istft(stft, window=g,  nperseg=Nfft, noverlap=Nfft-1)</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">xr</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">istft</span><span class="p">(</span><span class="n">mask_aux</span><span class="o">*</span><span class="n">stft</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">nperseg</span><span class="o">=</span><span class="n">Nfft</span><span class="p">,</span> <span class="n">noverlap</span> <span class="o">=</span> <span class="n">Nfft</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">xr</span> <span class="o">=</span> <span class="n">xr</span><span class="p">[</span><span class="n">Npad</span><span class="p">:</span><span class="n">Npad</span><span class="o">+</span><span class="n">Ni</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">xr</span><span class="p">,</span> <span class="n">t</span></div>
+
+
+<div class="viewcode-block" id="extr2minth"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.extr2minth">[docs]</a><span class="k">def</span> <span class="nf">extr2minth</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">th</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Finds the minima of the spectrogram matrix M</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">C</span><span class="p">,</span><span class="n">R</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">Mid_Mid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">C</span><span class="p">,</span><span class="n">R</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">R</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">c</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">c</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">r</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">Mid_Mid</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">==</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">th</span><span class="p">)</span>
+            <span class="c1">#Mid_Mid[c, r] = (np.min(T) == T[1, 1])</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Mid_Mid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="snr_comparison"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.snr_comparison">[docs]</a><span class="k">def</span> <span class="nf">snr_comparison</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x_hat</span><span class="p">):</span>
+    <span class="n">qrf</span> <span class="o">=</span> <span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">x_hat</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">qrf</span></div>
+
+
+<div class="viewcode-block" id="add_snr_block"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.add_snr_block">[docs]</a><span class="k">def</span> <span class="nf">add_snr_block</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">snr</span><span class="p">,</span><span class="n">K</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds noise to a signal x with SNR equal to snr. SNR is defined as SNR (dB) = 10 * log10(Ex/En)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">Px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># print(x)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># print(np.mean(n, axis = 0))</span>
+    <span class="c1"># x = x+n</span>
+
+    <span class="n">Pn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Pn</span><span class="p">)</span>
+    <span class="c1"># print(np.sum(n[:,0]**2))</span>
+
+    <span class="n">Pn</span> <span class="o">=</span> <span class="n">Px</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span> <span class="n">snr</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Pn</span><span class="p">)</span>
+    <span class="n">snr_out1</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="n">snr_out</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">Px</span> <span class="o">/</span> <span class="n">Pn</span><span class="p">)</span>
+    <span class="c1"># print(snr_out)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">n</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">T</span></div>
+    
+
+<div class="viewcode-block" id="add_snr"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.add_snr">[docs]</a><span class="k">def</span> <span class="nf">add_snr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">snr</span><span class="p">,</span><span class="n">K</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Adds noise to a signal x with SNR equal to snr.</span>
+<span class="sd">    SNR is defined as SNR (dB) = 10 * log10(Ex/En)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">Px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    
+    <span class="n">Pn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Pn</span><span class="p">)</span>
+
+    <span class="n">Pn</span> <span class="o">=</span> <span class="n">Px</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span> <span class="n">snr</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Pn</span><span class="p">)</span>
+    <span class="c1"># snr_out1 = 20 * np.log10(np.sqrt(np.sum(x**2))/np.sqrt(np.sum(n**2)))</span>
+    <span class="n">snr_out</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">Px</span> <span class="o">/</span> <span class="n">Pn</span><span class="p">)</span>
+    <span class="c1"># print(snr_out)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">n</span></div>
+
+
+<div class="viewcode-block" id="hermite_poly"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.hermite_poly">[docs]</a><span class="k">def</span> <span class="nf">hermite_poly</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">t</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">t</span><span class="o">*</span><span class="n">hermite_poly</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">hermite_poly</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hermite_fun"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.hermite_fun">[docs]</a><span class="k">def</span> <span class="nf">hermite_fun</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">q</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">-</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span>
+
+    <span class="k">if</span> <span class="n">T</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="n">gaussian_basic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">/</span><span class="n">T</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="c1"># gaussian_basic /= np.sum(gaussian_basic)</span>
+    <span class="n">h_func</span> <span class="o">=</span> <span class="n">gaussian_basic</span><span class="o">*</span><span class="n">hermite_poly</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">t</span><span class="o">/</span><span class="n">T</span><span class="p">,</span> <span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">h_func</span></div>
+
+
+
+<span class="c1"># def empty_balls(signal, radi_seg = 1):</span>
+<span class="c1">#     Sww, stft, pos, Npad = get_spectrogram(signal)</span>
+<span class="c1">#     empty_mask = find_center_empty_balls(Sww, pos, radi_seg)</span>
+<span class="c1">#     hull_d , sub_empty= get_convex_hull(Sww, pos, empty_mask) </span>
+<span class="c1">#     mask, xr, t, aux = reconstruct_signal_2(sub_empty, stft, Npad)</span>
+<span class="c1">#     return xr</span>
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">benchmark-demo</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Juan Manuel Miramont-Taurel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
