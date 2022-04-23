@@ -40,24 +40,36 @@ class Benchmark:
     
     """
 
-    def __init__(self, task='denoising', methods=None, N=256, parameters=None,
+    def __init__(self, task='denoising', methods=None, N=256, Nsub = None, parameters=None,
                 SNRin=None, repetitions=None, using_signals='all', verbosity=1,
                 parallelize = False):
         """ Initialize the main parameters of the test bench before running the benchmark.
 
         Args:
             task (str, optional): The task to test the methods. Defaults to 'denoising'.
+            
             methods (dict, optional): A dictionary of functions. Defaults to None.
-            N (int, optional): Lengths of the signals. Defaults to 256.
+            
+            N (int, optional): Lengths of the observation window for the signal
+            generation. Defaults to 256.
+
+            Nsub (int, optional): Lengths of the signal. If None, uses Nsub (See
+            SignalBank class description for details). Defaults to None.
+            
             parameters (dict, optional): A dictionary of parameters for the methods
             to run. The keys of this dictionary must be same as the methods dictionary. Defaults to None.
+            
             SNRin (tuple, optional): List or tuple with the SNR values. Defaults to None.
+            
             repetitions (int, optional): Number of times each method is applied for each value of SNR.
             This value is the number of noise realizations that are used to assess the methods.
             Defaults to None.
+            
             using_signals (tuple, optional): Tuple or list of the signal ids from the SignalBank class. Defaults to 'all'.
+            
             verbosity (int, optional): Number from 0 to 4. It determines the number of messages
             passed to the console informing the progress of the benchmarking process. Defaults to 1.
+            
             parallelize (bool, optional): If True, tries to run the process in parallel. Defaults to False.
         """
 

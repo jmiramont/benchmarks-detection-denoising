@@ -1,4 +1,3 @@
-print('Loading all modules in methods folder...')
 from os.path import dirname, basename, isfile, join
 import glob
 modules = glob.glob(join(dirname(__file__), "method_*.py"))

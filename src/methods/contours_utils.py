@@ -130,6 +130,17 @@ def sst_freq_op(x,sigma,K=None,fmax=0.5):
 
 
 def sst_temp_op(x,sigma,K=None,fmax=0.5):
+    """_summary_
+
+    Args:
+        x (_type_): _description_
+        sigma (_type_): _description_
+        K (_type_, optional): _description_. Defaults to None.
+        fmax (float, optional): _description_. Defaults to 0.5.
+
+    Returns:
+        _type_: _description_
+    """
     eps = 1E-6
     N = len(x)
     t = np.arange(0,N)

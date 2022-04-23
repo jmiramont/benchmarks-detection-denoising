@@ -12,7 +12,9 @@
     - [Using a template file for your method](#using-a-template-file-for-your-method)
     - [Checking everything is in order with ```pytest```](#checking-everything-is-in-order-with-pytest)
     - [Create a pull request](#create-a-pull-request)
-    - [Running this benchmark locally](#running-this-benchmark-locally)
+  - [Running this benchmark locally](#running-this-benchmark-locally)
+    - [Configuring the benchmark parameters](#configuring-the-benchmark-parameters)
+  - [Documenting your method](#documenting-your-method)
 
 ## What is this benchmark?
 
@@ -214,10 +216,43 @@ Once this is done, the benchmark is run remotely using [GitHub Actions](./.githu
 
 *Remark: Notice that ```pytest``` is also run again in this workflow. Therefore, keep in mind that if your method didn't pass the tests locally, it won't pass them at this stage either, and the pull request will not be approved*.
 
-### Running this benchmark locally
+## Running this benchmark locally
 
-If you prefer to run the benchmark locally, you can use:
+Running the benchmark in your own computer can be useful if you want to use a different set of parameters of the experiments. In order to do this, you should update the configuration files `config_denoising.yaml` and `config_detection.yaml` with parameters of your choice.
+
+### Configuring the benchmark parameters
+
+In the configuration files you can change:
+
+1. The length of the simulation.
+2. The signals you use.
+3. The number of times each simulation is run.
+4. The signal-to-noise ratios (SNRs, in dB) used in each simulation.
+5. The parallelization parameters (if needed).
+
+The following example shows how to select a length of simulation of 512 time samples, with SNRs of 0, 10, 20 and 30 dB, repeating each experiment 30 times and using a parallel pool of five workers. Notice that the signals to use during the experiments are selected by the `signal_id` given by the `SignalBank` class (in this case, a cosenoidal chirp and an exponential chirp).
+
+```yaml
+# ------------------------------------------------------------------
+# Configuration file for benchmarking denoising methods:
+# ------------------------------------------------------------------
+N: 512
+SNRin: [0, 10, 20, 30]
+repetitions: 30
+parallelize: 5
+signal_names: ['LinearChirp', 'ExpChirp',] # Use signal_id of SignalBank class.     
+```
+
+Once the configuration is ready, you can use the following command to run the benchmark using `poetry` (assuming [all you dependencies have been added to the `.toml` file and installed](#installation-using-poetry)):
 
 ```bash
 poetry run python run_this_benchmark.py
 ```
+
+## Documenting your method
+
+For documenting your code, please add docstrings following [PEP257](https://peps.python.org/pep-0257/#:~:text=The%20aim%20of%20this%20PEP,conventions%2C%20not%20laws%20or%20syntax.). A docstring must be added at the beginning of the definition of classes and functions. The minimum information required is:
+
+- Summary of the class/function.
+- Brief description of input / output parameters.
+- Any possible exception raised from your method.

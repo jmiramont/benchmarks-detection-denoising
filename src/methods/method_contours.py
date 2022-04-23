@@ -10,6 +10,15 @@ class NewMethod(MethodTemplate):
         
 
     def method(self, signals, params):
+        """_summary_
+
+        Args:
+            signals (_type_): _description_
+            params (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         if len(signals.shape) == 1:
             signals = np.resize(signals,(1,len(signals)))
 
