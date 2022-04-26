@@ -356,7 +356,7 @@ def ridges_sst_filtering(signal,):
     if Nfft is None:
         Nfft = N
         
-    ssF,F = my_sst(signal, T, Nfft, fmax=0.5)
+    ssF, F = my_sst(signal, T, Nfft, fmax=0.5)
 
 
 # if __name__ == '__main__':
