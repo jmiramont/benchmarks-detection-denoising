@@ -1,5 +1,8 @@
 # A benchmark for time-frequency denoising/ detecting methods
 
+[![Run benchmark](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml)
+[![Run benchmark](https://badgen.net/badge/Results/HERE/red?icon=github)](results/readme.md)
+
 ## Summary
 
 - [A benchmark for time-frequency denoising/ detecting methods](#a-benchmark-for-time-frequency-denoising-detecting-methods)
