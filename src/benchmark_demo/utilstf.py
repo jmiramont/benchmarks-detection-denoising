@@ -100,11 +100,13 @@ def reconstruct_signal(hull_d, stft):
     return mask, xr, t 
 
 
-def reconstruct_signal_2(mask, stft, Npad):
+def reconstruct_signal_2(mask, stft, Npad, Nfft=None):
     """ Reconstruction using a mask given as parameter
     """
     Ni = mask.shape[1]
-    Nfft = Ni
+    if Nfft is None:
+        Nfft = Ni
+        
     # reconstruction
     g = sg.gaussian(Nfft, np.sqrt((Nfft)/2/np.pi))
     g = g/g.sum()

@@ -206,7 +206,7 @@ def delaunay_triangulation_denoising(signal,
         mask = mask_triangles(stft, delaunay_graph, np.where(selection))  
 
     # mask[:] = 1
-    signal_r, t = reconstruct_signal_2(mask, stft_padded, Npad)
+    signal_r, t = reconstruct_signal_2(mask, stft_padded, Npad, Nfft)
     if return_dic:
         return {'s_r': signal_r,
                 'mask': mask,
