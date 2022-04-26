@@ -4,13 +4,15 @@ from scipy.spatial import ConvexHull, Delaunay
 import matplotlib.pyplot as plt
 
 
-def puntosEnTriangulos(S,TRI,vertices):
+def pointsInTriangles(S,TRI,vertices):
     mascara=np.zeros_like(S)
     #Coordenadas de los vertices:
     # vertTRI = np.zeros((3,2))
     vertTRI = vertices[TRI.astype(int),:]
 
-    AT  = vertTRI[0,0]*(vertTRI[1,1]-vertTRI[2,1]) + vertTRI[1,0]*(vertTRI[2,1]-vertTRI[0,1]) + vertTRI[2,0]*(vertTRI[0,1]-vertTRI[1,1])
+    AT  = ( vertTRI[0,0]*(vertTRI[1,1]-vertTRI[2,1]) + 
+            vertTRI[1,0]*(vertTRI[2,1]-vertTRI[0,1]) + 
+            vertTRI[2,0]*(vertTRI[0,1]-vertTRI[1,1]))
 
     minX=int(np.min(vertTRI[:,0]))
     maxX=int(np.max(vertTRI[:,0]))
@@ -108,7 +110,7 @@ def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
     for group in groups_of_triangles:
         mask = np.zeros_like(S)
         for triangle in group:
-            mask = mask + puntosEnTriangulos(S, triangle, zeros)
+            mask = mask + pointsInTriangles(S, triangle, zeros)
 
         energy_per_group.append(np.sum(S*mask))
         masks_of_each_group.append(mask)
@@ -155,13 +157,18 @@ def mask_triangles(F, tri, selection):
 
     return mask
 
-def delaunay_triangulation_denoising(signal, LB=1.85, UB=3, return_dic = False,
-                                    grouping=True, ngroups=None, min_group_size=1,
+def delaunay_triangulation_denoising(signal,
+                                    LB=1.85,
+                                    UB=3, 
+                                    return_dic = False,
+                                    grouping=True, 
+                                    ngroups=None, 
+                                    min_group_size=1,
                                     q = None):
     if len(signal.shape) == 1:
         signal = np.resize(signal,(1,len(signal)))
 
-    Nfft = signal.shape[1]
+    Nfft = 2*signal.shape[1]
     g, T = get_round_window(Nfft)
     stft, stft_padded, Npad = get_stft(signal,g)
     margin = 2

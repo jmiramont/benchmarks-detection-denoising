@@ -1,35 +1,68 @@
-
 <!DOCTYPE html>
-
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>benchmark_demo.ResultsInterpreter &#8212; benchmark-demo  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>benchmark_demo.ResultsInterpreter &mdash; Benchmark-demo  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-   
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Benchmark-demo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+        </div>
+      </div>
+    </nav>
 
-          <div class="body" role="main">
-            
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Benchmark-demo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>benchmark_demo.ResultsInterpreter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <h1>Source code for benchmark_demo.ResultsInterpreter</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
@@ -43,10 +76,12 @@
 
 
 <div class="viewcode-block" id="ResultsInterpreter"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter">[docs]</a><span class="k">class</span> <span class="nc">ResultsInterpreter</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;_summary_</span>
+    <span class="sd">&quot;&quot;&quot;This class takes a Benchmark-class object to produce a series of plots and tables</span>
+<span class="sd">    summarizing the obtained results:</span>
 <span class="sd">        </span>
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
+<span class="sd">    def get_benchmark_as_data_frame(self):</span>
 <span class="sd">    </span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -71,10 +106,32 @@
         <span class="c1"># self.parameters  </span>
 
 <div class="viewcode-block" id="ResultsInterpreter.get_benchmark_as_data_frame"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_benchmark_as_data_frame">[docs]</a>    <span class="k">def</span> <span class="nf">get_benchmark_as_data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmark</span><span class="o">.</span><span class="n">get_results_as_df</span><span class="p">()</span>    </div>
+        <span class="sd">&quot;&quot;&quot;Returns a DataFrame with the raw data produced by the benchmark with the </span>
+<span class="sd">        following format:</span>
+<span class="sd">        -------------------------------------------------------------------------</span>
+<span class="sd">        | Method | Parameter | Signal_id | Repetition | SNRin_1 | ... | SNRin_n |</span>
+<span class="sd">        -------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="ResultsInterpreter.rearrange_data_frame"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.rearrange_data_frame">[docs]</a>    <span class="k">def</span> <span class="nf">rearrange_data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Rearrange DataFrame table for using seaborn library. &quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame: Raw data of the comparisons. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmark</span><span class="o">.</span><span class="n">get_results_as_df</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ResultsInterpreter.rearrange_data_frame"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.rearrange_data_frame">[docs]</a>    <span class="k">def</span> <span class="nf">rearrange_data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Rearrange DataFrame table for using seaborn library. </span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            results (DataFrame, optional): If not None, must receive the DataFrame </span>
+<span class="sd">            produced by a Benchmark-class object using get_results_as_df(). If None,</span>
+<span class="sd">            uses the Benchmark object given to the constructor of the Interpreter. </span>
+<span class="sd">            Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame: Rearranged DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmark</span><span class="o">.</span><span class="n">get_results_as_df</span><span class="p">()</span>
         <span class="n">aux_dic</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="n">new_columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -93,7 +150,11 @@
 
 
 <div class="viewcode-block" id="ResultsInterpreter.get_table_means"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_table_means">[docs]</a>    <span class="k">def</span> <span class="nf">get_table_means</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Write table of mean results to .md file. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Generates a table of mean results to .md file. </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: String containing the table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># if filename is None:</span>
             <span class="c1"># filename = &#39;results&#39;</span>
 
@@ -142,6 +203,13 @@
 
 
 <div class="viewcode-block" id="ResultsInterpreter.save_report"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.save_report">[docs]</a>    <span class="k">def</span> <span class="nf">save_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; This function generates a report of the results given in the Benchmark-class</span>
+<span class="sd">        object. The report is saved in a MardkedDown syntax to be viewed as a .md file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str, optional): Path for saving the report. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">get_summary_grid</span><span class="p">()</span>
 
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;# Benchmark Report </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
@@ -170,6 +238,22 @@
           <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_string</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ResultsInterpreter.get_snr_plot"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_snr_plot">[docs]</a>    <span class="k">def</span> <span class="nf">get_snr_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Generates a Quality Reconstruction Factor (QRF) vs. SNRin plot. The QRF is </span>
+<span class="sd">        computed as: </span>
+<span class="sd">        QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]</span>
+<span class="sd">        where x is the noiseless signal and x_r is de denoised estimation of x.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df (DataFrame): DataFrame with the results of the simulation.</span>
+<span class="sd">            x (str, optional): Column name to use as the horizontal axis. </span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">            y (str, optional): Column name to use as the vertical axis. </span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">            hue (str, optional): Column name with the methods&#39; name. Defaults to None.</span>
+<span class="sd">            axis (matplotlib.Axes, optional): The axis object where the plot will be </span>
+<span class="sd">            generated. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="s1">&#39;*&#39;</span><span class="p">]</span>
         <span class="n">aux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">hue</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>
         <span class="c1"># print(aux)</span>
@@ -199,6 +283,22 @@
         <span class="k">return</span></div>
 
 <div class="viewcode-block" id="ResultsInterpreter.get_snr_plot2"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_snr_plot2">[docs]</a>    <span class="k">def</span> <span class="nf">get_snr_plot2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Generates a Quality Reconstruction Factor (QRF) vs. SNRin plot. The QRF is </span>
+<span class="sd">        computed as: </span>
+<span class="sd">        QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]</span>
+<span class="sd">        where x is the noiseless signal and x_r is de denoised estimation of x.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df (DataFrame): DataFrame with the results of the simulation.</span>
+<span class="sd">            x (str, optional): Column name to use as the horizontal axis. </span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">            y (str, optional): Column name to use as the vertical axis. </span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">            hue (str, optional): Column name with the methods&#39; name. Defaults to None.</span>
+<span class="sd">            axis (matplotlib.Axes, optional): The axis object where the plot will be </span>
+<span class="sd">            generated. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="s1">&#39;*&#39;</span><span class="p">]</span>
         <span class="n">line_style</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;--&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">methods_ids</span><span class="p">]</span>
         <span class="n">sns</span><span class="o">.</span><span class="n">pointplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;SNRin&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;QRF&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;Method&quot;</span><span class="p">,</span>
@@ -212,7 +312,17 @@
             <span class="c1"># axis.set_ylabel(y + &#39; (dB)&#39;)</span>
         
 
-<div class="viewcode-block" id="ResultsInterpreter.get_summary_grid"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_summary_grid">[docs]</a>    <span class="k">def</span> <span class="nf">get_summary_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ResultsInterpreter.get_summary_grid"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_summary_grid">[docs]</a>    <span class="k">def</span> <span class="nf">get_summary_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">savetofile</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Generates a grid of QRF plots for each signal, displaying the performance </span>
+<span class="sd">        of all methods for all noise conditions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (tuple, optional): Size of the figure in inches. Defaults to (3,3).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Matplotlib.Figure: Returns a figure handle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
         <span class="n">Nsignals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signal_ids</span><span class="p">)</span>
         <span class="n">df_rearr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rearrange_data_frame</span><span class="p">()</span>
         <span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;ticks&quot;</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;lines.linewidth&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">})</span>
@@ -246,11 +356,23 @@
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">,</span><span class="s1">&#39;figures&#39;</span><span class="p">,</span><span class="s1">&#39;plots_grid.png&#39;</span><span class="p">)</span>
 
-        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span><span class="c1"># , format=&#39;svg&#39;)</span>
+        <span class="k">if</span> <span class="n">savetofile</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span><span class="c1"># , format=&#39;svg&#39;)</span>
+    
         <span class="k">return</span> <span class="n">fig</span></div>
 
 
-<div class="viewcode-block" id="ResultsInterpreter.get_summary_plots"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_summary_plots">[docs]</a>    <span class="k">def</span> <span class="nf">get_summary_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)):</span>
+<div class="viewcode-block" id="ResultsInterpreter.get_summary_plots"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_summary_plots">[docs]</a>    <span class="k">def</span> <span class="nf">get_summary_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">savetofile</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Generates individual QRF plots for each signal, displaying the performance </span>
+<span class="sd">        of all methods for all noise conditions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (tuple, optional): Size of the figure in inches. Defaults to (3,3).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Matplotlib.Figure: Returns a figure handle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
         <span class="n">Nsignals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signal_ids</span><span class="p">)</span>
         <span class="n">df_rearr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rearrange_data_frame</span><span class="p">()</span>
 
@@ -271,77 +393,51 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">signal_id</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="s1">&#39;small&#39;</span><span class="p">)</span>
             <span class="c1"># sns.despine(offset=10, trim=True)</span>
-
             <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
-            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;results/figures/plot_&#39;</span><span class="o">+</span> <span class="n">signal_id</span> <span class="o">+</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span><span class="c1"># , format=&#39;svg&#39;)</span>
+
+            <span class="k">if</span> <span class="n">savetofile</span><span class="p">:</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;results/figures/plot_&#39;</span><span class="o">+</span> <span class="n">signal_id</span> <span class="o">+</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span><span class="c1"># , format=&#39;svg&#39;)</span>
             
         <span class="k">return</span> <span class="n">fig</span></div>
 
 <div class="viewcode-block" id="ResultsInterpreter.save_csv_files"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.save_csv_files">[docs]</a>    <span class="k">def</span> <span class="nf">save_csv_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
             <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_benchmark_as_data_frame</span><span class="p">()</span>
-            <span class="n">df2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rearrange_data_frame</span><span class="p">()</span></div></div>
+            <span class="n">df2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rearrange_data_frame</span><span class="p">()</span>
 
+            <span class="n">df1</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">df2</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ResultsInterpreter.rank_the_methods"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.ResultsInterpreter.ResultsInterpreter.rank_the_methods">[docs]</a>    <span class="k">def</span> <span class="nf">rank_the_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
 </pre></div>
 
+           </div>
           </div>
-          
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Juan Manuel Miramont-Taurel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">benchmark-demo</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2022, Juan Manuel Miramont-Taurel.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

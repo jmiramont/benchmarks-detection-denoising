@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>benchmark_demo.SignalBank &mdash; benchmark-demo  documentation</title>
+  <title>benchmark_demo.SignalBank &mdash; Benchmark-demo  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -24,7 +24,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> benchmark-demo
+            <a href="../../index.html" class="icon icon-home"> Benchmark-demo
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -45,7 +45,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">benchmark-demo</a>
+          <a href="../../index.html">Benchmark-demo</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -373,12 +373,6 @@
         <span class="n">b1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fmin</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_mc_pure_tones</span><span class="p">(</span><span class="n">ncomps</span><span class="o">=</span><span class="n">ncomps</span><span class="p">,</span> <span class="n">a1</span><span class="o">=</span><span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="n">b1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SignalBank.signal_mc_harmonic"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.SignalBank.SignalBank.signal_mc_harmonic">[docs]</a>    <span class="k">def</span> <span class="nf">signal_mc_harmonic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ncomps</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; This function is deprecated.</span>
-<span class="sd">        </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_mc_multi_linear</span><span class="p">(</span><span class="n">ncomps</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="SignalBank.signal_tone_dumped"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.SignalBank.SignalBank.signal_tone_dumped">[docs]</a>    <span class="k">def</span> <span class="nf">signal_tone_dumped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates a dumped tone whose normalized frequency is 0.25.</span>
@@ -732,12 +726,12 @@
             <span class="n">aux</span> <span class="o">+=</span> <span class="n">signal</span>
         <span class="k">return</span> <span class="n">aux</span></div>
 
-<div class="viewcode-block" id="SignalBank.signal_mc_modulated_tones"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.SignalBank.SignalBank.signal_mc_modulated_tones">[docs]</a>    <span class="k">def</span> <span class="nf">signal_mc_modulated_tones</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_mc_multi_cos</span><span class="p">()</span></div>
+    <span class="c1"># def signal_mc_modulated_tones(self):</span>
+    <span class="c1">#     return self.signal_mc_multi_cos()</span>
 
 
-<div class="viewcode-block" id="SignalBank.signal_mc_modulated_tones_2"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.SignalBank.SignalBank.signal_mc_modulated_tones_2">[docs]</a>    <span class="k">def</span> <span class="nf">signal_mc_modulated_tones_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_mc_multi_cos_2</span><span class="p">()</span></div>
+    <span class="c1"># def signal_mc_modulated_tones_2(self):</span>
+    <span class="c1">#     return self.signal_mc_multi_cos_2()</span>
 
 
 <div class="viewcode-block" id="SignalBank.signal_mc_multi_cos"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.SignalBank.SignalBank.signal_mc_multi_cos">[docs]</a>    <span class="k">def</span> <span class="nf">signal_mc_multi_cos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

@@ -49,10 +49,12 @@ class ResultsInterpreter:
         Returns:
             DataFrame: Raw data of the comparisons. 
         """
-        return self.benchmark.get_results_as_df()    
 
-    def rearrange_data_frame(self, results = None):
-        """ Rearrange DataFrame table for using seaborn library. 
+        return self.benchmark.get_results_as_df()
+
+
+    def rearrange_data_frame(self, results=None):
+        """Rearrange DataFrame table for using seaborn library. 
 
         Args:
             results (DataFrame, optional): If not None, must receive the DataFrame 
@@ -63,6 +65,7 @@ class ResultsInterpreter:
         Returns:
             DataFrame: Rearranged DataFrame
         """
+
         df = self.benchmark.get_results_as_df()
         aux_dic = dict()
         new_columns = df.columns.values[0:5].copy()
@@ -140,6 +143,7 @@ class ResultsInterpreter:
         Args:
             filename (str, optional): Path for saving the report. Defaults to None.
         """
+
         self.get_summary_grid()
 
         lines = ['# Benchmark Report \n',
@@ -183,6 +187,7 @@ class ResultsInterpreter:
             axis (matplotlib.Axes, optional): The axis object where the plot will be 
             generated. Defaults to None.
         """
+
         markers = ['o','d','s','*']
         aux = np.unique(df[hue].to_numpy())
         # print(aux)
@@ -227,6 +232,7 @@ class ResultsInterpreter:
             axis (matplotlib.Axes, optional): The axis object where the plot will be 
             generated. Defaults to None.
         """
+
         markers = ['o','d','s','*']
         line_style = ['--' for i in self.methods_ids]
         sns.pointplot(x="SNRin", y="QRF", hue="Method",
@@ -250,6 +256,7 @@ class ResultsInterpreter:
         Returns:
             Matplotlib.Figure: Returns a figure handle.
         """
+        
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
         sns.set(style="ticks", rc={"lines.linewidth": 0.7})
