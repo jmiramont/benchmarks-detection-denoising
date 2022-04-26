@@ -52,7 +52,7 @@ Now, let's create a local copy, i.e. in your computer, of the repository you hav
 git clone https://github.com/YOUR-USERNAME/benchmark-test.git
 ```
 
-When one fork a repository, a copy of all the branches existing in the original one are also created. It would be better if you create a new branch to work in your own changes, mainly adding your new method to be tested. For this, create a new branch using:
+When a repository is forked, a copy of all the branches existing in the original one are also created. It would be better if you create a new branch to work in your own changes, mainly adding your new method to be tested. For this, create a new branch using:
 
 ```bash
 git branch new_method
