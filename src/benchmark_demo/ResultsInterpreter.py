@@ -328,20 +328,31 @@ class ResultsInterpreter:
             ax.legend(loc='upper left', frameon=False, fontsize = 'small')
             # sns.despine(offset=10, trim=True)
             fig.set_size_inches(size)
-
+            
             if savetofile:
                 fig.savefig('results/figures/plot_'+ signal_id +'.pdf',bbox_inches='tight')# , format='svg')
             
         return fig
 
-    def save_csv_files(self, filename=None):
-            df1 = self.get_benchmark_as_data_frame()
-            df2 = self.rearrange_data_frame()
+    def save_csv_files(self):
+        """Save results in .csv files.
 
-            df1.to_csv(filename)
-            df2.to_csv(filename)
+        Args:
+            filepath (str, optional): Path to file. Defaults to None.
 
-            return True
+        Returns:
+            bool: True if the file was saved.
+        """
+        
+        df1 = self.get_benchmark_as_data_frame()
+        df2 = self.rearrange_data_frame()
+
+        filename1 = os.path.join('results','denoising_results_raw.csv')
+        filename2 = os.path.join('results','denoising_results_rearranged.csv')
+        df1.to_csv(filename1)
+        df2.to_csv(filename2)
+
+        return True
 
     def rank_the_methods(self):
         return True
