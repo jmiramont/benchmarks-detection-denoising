@@ -10,10 +10,12 @@ import os
 
 
 class ResultsInterpreter:
-    """_summary_
+    """This class takes a Benchmark-class object to produce a series of plots and tables
+    summarizing the obtained results:
         
     Methods
     -------
+    def get_benchmark_as_data_frame(self):
     
     
     """
@@ -38,10 +40,29 @@ class ResultsInterpreter:
         # self.parameters  
 
     def get_benchmark_as_data_frame(self):
+        """Returns a DataFrame with the raw data produced by the benchmark with the 
+        following format:
+        -------------------------------------------------------------------------
+        | Method | Parameter | Signal_id | Repetition | SNRin_1 | ... | SNRin_n |
+        -------------------------------------------------------------------------
+
+        Returns:
+            DataFrame: Raw data of the comparisons. 
+        """
         return self.benchmark.get_results_as_df()    
 
     def rearrange_data_frame(self, results = None):
-        """ Rearrange DataFrame table for using seaborn library. """
+        """ Rearrange DataFrame table for using seaborn library. 
+
+        Args:
+            results (DataFrame, optional): If not None, must receive the DataFrame 
+            produced by a Benchmark-class object using get_results_as_df(). If None,
+            uses the Benchmark object given to the constructor of the Interpreter. 
+            Defaults to None.
+
+        Returns:
+            DataFrame: Rearranged DataFrame
+        """
         df = self.benchmark.get_results_as_df()
         aux_dic = dict()
         new_columns = df.columns.values[0:5].copy()
@@ -60,7 +81,11 @@ class ResultsInterpreter:
 
 
     def get_table_means(self):
-        """ Write table of mean results to .md file. """
+        """ Generates a table of mean results to .md file. 
+
+        Returns:
+            str: String containing the table.
+        """
         # if filename is None:
             # filename = 'results'
 
@@ -109,6 +134,12 @@ class ResultsInterpreter:
 
 
     def save_report(self, filename = None):
+        """ This function generates a report of the results given in the Benchmark-class
+        object. The report is saved in a MardkedDown syntax to be viewed as a .md file.
+
+        Args:
+            filename (str, optional): Path for saving the report. Defaults to None.
+        """
         self.get_summary_grid()
 
         lines = ['# Benchmark Report \n',
@@ -137,6 +168,21 @@ class ResultsInterpreter:
           f.write(output_string)
 
     def get_snr_plot(self, df, x=None, y=None, hue=None, axis = None):
+        """ Generates a Quality Reconstruction Factor (QRF) vs. SNRin plot. The QRF is 
+        computed as: 
+        QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]
+        where x is the noiseless signal and x_r is de denoised estimation of x.
+
+        Args:
+            df (DataFrame): DataFrame with the results of the simulation.
+            x (str, optional): Column name to use as the horizontal axis. 
+            Defaults to None.
+            y (str, optional): Column name to use as the vertical axis. 
+            Defaults to None.
+            hue (str, optional): Column name with the methods' name. Defaults to None.
+            axis (matplotlib.Axes, optional): The axis object where the plot will be 
+            generated. Defaults to None.
+        """
         markers = ['o','d','s','*']
         aux = np.unique(df[hue].to_numpy())
         # print(aux)
@@ -166,6 +212,21 @@ class ResultsInterpreter:
         return
 
     def get_snr_plot2(self, df, x=None, y=None, hue=None, axis = None):
+        """ Generates a Quality Reconstruction Factor (QRF) vs. SNRin plot. The QRF is 
+        computed as: 
+        QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]
+        where x is the noiseless signal and x_r is de denoised estimation of x.
+
+        Args:
+            df (DataFrame): DataFrame with the results of the simulation.
+            x (str, optional): Column name to use as the horizontal axis. 
+            Defaults to None.
+            y (str, optional): Column name to use as the vertical axis. 
+            Defaults to None.
+            hue (str, optional): Column name with the methods' name. Defaults to None.
+            axis (matplotlib.Axes, optional): The axis object where the plot will be 
+            generated. Defaults to None.
+        """
         markers = ['o','d','s','*']
         line_style = ['--' for i in self.methods_ids]
         sns.pointplot(x="SNRin", y="QRF", hue="Method",
@@ -179,7 +240,16 @@ class ResultsInterpreter:
             # axis.set_ylabel(y + ' (dB)')
         
 
-    def get_summary_grid(self, filename = None):
+    def get_summary_grid(self, filename = None, savetofile=True):
+        """ Generates a grid of QRF plots for each signal, displaying the performance 
+        of all methods for all noise conditions.
+
+        Args:
+            size (tuple, optional): Size of the figure in inches. Defaults to (3,3).
+
+        Returns:
+            Matplotlib.Figure: Returns a figure handle.
+        """
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
         sns.set(style="ticks", rc={"lines.linewidth": 0.7})
@@ -213,11 +283,23 @@ class ResultsInterpreter:
         if filename is None:
             filename = os.path.join('results','figures','plots_grid.png')
 
-        fig.savefig(filename,bbox_inches='tight')# , format='svg')
+        if savetofile:
+            fig.savefig(filename,bbox_inches='tight')# , format='svg')
+    
         return fig
 
 
-    def get_summary_plots(self, size=(3,3)):
+    def get_summary_plots(self, size=(3,3), savetofile=True):
+        """ Generates individual QRF plots for each signal, displaying the performance 
+        of all methods for all noise conditions.
+
+        Args:
+            size (tuple, optional): Size of the figure in inches. Defaults to (3,3).
+
+        Returns:
+            Matplotlib.Figure: Returns a figure handle.
+        """
+        
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
 
@@ -238,9 +320,10 @@ class ResultsInterpreter:
             ax.set_title(signal_id)
             ax.legend(loc='upper left', frameon=False, fontsize = 'small')
             # sns.despine(offset=10, trim=True)
-
             fig.set_size_inches(size)
-            fig.savefig('results/figures/plot_'+ signal_id +'.pdf',bbox_inches='tight')# , format='svg')
+
+            if savetofile:
+                fig.savefig('results/figures/plot_'+ signal_id +'.pdf',bbox_inches='tight')# , format='svg')
             
         return fig
 
@@ -248,3 +331,10 @@ class ResultsInterpreter:
             df1 = self.get_benchmark_as_data_frame()
             df2 = self.rearrange_data_frame()
 
+            df1.to_csv(filename)
+            df2.to_csv(filename)
+
+            return True
+
+    def rank_the_methods(self):
+        return True

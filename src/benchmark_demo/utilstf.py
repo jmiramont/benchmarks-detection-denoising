@@ -193,7 +193,7 @@ def hermite_poly(t,n):
             return 2*t*hermite_poly(t,n-1) - 2*(n-1)*hermite_poly(t,n-2)
 
 
-def hermite_fun(N,q, t = None, T = None):
+def hermite_fun(N, q, t=None, T=None):
     if t is None:
         t = np.arange(N)-N//2
 

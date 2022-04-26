@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     start = time.time()
     my_results = my_benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
-    end= time.time()
+    end = time.time()
     print("The time of execution:", end-start)
     df = my_benchmark.get_results_as_df() # This formats the results on a DataFrame
     print(df)
