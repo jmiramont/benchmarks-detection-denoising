@@ -307,12 +307,6 @@ class SignalBank:
         b1=self.fmin
         return self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)
 
-    def signal_mc_harmonic(self,ncomps=5):
-        """ This function is deprecated.
-        
-        """
-
-        return self.signal_mc_multi_linear(ncomps)
         
     def signal_tone_dumped(self):
         """Generates a dumped tone whose normalized frequency is 0.25.
@@ -666,12 +660,12 @@ class SignalBank:
             aux += signal
         return aux
 
-    def signal_mc_modulated_tones(self):
-        return self.signal_mc_multi_cos()
+    # def signal_mc_modulated_tones(self):
+    #     return self.signal_mc_multi_cos()
 
 
-    def signal_mc_modulated_tones_2(self):
-        return self.signal_mc_multi_cos_2()
+    # def signal_mc_modulated_tones_2(self):
+    #     return self.signal_mc_multi_cos_2()
 
 
     def signal_mc_multi_cos(self):

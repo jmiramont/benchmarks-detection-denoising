@@ -230,7 +230,7 @@ In the configuration files you can change:
 4. The signal-to-noise ratios (SNRs, in dB) used in each simulation.
 5. The parallelization parameters (if needed).
 
-The following example shows how to select a length of simulation of 512 time samples, with SNRs of 0, 10, 20 and 30 dB, repeating each experiment 30 times and using a parallel pool of five workers. Notice that the signals to use during the experiments are selected by the `signal_id` given by the `SignalBank` class (in this case, a cosenoidal chirp and an exponential chirp).
+The following example shows how to select a length of simulation of 512 time samples, with SNRs of 0, 10, 20 and 30 dB, repeating each experiment 30 times and using a parallel pool of five workers. Notice that the signals to use during the experiments are selected by the `signal_id` given by the `SignalBank` class (in this case, a linear chirp and an exponential chirp).
 
 ```yaml
 # ------------------------------------------------------------------
