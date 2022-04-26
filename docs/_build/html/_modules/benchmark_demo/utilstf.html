@@ -166,11 +166,13 @@
     <span class="k">return</span> <span class="n">mask</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">t</span> </div>
 
 
-<div class="viewcode-block" id="reconstruct_signal_2"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.reconstruct_signal_2">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_signal_2</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">stft</span><span class="p">,</span> <span class="n">Npad</span><span class="p">):</span>
+<div class="viewcode-block" id="reconstruct_signal_2"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.reconstruct_signal_2">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_signal_2</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">stft</span><span class="p">,</span> <span class="n">Npad</span><span class="p">,</span> <span class="n">Nfft</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Reconstruction using a mask given as parameter</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Ni</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">Nfft</span> <span class="o">=</span> <span class="n">Ni</span>
+    <span class="k">if</span> <span class="n">Nfft</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Nfft</span> <span class="o">=</span> <span class="n">Ni</span>
+        
     <span class="c1"># reconstruction</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">Nfft</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">Nfft</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">/</span><span class="n">g</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
