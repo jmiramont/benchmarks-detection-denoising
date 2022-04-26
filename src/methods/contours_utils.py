@@ -5,6 +5,15 @@ import types
 from scipy.spatial import KDTree
 
 def is_minimum(F):
+    """_summary_
+
+    Args:
+        F (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
     F = F.reshape((F.shape[0]*F.shape[1],))
     ind_min = np.argmin(F)
     if ind_min == 4:
@@ -14,6 +23,15 @@ def is_minimum(F):
 
 
 def is_maximum(F):
+    """_summary_
+
+    Args:
+        F (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
     F = F.reshape((F.shape[0]*F.shape[1],))
     ind_min = np.argmax(F)
     if ind_min == 4:
@@ -23,6 +41,15 @@ def is_maximum(F):
 
 
 def zeros_finder(F):
+    """_summary_
+
+    Args:
+        F (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
     N = F.shape[0]
     M = F.shape[1]
     S = np.ones((N+2, M+2))*float("inf")
