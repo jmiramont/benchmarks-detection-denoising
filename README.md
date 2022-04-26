@@ -259,5 +259,5 @@ poetry run python run_this_benchmark.py
 For documenting your code, please add docstrings following [PEP257](https://peps.python.org/pep-0257/#:~:text=The%20aim%20of%20this%20PEP,conventions%2C%20not%20laws%20or%20syntax.). A docstring must be added at the beginning of the definition of classes and functions. The minimum information required is:
 
 - Summary of the class/function.
-- Brief description of input / output parameters.
+- Brief description of input/output parameters.
 - Any possible exception raised from your method.
