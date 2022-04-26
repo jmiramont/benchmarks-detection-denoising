@@ -3,9 +3,11 @@
 
 name: Run benchmark
 
-on:
-  push:
-    branches: [ master ]
+on: workflow_dispatch
+
+# on:
+#   push:
+#     branches: [ master ]
 #   pull_request:
 #     branches: [ master ]
 
