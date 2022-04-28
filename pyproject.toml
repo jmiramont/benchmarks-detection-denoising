@@ -4,6 +4,14 @@ version = "0.1.0"
 description = "A benchmark for testing tf methods."
 authors = ["Juan Miramont <jmiramont@univ-nantes.fr>"]
 
+[virtualenvs]
+# Create local virtualenv stored in .venv (Python version used depends on VSCode selected interpreter)
+# https://python-poetry.org/docs/configuration/#virtualenvsin-project
+# poetry config virtualenvs.create true --local
+# poetry config virtualenvs.in-project true --local
+create = true
+in-project = true
+
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
 numpy = "^1.22.0"
