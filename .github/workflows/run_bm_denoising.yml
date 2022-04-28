@@ -84,7 +84,13 @@ jobs:
         # -ra -q -vv --cov=spatstat_interface --cov-report=xml
         run: poetry run pytest
   
-     
+      - name: Deploy documentation to gh-pages branch
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: gh-pages
+          FOLDER: docs/_build/html
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
      
   benchmark_denoising:
     runs-on: "ubuntu-latest"
