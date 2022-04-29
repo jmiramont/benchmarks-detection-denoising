@@ -1,57 +1,55 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+name: docs
 
-name: Deploy Docs
+# If you wish to deploy your documentation using GitHub Pages at
+# your_user_or_organization_name.github.io/your_repository
+# Uncomment the last step named Deploy documentation to gh-pages branch
+# Save and commit your changes
+# Push your changes and then
+# Go to https://github.com/your_user_name/your_repository/settings/pages
+# Select branch: gh-pages
+# Select folder: /(root)
 
-on: workflow_dispatch
+# Alternatively you can use ReadTheDocs https://readthedocs.org/
+# see also the ../../.readthedocs.yaml file
 
-# on:
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "docs/**"
+      - "pyproject.toml"
+      - "poetry.lock"
+      - "poetry.toml"
+      - "!**.md"
+      - "!.github/workflows/run_bm_denoising.yml"
+  pull_request:
+    paths-ignore:
+      - "**.md"
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
 jobs:
-  # This workflow contains a single job called "test"
-  test:
-  # The type of runner that the job will run on
-    strategy:
-      matrix:
-#         os: ["ubuntu-latest", "macos-latest"]
-        os: ["ubuntu-latest"]
-        # python-version: ["3.7", "3.8", "3.9"]
-        python-version: ["3.8"]
-    runs-on: ${{ matrix.os }}
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  docs:
+    runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout project
         uses: actions/checkout@v2
 
-      - name: Install Python ${{ matrix.python-version }}
+      - name: Install Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
-          
-      - name: Install R
-        uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: "4.1.0" # The R version to download (if necessary) and use.
-      
-      #----------------------------------------------
-      #  -----  install & configure poetry  -----
-      #----------------------------------------------
+          python-version: "3.9"
+
       - name: Install Poetry
         uses: snok/install-poetry@v1
 
         # with:
         #   virtualenvs-create: true
         #   virtualenvs-in-project: true
-      #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
+
       - name: Load cached venv
         id: cached-poetry-dependencies
         uses: actions/cache@v2
@@ -59,31 +57,14 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
-      #----------------------------------------------
-      # install dependencies if cache does not exist
-      #----------------------------------------------
-      - name: Install main (non-optional) and dev dependencies
-        # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
+      - name: Install package with main (non-optional) and extra docs dependencies
+        # see [tool.poetry.dependencies] and [tool.poetry.extras]
         # in pyproject.toml
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root
+        run: poetry install -E docs
 
-      #----------------------------------------------
-      # install your root project, if required
-      #----------------------------------------------
-      - name: Install package
-        run: poetry install
+      - name: Build docs with sphinx
+        run: poetry run sphinx-build -b html docs docs/_build/html
 
-      #----------------------------------------------
-      #    run test suite
-      #----------------------------------------------
-      - name: Test with pytest
-        # Configuration of pytest [tool.pytest.ini_options] in pyproject.toml
-        # https://docs.pytest.org/en/latest/reference/customize.html#pyproject-toml
-        # In the template repository options passed are
-        # -ra -q -vv --cov=spatstat_interface --cov-report=xml
-        run: poetry run pytest
-  
       - name: Deploy documentation to gh-pages branch
         uses: s0/git-publish-subdir-action@develop
         env:
@@ -91,4 +72,3 @@ jobs:
           BRANCH: gh-pages
           FOLDER: docs/_build/html
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
- 
