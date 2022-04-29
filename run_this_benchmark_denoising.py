@@ -1,14 +1,13 @@
-from unittest import result
-
-
 if __name__ == "__main__":
+    # from unittest import result
+    from methods.spatstats_utils import ComputeStatistics
     import importlib
     from methods import *
     from methods.MethodTemplate import MethodTemplate as MethodTemplate
     import time
     import inspect
+    
     # Collects the methods in the folder/ module "methods" and make a global list of them.
-
     print('Collecting methods to benchmark...')
     modules = dir()
     modules = [mod_name for mod_name in modules if mod_name.startswith('method_')]
