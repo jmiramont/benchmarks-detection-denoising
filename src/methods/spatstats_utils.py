@@ -21,6 +21,9 @@ from methods.contours_utils import zeros_finder
 
 
 class ComputeStatistics():
+    """A class that encapsulates the code for computing functional statistics.
+
+    """
     
     def __init__(self, spatstat=None):
         if spatstat is None:
@@ -104,6 +107,16 @@ def ginibreGaf(r, c):
 
 
 def compute_S0(radius, statistic = None, Sm = None):
+    """_summary_
+
+    Args:
+        radius (_type_): _description_
+        statistic (_type_, optional): _description_. Defaults to None.
+        Sm (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
     if statistic == 'L':
         # compute true GAF Lfunc
         rho_gaf = pairCorrPlanarGaf(radius, np.pi)
@@ -120,11 +133,23 @@ def compute_S0(radius, statistic = None, Sm = None):
 
 
 def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2):
+    """_summary_
+
+    Args:
+        radius (_type_): _description_
+        rmax (_type_): _description_
+        Sm (_type_): _description_
+        S0 (_type_): _description_
+        pnorm (int, optional): _description_. Defaults to 2.
+
+    Returns:
+        _type_: _description_
+    """
     if len(Sm.shape) == 1:
         Sm.resize((1,Sm.size))
 
     S0.resize((1,S0.size))
-    # t2 = np.sqrt(np.cumsum((Sm-S0)**2, axis=1))         # T norma 2 ( este usa después para los test MC)
+    # t2 = np.sqrt(np.cumsum((Sm-S0)**2, axis=1))      
     # tm = np.zeros_like(Sm)
     tm = np.zeros((Sm.shape[0], len(rmax)))
     for k in range(len(rmax)):
@@ -135,8 +160,30 @@ def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2):
     return tm
 
 
-def compute_mc_sim(signal, sc=None, Nfft=None,  MC_reps = 199, statistic='L',
-                    pnorm = 2, radius = None, rmax = None):
+def compute_mc_sim(signal,
+                    sc=None,
+                    Nfft=None,
+                    MC_reps = 199,
+                    statistic='L',
+                    pnorm = 2,
+                    radius = None,
+                    rmax = None):
+    """Compute the Montecarlo simulations.
+
+    Args:
+        signal (_type_): _description_
+        sc (_type_, optional): _description_. Defaults to None.
+        Nfft (_type_, optional): _description_. Defaults to None.
+        MC_reps (int, optional): _description_. Defaults to 199.
+        statistic (str, optional): _description_. Defaults to 'L'.
+        pnorm (int, optional): _description_. Defaults to 2.
+        radius (_type_, optional): _description_. Defaults to None.
+        rmax (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
+
     # rmax*(base)/np.sqrt(2*base) Use this for rmax in samples!
     N = len(signal)
     if Nfft is None:
@@ -173,12 +220,27 @@ def compute_mc_sim(signal, sc=None, Nfft=None,  MC_reps = 199, statistic='L',
     
     output = dict()
     for sts in statistic:
-        tm, t_exp = compute_statistics(sts, sc, simulation_pos, pos_exp, radius, rmax, pnorm)
+        tm, t_exp = compute_statistics(sts,sc,simulation_pos,pos_exp,radius,rmax,pnorm)
         output[sts] = (tm,t_exp)
    
     return output, radius
 
 def compute_statistics(sts, sc, simulation_pos, pos_exp, radius, rmax, pnorm):
+    """Compute the given functional statistics.
+
+    Args:
+        sts (_type_): _description_
+        sc (_type_): _description_
+        simulation_pos (_type_): _description_
+        pos_exp (_type_): _description_
+        radius (_type_): _description_
+        rmax (_type_): _description_
+        pnorm (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
     MC_reps = len(simulation_pos)
     tm = np.zeros((MC_reps, len(rmax)))
     Sm = np.zeros((MC_reps, len(radius)))
@@ -212,29 +274,117 @@ def compute_statistics(sts, sc, simulation_pos, pos_exp, radius, rmax, pnorm):
     return tm, t_exp.squeeze()
 
 
-def compute_hyp_test(signal, sc=None, MC_reps = 199, alpha = 0.05, statistic='L',
-                     pnorm = 2, radius=None, rmax=None):
+def compute_hyp_test(signal, 
+                    sc=None, 
+                    MC_reps = 199, 
+                    alpha = 0.05, 
+                    statistic='L',
+                    pnorm = 2, 
+                    radius=None, 
+                    rmax=None,
+                    return_values=False):
+    """ Compute hypothesis tests based on Montecarlo simulations.
+
+    Args:
+        signal (ndarray): Numpy ndarray with the signal.
+        sc (ComputeStatistics, optional): This is an object of the ComputeStatistics
+        class, that encapsulates the initialization of the spatstat-interface python
+        package. This allows avoiding reinitialize the interface each time. 
+        Defaults to None.
+        MC_reps (int, optional): Repetitions of the Montecarlo simulations. 
+        Defaults to 199.
+        alpha (float, optional): Significance of the tests. Defaults to 0.05.
+        statistic (str, optional): Functional statistic computed on the point process 
+        determined by the zeros of spectrogram of the signal. Defaults to 'L'.
+        pnorm (int, optional): Summary statistics for the envelope-tests. Common values 
+        for this parameter are "np.inf" for the supremum norm, or "2" for the usual 2 
+        norm. Defaults to 2.
+        radius (float, optional): Vector of radius used for the computation of the 
+        functional statistics. Defaults to None.
+        rmax (float, optional): Maximum radius to compute the test. One test per value 
+        in rmax is compute. If it is None, the values given in "radius" are used. 
+        Defaults to None.
+        return_values (bool, optional): If False, returns a dictionary with the 
+        results of the test for each statistic and value of rmax. If True, also returns 
+        the empirical statistic and the simulated statistics. Defaults to False.
+
+    Returns:
+        dict: Returns a dictionary with the results. If more than one statistic is 
+        given as input parameter, the dictionary will have one entry per statistic.
+    """
+    
     N = len(signal)
-    Nfft = N
+    Nfft = 2*N
     k = int(np.floor(alpha*(MC_reps+1))) # corresponding k value
     if isinstance(statistic,str):
         statistic = (statistic,)
 
-    output_dict, radius = compute_mc_sim(signal, sc, Nfft, MC_reps=MC_reps,
-                                        statistic=statistic, pnorm=pnorm,
-                                        radius=radius, rmax=rmax)
+    output_dict, radius = compute_mc_sim(signal,
+                                        sc,
+                                        Nfft,
+                                        MC_reps=MC_reps,
+                                        statistic=statistic,
+                                        pnorm=pnorm,
+                                        radius=radius,
+                                        rmax=rmax)
     
     for sts in statistic:
         tm, t_exp = output_dict[sts]
         reject_H0 = np.zeros(tm.shape[1], dtype=bool)
         reject_H0[np.where(t_exp > tm[k])] = True
-        output_dict[sts] = reject_H0
+        if return_values:
+            output_dict[sts] = {'reject_H0': reject_H0,
+                                'tm': tm,
+                                't_exp': t_exp,
+                                'k': k}
+        else:
+            output_dict[sts] = reject_H0
     
     if len(statistic)>1:    
         return output_dict 
-    else:
-        return output_dict[statistic[0]] # return (tm, t_exp) if only one statistic was computed.
+    else: # returns (tm, t_exp) if only one statistic was computed.
+        return output_dict[statistic[0]] 
 
+
+
+def compute_scale(signal, Nfft, sc):
+    # sc = ComputeStatistics()
+    # output = np.zeros((reps,len(radius)))
+    statistics = 'F' #('L','Frs','Fcs','Fkm')
+    pnorm = np.inf
+    radius = np.arange(0.0, 4.0, 0.01)
+
+    hyp_test_dict = compute_hyp_test(signal,
+                                sc=sc,
+                                MC_reps = 199,
+                                alpha = 0.05,
+                                statistic=statistics,
+                                pnorm = pnorm,
+                                radius = radius,
+                                return_values=True)
+
+    k =  hyp_test_dict['k']
+    tm = hyp_test_dict['tm']
+    t_exp = hyp_test_dict['t_exp']
+    reject_H0 = hyp_test_dict['reject_H0']
+
+    radi_of_rejection = radius[np.where(reject_H0 == True)]
+    t_exp_rejection = t_exp[np.where(reject_H0 == True)]
+    t_exp_rejection *= 10000
+    t_exp_rejection = np.round(t_exp_rejection)/10000
+    max_t_exp = np.max(t_exp_rejection)
+
+    radius_of_rejection = 0.0
+
+    for i in range(len(t_exp_rejection)-5):
+        if np.all(t_exp_rejection[i:i+5]==max_t_exp):
+            radius_of_rejection = radi_of_rejection[i]
+            break
+
+    if radius_of_rejection < 0.6:
+        radius_of_rejection = 0.6
+    
+    return radius_of_rejection
 
 
     # def spatialStatsFromR(pos):

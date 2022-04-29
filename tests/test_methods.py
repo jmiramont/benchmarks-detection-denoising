@@ -7,8 +7,10 @@ from benchmark_demo.SignalBank import SignalBank
 from benchmark_demo.utilstf import add_snr
 from methods.MethodTemplate import MethodTemplate
 
-#-------------------------------------------------------------------------------------------------------
-""" This collects all the methods in the folder/ module "methods" and make a global list of them."""
+#---------------------------------------------------------------------------------------
+""" This collects all the methods in the folder "methods" and make a list of them.
+"""
+
 modules = dir()
 modules = [mod_name for mod_name in modules if mod_name.startswith('method_')]
 global list_of_methods # Use with caution.
@@ -22,7 +24,7 @@ for mod_name in modules:
         if class_parent == MethodTemplate:
             elmetodo = method_class()
             list_of_methods.append(method_class())
-#-------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------
 
 print([m.id for m in list_of_methods])
 
@@ -44,7 +46,8 @@ def dummy_input():
 def test_methods_inheritance():
     for method_instance in list_of_methods:
         method_id = method_instance.id
-        assert isinstance(method_instance, MethodTemplate), method_id +' should inherit MethodTemplate.'
+        assert isinstance(method_instance, MethodTemplate), (method_id 
+                                                    +' should inherit MethodTemplate.')
 
 
 # Test methods' ids and tasks.
@@ -52,7 +55,8 @@ def test_methods_attributes():
     for method_instance in list_of_methods:
         method_id = method_instance.id
         method_task = method_instance.task
-        assert method_task in ['denoising','detection'], method_id +"'s task should be either 'detection' or 'denoising'."
+        assert method_task in ['denoising','detection'], (method_id 
+                                +"'s task should be either 'detection' or 'denoising'.")
 
 
 # Test the shape of parameters
@@ -60,7 +64,8 @@ def test_methods_parameters():
     for method_instance in list_of_methods:
         method_id = method_instance.id
         parameters = method_instance.get_parameters()
-        assert isinstance(parameters, list) or isinstance(parameters, tuple) , method_id +"'s parameters should be a list or a tuple."
+        assert isinstance(parameters, list) or isinstance(parameters, tuple), \
+                                method_id +"'s parameters should be a list or a tuple."
 
 
 # Test the shape of the outputs for denoising methods
@@ -72,7 +77,8 @@ def test_denoising_methods_outputs_shape(dummy_input):
             parameters = method_instance.get_parameters()
             for params in parameters:
                 output = method_instance.method(dummy_input, params=params)
-                assert (output.shape == dummy_input.shape), method_id +' output should have the same shape as input.'
+                assert (output.shape == dummy_input.shape), (method_id 
+                                        +' output should have the same shape as input.')
 
 
 # Test the shape of the outputs for detection methods
@@ -84,9 +90,9 @@ def test_detection_methods_outputs_shape(dummy_input):
             parameters = method_instance.get_parameters()
             for params in parameters:
                 output = method_instance.method(dummy_input, params=params)
-                assert (output.size == dummy_input.shape[0]), method_id +' output should have one value per signal.'
-                # assert all(isinstance(i,bool) for i in output), method_id +' output should be an array of booleans.'
-
+                assert (output.size == dummy_input.shape[0]), (method_id 
+                                        +' output should have one value per signal.')
+                
 
 # Test the type of the outputs
 def test_methods_outputs_type(dummy_input):
@@ -98,9 +104,10 @@ def test_methods_outputs_type(dummy_input):
                 parameters = method_instance.get_parameters()
                 for params in parameters:
                     output = method_instance.method(dummy_input, params=params)
-                    assert (type(output) is np.ndarray), method_id +' output should be numpy.ndarray.'
+                    assert (type(output) is np.ndarray), (method_id 
+                                                    +' output should be numpy.ndarray.')
             
             if method_instance.task == 'detection': # ! This has to be implemented.
                 assert True
 
-# test_methods_outputs_shape(dummy_input())
+# test_denoising_methods_outputs_shape(dummy_input())

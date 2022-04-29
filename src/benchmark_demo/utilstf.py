@@ -1,13 +1,8 @@
-import numpy as np
-import scipy.signal as sg
-from math import factorial
-from numpy import pi as pi
 """ This file contains a number of utilities for time-frequency analysis.
-Some functions has been modified from the supplementary code of:
-Bardenet, R., Flamant, J., & Chainais, P. (2020). On the zeros of the spectrogram of white noise.
-Applied and Computational Harmonic Analysis, 48(2), 682-705.
-which can be found in: http://github.com/jflamant/2018-zeros-spectrogram-white-noise.
-
+Some functions has been modified from the supplementary code of: 
+Bardenet, R., Flamant, J., & Chainais, P. (2020). "On the zeros of the spectrogram of 
+white noise." Applied and Computational Harmonic Analysis, 48(2), 682-705.
+which can be found in.
 Those functions are:
 - getSpectrogram(signal)
 - findCenterEmptyBalls(Sww, pos_exp, radi_seg=1)
@@ -16,7 +11,25 @@ Those functions are:
 
 """
 
+import numpy as np
+import scipy.signal as sg
+from math import factorial
+from numpy import pi as pi
+
 def get_round_window(Nfft):
+    """ Generates a round Gaussian window, i.e. same essential support in time and 
+    frequency: 
+                g(n) = exp(-pi*(n/T)^2)
+    for computing the Short-Time Fourier Transform.
+    
+    Args:
+        Nfft: Number of samples of the desired fft.
+
+    Returns:
+        g (ndarray): A round Gaussian window.
+        T (float): The scale of the Gaussian window (T = sqrt(Nfft))
+    """
+
     # analysis window
     g = sg.gaussian(Nfft, np.sqrt((Nfft)/2/np.pi))
     g = g/np.sqrt(np.sum(g**2))
@@ -27,8 +40,17 @@ def get_round_window(Nfft):
 def get_stft(signal, window = None):
     """ Compute the STFT of the signal. Signal is padded with zeros.
     The outputs corresponds to the STFT with the regular size and also the
-    zero padded version.
+    zero padded version. The signal is zero padded to alleviate border effects.
 
+    Args:
+        signal (ndarray): The signal to analyse.
+        window (ndarray, optional): The window to use. If None, uses a rounded Gaussian
+        window. Defaults to None.
+
+    Returns:
+        stft(ndarray): Returns de stft of the signal.
+        stft_padded(ndarray): Returns the stft of the zero-padded signal.
+        Npad(int): Number of zeros padded on each side of the signal.
     """
     
     N = np.max(signal.shape)
@@ -48,7 +70,16 @@ def get_stft(signal, window = None):
 
 def get_spectrogram(signal,window=None):
     """
-    Get the round spectrogram of the signal 
+    Get the round spectrogram of the signal computed with a given window. 
+    
+    Args:
+        signal(ndarray): A vector with the signal to analyse.
+
+    Returns:
+        S(ndarray): Spectrogram of the signal.
+        stft: Short-time Fourier transform of the signal.
+        stft_padded: Short-time Fourier transform of the padded signal.
+        Npad: Number of zeros added in the zero-padding process.
     """
     N = np.max(signal.shape)
     if window is None:
@@ -61,6 +92,16 @@ def get_spectrogram(signal,window=None):
 
 
 def find_zeros_of_spectrogram(S):
+    """Find the zeros of the spectrogram by searching for minima in a 3x3 submatrix of
+    the spectrogram.
+
+    Args:
+        S (ndarray): The spectrogram of a signal. 
+
+    Returns:
+        pos(ndarray): A Mx2 array where each row contains the coordinates of a zero of 
+        the spectrogram.
+    """
     # detection of zeros of the spectrogram
     th = 1e-14
     y, x = extr2minth(S, th) # Find zero's coordinates
@@ -72,7 +113,9 @@ def find_zeros_of_spectrogram(S):
 
 
 def reconstruct_signal(hull_d, stft):
-    """ Reconstruction using the convex hull
+    """Reconstruction using the convex hull.
+    This function is deprecated and conserved for retrocompatibility purposes only.
+
     """
     Nfft = stft.shape[1]
     tmin = int(np.sqrt(Nfft))
@@ -101,7 +144,16 @@ def reconstruct_signal(hull_d, stft):
 
 
 def reconstruct_signal_2(mask, stft, Npad, Nfft=None):
-    """ Reconstruction using a mask given as parameter
+    """Reconstruction using a mask given as parameter
+
+    Args:
+        mask (_type_): _description_
+        stft (_type_): _description_
+        Npad (_type_): _description_
+        Nfft (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
     """
     Ni = mask.shape[1]
     if Nfft is None:
@@ -139,7 +191,10 @@ def snr_comparison(x,x_hat):
 
 def add_snr_block(x,snr,K = 1):
     """
-    Adds noise to a signal x with SNR equal to snr. SNR is defined as SNR (dB) = 10 * log10(Ex/En)
+    Adds noise to a signal x with SNR equal to snr.
+    SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En are the energy of 
+    the signal and the noise, respectively.
+
     """
     N = len(x)
     x = x - np.mean(x)
@@ -186,6 +241,17 @@ def add_snr(x,snr,K = 1):
 
 
 def hermite_poly(t,n):
+    """Generates a Hermite polynomial of order n on the vector t.
+
+    Args:
+        t (ndarray, float): A real valued vector on which compute the Hermite 
+        polynomials.
+        n (int): Order of the Hermite polynomial.
+
+    Returns:
+        ndarray: Returns an array with the Hermite polynomial computed on t.
+    """
+
     if n == 0:
         return np.ones((len(t),))
     else:
@@ -196,6 +262,21 @@ def hermite_poly(t,n):
 
 
 def hermite_fun(N, q, t=None, T=None):
+    """Computes an Hermite function of order q, that consist in a centered Hermite 
+    polynomial multiplied by the squared-root of a centered Gaussian given by: 
+    exp(-pi(t/T)^2). The parameter T fixes the width of the Gaussian function.
+
+    Args:
+        N (int): Length of the function in samples
+        q (int): Order of the Hermite polynomial.
+        t (ndarray): Values on which compute the function. If None, uses a centered 
+        vector from -N//2 to N//2-1. Defaults to None.
+        T (float): Scale of the Gaussian involved in the Hermite function. If None,
+        N = sqrt(N). Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
     if t is None:
         t = np.arange(N)-N//2
 
@@ -206,7 +287,6 @@ def hermite_fun(N, q, t=None, T=None):
     # gaussian_basic /= np.sum(gaussian_basic)
     h_func = gaussian_basic*hermite_poly(np.sqrt(2*pi)*t/T, q-1)/np.sqrt(factorial(q-1)*(2**(q-1-0.5)))
     return h_func
-
 
 
 # def empty_balls(signal, radi_seg = 1):

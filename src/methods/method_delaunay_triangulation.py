@@ -2,7 +2,7 @@ from methods.MethodTemplate import MethodTemplate
 from benchmark_demo.utilstf import *
 from scipy.spatial import ConvexHull, Delaunay
 import matplotlib.pyplot as plt
-
+from methods.spatstats_utils import compute_scale, ComputeStatistics
 
 def pointsInTriangles(S,TRI,vertices):
     mascara=np.zeros_like(S)
@@ -99,8 +99,6 @@ def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
 
         else:
             current_triangles = next_triangles[1::]
-        
-        
 
     ntri2 = sum(len(i) for i in groups_of_triangles) # control ntri1==ntri2
 
@@ -164,14 +162,19 @@ def delaunay_triangulation_denoising(signal,
                                     grouping=True, 
                                     ngroups=None, 
                                     min_group_size=1,
-                                    q = None):
-    if len(signal.shape) == 1:
-        signal = np.resize(signal,(1,len(signal)))
+                                    q=None,
+                                    cs=None):
+    # if len(signal.shape) == 1:
+    #     signal = np.resize(signal,(1,len(signal)))
 
-    Nfft = 2*signal.shape[1]
+    Nfft = 2*len(signal)
     g, T = get_round_window(Nfft)
     stft, stft_padded, Npad = get_stft(signal,g)
     margin = 2
+
+    if cs is not None:
+        scale_pp = compute_scale(signal, Nfft, cs)
+        LB = 2*scale_pp
 
     S = np.abs(stft)**2
     zeros = find_zeros_of_spectrogram(S)
@@ -222,11 +225,14 @@ class NewMethod(MethodTemplate):
         self.id = 'delaunay_triangulation'
         self.task = 'denoising'
 
-    def method(self,signals, params):
-        if len(signals.shape) == 1:
-            signals = np.resize(signals,(1,len(signals)))
-        
-        signals_output = np.zeros(signals.shape)
+        # In case is needed...
+        # self.cs = ComputeStatistics()
+
+    def method(self, signals, params):
+        # if len(signals.shape) == 1:
+        #     signals = np.resize(signals,(1,len(signals)))
+
+        signals_output = np.zeros_like(signals)
         for i, signal in enumerate(signals):
             if params is None:
                 signals_output[i] = delaunay_triangulation_denoising(signal)
@@ -236,4 +242,5 @@ class NewMethod(MethodTemplate):
         return signals_output
 
 
-
+    # def get_parameters(self):            # Use it to parametrize your method.
+    #      return (None, {'cs': AAA})
