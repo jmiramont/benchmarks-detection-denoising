@@ -8,7 +8,6 @@ Those functions are:
 - findCenterEmptyBalls(Sww, pos_exp, radi_seg=1)
 - getConvexHull(Sww, pos_exp, empty_mask, radi_expand=0.5)
 - reconstructionSignal(hull_d, stft)
-
 """
 
 import numpy as np
@@ -144,7 +143,7 @@ def reconstruct_signal(hull_d, stft):
 
 
 def reconstruct_signal_2(mask, stft, Npad, Nfft=None):
-    """Reconstruction using a mask given as parameter
+    """ Reconstruction using a mask given as parameter
 
     Args:
         mask (_type_): _description_
@@ -170,8 +169,15 @@ def reconstruct_signal_2(mask, stft, Npad, Nfft=None):
     return xr, t
 
 
-def extr2minth(M,th):
-    """ Finds the minima of the spectrogram matrix M
+def extr2minth(M,th=1e-14):
+    """ Finds the local minima of the spectrogram matrix M.
+
+    Args:
+        M (_type_): Matrix with real values.
+        th (_type_): A given threshold.
+
+    Returns:
+        _type_: _description_
     """
     C,R = M.shape
     Mid_Mid = np.zeros((C,R), dtype=bool)
@@ -190,19 +196,27 @@ def snr_comparison(x,x_hat):
 
 
 def add_snr_block(x,snr,K = 1):
-    """
-    Adds noise to a signal x with SNR equal to snr.
+    """Adds noise to a signal x with SNR equal to snr.
     SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En are the energy of 
     the signal and the noise, respectively.
 
+    Args:
+        x (ndarray): Signal.
+        snr (_type_): Signal-to-Noise Ratio in dB.
+        K (int, optional): The number of noisy signals generated, vertically stacked. 
+        Defaults to 1.
+
+    Returns:
+        ndarray: Block of shape [K,N], where K is the number of noisy signals, and N is 
+        length of the signal x.
     """
     N = len(x)
     x = x - np.mean(x)
     Px = np.sum(x ** 2)
     # print(x)
 
-    n = np.random.rand(N,K)
-    n = n - np.mean(n,axis = 0)
+    n = np.random.randn(N,K)
+    # n = n - np.mean(n,axis = 0)
     # print(np.mean(n, axis = 0))
     # x = x+n
 
@@ -226,8 +240,8 @@ def add_snr(x,snr,K = 1):
     x = x - np.mean(x)
     Px = np.sum(x ** 2)
 
-    n = np.random.rand(N)
-    n = n-np.mean(n)
+    n = np.random.randn(N)
+    # n = n-np.mean(n)
     
     Pn = np.sum(n ** 2)
     n = n / np.sqrt(Pn)

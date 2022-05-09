@@ -197,9 +197,9 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">verbosity</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">verbosity</span><span class="o">&lt;</span><span class="mi">5</span> <span class="p">,</span> <span class="s1">&#39;Verbosity should be an integer between 0 and 4&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">=</span> <span class="n">verbosity</span>
 
-        <span class="c1"># Check the task is either &#39;denoising&#39; or &#39;detecting&#39;.</span>
+        <span class="c1"># Check the task is either &#39;denoising&#39; or &#39;detection&#39;.</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">task</span> <span class="o">!=</span> <span class="s1">&#39;denoising&#39;</span> <span class="ow">and</span> <span class="n">task</span> <span class="o">!=</span> <span class="s1">&#39;detection&#39;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The tasks should be either &#39;denoising&#39; or &#39;detecting&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The tasks should be either &#39;denoising&#39; or &#39;detection&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
 
