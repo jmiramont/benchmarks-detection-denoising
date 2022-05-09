@@ -1107,12 +1107,43 @@ SNR is defined as SNR (dB) = 10 * log10(Ex/En)</p>
 <dd><p>Adds noise to a signal x with SNR equal to snr.
 SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En are the energy of
 the signal and the noise, respectively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray</em>) – Signal.</p></li>
+<li><p><strong>snr</strong> (<em>_type_</em>) – Signal-to-Noise Ratio in dB.</p></li>
+<li><p><strong>K</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of noisy signals generated, vertically stacked.</p></li>
+<li><p><strong>1.</strong> (<em>Defaults to</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Block of shape [K,N], where K is the number of noisy signals, and N is
+length of the signal x.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.extr2minth">
-<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">extr2minth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">th</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#extr2minth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.extr2minth" title="Permalink to this definition"></a></dt>
-<dd><p>Finds the minima of the spectrogram matrix M</p>
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">extr2minth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">th</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#extr2minth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.extr2minth" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the local minima of the spectrogram matrix M.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>M</strong> (<em>_type_</em>) – Matrix with real values.</p></li>
+<li><p><strong>th</strong> (<em>_type_</em>) – A given threshold.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1204,7 +1235,7 @@ Npad(int): Number of zeros padded on each side of the signal.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.hermite_fun">
-<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">hermite_fun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#hermite_fun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.hermite_fun" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">hermite_fun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#hermite_fun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.hermite_fun" title="Permalink to this definition"></a></dt>
 <dd><p>Computes an Hermite function of order q, that consist in a centered Hermite
 polynomial multiplied by the squared-root of a centered Gaussian given by:
 exp(-pi(t/T)^2). The parameter T fixes the width of the Gaussian function.</p>
@@ -1230,7 +1261,7 @@ exp(-pi(t/T)^2). The parameter T fixes the width of the Gaussian function.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.hermite_poly">
-<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">hermite_poly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#hermite_poly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.hermite_poly" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">hermite_poly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#hermite_poly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.hermite_poly" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a Hermite polynomial of order n on the vector t.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -74,7 +74,6 @@
 <span class="sd">- findCenterEmptyBalls(Sww, pos_exp, radi_seg=1)</span>
 <span class="sd">- getConvexHull(Sww, pos_exp, empty_mask, radi_expand=0.5)</span>
 <span class="sd">- reconstructionSignal(hull_d, stft)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -210,7 +209,7 @@
 
 
 <div class="viewcode-block" id="reconstruct_signal_2"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.reconstruct_signal_2">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_signal_2</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">stft</span><span class="p">,</span> <span class="n">Npad</span><span class="p">,</span> <span class="n">Nfft</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Reconstruction using a mask given as parameter</span>
+    <span class="sd">&quot;&quot;&quot; Reconstruction using a mask given as parameter</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        mask (_type_): _description_</span>
@@ -236,8 +235,15 @@
     <span class="k">return</span> <span class="n">xr</span><span class="p">,</span> <span class="n">t</span></div>
 
 
-<div class="viewcode-block" id="extr2minth"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.extr2minth">[docs]</a><span class="k">def</span> <span class="nf">extr2minth</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">th</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Finds the minima of the spectrogram matrix M</span>
+<div class="viewcode-block" id="extr2minth"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.extr2minth">[docs]</a><span class="k">def</span> <span class="nf">extr2minth</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">th</span><span class="o">=</span><span class="mf">1e-14</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Finds the local minima of the spectrogram matrix M.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        M (_type_): Matrix with real values.</span>
+<span class="sd">        th (_type_): A given threshold.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        _type_: _description_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">C</span><span class="p">,</span><span class="n">R</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">Mid_Mid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">C</span><span class="p">,</span><span class="n">R</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
@@ -256,19 +262,27 @@
 
 
 <div class="viewcode-block" id="add_snr_block"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.add_snr_block">[docs]</a><span class="k">def</span> <span class="nf">add_snr_block</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">snr</span><span class="p">,</span><span class="n">K</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Adds noise to a signal x with SNR equal to snr.</span>
+    <span class="sd">&quot;&quot;&quot;Adds noise to a signal x with SNR equal to snr.</span>
 <span class="sd">    SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En are the energy of </span>
 <span class="sd">    the signal and the noise, respectively.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        x (ndarray): Signal.</span>
+<span class="sd">        snr (_type_): Signal-to-Noise Ratio in dB.</span>
+<span class="sd">        K (int, optional): The number of noisy signals generated, vertically stacked. </span>
+<span class="sd">        Defaults to 1.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ndarray: Block of shape [K,N], where K is the number of noisy signals, and N is </span>
+<span class="sd">        length of the signal x.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">Px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
     <span class="c1"># print(x)</span>
 
-    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
+    <span class="c1"># n = n - np.mean(n,axis = 0)</span>
     <span class="c1"># print(np.mean(n, axis = 0))</span>
     <span class="c1"># x = x+n</span>
 
@@ -292,8 +306,8 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">Px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 
-    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="c1"># n = n-np.mean(n)</span>
     
     <span class="n">Pn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Pn</span><span class="p">)</span>
@@ -306,7 +320,7 @@
     <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">n</span></div>
 
 
-<div class="viewcode-block" id="hermite_poly"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.hermite_poly">[docs]</a><span class="k">def</span> <span class="nf">hermite_poly</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="hermite_poly"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.hermite_poly">[docs]</a><span class="k">def</span> <span class="nf">hermite_poly</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="p">,</span> <span class="n">return_all</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generates a Hermite polynomial of order n on the vector t.</span>
 
 <span class="sd">    Args:</span>
@@ -317,17 +331,29 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        ndarray: Returns an array with the Hermite polynomial computed on t.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">all_hp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span>
 
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),))</span>
+        <span class="n">hp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),))</span>
+        <span class="n">all_hp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">hp</span>
+
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">t</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">t</span><span class="o">*</span><span class="n">hermite_poly</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">hermite_poly</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span></div>
+            <span class="n">hp</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">t</span>
+            <span class="n">all_hp</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),))</span>
+            <span class="n">all_hp</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">hp</span>
+            <span class="c1"># if n &gt;= 1:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># hp = 2*t*hermite_poly(t,n-1) - 2*(n-1)*hermite_poly(t,n-2)</span>
+                <span class="n">hp</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">t</span><span class="o">*</span><span class="n">all_hp</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">all_hp</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">all_hp</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">hp</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">return_all</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hp</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hp</span><span class="p">,</span> <span class="n">all_hp</span></div>
 
 
-<div class="viewcode-block" id="hermite_fun"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.hermite_fun">[docs]</a><span class="k">def</span> <span class="nf">hermite_fun</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="hermite_fun"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.hermite_fun">[docs]</a><span class="k">def</span> <span class="nf">hermite_fun</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_all</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Computes an Hermite function of order q, that consist in a centered Hermite </span>
 <span class="sd">    polynomial multiplied by the squared-root of a centered Gaussian given by: </span>
 <span class="sd">    exp(-pi(t/T)^2). The parameter T fixes the width of the Gaussian function.</span>
@@ -349,11 +375,19 @@
     <span class="k">if</span> <span class="n">T</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 
+    <span class="n">_</span><span class="p">,</span> <span class="n">all_hp</span> <span class="o">=</span> <span class="n">hermite_poly</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">t</span><span class="o">/</span><span class="n">T</span><span class="p">,</span> <span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">return_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">gaussian_basic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">/</span><span class="n">T</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-    <span class="c1"># gaussian_basic /= np.sum(gaussian_basic)</span>
-    <span class="n">h_func</span> <span class="o">=</span> <span class="n">gaussian_basic</span><span class="o">*</span><span class="n">hermite_poly</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">t</span><span class="o">/</span><span class="n">T</span><span class="p">,</span> <span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">h_func</span></div>
+    <span class="n">hfunc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">q</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span>
 
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+        <span class="n">Cnorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)))</span>
+        <span class="c1"># gaussian_basic /= np.sum(gaussian_basic)</span>
+        <span class="n">hfunc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gaussian_basic</span><span class="o">*</span><span class="n">all_hp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">Cnorm</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">return_all</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hfunc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hfunc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">hfunc</span></div>
 
 <span class="c1"># def empty_balls(signal, radi_seg = 1):</span>
 <span class="c1">#     Sww, stft, pos, Npad = get_spectrogram(signal)</span>
