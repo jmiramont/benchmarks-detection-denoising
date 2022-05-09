@@ -131,9 +131,9 @@ class Benchmark:
         assert isinstance(verbosity,int) and 0<=verbosity<5 , 'Verbosity should be an integer between 0 and 4'
         self.verbosity = verbosity
 
-        # Check the task is either 'denoising' or 'detecting'.
+        # Check the task is either 'denoising' or 'detection'.
         if (task != 'denoising' and task != 'detection'):
-            raise ValueError("The tasks should be either 'denoising' or 'detecting'.\n")
+            raise ValueError("The tasks should be either 'denoising' or 'detection'.\n")
         else:
             self.task = task
 
