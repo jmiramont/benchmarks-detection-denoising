@@ -240,7 +240,7 @@ def add_snr(x,snr,K = 1):
     return x+n
 
 
-def hermite_poly(t,n):
+def hermite_poly(t,n, return_all = False):
     """Generates a Hermite polynomial of order n on the vector t.
 
     Args:
@@ -251,17 +251,29 @@ def hermite_poly(t,n):
     Returns:
         ndarray: Returns an array with the Hermite polynomial computed on t.
     """
+    all_hp = np.zeros((n+1,len(t)))
 
     if n == 0:
-        return np.ones((len(t),))
+        hp = np.ones((len(t),))
+        all_hp[0] = hp
+
     else:
-        if n == 1:
-            return 2*t
-        else:
-            return 2*t*hermite_poly(t,n-1) - 2*(n-1)*hermite_poly(t,n-2)
+            hp = 2*t
+            all_hp[0,:] = np.ones((len(t),))
+            all_hp[1,:] = hp
+            # if n >= 1:
+            for i in range(2,n+1):
+                # hp = 2*t*hermite_poly(t,n-1) - 2*(n-1)*hermite_poly(t,n-2)
+                hp = 2*t*all_hp[i-1] - 2*(i-1)*all_hp[i-2]
+                all_hp[i,:] = hp
+
+    if not return_all:
+        return hp
+    else:
+        return hp, all_hp
 
 
-def hermite_fun(N, q, t=None, T=None):
+def hermite_fun(N, q, t=None, T=None, return_all = False):
     """Computes an Hermite function of order q, that consist in a centered Hermite 
     polynomial multiplied by the squared-root of a centered Gaussian given by: 
     exp(-pi(t/T)^2). The parameter T fixes the width of the Gaussian function.
@@ -283,11 +295,19 @@ def hermite_fun(N, q, t=None, T=None):
     if T is None:
         T = np.sqrt(N)
 
+    _, all_hp = hermite_poly(np.sqrt(2*pi)*t/T, q-1,return_all=True)
     gaussian_basic = np.exp(-pi*(t/T)**2)/np.sqrt(T)
-    # gaussian_basic /= np.sum(gaussian_basic)
-    h_func = gaussian_basic*hermite_poly(np.sqrt(2*pi)*t/T, q-1)/np.sqrt(factorial(q-1)*(2**(q-1-0.5)))
-    return h_func
+    hfunc = np.zeros((q,len(t)))
 
+    for i in range(q):
+        Cnorm = np.sqrt(factorial(q-1)*(2**(q-1-0.5)))
+        # gaussian_basic /= np.sum(gaussian_basic)
+        hfunc[i] = gaussian_basic*all_hp[i]/Cnorm
+    
+    if not return_all:
+        return hfunc[-1]
+    else:
+        return hfunc[-1], hfunc
 
 # def empty_balls(signal, radi_seg = 1):
 #     Sww, stft, pos, Npad = get_spectrogram(signal)

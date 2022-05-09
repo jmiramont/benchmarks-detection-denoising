@@ -1,4 +1,4 @@
-# A benchmark of signal denoising/ detecting methods
+# A benchmark of signal denoising/ detection methods
 
 [![Run benchmark](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml)
 [![Results](docs/readme_figures/results_badge.svg)](results/readme.md)
@@ -7,7 +7,7 @@
 
 ## Summary
 
-- [A benchmark of signal denoising/ detecting methods](#a-benchmark-of-signal-denoising-detecting-methods)
+- [A benchmark of signal denoising/ detection methods](#a-benchmark-of-signal-denoising-detection-methods)
   - [Summary](#summary)
   - [What is this benchmark?](#what-is-this-benchmark)
   - [How to use this benchmark?](#how-to-use-this-benchmark)
