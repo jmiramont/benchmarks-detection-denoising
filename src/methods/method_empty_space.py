@@ -5,6 +5,7 @@ import numpy as np
 import scipy.stats as spst
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
+from methods.spatstats_utils import compute_scale, ComputeStatistics
 
 
 def find_center_empty_balls(Sww, pos_exp, a, radi_seg=1):
@@ -52,11 +53,27 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     return hull_d, mask
 
 
-def empty_space_denoising(signal, radi_seg=0.9, radi_expand=0.5, return_dic=False):
-    if len(signal.shape) == 1:
-        signal = np.resize(signal,(1,len(signal)))
+def empty_space_denoising(  signal,
+                            radi_seg=0.9,
+                            radi_expand=0.5,
+                            adapt_thr=False,
+                            return_dic=False):
 
-    Nfft = 2*signal.shape[1]
+    
+                                
+    # if len(signal.shape) == 1:
+    #     signal = np.resize(signal,(1,len(signal)))
+
+    N = len(signal)
+    Nfft = 2*N
+
+    # Compute and adaptive threshold if its required, otherwise use "LB"
+    if adapt_thr:
+        scale_pp = compute_scale(signal, Nfft)
+        print(scale_pp)
+        radi_seg = scale_pp
+        radi_expand = scale_pp
+
     g, a = get_round_window(Nfft)
     Sww, stft, stft_padded, Npad = get_spectrogram(signal,g)
     pos = find_zeros_of_spectrogram(Sww)
@@ -65,7 +82,6 @@ def empty_space_denoising(signal, radi_seg=0.9, radi_expand=0.5, return_dic=Fals
     pos_aux[:,1] = pos[:,0]/a
     empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
     hull_d , mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=radi_expand)
-    # mask[:] = 1
     xr, t = reconstruct_signal_2(mask, stft_padded, Npad, Nfft)
 
     if return_dic:

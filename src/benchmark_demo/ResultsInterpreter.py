@@ -17,7 +17,6 @@ class ResultsInterpreter:
     -------
     def get_benchmark_as_data_frame(self):
     
-    
     """
     
     def __init__(self, a_benchmark):
@@ -42,9 +41,9 @@ class ResultsInterpreter:
     def get_benchmark_as_data_frame(self):
         """Returns a DataFrame with the raw data produced by the benchmark with the 
         following format:
-        -------------------------------------------------------------------------
-        | Method | Parameter | Signal_id | Repetition | SNRin_1 | ... | SNRin_n |
-        -------------------------------------------------------------------------
+            -------------------------------------------------------------------------
+            | Method | Parameter | Signal_id | Repetition | SNRin_1 | ... | SNRin_n |
+            -------------------------------------------------------------------------
 
         Returns:
             DataFrame: Raw data of the comparisons. 
