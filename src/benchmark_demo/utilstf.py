@@ -1,8 +1,8 @@
-""" This file contains a number of utilities for time-frequency analysis.
-Some functions has been modified from the supplementary code of: 
+""" This file contains a number of utilities for time-frequency analysis. 
+Some functions has been modified from the supplementary code of:
 Bardenet, R., Flamant, J., & Chainais, P. (2020). "On the zeros of the spectrogram of 
 white noise." Applied and Computational Harmonic Analysis, 48(2), 682-705.
-which can be found in.
+
 Those functions are:
 - getSpectrogram(signal)
 - findCenterEmptyBalls(Sww, pos_exp, radi_seg=1)
@@ -17,9 +17,7 @@ from numpy import pi as pi
 
 def get_round_window(Nfft):
     """ Generates a round Gaussian window, i.e. same essential support in time and 
-    frequency: 
-                g(n) = exp(-pi*(n/T)^2)
-    for computing the Short-Time Fourier Transform.
+    frequency: g(n) = exp(-pi*(n/T)^2) for computing the Short-Time Fourier Transform.
     
     Args:
         Nfft: Number of samples of the desired fft.
@@ -28,7 +26,6 @@ def get_round_window(Nfft):
         g (ndarray): A round Gaussian window.
         T (float): The scale of the Gaussian window (T = sqrt(Nfft))
     """
-
     # analysis window
     g = sg.gaussian(Nfft, np.sqrt((Nfft)/2/np.pi))
     g = g/np.sqrt(np.sum(g**2))
@@ -80,6 +77,7 @@ def get_spectrogram(signal,window=None):
         stft_padded: Short-time Fourier transform of the padded signal.
         Npad: Number of zeros added in the zero-padding process.
     """
+
     N = np.max(signal.shape)
     if window is None:
         Nfft = N
@@ -101,6 +99,7 @@ def find_zeros_of_spectrogram(S):
         pos(ndarray): A Mx2 array where each row contains the coordinates of a zero of 
         the spectrogram.
     """
+
     # detection of zeros of the spectrogram
     th = 1e-14
     y, x = extr2minth(S, th) # Find zero's coordinates
@@ -115,7 +114,14 @@ def reconstruct_signal(hull_d, stft):
     """Reconstruction using the convex hull.
     This function is deprecated and conserved for retrocompatibility purposes only.
 
+    Args:
+        hull_d (_type_): _description_
+        stft (_type_): _description_
+
+    Returns:
+        _type_: _description_
     """
+
     Nfft = stft.shape[1]
     tmin = int(np.sqrt(Nfft))
     tmax = stft.shape[1]-tmin
@@ -143,7 +149,7 @@ def reconstruct_signal(hull_d, stft):
 
 
 def reconstruct_signal_2(mask, stft, Npad, Nfft=None):
-    """ Reconstruction using a mask given as parameter
+    """Reconstruction using a mask given as parameter
 
     Args:
         mask (_type_): _description_
@@ -154,6 +160,7 @@ def reconstruct_signal_2(mask, stft, Npad, Nfft=None):
     Returns:
         _type_: _description_
     """
+
     Ni = mask.shape[1]
     if Nfft is None:
         Nfft = Ni
@@ -179,6 +186,7 @@ def extr2minth(M,th=1e-14):
     Returns:
         _type_: _description_
     """
+
     C,R = M.shape
     Mid_Mid = np.zeros((C,R), dtype=bool)
     for c in range(1, C-1):
@@ -191,6 +199,16 @@ def extr2minth(M,th=1e-14):
 
 
 def snr_comparison(x,x_hat):
+    """_summary_
+
+    Args:
+        x (_type_): _description_
+        x_hat (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
     qrf = 10*np.log10(np.sum(x**2)/np.sum((x-x_hat)**2))
     return qrf
 
@@ -210,6 +228,7 @@ def add_snr_block(x,snr,K = 1):
         ndarray: Block of shape [K,N], where K is the number of noisy signals, and N is 
         length of the signal x.
     """
+
     N = len(x)
     x = x - np.mean(x)
     Px = np.sum(x ** 2)
@@ -233,9 +252,21 @@ def add_snr_block(x,snr,K = 1):
     
 
 def add_snr(x,snr,K = 1):
-    """ Adds noise to a signal x with SNR equal to snr.
-    SNR is defined as SNR (dB) = 10 * log10(Ex/En)
+    """Adds noise to a signal x with SNR equal to snr. SNR is defined as 
+    SNR (dB) = 10 * log10(Ex/En), where Ex and En are the energy of the signal and the 
+    noise, respectively.
+
+    Args:
+        x (ndarray): Signal.
+        snr (_type_): Signal-to-Noise Ratio in dB.
+        K (int, optional): The number of noisy signals generated, vertically stacked. 
+        Defaults to 1.
+
+    Returns:
+        ndarray: Block of shape [K,N], where K is the number of noisy signals, and N is 
+        length of the signal x.
     """
+    
     N = len(x)
     x = x - np.mean(x)
     Px = np.sum(x ** 2)
@@ -265,6 +296,7 @@ def hermite_poly(t,n, return_all = False):
     Returns:
         ndarray: Returns an array with the Hermite polynomial computed on t.
     """
+
     all_hp = np.zeros((n+1,len(t)))
 
     if n == 0:
@@ -303,6 +335,7 @@ def hermite_fun(N, q, t=None, T=None, return_all = False):
     Returns:
         _type_: _description_
     """
+
     if t is None:
         t = np.arange(N)-N//2
 
@@ -322,12 +355,5 @@ def hermite_fun(N, q, t=None, T=None, return_all = False):
         return hfunc[-1]
     else:
         return hfunc[-1], hfunc
-
-# def empty_balls(signal, radi_seg = 1):
-#     Sww, stft, pos, Npad = get_spectrogram(signal)
-#     empty_mask = find_center_empty_balls(Sww, pos, radi_seg)
-#     hull_d , sub_empty= get_convex_hull(Sww, pos, empty_mask) 
-#     mask, xr, t, aux = reconstruct_signal_2(sub_empty, stft, Npad)
-#     return xr
-
-
+        
+    

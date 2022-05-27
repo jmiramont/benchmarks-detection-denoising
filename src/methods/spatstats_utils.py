@@ -347,8 +347,9 @@ def compute_hyp_test(signal,
 
 
 
-def compute_scale(signal, Nfft, sc):
-    # sc = ComputeStatistics()
+def compute_scale(signal, Nfft, sc=None):
+    if sc is None:
+        sc = ComputeStatistics()
     # output = np.zeros((reps,len(radius)))
     statistics = 'F' #('L','Frs','Fcs','Fkm')
     pnorm = np.inf
@@ -356,7 +357,7 @@ def compute_scale(signal, Nfft, sc):
 
     hyp_test_dict = compute_hyp_test(signal,
                                 sc=sc,
-                                MC_reps = 199,
+                                MC_reps = 19,
                                 alpha = 0.05,
                                 statistic=statistics,
                                 pnorm = pnorm,
@@ -381,8 +382,8 @@ def compute_scale(signal, Nfft, sc):
             radius_of_rejection = radi_of_rejection[i]
             break
 
-    if radius_of_rejection < 0.6:
-        radius_of_rejection = 0.6
+    if radius_of_rejection < 0.7:
+        radius_of_rejection = 0.7
     
     return radius_of_rejection
 

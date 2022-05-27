@@ -4,7 +4,17 @@ from scipy.spatial import ConvexHull, Delaunay
 import matplotlib.pyplot as plt
 from methods.spatstats_utils import compute_scale, ComputeStatistics
 
-def pointsInTriangles(S,TRI,vertices):
+def points_in_triangles(S,TRI,vertices):
+    """_summary_
+
+    Args:
+        S (_type_): _description_
+        TRI (_type_): _description_
+        vertices (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     mascara=np.zeros_like(S)
     #Coordenadas de los vertices:
     # vertTRI = np.zeros((3,2))
@@ -38,7 +48,16 @@ def pointsInTriangles(S,TRI,vertices):
     return mascara
     
 
-def adjacent_triangle(tri, first_tri = None):
+def find_adjacent_triangles(tri, first_tri = None):
+    """_summary_
+
+    Args:
+        tri (_type_): _description_
+        first_tri (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
     # Find adjacent triangles of first_tri.
     Nselect=tri.shape[0]
     ladosCompartidos = np.zeros((Nselect,3))
@@ -59,6 +78,19 @@ def adjacent_triangle(tri, first_tri = None):
         return this_adjacent, tri
     
 def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
+    """_summary_
+
+    Args:
+        S (_type_): _description_
+        zeros (_type_): _description_
+        tri (_type_): _description_
+        ngroups (_type_, optional): _description_. Defaults to None.
+        min_group_size (int, optional): _description_. Defaults to 1.
+        q (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
     groups_of_triangles = list()
     ntri = tri.shape[0]
 
@@ -78,7 +110,7 @@ def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
     while tri.size > 0:
         next_triangles = np.zeros((1,3))
         for triangle in current_triangles:
-            adjacent_tri, tri = adjacent_triangle(tri, triangle)
+            adjacent_tri, tri = find_adjacent_triangles(tri, triangle)
             if adjacent_tri is not None:
                 next_triangles = np.concatenate((next_triangles,adjacent_tri),axis=0)
         
@@ -108,7 +140,7 @@ def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
     for group in groups_of_triangles:
         mask = np.zeros_like(S)
         for triangle in group:
-            mask = mask + pointsInTriangles(S, triangle, zeros)
+            mask = mask + points_in_triangles(S, triangle, zeros)
 
         energy_per_group.append(np.sum(S*mask))
         masks_of_each_group.append(mask)
@@ -131,18 +163,36 @@ def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
 
     return groups_of_triangles, mask
 
-def counting_edges(tri,zeros):
+def describe_triangles(tri,zeros):
+    """_summary_
+
+    Args:
+        tri (_type_): _description_
+        zeros (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     simplices = tri.simplices
     NZ = simplices.shape[0]
     sides = np.zeros((NZ,3))
     max_side = np.zeros((NZ,))
+
+    area_triangle = np.zeros((NZ,))
+
     for i, simplex in enumerate(simplices):
         vertex = zeros[simplex]
         sides[i,0] = np.sqrt(np.sum((vertex[0] - vertex[1]) ** 2))
         sides[i,1] = np.sqrt(np.sum((vertex[0] - vertex[2]) ** 2))
         sides[i,2] = np.sqrt(np.sum((vertex[1] - vertex[2]) ** 2))
         max_side[i] = np.max(sides[i])
-    return sides, max_side
+
+        area_triangle[i] = (vertex[0,0]*(vertex[1,1]-vertex[2,1])
+                            + vertex[1,0]*(vertex[2,1]-vertex[0,1])
+                            + vertex[2,0]*(vertex[0,1]-vertex[1,1]))
+
+
+    return sides, max_side, area_triangle
 
 
 def mask_triangles(F, tri, selection):
@@ -155,6 +205,54 @@ def mask_triangles(F, tri, selection):
 
     return mask
 
+
+def compute_scale_triangles(signal, edges_signal, mc_reps=199):
+    N = len(signal)
+    Nfft = 2*N
+    g,T = get_round_window(Nfft)
+    quantiles = np.arange(0.50,0.99,0.01)
+    edge_quantiles = np.zeros((mc_reps,len(quantiles)))
+    alpha = 0.05 # Significance of the Hyp. tests.
+    k = int(np.floor(alpha*(mc_reps+1)))-1 # corresponding k value
+
+    # MC simulations of noise triangles.
+    for i in range(mc_reps):
+        
+        noise = np.random.randn(N)
+        S, stft, stft_padded, Npad = get_spectrogram(noise, window = g)
+        zeros = find_zeros_of_spectrogram(S)
+
+        # Normalize the position of zeros
+        vertices = zeros/T # Normalize
+        delaunay_graph = Delaunay(zeros)
+        # tri = delaunay_graph.simplices
+
+        # Get the length of each edge and the areas of the triangles.
+        _, longest_edges, _ = describe_triangles(delaunay_graph,vertices)
+        edge_quantiles[i] = np.quantile(longest_edges, quantiles)
+    
+    # Compute quantiles for signal:
+    edge_quantiles_empirical = np.quantile(edges_signal, quantiles)
+
+    # Compute summary statistics:
+    average_quantiles = np.mean(edge_quantiles, axis=0)
+    inf_norm = lambda a: np.linalg.norm(a,np.inf)
+    tm = np.zeros((mc_reps,len(quantiles)))
+    texp = np.zeros((len(quantiles),))
+
+    for q in range(1,len(quantiles)):
+        for i, row in enumerate(edge_quantiles):
+            tm[i,q] = inf_norm(row[0:q]-average_quantiles[0:q]) 
+
+        texp[q] = inf_norm(edge_quantiles_empirical[0:q]-average_quantiles[0:q])
+
+    tm = np.sort(tm, axis=0,)
+    tm = tm[-1:0:-1,:]
+    max_diff_t = np.argmax(texp-tm[k, :])
+    scale = average_quantiles[max_diff_t]
+    return scale
+
+
 def delaunay_triangulation_denoising(signal,
                                     LB=1.85,
                                     UB=3, 
@@ -163,43 +261,79 @@ def delaunay_triangulation_denoising(signal,
                                     ngroups=None, 
                                     min_group_size=1,
                                     q=None,
-                                    cs=None):
-    # if len(signal.shape) == 1:
-    #     signal = np.resize(signal,(1,len(signal)))
+                                    adapt_thr=False):
 
-    Nfft = 2*len(signal)
+    """Signal filtering by domain detection using Delaunay triangulation.
+
+    Args:
+        signal (_type_): _description_
+        LB (float, optional): _description_. Defaults to 1.85.
+        UB (int, optional): _description_. Defaults to 3.
+        return_dic (bool, optional): _description_. Defaults to False.
+        grouping (bool, optional): _description_. Defaults to True.
+        ngroups (_type_, optional): _description_. Defaults to None.
+        min_group_size (int, optional): _description_. Defaults to 1.
+        q (_type_, optional): _description_. Defaults to None.
+        adapt_thr (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
+
+    # Set parameters
+    N = len(signal)
+    Nfft = 2*N
     g, T = get_round_window(Nfft)
     stft, stft_padded, Npad = get_stft(signal,g)
-    margin = 2
+    margin = 5
 
-    if cs is not None:
-        scale_pp = compute_scale(signal, Nfft, cs)
-        LB = 2*scale_pp
-
+    # Computes the spectrogram and its zeros.
     S = np.abs(stft)**2
     zeros = find_zeros_of_spectrogram(S)
+
+    # Get only the zeros within the margins.
     valid_ceros = np.zeros((zeros.shape[0],),dtype=bool)
     valid_ceros[(margin<zeros[:,0]) 
                 & ((S.shape[0]-margin)>zeros[:,0])
                 & ((S.shape[1]-margin)>zeros[:,1])
                 & (margin<zeros[:,1]) ] = True
     
+    # Normalize the position of zeros
     vertices = zeros/T # Normalize
+
+    # Compute Delaunay triangulation.
     delaunay_graph = Delaunay(zeros)
     tri = delaunay_graph.simplices
     valid_tri = np.zeros((tri.shape[0],),dtype=bool)
     selection = np.zeros((tri.shape[0],),dtype=bool)
-    sides, max_sides = counting_edges(delaunay_graph,vertices)
 
+    # Get the length of each edge and the areas of the triangles.
+    edges, longest_edges, area_triangle = describe_triangles(delaunay_graph,vertices)
+
+    # Compute and adaptive threshold if its required, otherwise use "LB"
+    if adapt_thr:
+        # scale_pp = 1.2*compute_scale(signal, Nfft)
+        # LB = 2*scale_pp
+        LB = compute_scale_triangles(signal, longest_edges, mc_reps=19)
+        print(LB)
+
+    area_thr = 0  # LB/8
+
+
+    # print(area_triangle)
+    # Select triangles that fulfill all the conditions
     for i,_ in enumerate(tri):
         valid_tri[i] = np.all(valid_ceros[tri[i]])
-        side = max_sides[i]
-        selection[i] = np.any(LB < side) & np.all(UB > side) & valid_tri[i]
+        side = longest_edges[i]
+        area = area_triangle[i]
+        selection[i] = (np.any(LB < side) 
+                        & np.all(UB > side) 
+                        & valid_tri[i]
+                        & np.any(area>area_thr))
 
-
-    # selection = np.where((LB < max_side) & (UB > max_side))
-    # selection =  & valid_tri
     tri_select = tri[selection]
+
+    # Group adyacent triangles to estimate domains, and create a mask.
     if grouping:
         groups_of_triangles, mask = grouping_triangles(S, zeros, tri_select,
                                                         ngroups=ngroups,
@@ -208,8 +342,10 @@ def delaunay_triangulation_denoising(signal,
     else:
         mask = mask_triangles(stft, delaunay_graph, np.where(selection))  
 
-    # mask[:] = 1
+    # Apply the reconstruction formula to the masked STFT to filter the signal.
     signal_r, t = reconstruct_signal_2(mask, stft_padded, Npad, Nfft)
+
+    # Return dictionary if requested, otherwise return the denoised signal.
     if return_dic:
         return {'s_r': signal_r,
                 'mask': mask,
