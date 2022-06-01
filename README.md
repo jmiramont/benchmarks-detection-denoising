@@ -1,13 +1,25 @@
 # A benchmark of signal denoising/ detection methods
 
+
+## Results
+
 [![Run benchmark](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml)
 [![Results](docs/readme_figures/results_badge.svg)](results/readme.md)
 
+## Documentation
+
 [![Documentation](docs/readme_figures/docs_badge.svg)](https://jmiramont.github.io/benchmark-test/)
+
+## Related work
+
+[![Gretsi 22](docs/readme_figures/gretsi_badge.svg)](https://github.com/jmiramont/gretsi_2022_benchmark)
 
 ## Summary
 
 - [A benchmark of signal denoising/ detection methods](#a-benchmark-of-signal-denoising-detection-methods)
+  - [Results](#results)
+  - [Documentation](#documentation)
+  - [Related work](#related-work)
   - [Summary](#summary)
   - [What is this benchmark?](#what-is-this-benchmark)
   - [How to use this benchmark?](#how-to-use-this-benchmark)
