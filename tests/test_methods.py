@@ -37,8 +37,10 @@ def dummy_input():
     Nsignals = 2
     dummy_input = np.zeros((Nsignals,N))
     signal_bank = SignalBank(N)
+    signal = signal_bank.signal_linear_chirp()
     for i in range(Nsignals):
-        dummy_input[i,:] = add_snr(signal_bank.signal_linear_chirp(),15)
+        noise = np.random.randn(N,)
+        dummy_input[i,:] =  signal + noise * np.std(signal) / np.std(noise) /10  
     return dummy_input
 
 

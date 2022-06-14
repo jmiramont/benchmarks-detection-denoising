@@ -206,13 +206,14 @@ class ResultsInterpreter:
                 v[uind] = np.nanmean(df_aux2[y].to_numpy())
 
             axis.plot(u,v,'-'+ marker, ms = 5, linewidth = 1.0, label=label)
-            axis.plot([np.min(u), np.max(u)],[np.min(u), np.max(u)],'r',
-                                                linestyle = (0, (5, 10)),
-                                                linewidth = 0.75)
-            axis.set_xticks(u)
-            axis.set_yticks(u)
-            axis.set_xlabel(x + ' (dB)')
-            axis.set_ylabel(y + ' (dB)')
+            
+        axis.plot([np.min(u), np.max(u)],[np.min(u), np.max(u)],'r',
+                                            linestyle = (0, (5, 10)),
+                                            linewidth = 0.75)
+        axis.set_xticks(u)
+        axis.set_yticks(u)
+        axis.set_xlabel(x + ' (dB)')
+        axis.set_ylabel(y + ' (dB)')
         return
 
     def get_snr_plot2(self, df, x=None, y=None, hue=None, axis = None):
@@ -295,7 +296,7 @@ class ResultsInterpreter:
         return fig
 
 
-    def get_summary_plots(self, size=(3,3), savetofile=True):
+    def get_summary_plots(self, size=(3,3), savetofile=True, filename=None):
         """ Generates individual QRF plots for each signal, displaying the performance 
         of all methods for all noise conditions.
 
@@ -308,6 +309,7 @@ class ResultsInterpreter:
         
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
+        list_figs = list()
 
         # grid = ImageGrid(fig, 111,  # similar to subplot(111)
         #                 nrows_ncols=(3,Nsignals//3),  # creates 2x2 grid of axes
@@ -329,9 +331,15 @@ class ResultsInterpreter:
             fig.set_size_inches(size)
             
             if savetofile:
-                fig.savefig('results/figures/plot_'+ signal_id +'.pdf',bbox_inches='tight')# , format='svg')
-            
-        return fig
+                if filename is None:
+                    fig.savefig('results/figures/plot_'+ signal_id +'.pdf',
+                                bbox_inches='tight')# , format='svg')
+                else:
+                    fig.savefig(filename + signal_id +'.pdf',
+                                bbox_inches='tight')# , format='svg')
+
+            list_figs.append(fig)
+        return list_figs
 
     def save_csv_files(self):
         """Save results in .csv files.

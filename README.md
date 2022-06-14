@@ -1,6 +1,5 @@
 # A benchmark of signal denoising/ detection methods
 
-
 ## Results
 
 [![Run benchmark](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml)
