@@ -117,34 +117,34 @@ class SignalBank:
         """ Builds a dictionary of functions that return multiple signals.
         Args:
             N (int, optional): Length of the signals. Defaults to 2**8.
-            Nsub (int, optional): When is not None, generates signals of length Nsub,
-            then zero pads the vector to reach length N. Defaults to None.
+            Nsub (int, optional): Generates signals of length Nsub,
+            then zero pads the vector to reach length N. Defaults to 2**8.
         """
 
         self.N = N
         self.generate_signal_dict()
 
-        if Nsub is None:
+        if Nsub is None: 
             self.tmin = int(np.sqrt(N))
-        
-        else:
-            if isinstance(Nsub,int):
-                if Nsub < N:
-                    self.tmin = (N-Nsub)//2
-        
-        self.tmax = N-self.tmin
-        self.Nsub = self.tmax-self.tmin
-        
-        
-        self.fmin = 1.5*np.sqrt(N)/N
-        # self.fmin = 1*self.tmin/N
+            self.tmax = self.N - self.tmin
+            self.Nsub = self.tmax-self.tmin
+        else:                
+            self.Nsub = Nsub
+            self.tmin = (self.N-self.Nsub)//2
+            self.tmax = self.tmin+Nsub
+                    
+        # self.fmin = 1.0*np.sqrt(N)/N
+        # self.fmax = 0.5-self.fmin
+        # self.fmid = (self.fmax-self.fmin)/2 + self.fmin
+
+        self.fmin = 0.07
         self.fmax = 0.5-self.fmin
-        self.fmid = (self.fmax-self.fmin)/2 + self.fmin
+        self.fmid = 0.25
 
         # print(self.fmin)
         # print(self.fmax)
 
-    def check_frec_margins(self, instf):
+    def check_inst_freq(self, instf):
         """Check that the instantaneous frequency (if available) of a generated signal
         is withing certain margins to avoid aliasing and border effects.
 
@@ -152,8 +152,11 @@ class SignalBank:
             instf (numpy.ndarray): Instantaneous frequency of a signal.
         """
 
-        assert np.all(instf<=self.fmax), 'instf>fmax'
-        assert np.all(instf>=self.fmin), 'instf<fmin'
+        # if np.all(instf<=self.fmax):
+        #     print('Warning: instf>fmax')
+        # if np.all(instf>=self.fmin):
+        #     print('Warning: instf<fmin')
+        return True
     
 
     def generate_signal_dict(self):
@@ -218,7 +221,7 @@ class SignalBank:
         instf = b + a*tsub/Nsub
 
         if not instfreq:
-            self.check_frec_margins(instf)
+            self.check_inst_freq(instf)
 
         phase = np.cumsum(instf)
 
@@ -230,6 +233,42 @@ class SignalBank:
             return signal, instf, tmin, tmax
         else:
             return signal
+
+    def signal_mc_parallel_chirps(self):
+        comp1 = self.signal_linear_chirp(a=0.1, b=0.15, instfreq = False)
+        comp2 = self.signal_linear_chirp(a=0.1, b=0.25, instfreq = False)
+
+        return comp1+comp2
+
+    def signal_mc_parallel_chirps_unbalanced(self):
+        comp1 = self.signal_linear_chirp(a=0.1, b=0.15, instfreq = False)
+        comp2 = self.signal_linear_chirp(a=0.1, b=0.25, instfreq = False)
+
+        return comp1+0.5*comp2
+
+    def signal_mc_on_off_2(self):
+        chirp1 = self.signal_linear_chirp(a=0.1, b=0.10, instfreq = False)
+        chirp2 = self.signal_linear_chirp(a=0.1, b=0.20, instfreq = False)
+        chirp3 = self.signal_linear_chirp(a=0.1, b=0.30, instfreq = False)
+
+        Nsub = self.N
+        N3 = Nsub//3
+        N4 = Nsub//4
+        N7 = Nsub//7
+        N9 = Nsub//9
+
+        chirp1[0:2*N7] = 0
+        chirp1[5*N7:-1] = 0
+        chirp1[2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.25)    
+
+        chirp2[0:N9] = 0
+        chirp2[4*N9:5*N9] = 0
+        chirp2[8*N9:-1] = 0
+        chirp2[N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
+        chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25) 
+
+
+        return chirp1+chirp2+chirp3
 
 
     def signal_mc_crossing_chirps(self):
@@ -285,7 +324,7 @@ class SignalBank:
                 break
 
             idx = np.where(instf < max_freq)[0] + tmin -1
-            tukwin = sg.windows.tukey(idx.shape[0],0.25)
+            tukwin = sg.windows.tukey(idx.shape[0],0.5)
             chirp[idx] = chirp[idx]*tukwin
             idx = np.where(instf >= max_freq)[0] + tmin -1
             chirp[idx] = tukwin[-1]  
@@ -303,7 +342,7 @@ class SignalBank:
             numpy.ndarray: Returns a numpy array with the signal.
         """
 
-        a1=self.fmin/1.3
+        a1=self.fmin/2
         b1=self.fmin
         return self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)
 
@@ -341,7 +380,7 @@ class SignalBank:
         return dumpcos    
 
 
-    def signal_cos_chirp(self, omega = 1.5, a1=1, f0=0.25, a2=0.125, checkinstf = True):
+    def signal_cos_chirp(self, omega = 1.2, a1=0.5, f0=0.25, a2=0.125, checkinstf = True):
         """Generates a cosenoidal chirp, the instantenous frequency of which is given by
         the formula: "f0 + a1*cos(2*pi*omega)", and the maximum amplitude of which is
         determined by "a2".
@@ -366,7 +405,7 @@ class SignalBank:
         tsub = np.arange(Nsub)
         instf = f0 + a2*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
         if checkinstf:
-            self.check_frec_margins(instf)    
+            self.check_inst_freq(instf)    
 
         phase = np.cumsum(instf)
         x = a1*np.cos(2*pi*phase)*sg.tukey(Nsub,0.25)     
@@ -392,9 +431,9 @@ class SignalBank:
         omega2 = 1.8
         
         instf1 = self.fmax-0.075 + 0.05*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)
-        self.check_frec_margins(instf1)    
+        self.check_inst_freq(instf1)    
         instf2 = self.fmin+0.075 + 0.06*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)
-        self.check_frec_margins(instf2)
+        self.check_inst_freq(instf2)
 
         phase1 = np.cumsum(instf1)
         phase2 = np.cumsum(instf2)
@@ -422,11 +461,11 @@ class SignalBank:
         omega2 = 1.8
 
         instf1 = self.fmax-0.05 + 0.04*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)    
-        self.check_frec_margins(instf1)
+        self.check_inst_freq(instf1)
         instf2 = self.fmid + 0.04*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)
-        self.check_frec_margins(instf2)
-        instf3 = 1.2*self.fmin * np.ones((Nsub,))    
-        self.check_frec_margins(instf3)
+        self.check_inst_freq(instf2)
+        instf3 = 1.8*self.fmin * np.ones((Nsub,))    
+        self.check_inst_freq(instf3)
         
         phase1 = np.cumsum(instf1)
         phase2 = np.cumsum(instf2)
@@ -438,39 +477,39 @@ class SignalBank:
         return signal
 
     
-    def signal_mc_synthetic_mixture(self):
-        """Generates a multicomponent signal with different types of components.
+    # def signal_mc_synthetic_mixture(self):
+    #     """Generates a multicomponent signal with different types of components.
 
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
+    #     Returns:
+    #         numpy.ndarray: Returns a numpy array with the signal.
+    #     """
         
-        N = self.N
-        signal = np.zeros((N,))
-        tmin = self.tmin
-        tmax = N-tmin
-        Nsub = tmax-tmin
-        # print(Nchirp)
-        # print(N-Nchirp)
-        imp_loc_1 = 2*tmin
-        imp_loc_2 = 3*tmin
+    #     N = self.N
+    #     signal = np.zeros((N,))
+    #     tmin = self.tmin
+    #     tmax = N-tmin
+    #     Nsub = tmax-tmin
+    #     # print(Nchirp)
+    #     # print(N-Nchirp)
+    #     imp_loc_1 = 2*tmin
+    #     imp_loc_2 = 3*tmin
         
-        Nchirp = Nsub-4*tmin
-        t = np.arange(Nchirp)
+    #     Nchirp = Nsub-4*tmin
+    #     t = np.arange(Nchirp)
             
-        chirp1 = np.cos(2*pi*0.1*t)
-        b = 0.12
-        a = (0.3-0.12)/Nchirp/2
-        chirp2 = np.cos(2*pi*(a*t**2 + b*t))
+    #     chirp1 = np.cos(2*pi*0.1*t)
+    #     b = 0.12
+    #     a = (0.3-0.12)/Nchirp/2
+    #     chirp2 = np.cos(2*pi*(a*t**2 + b*t))
         
-        signal[imp_loc_1] = 10
-        signal[imp_loc_2] = 10
+    #     signal[imp_loc_1] = 10
+    #     signal[imp_loc_2] = 10
 
-        instf = 0.35 + 0.05*np.cos(2*pi*1.25*t/Nchirp + pi)
-        coschirp = np.cos(2*pi*np.cumsum(instf))
-        signal[4*tmin:4*tmin+Nchirp] = chirp1+chirp2+coschirp
-        # signal[N-Nchirp:N] = coschirp
-        return signal
+    #     instf = 0.35 + 0.05*np.cos(2*pi*1.25*t/Nchirp + pi)
+    #     coschirp = np.cos(2*pi*np.cumsum(instf))
+    #     signal[4*tmin:4*tmin+Nchirp] = chirp1+chirp2+coschirp
+    #     # signal[N-Nchirp:N] = coschirp
+    #     return signal
 
     
     def signal_hermite_function(self, order = 18, t0 = 0.5, f0 = 0.25):
@@ -492,7 +531,7 @@ class SignalBank:
         N = self.N
         t0 = int(N*t0)
         t = np.arange(N)-t0
-        return hermite_fun(N, order, t=t)*np.cos(2*pi*f0*t)
+        return hermite_fun(N, order, t=t, T = np.sqrt(2*N))*np.cos(2*pi*f0*t)
 
     
     def signal_hermite_elipse(self, order = 30, t0 = 0.5, f0 = 0.25):
@@ -514,7 +553,7 @@ class SignalBank:
         N = self.N
         t0 = int(N*t0)
         t = np.arange(N)-t0
-        return hermite_fun(N, order, t=t, T = 2*np.sqrt(N))*np.cos(2*pi*f0*t)
+        return hermite_fun(N, order, t=t, T = 1.5*np.sqrt(2*N))*np.cos(2*pi*f0*t)
 
 
     def signal_mc_triple_impulse(self, Nimpulses = 3):
@@ -606,7 +645,7 @@ class SignalBank:
         instf =  finit*np.exp(np.log(fend/finit)*tsub**exponent)
 
         if not r_instf:    
-            self.check_frec_margins(instf)
+            self.check_inst_freq(instf)
 
         phase = np.cumsum(instf)
         x = np.cos(2*pi*phase)
@@ -650,7 +689,7 @@ class SignalBank:
             instf2 = instf2[np.where(instf2 < max_freq)]
             tukwin = sg.windows.tukey(len(instf2),0.25)
 
-            self.check_frec_margins(instf2)
+            self.check_inst_freq(instf2)
             phase = np.cumsum(instf2)
             x = np.cos(2*pi*phase)
             tukwin = sg.windows.tukey(len(x),0.25)
@@ -725,9 +764,9 @@ class SignalBank:
         instf1 = instf1[np.where(instf1<fmax)]    
         instf2 = instf2[np.where(instf2<fmax)]    
         
-        self.check_frec_margins(instf0)
-        self.check_frec_margins(instf1)
-        self.check_frec_margins(instf2)
+        self.check_inst_freq(instf0)
+        self.check_inst_freq(instf1)
+        self.check_inst_freq(instf2)
         
         phase0 = np.cumsum(instf0)
         phase1 = np.cumsum(instf1)
@@ -787,38 +826,38 @@ class SignalBank:
 
 
 
-    def signal_mc_synthetic_mixture_3(self):
-        """Generates a multicomponent signal with different types of components.
+    # def signal_mc_synthetic_mixture_3(self):
+    #     """Generates a multicomponent signal with different types of components.
 
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
+    #     Returns:
+    #         numpy.ndarray: Returns a numpy array with the signal.
+    #     """
 
-        N = self.N
-        tmin = self.tmin
-        tmax = self.tmax
-        Nsub = self.Nsub
-        tmid = Nsub//2
-        # tmid = tmid +(tmax-tmid)//5
-        tsub = np.arange(Nsub)
+    #     N = self.N
+    #     tmin = self.tmin
+    #     tmax = self.tmax
+    #     Nsub = self.Nsub
+    #     tmid = Nsub//2
+    #     # tmid = tmid +(tmax-tmid)//5
+    #     tsub = np.arange(Nsub)
         
-        sigma = 0.005
+    #     sigma = 0.005
         
-        instf = self.fmin + 1*(tsub/Nsub-0.05)**2
-        instf = instf[np.where(instf<self.fmax)]
-        instf = instf[np.where(self.fmin<instf)]
-        phase = np.cumsum(instf)
-        x = np.cos(2*pi*phase)*sg.windows.tukey(len(phase),0.25)
+    #     instf = 1.5*self.fmin + 1*(tsub/Nsub-0.05)**2
+    #     instf = instf[np.where(instf<self.fmax)]
+    #     instf = instf[np.where(self.fmin<instf)]
+    #     phase = np.cumsum(instf)
+    #     x = np.cos(2*pi*phase)*sg.windows.tukey(len(phase),0.25)
 
-        instf = np.ones((Nsub,))*(self.fmid-self.fmin)/2
-        instf = instf[tmid::]
-        phase = np.cumsum(instf)
-        x2 = np.cos(2*pi*phase)*sg.windows.tukey(len(phase),0.25)
+    #     instf = np.ones((Nsub,))*(self.fmid-self.fmin)/2
+    #     instf = instf[tmid::]
+    #     phase = np.cumsum(instf)
+    #     x2 = np.cos(2*pi*phase)*sg.windows.tukey(len(phase),0.25)
 
-        signal = np.zeros((N,))
-        signal[tmin:tmin+len(x)] = x
-        signal[tmid:tmid+len(x2)] = signal[tmid:tmid+len(x2)] + x2
-        return signal
+    #     signal = np.zeros((N,))
+    #     signal[tmin:tmin+len(x)] = x
+    #     signal[tmid:tmid+len(x2)] = signal[tmid:tmid+len(x2)] + x2
+    #     return signal
 
 
     

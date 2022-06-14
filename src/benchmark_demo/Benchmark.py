@@ -40,9 +40,18 @@ class Benchmark:
     
     """
 
-    def __init__(self, task='denoising', methods=None, N=256, Nsub = None, parameters=None,
-                SNRin=None, repetitions=None, using_signals='all', verbosity=1,
-                parallelize = False):
+    def __init__(self,
+                 task='denoising',
+                 methods=None,
+                 N=256, 
+                 Nsub = None, 
+                 parameters=None,
+                 SNRin=None, 
+                 repetitions=None, 
+                 using_signals='all', 
+                 verbosity=1,
+                 parallelize = False,
+                 complex_noise = False):
         """ Initialize the main parameters of the test bench before running the benchmark.
 
         Args:
@@ -57,34 +66,55 @@ class Benchmark:
             SignalBank class description for details). Defaults to None.
             
             parameters (dict, optional): A dictionary of parameters for the methods
-            to run. The keys of this dictionary must be same as the methods dictionary. Defaults to None.
-            
-            SNRin (tuple, optional): List or tuple with the SNR values. Defaults to None.
-            
-            repetitions (int, optional): Number of times each method is applied for each value of SNR.
-            This value is the number of noise realizations that are used to assess the methods.
+            to run. The keys of this dictionary must be same as the methods dictionary. 
             Defaults to None.
             
-            using_signals (tuple, optional): Tuple or list of the signal ids from the SignalBank class. Defaults to 'all'.
+            SNRin (tuple, optional): List or tuple with the SNR values. 
+            Defaults to None.
             
-            verbosity (int, optional): Number from 0 to 4. It determines the number of messages
-            passed to the console informing the progress of the benchmarking process. Defaults to 1.
+            repetitions (int, optional): Number of times each method is applied for 
+            each value of SNR. This value is the number of noise realizations that are 
+            used to assess the methods. Defaults to None.
             
-            parallelize (bool, optional): If True, tries to run the process in parallel. Defaults to False.
+            using_signals (tuple, optional): Tuple or list of the signal ids from the 
+            SignalBank class. Defaults to 'all'.
+            
+            verbosity (int, optional): Number from 0 to 4. It determines the number of 
+            messages passed to the console informing the progress of the benchmarking 
+            process. Defaults to 1.
+            
+            parallelize (bool, optional): If True, tries to run the process in parallel.
+            Defaults to False.
+
+            complex_noise (bool, optional): If True, uses complex noise.
+            Defaults to False.
+
         """
 
         # Objects attributes
         self.task = None
         self.methods = None
         self.N = None
+        self.Nsub = None
         self.repetitions = None
         self.SNRin = None
         self.results = None
         self.verbosity = None
+        self.complex_noise = None
         self.methods_and_params_dic = dict()
         
         # Check input parameters and initialize the object attributes
-        self.input_parsing(task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity, parallelize)
+        self.input_parsing(task,
+                           methods,
+                           N, 
+                           Nsub, 
+                           parameters, 
+                           SNRin, 
+                           repetitions, 
+                           using_signals, 
+                           verbosity, 
+                           parallelize,
+                           complex_noise)
 
         # Inform parallelize parameters
         if self.parallel_flag:
@@ -94,7 +124,10 @@ class Benchmark:
 
 
         # Generates a dictionary of signals
-        signal_bank = SignalBank(N)
+        signal_bank = SignalBank(N, Nsub=self.Nsub)
+        self.tmin = signal_bank.tmin # Save initial and end times of signals.
+        self.tmax = signal_bank.tmax
+
         self.signal_dic = signal_bank.signalDict
         if using_signals == 'all':
             self.signal_ids = [llave for llave in self.signal_dic]
@@ -106,7 +139,19 @@ class Benchmark:
         self.comparisonFunction = self.set_comparison_function(task)
         
 
-    def input_parsing(self, task, methods, N, parameters, SNRin, repetitions, using_signals, verbosity, parallelize):
+    def input_parsing(self, 
+                    task, 
+                    methods, 
+                    N,
+                    Nsub, 
+                    parameters, 
+                    SNRin, 
+                    repetitions, 
+                    using_signals, 
+                    verbosity, 
+                    parallelize,
+                    complex_noise):
+
         """Parse input parameters of the constructor of class Benchmark.
 
         Args:
@@ -114,15 +159,21 @@ class Benchmark:
             methods (dict, optional): A dictionary of functions. Defaults to None.
             N (int, optional): Lengths of the signals. Defaults to 256.
             parameters (dict, optional): A dictionary of parameters for the methods
-            to run. The keys of this dictionary must be same as the methods dictionary. Defaults to None.
-            SNRin (tuple, optional): List or tuple with the SNR values. Defaults to None.
-            repetitions (int, optional): Number of times each method is applied for each value of SNR.
-            This value is the number of noise realizations that are used to assess the methods.
+            to run. The keys of this dictionary must be same as the methods dictionary. 
             Defaults to None.
-            using_signals (tuple, optional): Tuple or list of the signal ids from the SignalBank class. Defaults to 'all'.
-            verbosity (int, optional): Number from 0 to 4. It determines the number of messages
-            passed to the console informing the progress of the benchmarking process. Defaults to 1.
-            parallelize (bool, optional): If True, tries to run the process in parallel. Defaults to False.
+            SNRin (tuple, optional): List or tuple with the SNR values. 
+            Defaults to None.
+            repetitions (int, optional): Number of times each method is applied for 
+            each value of SNR.
+            This value is the number of noise realizations that are used to assess the 
+            methods.Defaults to None.
+            using_signals (tuple, optional): Tuple or list of the signal ids from the 
+            SignalBank class. Defaults to 'all'.
+            verbosity (int, optional): Number from 0 to 4. It determines the number of 
+            messages passed to the console informing the progress of the benchmarking 
+            process. Defaults to 1.
+            parallelize (bool, optional): If True, tries to run the process in parallel.
+            Defaults to False.
         
         Raises:
             ValueError: If any parameter is not correctly parsed.
@@ -164,6 +215,17 @@ class Benchmark:
         else:
             raise ValueError("N should be an entire.\n")
 
+        # Check if Nsub is an entire:
+        if Nsub is not None:
+            if type(Nsub) is not int:
+                raise ValueError("Nsub should be an entire.\n")
+
+            # Check if Nsub is lower than N:
+            if self.N > Nsub:
+                self.Nsub = Nsub
+            else:
+                raise ValueError("Nsub should be lower than N.\n")
+
         # Check if SNRin is a tuple or list, and if so, check if there are only numerical variables.
         if (type(SNRin) is tuple) or (type(SNRin) is list):
             for i in SNRin:
@@ -187,6 +249,13 @@ class Benchmark:
                 llaves = signal_bank.signalDict.keys()
                 assert all(signal_id in llaves for signal_id in using_signals)
 
+        # Check if complex_noise flag is bool:
+        if type(complex_noise) is bool:
+            self.complex_noise = complex_noise
+        else:
+            raise ValueError("'complex_noise' should be a bool.\n")
+            
+
         # Handle parallelization parameters:
         max_processes = multiprocessing.cpu_count()
 
@@ -208,14 +277,16 @@ class Benchmark:
                 
 
     def check_methods_output(self, output, input):
-        """Check that the outputs of the method to benchmark fulfill the required type and shape.
+        """Check that the outputs of the method to benchmark fulfill the required type 
+        and shape.
 
         Args:
             output: Output from the method. The type and shape depends on the task.
             input: Input passed to the method to produce output.
 
         Raises:
-            ValueError: If the output does not comply with the required type and shape for the selected task.
+            ValueError: If the output does not comply with the required type and shape 
+            for the selected task.
         """
         if self.task == 'denoising':
             if type(output) is not np.ndarray:
@@ -230,10 +301,9 @@ class Benchmark:
         Set the performance function for the selected task (future tasks could easily add new performance functions)
         """
         
-        compFuncs = {
-            'denoising': snr_comparison,
-            'detection': detection_perf_function,
-        }
+        compFuncs = {'denoising': self.snr_comparison,
+                    'detection': detection_perf_function,
+                    }
         return compFuncs[task]    
 
 
@@ -284,7 +354,11 @@ class Benchmark:
                 if self.verbosity > 2:
                     print('-- SNR: {} dB'.format(SNR))
 
-                noisy_signals, noise = self.add_snr_block(base_signal,SNR,self.repetitions)
+                noisy_signals, noise = self.add_snr_block(base_signal,
+                                                        SNR,
+                                                        self.repetitions,
+                                                        complex_noise=self.complex_noise
+                                                        )
 
                 # Parallel loop.
                 if self.parallel_flag:
@@ -364,7 +438,8 @@ class Benchmark:
         """Get a pandas DataFrame object with the results of the benchmark.
 
         Args:
-            results (dict, optional): Nested dictionary with the results of the benchmark. Defaults to None.
+            results (dict, optional): Nested dictionary with the results of the 
+            benchmark. Defaults to None.
 
         Returns:
             DataFrame: Returns a pandas DataFrame with the results.
@@ -393,56 +468,87 @@ class Benchmark:
 
 
 # Other functions:
-    def dic2df(self, midic):
+    def dic2df(self, mydic):
         """
-        This function transforms a dictionary of arbitrary depth into a pandas' DataFrame object.
+        This function transforms a dictionary of arbitrary depth into a pandas' 
+        DataFrame object.
         """
         auxdic = dict()
-        for key in midic:
-            if isinstance(midic[key], dict):
-                df = self.dic2df(midic[key])
+        for key in mydic:
+            if isinstance(mydic[key], dict):
+                df = self.dic2df(mydic[key])
                 auxdic[key] = df       
             else:
-                return pd.DataFrame(midic)
+                return pd.DataFrame(mydic)
         
-        # print(auxdic)
         df = pd.concat(auxdic,axis = 0)
-        # print(df)
         return df
 
 
     def add_snr_block(self, x, snr, K=1, complex_noise=False):
         """
-        Creates K realizations of the signal x with white Gaussian noise, with SNR equal to snr.
-        SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En are the energy of the signal
-        and that of the noise respectively.
+        Creates K realizations of the signal x with white Gaussian noise, with SNR 
+        equal to 'snr'. SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En 
+        are the energy of the signal and that of the noise respectively.
         """
-        N = len(x)
+        
+        # Get signal parameters.
+        N = self.N
+        tmin = self.tmin
+        tmax = self.tmax
+        Nsub = self.tmax-self.tmin
+
+        # Make sure signal's mean is zero.
         x = x - np.mean(x)
         Px = np.sum(x ** 2)
-        # print(x)
-
-        n = np.random.rand(N,K)
-        n = n - np.mean(n,axis = 0)
-
-        Pn = np.sum(n ** 2, axis = 0)
+        
+        # Create the noise for signal with given SNR:
+        n = np.random.randn(Nsub,K)
+        if complex_noise:
+            n = n.astype(complex)
+            n += 1j*np.random.randn(Nsub,K)
+        Pn = np.sum(np.abs(n) ** 2, axis = 0) # Normalize to 1 the variance of noise.
         n = n / np.sqrt(Pn)
-
-        Pn = Px * 10 ** (- snr / 10)
+        Pn = Px * 10 ** (- snr / 10) # Give noise the prescribed variance.
         n = n * np.sqrt(Pn)
 
+        # Complete the signal with noise outside the Nsub samples
+        aux = np.random.randn(N,K)
+        if complex_noise:
+            aux = aux.astype(complex)
+            aux += 1j*np.random.randn(N,K)
+        Paux = np.sum(np.abs(aux) ** 2, axis = 0)
+        aux = aux / np.sqrt(Paux)
+        Paux = Px * 10 ** (- snr / 10)
+        aux = aux * np.sqrt(Paux)
+        aux[tmin:tmax,:] = n
+        n = aux
+
+        # Checking:
+        nprobe=n[:,1].T
+        Ex = np.sum(x[tmin:tmax]**2)
+        Eprobe = np.sum((nprobe[tmin:tmax])**2)
+        # Ex = np.sum(x**2)
+        # Eprobe = np.sum((nprobe)**2)
+        # print("SNRout={}".format(10*np.log10(Ex/Eprobe)))
+    
         return x+n.T, n.T
 
 
-def snr_comparison(x,x_hat):
-    """
-    Quality reconstruction factor for denoising performance characterization.
-    """
-    qrf = np.zeros((x_hat.shape[0],))
-    for i in range(x_hat.shape[0]):
-        qrf[i] = 10*np.log10(np.sum(x**2)/np.sum((x_hat[i,:]-x)**2))
-    
-    return qrf
+    def snr_comparison(self, x, x_hat):
+        """
+        Quality reconstruction factor for denoising performance characterization.
+        """
+        tmin = self.tmin
+        tmax = self.tmax
+        x = x[tmin:tmax]
+        x_hat = x_hat[:,tmin:tmax]
+
+        qrf = np.zeros((x_hat.shape[0],))
+        for i in range(x_hat.shape[0]):
+            qrf[i] = 10*np.log10(np.sum(x**2)/np.sum((x_hat[i,:]-x)**2))
+        
+        return qrf
 
 
 def detection_perf_function(original_signal, detection_output):

@@ -315,9 +315,9 @@ def delaunay_triangulation_denoising(signal,
         # scale_pp = 1.2*compute_scale(signal, Nfft)
         # LB = 2*scale_pp
         LB = compute_scale_triangles(signal, longest_edges, mc_reps=19)
-        print(LB)
+        print('Threshold:{}'.format(LB))
 
-    area_thr = 0  # LB/8
+    area_thr =  0 #LB/8
 
 
     # print(area_triangle)

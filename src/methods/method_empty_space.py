@@ -53,9 +53,9 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     return hull_d, mask
 
 
-def empty_space_denoising(  signal,
+def empty_space_denoising(signal,
                             radi_seg=0.9,
-                            radi_expand=0.5,
+                            radi_expand=0.9,
                             adapt_thr=False,
                             return_dic=False):
 
@@ -96,7 +96,6 @@ class NewMethod(MethodTemplate):
     def __init__(self):
         self.id = 'empty_space'
         self.task = 'denoising'
-        
 
     def method(self, signals, params):
         if len(signals.shape) == 1:

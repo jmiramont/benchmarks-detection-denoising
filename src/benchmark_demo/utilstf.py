@@ -282,7 +282,7 @@ def add_snr(x,snr,K = 1):
     # snr_out1 = 20 * np.log10(np.sqrt(np.sum(x**2))/np.sqrt(np.sum(n**2)))
     snr_out = 10 * np.log10(Px / Pn)
     # print(snr_out)
-    return x+n
+    return x+n,n
 
 
 def hermite_poly(t,n, return_all = False):
