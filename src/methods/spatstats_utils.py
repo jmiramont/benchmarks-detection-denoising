@@ -358,7 +358,7 @@ def compute_scale(signal, Nfft, sc=None):
         sc = ComputeStatistics()
     # output = np.zeros((reps,len(radius)))
     statistics = 'F' #('L','Frs','Fcs','Fkm')
-    pnorm = 2 #np.inf
+    pnorm = np.inf
     radius = np.arange(0.0, 4.0, 0.01)
     rmax = np.arange(0.5, 3.99, 0.01)
 
@@ -377,21 +377,27 @@ def compute_scale(signal, Nfft, sc=None):
     tm = hyp_test_dict['tm']
     t_exp = hyp_test_dict['t_exp']
     reject_H0 = hyp_test_dict['reject_H0']
+  
 
-    radi_of_rejection = rmax[np.where(reject_H0 == True)]
-    t_exp_rejection = t_exp[np.where(reject_H0 == True)]
-    t_exp_rejection *= 10000
-    t_exp_rejection = np.round(t_exp_rejection)/10000
-    max_t_exp = np.max(t_exp_rejection)
-    radius_of_rejection = 0.0
+    if np.all(reject_H0 == False):
+        print('No detection.')
+        radius_of_rejection = 0.9
 
-    for i in range(len(t_exp_rejection)-5):
-        if np.all(t_exp_rejection[i:i+5]==max_t_exp):
-            radius_of_rejection = radi_of_rejection[i]
-            break
+    else:
+        radi_of_rejection = rmax[np.where(reject_H0 == True)]
+        t_exp_rejection = t_exp[np.where(reject_H0 == True)]
+        t_exp_rejection *= 10000
+        t_exp_rejection = np.round(t_exp_rejection)/10000
+        max_t_exp = np.max(t_exp_rejection)
+        radius_of_rejection = 0.0
 
-    if radius_of_rejection < 0.5:
-        radius_of_rejection = 0.5
+        for i in range(len(t_exp_rejection)-5):
+            if np.all(t_exp_rejection[i:i+5]==max_t_exp):
+                radius_of_rejection = radi_of_rejection[i]
+                break
+
+        if radius_of_rejection < 0.5:
+            radius_of_rejection = 0.5
     
     return radius_of_rejection
 

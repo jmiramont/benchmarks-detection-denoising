@@ -122,8 +122,6 @@ class SignalBank:
         """
 
         self.N = N
-        self.generate_signal_dict()
-
         if Nsub is None: 
             self.tmin = int(np.sqrt(N))
             self.tmax = self.N - self.tmin
@@ -143,6 +141,8 @@ class SignalBank:
 
         # print(self.fmin)
         # print(self.fmax)
+
+        self.generate_signal_dict()
 
     def check_inst_freq(self, instf):
         """Check that the instantaneous frequency (if available) of a generated signal
