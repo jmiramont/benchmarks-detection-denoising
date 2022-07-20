@@ -97,15 +97,11 @@ class NewMethod(MethodTemplate):
         self.id = 'empty_space'
         self.task = 'denoising'
 
-    def method(self, signals, params):
-        if len(signals.shape) == 1:
-            signals = np.resize(signals,(1,len(signals)))
-
-        signals_output = np.zeros(signals.shape)
-        for i, signal in enumerate(signals):
+    def method(self, signal, params):
+        for i, signal in enumerate(signal):
             if params is None:
-                signals_output[i] = empty_space_denoising(signal)
+                signal_output = empty_space_denoising(signal)
             else:
-                signals_output[i] = empty_space_denoising(signal, **params)    
-        return signals_output
+                signal_output = empty_space_denoising(signal, **params)    
+        return signal_output
         

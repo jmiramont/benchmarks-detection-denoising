@@ -364,18 +364,14 @@ class NewMethod(MethodTemplate):
         # In case is needed...
         # self.cs = ComputeStatistics()
 
-    def method(self, signals, params):
-        # if len(signals.shape) == 1:
-        #     signals = np.resize(signals,(1,len(signals)))
+    def method(self, signal, params):
 
-        signals_output = np.zeros_like(signals)
-        for i, signal in enumerate(signals):
-            if params is None:
-                signals_output[i] = delaunay_triangulation_denoising(signal)
-            else:
-                signals_output[i] = delaunay_triangulation_denoising(signal, **params)    
+        if params is None:
+            signal_output = delaunay_triangulation_denoising(signal)
+        else:
+            signal_output = delaunay_triangulation_denoising(signal, **params)    
 
-        return signals_output
+        return signal_output
 
 
     # def get_parameters(self):            # Use it to parametrize your method.

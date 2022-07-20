@@ -136,7 +136,7 @@ class Benchmark:
 
 
         # Set the performance function according to the selected task
-        self.comparisonFunction = self.set_comparison_function(task)
+        self.objectiveFunction = self.set_comparison_function(task)
         
 
     def input_parsing(self, 
@@ -321,11 +321,12 @@ class Benchmark:
         try:    
             method_output = self.methods[method](noisy_signals,params)
         except BaseException as err:
-            print(f"Unexpected {err=}, {type(err)=} in method {method}. Watch out for NaN values.")
+            print(f"Unexpected error {err=}, {type(err)=} in method {method}. Watch out for NaN values.")
             method_output = np.empty(noisy_signals.shape)
             method_output[:] = np.nan
 
-        self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
+        #! Rewrite this part.
+        # self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
         return method_output
 
 
@@ -367,7 +368,8 @@ class Benchmark:
                     parallel_list = list()
                     for method in self.methods:                                               
                         for p,params in enumerate(self.parameters[method]):
-                            parallel_list.append([method, params, noisy_signals])
+                            for noisy_signal in noisy_signals:
+                                parallel_list.append([method, params, noisy_signal])
 
                     # Here implement the parallel stuff
                     pool = multiprocessing.Pool(processes=self.processes) 
@@ -383,14 +385,20 @@ class Benchmark:
                         print('--- Method: '+ method)                    
 
                     for p, params in enumerate(self.parameters[method]):
-                        if self.parallel_flag:  # Get results from parallel...
-                            method_output = parallel_results[k]
-                            k += 1     
-                        else:                   # Or from serial computation.
-                            method_output = self.inner_loop([method, params, noisy_signals])        
+                        method_output = np.zeros_like(noisy_signals)
+                        
+                        for idx,noisy_signal in enumerate(noisy_signals):
+                            if self.parallel_flag:  # Get results from parallel...
+                                tmp = parallel_results[k]
+                                method_output[idx] = tmp
+                                k += 1     
+                            else:                   # Or from serial computation.
+                                method_output[idx] = self.inner_loop([method,
+                                                                    params, 
+                                                                    noisy_signal])        
                         
                         # Either way, results are saved in a nested dictionary.
-                        result =  self.comparisonFunction(base_signal, method_output)             
+                        result =  self.objectiveFunction(base_signal, method_output)             
                         # params_dic['Params'+str(p)] = result
                         params_dic[str(params)] = result
 

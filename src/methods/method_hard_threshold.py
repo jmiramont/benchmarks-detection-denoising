@@ -31,15 +31,10 @@ class NewMethod(MethodTemplate):
         self.task = 'denoising'
 
 
-    def method(self, signals, params):
-        if len(signals.shape) == 1:
-            signals = np.resize(signals,(1,len(signals)))
+    def method(self, signal, params):
+        if params is None:
+            signal_output = hard_thresholding(signal)
+        else:
+            signal_output = hard_thresholding(signal, **params)          
 
-        signals_output = np.zeros(signals.shape)
-        for i, signal in enumerate(signals):
-            if params is None:
-                signals_output[i] = hard_thresholding(signal)
-            else:
-                signals_output[i] = hard_thresholding(signal, **params)          
-
-        return signals_output
+        return signal_output
