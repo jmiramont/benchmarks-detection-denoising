@@ -5,10 +5,8 @@ import scipy.signal as sg
 from benchmark_demo.utilstf import *
 
 def hard_thresholding(signal, coeff=3, dict_output=False):
-    if len(signal.shape) == 1:
-        signal = np.resize(signal,(1,len(signal)))
-
-    Nfft = signal.shape[1]
+    
+    Nfft = len(signal)
     g, a = get_round_window(Nfft)
     S, stft, stft_padded, Npad = get_spectrogram(signal,g)
 

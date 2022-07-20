@@ -5,6 +5,7 @@ import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
+import matplotlib.gridspec as gridspec
 import string
 import os
 
@@ -193,23 +194,29 @@ class ResultsInterpreter:
         # fig, axis2 = plt.subplots(1,1)
         
         plots = [(method_name, markers[np.mod(i,4)]) for i, method_name in enumerate(aux)]
-        for method_name, marker in plots:
+        u_offset = np.linspace(-2,2,len(plots))
+        u_offset = np.zeros_like(u_offset)
+        for offs_idx, plots_info in enumerate(plots):
+            method_name, marker = plots_info 
             df_aux = df[df[hue]==method_name]
             u = np.unique(df_aux[x].to_numpy())
             v = np.zeros_like(u)
+            
             label = ''.join([c for c in string.capwords(method_name, sep = '_') if c.isupper()])
             if method_name.find('-') > -1:
                 label= label+method_name[method_name.find('-')::]
 
             for uind, j in enumerate(u):
                 df_aux2 = df_aux[df_aux[x]==j]
-                v[uind] = np.nanmean(df_aux2[y].to_numpy())
+                no_nans = df_aux2[y].dropna()
+                if no_nans.shape != (0,):
+                    v[uind] = np.nanmean(no_nans.to_numpy())
 
-            axis.plot(u,v,'-'+ marker, ms = 5, linewidth = 1.0, label=label)
+            axis.plot(u+u_offset[offs_idx],v,'-'+ marker, ms = 5, linewidth = 1.0, label=label)
             
-        axis.plot([np.min(u), np.max(u)],[np.min(u), np.max(u)],'r',
-                                            linestyle = (0, (5, 10)),
-                                            linewidth = 0.75)
+        # axis.plot([np.min(u), np.max(u)],[np.min(u), np.max(u)],'r',
+                                            # linestyle = (0, (5, 10)),
+                                            # linewidth = 0.75)
         axis.set_xticks(u)
         axis.set_yticks(u)
         axis.set_xlabel(x + ' (dB)')
@@ -236,15 +243,43 @@ class ResultsInterpreter:
         markers = ['o','d','s','*']
         line_style = ['--' for i in self.methods_ids]
         sns.pointplot(x="SNRin", y="QRF", hue="Method",
-                    capsize=0.15, height=10, aspect=0.6, dodge=0.5,
+                    capsize=0.15, height=10, aspect=1.0, dodge=0.5,
                     kind="point", data=df, errwidth = 0.7,
-                    linestyles=line_style, ax = axis)
+                    ax = axis) #linestyles=line_style,
             
             # axis.set_xticks(u)
             # axis.set_yticks(u)
             # axis.set_xlabel(x + ' (dB)')
             # axis.set_ylabel(y + ' (dB)')
         
+    def get_snr_plot_bars(self, df, x=None, y=None, hue=None, axis = None):
+        """ Generates a Quality Reconstruction Factor (QRF) vs. SNRin plot. The QRF is 
+        computed as: 
+        QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]
+        where x is the noiseless signal and x_r is de denoised estimation of x.
+
+        Args:
+            df (DataFrame): DataFrame with the results of the simulation.
+            x (str, optional): Column name to use as the horizontal axis. 
+            Defaults to None.
+            y (str, optional): Column name to use as the vertical axis. 
+            Defaults to None.
+            hue (str, optional): Column name with the methods' name. Defaults to None.
+            axis (matplotlib.Axes, optional): The axis object where the plot will be 
+            generated. Defaults to None.
+        """
+
+        markers = ['o','d','s','*']
+        line_style = ['--' for i in self.methods_ids]
+        sns.barplot(x="SNRin", y="QRF", hue="Method",
+                    data=df, errwidth = 0.7,
+                    ax = axis)
+            
+            # axis.set_xticks(u)
+            # axis.set_yticks(u)
+            # axis.set_xlabel(x + ' (dB)')
+            # axis.set_ylabel(y + ' (dB)')    
+
 
     def get_summary_grid(self, filename = None, savetofile=True):
         """ Generates a grid of QRF plots for each signal, displaying the performance 
@@ -261,30 +296,45 @@ class ResultsInterpreter:
         df_rearr = self.rearrange_data_frame()
         sns.set(style="ticks", rc={"lines.linewidth": 0.7})
         
-        fig = plt.figure()
-        grid = ImageGrid(fig, 111,  # similar to subplot(111)
-                        nrows_ncols=(int(np.ceil(Nsignals/4)),4),  # creates 2x2 grid of axes
-                        axes_pad=0.5,  # pad between axes in inch.
-                        )
+        if Nsignals < 4:
+            nrows_ncols=(1,Nsignals)
+        else:
+            nrows_ncols=(int(np.ceil(Nsignals/4)),4)
 
-        # fig, grid = plt.subplots(Nsignals//3,3)#, constrained_layout=True) #sharex=True, sharey=True, 
+        fig = plt.figure()
+        fig.subplots_adjust(wspace=0.1, hspace=0)
+
+
+        # grid = ImageGrid(fig, 111,  # similar to subplot(111)
+        #                 nrows_ncols=nrows_ncols,  # creates 2x2 grid of axes
+        #                 axes_pad=0.5,  # pad between axes in inch.
+        #                 )
+
+        # grid = gridspec.GridSpec(nrows_ncols[0], nrows_ncols[1],
+                                    #  width_ratios=[1 for i in range(nrows_ncols[1])],
+                                    #  sharex=True)
+
+        fig, grid = plt.subplots(nrows_ncols[0], nrows_ncols[1], constrained_layout=False, sharex=True, sharey=True)
+        
         for signal_id, ax in zip(self.signal_ids, grid):
-            print(signal_id)
-            # sns.set_theme() 
+            # sns.set_theme()
+            # ax = fig.add_subplot(subplot) 
             df_aux = df_rearr[df_rearr['Signal_id']==signal_id]
             indexes = df_aux['Parameter']!='None'
             df_aux.loc[indexes,'Method'] = df_aux.loc[indexes,'Method'] +'-'+ df_aux.loc[indexes,'Parameter']  
             # print(df_aux)
 
-            self.get_snr_plot(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
+            # self.get_snr_plot(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
             # self.get_snr_plot2(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
+            self.get_snr_plot_bars(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
             ax.grid(linewidth = 0.5)
             ax.set_title(signal_id)
             # ax.set_box_aspect(1)
             # sns.despine(offset=10, trim=True)
             ax.legend([],[], frameon=False)
             ax.legend(loc='upper left', frameon=False, fontsize = 'xx-small')
-        
+            
+
         fig.set_size_inches((12,4*Nsignals//4))
         
         if filename is None:
