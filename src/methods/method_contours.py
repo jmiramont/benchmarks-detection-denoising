@@ -9,7 +9,7 @@ class NewMethod(MethodTemplate):
         self.task = 'denoising'
         
 
-    def method(self, signals, params):
+    def method(self, signal, params):
         """_summary_
 
         Args:
@@ -19,17 +19,12 @@ class NewMethod(MethodTemplate):
         Returns:
             _type_: _description_
         """
-        if len(signals.shape) == 1:
-            signals = np.resize(signals,(1,len(signals)))
+        if params is None:
+            signal_output = contours_filtering(signal)
+        else:
+            signal_output = contours_filtering(signal, **params)
 
-        signals_output = np.zeros(signals.shape)
-        for i, signal in enumerate(signals):
-            if params is None:
-                signals_output[i] = contours_filtering(signal)
-            else:
-                signals_output[i] = contours_filtering(signal, **params)
-
-        return signals_output
+        return signal_output
 
     # def get_parameters(self):            # Use it to parametrize your method.
     #   return [{'q': 0.95}, ]    
