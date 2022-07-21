@@ -4,6 +4,7 @@ import pandas as pd
 import numbers
 import pickle
 import multiprocessing
+from typing import Callable
 # import json
 # import sys
 # import warnings
@@ -51,7 +52,8 @@ class Benchmark:
                  using_signals='all', 
                  verbosity=1,
                  parallelize = False,
-                 complex_noise = False):
+                 complex_noise = False,
+                 obj_fun = None):
         """ Initialize the main parameters of the test bench before running the benchmark.
 
         Args:
@@ -89,6 +91,10 @@ class Benchmark:
             complex_noise (bool, optional): If True, uses complex noise.
             Defaults to False.
 
+            obj_fun (callable, optional): If None, used the default objective functions
+            for benchmarking. If a function is passed as an argument, the default is
+            overridden. 
+
         """
 
         # Objects attributes
@@ -114,7 +120,8 @@ class Benchmark:
                            using_signals, 
                            verbosity, 
                            parallelize,
-                           complex_noise)
+                           complex_noise,
+                           obj_fun)
 
         # Inform parallelize parameters
         if self.parallel_flag:
@@ -135,9 +142,7 @@ class Benchmark:
             self.signal_ids = using_signals
 
 
-        # Set the performance function according to the selected task
-        self.objectiveFunction = self.set_comparison_function(task)
-        
+
 
     def input_parsing(self, 
                     task, 
@@ -150,7 +155,8 @@ class Benchmark:
                     using_signals, 
                     verbosity, 
                     parallelize,
-                    complex_noise):
+                    complex_noise,
+                    obj_fun):
 
         """Parse input parameters of the constructor of class Benchmark.
 
@@ -255,7 +261,6 @@ class Benchmark:
         else:
             raise ValueError("'complex_noise' should be a bool.\n")
             
-
         # Handle parallelization parameters:
         max_processes = multiprocessing.cpu_count()
 
@@ -274,6 +279,16 @@ class Benchmark:
                     else:
                         self.processes = max_processes
                     self.parallel_flag = True
+
+        # Check objective function
+        # Set the default performance function according to the selected task
+        if obj_fun is None:
+            self.objectiveFunction = self.set_objective_function(task)
+        else:
+            if callable(obj_fun):
+                self.objectiveFunction = obj_fun
+            else:
+                raise ValueError("'obj_fun' should be a callable object.\n")
                 
 
     def check_methods_output(self, output, input):
@@ -296,7 +311,7 @@ class Benchmark:
                 raise ValueError("Method's output should have the same shape as input for task='denoising'.\n")
 
 
-    def set_comparison_function(self, task):
+    def set_objective_function(self, task):
         """
         Set the performance function for the selected task (future tasks could easily add new performance functions)
         """
@@ -428,7 +443,7 @@ class Benchmark:
             filename (str, optional): Path and filename. Defaults to None.
 
         Returns:
-            bool: True if the file was succesfully created.
+            bool: True if the file was successfully created.
         """
 
         if filename is None:
