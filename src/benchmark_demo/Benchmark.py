@@ -331,7 +331,7 @@ class Benchmark:
         Returns:
             narray: Return a numpy array, the shape of which depends on the selected task.
         """
-
+        
         method, params, noisy_signals = benchmark_parameters
         try:    
             method_output = self.methods[method](noisy_signals,params)
