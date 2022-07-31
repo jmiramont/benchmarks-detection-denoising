@@ -152,7 +152,7 @@ The template file *method_new_basic_template.py* is divided in three sections. I
 | Import here all the modules you need.
 | Remark: Make sure that neither of those modules starts with "method_".
 """
-from methods.MethodTemplate import MethodTemplate # Import the template!
+from methods.benchmark_utils import MethodTemplate # Import the template!
 ```
 
 Additionally, the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate` is imported here. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes, by forcing the implementation of certain *abstract* methods. We will see later that the class that encapsulates your method must inherit from this template.

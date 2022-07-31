@@ -1,4 +1,4 @@
-from methods.MethodTemplate import MethodTemplate
+from methods.benchmark_utils import MethodTemplate
 from benchmark_demo.utilstf import *
 from scipy.spatial import ConvexHull, Delaunay
 import matplotlib.pyplot as plt
