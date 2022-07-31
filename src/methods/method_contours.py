@@ -1,4 +1,4 @@
-from methods.MethodTemplate import MethodTemplate
+from methods.benchmark_utils import MethodTemplate
 # You must import the MethodTemplate abstract class.
 from methods.contours_utils import *
 

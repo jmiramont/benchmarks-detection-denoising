@@ -3,7 +3,7 @@ if __name__ == "__main__":
     from methods.spatstats_utils import ComputeStatistics
     import importlib
     from methods import *
-    from methods.MethodTemplate import MethodTemplate as MethodTemplate
+    from methods.benchmark_utils import MethodTemplate as MethodTemplate
     import time
     import inspect
     

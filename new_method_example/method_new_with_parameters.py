@@ -8,7 +8,7 @@ Remark: Make sure that this file starts with "method_".
 | Import here all the modules you need.
 | Remark: Make sure that neither of those modules starts with "method_".
 """
-from methods.MethodTemplate import MethodTemplate # Import the template!
+from methods.benchmark_utils import MethodTemplate # Import the template!
 
 
 """ Second section ---------------------------------------------------------------------
@@ -34,7 +34,7 @@ class NewMethod(MethodTemplate):
         self.id = 'a_new_method'
         self.task = 'denoising'  # Should be either 'denoising' or 'detection'
 
-    def method(self, signals, params = None): # Implement this method.
+    def method(self, signal, params = None): # Implement this method.
         ...
 
     def get_parameters(self):            # Use it to parametrize your method.

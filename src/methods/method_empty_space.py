@@ -1,4 +1,4 @@
-from methods.MethodTemplate import MethodTemplate
+from methods.benchmark_utils import MethodTemplate
 from scipy.spatial import KDTree
 from scipy.spatial import ConvexHull, Delaunay
 import numpy as np
