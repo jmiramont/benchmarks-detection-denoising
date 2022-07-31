@@ -9,7 +9,7 @@ class NewMethod(MethodTemplate):
         self.task = 'denoising'
         
 
-    def method(self, signal, params):
+    def method(self, signal, *args, **kwargs):
         """_summary_
 
         Args:
@@ -19,10 +19,8 @@ class NewMethod(MethodTemplate):
         Returns:
             _type_: _description_
         """
-        if params is None:
-            signal_output = contours_filtering(signal)
-        else:
-            signal_output = contours_filtering(signal, **params)
+
+        signal_output = contours_filtering(signal, *args, **kwargs)
 
         return signal_output
 

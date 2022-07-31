@@ -97,11 +97,7 @@ class NewMethod(MethodTemplate):
         self.id = 'empty_space'
         self.task = 'denoising'
 
-    def method(self, signal, params):
-        for i, signal in enumerate(signal):
-            if params is None:
-                signal_output = empty_space_denoising(signal)
-            else:
-                signal_output = empty_space_denoising(signal, **params)    
+    def method(self, signal, *args, **kwargs):
+        signal_output = empty_space_denoising(signal, *args, **kwargs)    
         return signal_output
         

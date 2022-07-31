@@ -31,10 +31,6 @@ class NewMethod(MethodTemplate):
         self.task = 'denoising'
 
 
-    def method(self, signal, params):
-        if params is None:
-            signal_output = hard_thresholding(signal)
-        else:
-            signal_output = hard_thresholding(signal, **params)          
-
+    def method(self, signal, *args, **kwargs):
+        signal_output = hard_thresholding(signal, *args, **kwargs)          
         return signal_output

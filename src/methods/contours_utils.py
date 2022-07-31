@@ -290,8 +290,8 @@ def compute_contours(x, T=None, Nfft=None, fmax=0.5):
     # indicator[indicator==2] = 0
     indicator[indicator!=0] = 1
 
-    fig, axs = plt.subplots(1,1)
-    axs.imshow(indicator1)
+    # fig, axs = plt.subplots(1,1)
+    # axs.imshow(indicator1)
 
    
 

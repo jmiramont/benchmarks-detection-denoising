@@ -364,13 +364,8 @@ class NewMethod(MethodTemplate):
         # In case is needed...
         # self.cs = ComputeStatistics()
 
-    def method(self, signal, params):
-
-        if params is None:
-            signal_output = delaunay_triangulation_denoising(signal)
-        else:
-            signal_output = delaunay_triangulation_denoising(signal, **params)    
-
+    def method(self, signal, *args, **kwargs):
+        signal_output = delaunay_triangulation_denoising(signal, *args, **kwargs)    
         return signal_output
 
 
