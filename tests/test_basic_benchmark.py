@@ -2,9 +2,9 @@ from benchmark_demo.Benchmark import Benchmark
 import numpy as np
 import pytest
 
-def a_method(noisy_signals, params):
+def a_method(noisy_signal):
     # Dummy method for testing QRF function of the benchmark.
-    results = noisy_signals # Simply return the same noisy signals.
+    results = noisy_signal # Simply return the same noisy signals.
     return results
 
 
@@ -30,3 +30,5 @@ def test_benchmark_qrf():
     snr_est = np.mean(results_df,axis=0)
     snr_error = abs(np.array(SNRin)-snr_est)
     assert np.all(snr_error<0.1), 'The noise addition is not calibrated.'
+
+# test_benchmark_qrf()

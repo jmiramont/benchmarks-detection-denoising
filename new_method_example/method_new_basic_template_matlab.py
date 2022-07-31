@@ -8,15 +8,19 @@ Remark: Make sure that this file starts with "method_".
 | Import here all the modules you need.
 | Remark: Make sure that neither of those modules starts with "method_".
 """
-from methods.benchmark_utils import MethodTemplate # Import the template!
+from methods.benchmark_utils import MethodTemplate, MatlabInterface
 
 
 """ Second section ---------------------------------------------------------------------
-| Put here all the functions that your method uses.
-| 
-| def a_function_of_my_method(signal,params):
-|   ...
+| After moving a file called 'my_matlab_method.m' to 
+| src\methods, create an interface with the matlab engine by 
+| passing the name of the function file (without the .m 
+| extension). Then get the matlab function as:
 """
+mlint = MatlabInterface('my_matlab_method') 
+matlab_function = mlint.matlab_function # A python function handler to the method.
+
+
 
 """ Third section ----------------------------------------------------------------------
 | Create here a new class that will encapsulate your method.
@@ -30,9 +34,15 @@ def method(self, signal, params)
 """
 
 class NewMethod(MethodTemplate):
-    def __init__(self):
-        self.id = 'a_new_method'
-        self.task = 'denoising'  # Should be either 'denoising' or 'detection'
 
-    def method(self, signal, *args, **kwargs): # Implement this method.
-        ...
+    def __init__(self):
+        self.id = 'my_matlab_method'
+        self.task = 'denoising'
+        
+
+    def method(self, signal, *params): # Only positional args for matlab methods.
+        signal_output = matlab_function(signal, *params) # Only positional args.
+        return signal_output
+
+    # def get_parameters(self):            # Use this to parametrize your method.
+    #     return [None,]

@@ -203,7 +203,7 @@ class Benchmark:
 
         # If no parameters are given to the benchmark.
         if parameters is None:
-            self.parameters = {key: [0,] for key in methods.keys()}
+            self.parameters = {key: (((),{}),) for key in methods.keys()}
         else:
             if type(parameters) is dict:
                 self.parameters = parameters
@@ -333,8 +333,9 @@ class Benchmark:
         """
         
         method, params, noisy_signals = benchmark_parameters
-        try:    
-            method_output = self.methods[method](noisy_signals,params)
+        try:
+            args, kwargs = params    
+            method_output = self.methods[method](noisy_signals,*args,**kwargs)
         except BaseException as err:
             print(f"Unexpected error {err=}, {type(err)=} in method {method}. Watch out for NaN values.")
             method_output = np.empty(noisy_signals.shape)
