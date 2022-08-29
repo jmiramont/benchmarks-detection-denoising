@@ -8,7 +8,7 @@ Remark: Make sure that this file starts with "method_".
 | Import here all the modules you need.
 | Remark: Make sure that neither of those modules starts with "method_".
 """
-from methods.MethodTemplate import MethodTemplate # Import the template!
+from methods.benchmark_utils import MethodTemplate # Import the template!
 
 
 """ Second section ---------------------------------------------------------------------
@@ -34,14 +34,25 @@ class NewMethod(MethodTemplate):
         self.id = 'a_new_method'
         self.task = 'denoising'  # Should be either 'denoising' or 'detection'
 
-    def method(self, signals, params = None): # Implement this method.
+    def method(self, signal, *args, **kwargs): # Implement this method.
         ...
 
     def get_parameters(self):            # Use it to parametrize your method.
-         return ((1, 2),(3, 4),)
-
-    # Other option: a list of dictionaries and **kwargs.
-    # def get_parameters(self):
-    #     return [{'param1':'L', 'param2': 2.0, 'param3': 0.5},
-    #             {'param1':'L', 'param2': 2.0, 'param3': 1.0},
-    #             {'param1':'L', 'param2': 2.0, 'param3': 2.0}]
+        """ This function should return a list/tuple of positional arguments and keyword
+        arguments for your method. The positional arguments must be indicated in a tuple
+        or a list, whereas the keyword arguments must be indicated using a dictionary. 
+        If your method uses either just positional (resp. keyword) arguments, leave an
+        empty tuple (resp. dictionary).
+        """
+        # # Example 1. Pass a method a combination of positional/keyword args:
+        # return (((5, 6),{'a':True,'b':False}),
+        #         ((2, 1),{'a':False,'b':True}),     
+        #         )
+        # # Example 2. Use only positional args:
+        # return (((5, 6),{}),
+        #         ((2, 1),{}),     
+        #         )
+        # # Example 3. Use only keyword args:
+        # return (((),{'a':True,'b':False}),
+        #         ((),{'a':False,'b':True}),     
+        #         )

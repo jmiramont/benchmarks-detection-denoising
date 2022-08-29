@@ -3,7 +3,7 @@ if __name__ == "__main__":
     from methods.spatstats_utils import ComputeStatistics
     import importlib
     from methods import *
-    from methods.MethodTemplate import MethodTemplate as MethodTemplate
+    from methods.benchmark_utils import MethodTemplate as MethodTemplate
     import time
     import inspect
     
@@ -63,8 +63,8 @@ if __name__ == "__main__":
     # Save the benchmark to a file. Notice that only the methods_ids are saved.
     my_benchmark.save_to_file(filename = 'results/last_benchmark')
     results_interpreter = ResultsInterpreter(my_benchmark)
-    results_interpreter.save_csv_files()
+    # results_interpreter.save_csv_files()
     results_interpreter.save_report()
-    results_interpreter.get_summary_plots(size=(3,2))
+    # results_interpreter.get_summary_plots(size=(3,2))
 
   

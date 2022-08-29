@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>methods.MethodTemplate &mdash; Benchmark-demo  documentation</title>
+  <title>methods.benchmark_utils &mdash; Benchmark-demo  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -54,7 +54,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>methods.MethodTemplate</li>
+      <li>methods.benchmark_utils</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -63,16 +63,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for methods.MethodTemplate</h1><div class="highlight"><pre>
+  <h1>Source code for methods.benchmark_utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
-<div class="viewcode-block" id="MethodTemplate"><a class="viewcode-back" href="../../methods.html#methods.MethodTemplate.MethodTemplate">[docs]</a><span class="k">class</span> <span class="nc">MethodTemplate</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="MethodTemplate"><a class="viewcode-back" href="../../methods.html#methods.benchmark_utils.MethodTemplate">[docs]</a><span class="k">class</span> <span class="nc">MethodTemplate</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span>
 
-<div class="viewcode-block" id="MethodTemplate.method"><a class="viewcode-back" href="../../methods.html#methods.MethodTemplate.MethodTemplate.method">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="MethodTemplate.method"><a class="viewcode-back" href="../../methods.html#methods.benchmark_utils.MethodTemplate.method">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span></div>
 
@@ -92,7 +92,7 @@
     <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_task</span> <span class="o">=</span> <span class="n">task</span>
 
-<div class="viewcode-block" id="MethodTemplate.get_parameters"><a class="viewcode-back" href="../../methods.html#methods.MethodTemplate.MethodTemplate.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MethodTemplate.get_parameters"><a class="viewcode-back" href="../../methods.html#methods.benchmark_utils.MethodTemplate.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">,]</span></div></div>
 
 

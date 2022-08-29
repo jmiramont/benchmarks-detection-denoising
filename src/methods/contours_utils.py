@@ -3,6 +3,8 @@ from scipy.fft import fft, ifft
 from numpy import pi as pi
 import types
 from scipy.spatial import KDTree
+from matplotlib.pyplot import contour
+from matplotlib import pyplot as plt
 
 def is_minimum(F):
     """_summary_
@@ -234,7 +236,7 @@ def compute_contours(x, T=None, Nfft=None, fmax=0.5):
         T = pi/N
 
     if Nfft is None:
-        Nfft = N
+        Nfft = 2*N
 
     t = np.arange(N)
     _, F, fhat, that, reassignment_pos = my_rm(x,T,Nfft,fmax)
@@ -257,10 +259,23 @@ def compute_contours(x, T=None, Nfft=None, fmax=0.5):
     vy = np.sin(v)
     indicator = np.zeros(v.shape)
     indicator2 = np.zeros(v.shape)
+    indicator3 = np.zeros(v.shape)
 
     for i in range(v.shape[0]):
         for j in range(v.shape[1]):
             indicator[i,j] = np.dot([tcomp[i,j],fcomp[i,j]],[vx[i,j], vy[i,j]])
+
+    # plt.figure()
+    # QCS = contour(indicator, 0)
+
+    
+    # for ii, seg in enumerate(QCS.allsegs[1]):
+    #     # plt.plot(seg[:,0], seg[:,1], '.-', label=ii)
+    #     indicator3[seg[:,1].astype(int),seg[:,0].astype(int)] = 1
+    # # plt.legend(fontsize=9, loc='best')
+    # indicator3[indicator3!=0] = 1
+    
+    # indicator = indicator3
 
     indicator[indicator>0] = 1
     indicator[indicator<0] = -1
@@ -272,13 +287,19 @@ def compute_contours(x, T=None, Nfft=None, fmax=0.5):
     indicator2[indicator2!=0] = 1
 
     indicator = indicator1 + indicator2
+    # indicator[indicator==2] = 0
     indicator[indicator!=0] = 1
+
+    # fig, axs = plt.subplots(1,1)
+    # axs.imshow(indicator1)
+
+   
 
     for cero in ceros:
         cero = cero.astype(int)
         indicator[cero[0]-2:cero[0]+3:, cero[1]-2:cero[1]+3:] = 0
 
-    return indicator,F, reassignment_pos
+    return indicator, F, reassignment_pos
 
 
 def get_contours_and_basins(indicator, reassignment_pos):
@@ -367,7 +388,7 @@ def contours_filtering(signal, q = None, Nbasins = None, dict_output=False):
         mask[basin[:,0],basin[:,1]] = 1 #np.random.randint(low = 1, high= 1500)
 
     F_hat = F*mask
-    x_hat = 2*np.real(np.sum(F_hat, axis = 0))   
+    x_hat = np.real(np.sum(F_hat, axis = 0))   
 
     if dict_output:
         return {'x_hat': x_hat, 'mask': mask, 'contours': contours,'basins': basins}

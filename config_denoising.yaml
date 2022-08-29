@@ -1,14 +1,15 @@
 N: 512
+Nsub: 256
 SNRin: [0, 10, 20, 30]
-repetitions: 30
-parallelize: 5
-using_signals: ['CosChirp', 'ExpChirp',             # Single-component signals
-                'ToneSharpAttack',                  # Dumped and Sharps attacks
-                'McCrossingChirps',                 # Crossing-components  
-                'McMultiLinear', 'McCosPlusTone',   # Multi-Component signals  
-                'McMultiCos',     # Multi-Component Non-Harmonic  
-                'McSyntheticMixture2','McSyntheticMixture3',
-                'HermiteFunction',                  # Hermite type signals  
-                'McImpulses','McTripleImpulse']
-                # 'McOnOffTones']                   # Modes that born and die
+repetitions: 5
+parallelize: 8
+using_signals: ['LinearChirp','CosChirp', 'ExpChirp',]             # Single-component signals
+                # 'ToneSharpAttack', ToneDumped,                  # Dumped and Sharps attacks
+                # 'McCrossingChirps',                 # Crossing-components  
+                # 'McMultiLinear', 'McCosPlusTone',   # Multi-Component signals  
+                # 'McMultiCos2',     # Multi-Component Non-Harmonic  
+                # 'McSyntheticMixture2',
+                # 'HermiteFunction',                  # Hermite type signals  
+                # 'McTripleImpulse',
+                # 'McOnOffTones','McOnOff2']                   # Modes that born and die
 verbosity: 4  

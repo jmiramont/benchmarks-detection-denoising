@@ -1,4 +1,4 @@
-from methods.MethodTemplate import MethodTemplate
+from methods.benchmark_utils import MethodTemplate
 # You must import the MethodTemplate abstract class.
 from methods.contours_utils import *
 
@@ -9,7 +9,7 @@ class NewMethod(MethodTemplate):
         self.task = 'denoising'
         
 
-    def method(self, signals, params):
+    def method(self, signal, *args, **kwargs):
         """_summary_
 
         Args:
@@ -19,17 +19,10 @@ class NewMethod(MethodTemplate):
         Returns:
             _type_: _description_
         """
-        if len(signals.shape) == 1:
-            signals = np.resize(signals,(1,len(signals)))
 
-        signals_output = np.zeros(signals.shape)
-        for i, signal in enumerate(signals):
-            if params is None:
-                signals_output[i] = contours_filtering(signal)
-            else:
-                signals_output[i] = contours_filtering(signal, **params)
+        signal_output = contours_filtering(signal, *args, **kwargs)
 
-        return signals_output
+        return signal_output
 
     # def get_parameters(self):            # Use it to parametrize your method.
     #   return [{'q': 0.95}, ]    

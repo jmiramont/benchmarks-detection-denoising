@@ -1,14 +1,12 @@
-from methods.MethodTemplate import MethodTemplate
+from methods.benchmark_utils import MethodTemplate
 import numpy as np
 from numpy import pi as pi
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
 
 def hard_thresholding(signal, coeff=3, dict_output=False):
-    if len(signal.shape) == 1:
-        signal = np.resize(signal,(1,len(signal)))
-
-    Nfft = signal.shape[1]
+    
+    Nfft = len(signal)
     g, a = get_round_window(Nfft)
     S, stft, stft_padded, Npad = get_spectrogram(signal,g)
 
@@ -33,15 +31,6 @@ class NewMethod(MethodTemplate):
         self.task = 'denoising'
 
 
-    def method(self, signals, params):
-        if len(signals.shape) == 1:
-            signals = np.resize(signals,(1,len(signals)))
-
-        signals_output = np.zeros(signals.shape)
-        for i, signal in enumerate(signals):
-            if params is None:
-                signals_output[i] = hard_thresholding(signal)
-            else:
-                signals_output[i] = hard_thresholding(signal, **params)          
-
-        return signals_output
+    def method(self, signal, *args, **kwargs):
+        signal_output = hard_thresholding(signal, *args, **kwargs)          
+        return signal_output
