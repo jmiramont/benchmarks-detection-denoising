@@ -184,7 +184,7 @@ class ResultsInterpreter:
             # print(df_means)
             # print(signal_id)
             # print(df_means.to_markdown())
-            aux_string = '### Signal: '+ signal_id + '  [[View Plot]]('+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ 'results_'+signal_id+'.csv)' +'\n'+ df_means.to_markdown() + '\n'
+            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](../gh-pages/results/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ 'results_'+signal_id+'.csv)' +'\n'+ df_means.to_markdown() + '\n'
             output_string += aux_string
 
             filename = os.path.join('results','plot_'+signal_id+'.html')
@@ -206,7 +206,7 @@ class ResultsInterpreter:
             filename (str, optional): Path for saving the report. Defaults to None.
         """
 
-        self.get_summary_grid()
+        # self.get_summary_grid()
 
         lines = ['# Benchmark Report' +'\n',
                 '## Configuration' + '   [Get .csv file] ' + '\n',
@@ -391,9 +391,9 @@ class ResultsInterpreter:
             df_aux.loc[indexes,'Method'] = df_aux.loc[indexes,'Method'] +'-'+ df_aux.loc[indexes,'Parameter']  
             # print(df_aux)
 
-            # self.get_snr_plot(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
+            self.get_snr_plot(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
             # self.get_snr_plot2(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
-            self.get_snr_plot_bars(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
+            # self.get_snr_plot_bars(df_aux, x='SNRin', y='SNRout', hue='Method', axis = ax)
             ax.grid(linewidth = 0.5)
             ax.set_title(signal_id)
             # ax.set_box_aspect(1)
