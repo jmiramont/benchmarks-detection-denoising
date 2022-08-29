@@ -184,7 +184,7 @@ class ResultsInterpreter:
             # print(df_means)
             # print(signal_id)
             # print(df_means.to_markdown())
-            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](../gh-pages/results/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ 'results_'+signal_id+'.csv)' +'\n'+ df_means.to_markdown() + '\n'
+            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ 'results_'+signal_id+'.csv)' +'\n'+ df_means.to_markdown() + '\n'
             output_string += aux_string
 
             filename = os.path.join('results','plot_'+signal_id+'.html')
