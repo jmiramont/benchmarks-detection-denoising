@@ -2,7 +2,7 @@
 
 ## Results
 
-[![Run benchmark](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/run_bm_denoising.yml)
+[![Tests](https://github.com/jmiramont/benchmark-test/actions/workflows/bm_tests.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/bm_tests.yml)
 [![Results](docs/readme_figures/results_badge.svg)](results/readme.md)
 
 ## Documentation
