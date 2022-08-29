@@ -380,6 +380,14 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "matlabengine"
+version = "9.12.16"
+description = "A module to call MATLAB from Python"
+category = "main"
+optional = false
+python-versions = ">=3.8, <3.10"
+
+[[package]]
 name = "matplotlib"
 version = "3.5.3"
 description = "Python plotting package"
@@ -449,7 +457,6 @@ numpy = [
     {version = ">=1.18.5", markers = "platform_machine != \"aarch64\" and platform_machine != \"arm64\" and python_version < \"3.10\""},
     {version = ">=1.19.2", markers = "platform_machine == \"aarch64\" and python_version < \"3.10\""},
     {version = ">=1.20.0", markers = "platform_machine == \"arm64\" and python_version < \"3.10\""},
-    {version = ">=1.21.0", markers = "python_version >= \"3.10\""},
 ]
 python-dateutil = ">=2.8.1"
 pytz = ">=2020.1"
@@ -1053,8 +1060,8 @@ notebooks = ["ipykernel"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.8,<3.11"
-content-hash = "84da25e7459145e34d82521b3800c3318b929ec89d4181e4d109bccd9b48c63d"
+python-versions = ">=3.8,<3.10"
+content-hash = "cab16e724669c09322b7ab4081ddd0260eb093721477f28d61ab8a1219a05e28"
 
 [metadata.files]
 alabaster = [
@@ -1189,6 +1196,7 @@ markupsafe = [
     {file = "MarkupSafe-2.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:46d00d6cfecdde84d40e572d63735ef81423ad31184100411e6e3388d405e247"},
     {file = "MarkupSafe-2.1.1.tar.gz", hash = "sha256:7f91197cc9e48f989d12e4e6fbc46495c446636dfc81b9ccf50bb0ec74b91d4b"},
 ]
+matlabengine = []
 matplotlib = []
 matplotlib-inline = []
 nest-asyncio = [
