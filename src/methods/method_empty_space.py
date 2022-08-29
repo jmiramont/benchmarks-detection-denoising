@@ -1,4 +1,4 @@
-from methods.MethodTemplate import MethodTemplate
+from methods.benchmark_utils import MethodTemplate
 from scipy.spatial import KDTree
 from scipy.spatial import ConvexHull, Delaunay
 import numpy as np
@@ -53,9 +53,9 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
     return hull_d, mask
 
 
-def empty_space_denoising(  signal,
+def empty_space_denoising(signal,
                             radi_seg=0.9,
-                            radi_expand=0.5,
+                            radi_expand=0.9,
                             adapt_thr=False,
                             return_dic=False):
 
@@ -96,17 +96,8 @@ class NewMethod(MethodTemplate):
     def __init__(self):
         self.id = 'empty_space'
         self.task = 'denoising'
-        
 
-    def method(self, signals, params):
-        if len(signals.shape) == 1:
-            signals = np.resize(signals,(1,len(signals)))
-
-        signals_output = np.zeros(signals.shape)
-        for i, signal in enumerate(signals):
-            if params is None:
-                signals_output[i] = empty_space_denoising(signal)
-            else:
-                signals_output[i] = empty_space_denoising(signal, **params)    
-        return signals_output
+    def method(self, signal, *args, **kwargs):
+        signal_output = empty_space_denoising(signal, *args, **kwargs)    
+        return signal_output
         

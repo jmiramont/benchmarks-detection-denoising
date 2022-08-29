@@ -4,10 +4,10 @@ methods package
 Submodules
 ----------
 
-methods.MethodTemplate module
+methods.benchmark_utils module
 -----------------------------
 
-.. automodule:: methods.MethodTemplate
+.. automodule:: methods.benchmark_utils
    :members:
    :undoc-members:
    :show-inheritance:

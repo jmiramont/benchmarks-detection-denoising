@@ -13,7 +13,7 @@ Those functions are:
 import numpy as np
 import scipy.signal as sg
 from math import factorial
-from numpy import pi as pi
+from numpy import complex128, dtype, pi as pi
 
 def get_round_window(Nfft):
     """ Generates a round Gaussian window, i.e. same essential support in time and 
@@ -56,10 +56,18 @@ def get_stft(signal, window = None):
 
     Npad = N//2
     Nfft = len(window)
-    signal_pad = np.zeros(N+2*Npad)
+    if signal.dtype == complex128:
+        signal_pad = np.zeros(N+2*Npad, dtype=complex128)
+    else:
+        signal_pad = np.zeros(N+2*Npad)
+
+    # signal_pad = np.zeros(N+2*Npad)
     signal_pad[Npad:Npad+N] = signal
     # computing STFT
     _, _, stft_padded = sg.stft(signal_pad, window=window, nperseg=Nfft, noverlap = Nfft-1)
+    if signal.dtype == complex128:
+        stft_padded = stft_padded[0:Nfft//2+1,:]
+        
     stft = stft_padded[:,Npad:Npad+N]
     return stft, stft_padded, Npad
 
@@ -251,7 +259,7 @@ def add_snr_block(x,snr,K = 1):
     return x+n.T, n.T
     
 
-def add_snr(x,snr,K = 1):
+def add_snr(x,snr,complex_noise=False):
     """Adds noise to a signal x with SNR equal to snr. SNR is defined as 
     SNR (dB) = 10 * log10(Ex/En), where Ex and En are the energy of the signal and the 
     noise, respectively.
@@ -271,18 +279,22 @@ def add_snr(x,snr,K = 1):
     x = x - np.mean(x)
     Px = np.sum(x ** 2)
 
-    n = np.random.randn(N)
-    # n = n-np.mean(n)
-    
-    Pn = np.sum(n ** 2)
+    # Create the noise for signal with given SNR:
+    n = np.random.randn(N,)
+    if complex_noise:
+        n = n.astype(complex)
+        n += 1j*np.random.randn(N,)
+    Pn = np.sum(np.abs(n) ** 2, axis = 0) # Normalize to 1 the variance of noise.
     n = n / np.sqrt(Pn)
-
-    Pn = Px * 10 ** (- snr / 10)
+    Pn = Px * 10 ** (- snr / 10) # Give noise the prescribed variance.
     n = n * np.sqrt(Pn)
+
+    # Pn = Px * 10 ** (- snr / 10)
+    # n = n * np.sqrt(Pn)
     # snr_out1 = 20 * np.log10(np.sqrt(np.sum(x**2))/np.sqrt(np.sum(n**2)))
     snr_out = 10 * np.log10(Px / Pn)
-    # print(snr_out)
-    return x+n
+    print('snr_out:{}'.format(snr_out))
+    return x+n,n
 
 
 def hermite_poly(t,n, return_all = False):

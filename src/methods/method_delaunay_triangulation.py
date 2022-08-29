@@ -1,4 +1,4 @@
-from methods.MethodTemplate import MethodTemplate
+from methods.benchmark_utils import MethodTemplate
 from benchmark_demo.utilstf import *
 from scipy.spatial import ConvexHull, Delaunay
 import matplotlib.pyplot as plt
@@ -206,15 +206,15 @@ def mask_triangles(F, tri, selection):
     return mask
 
 
-def compute_scale_triangles(signal, edges_signal, mc_reps=199):
+def compute_scale_triangles(signal, edges_signal, mc_reps=99,alpha = 0.01):
     N = len(signal)
     Nfft = 2*N
     g,T = get_round_window(Nfft)
     quantiles = np.arange(0.50,0.99,0.01)
     edge_quantiles = np.zeros((mc_reps,len(quantiles)))
-    alpha = 0.05 # Significance of the Hyp. tests.
+    
     k = int(np.floor(alpha*(mc_reps+1)))-1 # corresponding k value
-
+    # print(k)
     # MC simulations of noise triangles.
     for i in range(mc_reps):
         
@@ -254,7 +254,7 @@ def compute_scale_triangles(signal, edges_signal, mc_reps=199):
 
 
 def delaunay_triangulation_denoising(signal,
-                                    LB=1.85,
+                                    LB=1.75,
                                     UB=3, 
                                     return_dic = False,
                                     grouping=True, 
@@ -314,10 +314,10 @@ def delaunay_triangulation_denoising(signal,
     if adapt_thr:
         # scale_pp = 1.2*compute_scale(signal, Nfft)
         # LB = 2*scale_pp
-        LB = compute_scale_triangles(signal, longest_edges, mc_reps=19)
-        print(LB)
+        LB = compute_scale_triangles(signal, longest_edges, mc_reps=99, alpha=0.01)
+        print('Threshold:{}'.format(LB))
 
-    area_thr = 0  # LB/8
+    area_thr =  0 #LB/8
 
 
     # print(area_triangle)
@@ -364,18 +364,9 @@ class NewMethod(MethodTemplate):
         # In case is needed...
         # self.cs = ComputeStatistics()
 
-    def method(self, signals, params):
-        # if len(signals.shape) == 1:
-        #     signals = np.resize(signals,(1,len(signals)))
-
-        signals_output = np.zeros_like(signals)
-        for i, signal in enumerate(signals):
-            if params is None:
-                signals_output[i] = delaunay_triangulation_denoising(signal)
-            else:
-                signals_output[i] = delaunay_triangulation_denoising(signal, **params)    
-
-        return signals_output
+    def method(self, signal, *args, **kwargs):
+        signal_output = delaunay_triangulation_denoising(signal, *args, **kwargs)    
+        return signal_output
 
 
     # def get_parameters(self):            # Use it to parametrize your method.
