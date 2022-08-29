@@ -83,6 +83,10 @@ jobs:
         # In the template repository options passed are
         # -ra -q -vv --cov=spatstat_interface --cov-report=xml
         run: poetry run pytest
+        
+      #----------------------------------------------
+      #    deploy documentation
+      #----------------------------------------------  
   
       - name: Deploy documentation to gh-pages branch
         uses: s0/git-publish-subdir-action@develop
@@ -91,6 +95,25 @@ jobs:
           BRANCH: gh-pages
           FOLDER: docs/_build/html
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     
+      - name: Commit files
+        run: |
+          git config --local user.email "MeBot@github.com"
+          git config --local user.name "MeBot"
+          git checkout gh-pages
+          git checkout dev2 -- results
+          git add results
+          git commit -m "Updating results" -a
+          git push origin gh-pages
+
+#       - name: Push changes
+#         uses: ad-m/github-push-action@master
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           branch: ${{ github.ref }}      
+     
+     
+     
      
 #   benchmark_denoising:
 #     runs-on: "ubuntu-latest"
