@@ -1,0 +1,5 @@
+SNRin: [0, 10, 20, 30]
+using_signals: ['LinearChirp',]
+repetitions: 200
+verbosity: 4
+parallelize: False
