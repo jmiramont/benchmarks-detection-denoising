@@ -478,9 +478,6 @@ class ResultsInterpreter:
 
         return True
 
-    def rank_the_methods(self):
-        return True
-
     def save_html_plots(self):
         df_means  = self.get_df_means()
         df = df_means[0]
