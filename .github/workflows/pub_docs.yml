@@ -40,8 +40,8 @@ jobs:
       #----------------------------------------------
       #  -----  install & configure poetry  ---------
       #----------------------------------------------
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+#       - name: Install Poetry
+#         uses: snok/install-poetry@v1
 
         # with:
         #   virtualenvs-create: true
@@ -49,27 +49,27 @@ jobs:
       #----------------------------------------------
       #       load cached venv if cache exists
       #----------------------------------------------
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v2
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+#       - name: Load cached venv
+#         id: cached-poetry-dependencies
+#         uses: actions/cache@v2
+#         with:
+#           path: .venv
+#           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
-      - name: Install main (non-optional) and dev dependencies
-        # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
-        # in pyproject.toml
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root
+#       - name: Install main (non-optional) and dev dependencies
+#         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
+#         # in pyproject.toml
+#         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+#         run: poetry install --no-root
 
-      #----------------------------------------------
-      # install your root project, if required
-      #----------------------------------------------
-      - name: Install package
-        run: poetry install
+#       #----------------------------------------------
+#       # install your root project, if required
+#       #----------------------------------------------
+#       - name: Install package
+#         run: poetry install
         
       #----------------------------------------------
       #    deploy documentation
