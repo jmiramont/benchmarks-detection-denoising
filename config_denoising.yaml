@@ -1,9 +1,9 @@
 N: 512
 Nsub: 256
-SNRin: [0, 10, 20, 30]
+SNRin: [0, 10] #, 20, 30]
 repetitions: 5
-parallelize: 8
-using_signals: ['LinearChirp','CosChirp', 'ExpChirp',]             # Single-component signals
+parallelize: False
+using_signals: ['LinearChirp',] #'CosChirp', 'ExpChirp',]             # Single-component signals
                 # 'ToneSharpAttack', ToneDumped,                  # Dumped and Sharps attacks
                 # 'McCrossingChirps',                 # Crossing-components  
                 # 'McMultiLinear', 'McCosPlusTone',   # Multi-Component signals  
