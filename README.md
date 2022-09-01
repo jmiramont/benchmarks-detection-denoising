@@ -10,7 +10,6 @@
 
 [![Gretsi 22](docs/readme_figures/gretsi_badge.svg)](https://github.com/jmiramont/gretsi_2022_benchmark)
 
-
 # What is this benchmark?
 
 A benchmark is a comparison between different methods when running an standardized test. The goal of this benchmark is to compare different methods for denoising / detecting a signal based on different characterizations of the time-frequency representations. In particular, our goal is to evaluate the performance of techniques based on the zeros of the spectrogram and to contrast them with more traditional methods, like those based on the ridges of that time-frequency distribution.
@@ -22,15 +21,8 @@ The following block diagram depicts the relationship between the different block
 
 ## Summary
   - [How to use this benchmark?](#how-to-use-this-benchmark)
-    - [Forking this repository](#forking-this-repository)
-    - [Installation using ```poetry```](#installation-using-poetry)
-  - [Benchmarking your own method](#benchmarking-your-own-method)
-    - [Using a template file for your method](#using-a-template-file-for-your-method)
-    - [Checking everything is in order with ```pytest```](#checking-everything-is-in-order-with-pytest)
-    - [Create a pull request](#create-a-pull-request)
-  - [Running this benchmark locally](#running-this-benchmark-locally)
-    - [Configuring the benchmark parameters](#configuring-the-benchmark-parameters)
-  - [Documenting your method](#documenting-your-method)
+  - [Benchmarking your own method](#benchmarking-your-own-method-online)
+  - [Benchmarking your method in your computer](#benchmarking-your-method-in-your-computer)
   - [Matlab-implemented methods](#matlab-implemented-methods)
 
 # How to use this benchmark?
