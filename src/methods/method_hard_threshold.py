@@ -1,4 +1,4 @@
-from methods.benchmark_utils import MethodTemplate
+from benchmark_demo.benchmark_utils import MethodTemplate
 import numpy as np
 from numpy import pi as pi
 import scipy.signal as sg

@@ -1,7 +1,7 @@
 if __name__ == "__main__":
     import importlib
     from methods import *
-    from methods.benchmark_utils import MethodTemplate as MethodTemplate
+    from benchmark_demo.benchmark_utils import MethodTemplate as MethodTemplate
     import time
     import inspect
     # Collects the methods in the folder/ module "methods" and make a global list of them.

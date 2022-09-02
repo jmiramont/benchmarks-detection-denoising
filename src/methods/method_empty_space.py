@@ -1,11 +1,11 @@
-from methods.benchmark_utils import MethodTemplate
+from benchmark_demo.benchmark_utils import MethodTemplate
 from scipy.spatial import KDTree
 from scipy.spatial import ConvexHull, Delaunay
 import numpy as np
 import scipy.stats as spst
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
-from methods.spatstats_utils import compute_scale, ComputeStatistics
+from benchmark_demo.spatstats_utils import compute_scale
 
 
 def find_center_empty_balls(Sww, pos_exp, a, radi_seg=1):

@@ -1,8 +1,8 @@
-from methods.benchmark_utils import MethodTemplate
+from benchmark_demo.benchmark_utils import MethodTemplate
 from benchmark_demo.utilstf import *
 from scipy.spatial import ConvexHull, Delaunay
 import matplotlib.pyplot as plt
-from methods.spatstats_utils import compute_scale, ComputeStatistics
+from benchmark_demo.spatstats_utils import compute_scale, ComputeStatistics
 
 def points_in_triangles(S,TRI,vertices):
     """_summary_
