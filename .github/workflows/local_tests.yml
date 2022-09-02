@@ -87,6 +87,9 @@ jobs:
       - name: Install package
         run: poetry install --extras "matlab_tools"
 
+      - name: Install rtools
+        run: poetry run pip install rpy2 spatstat-interface
+
       #----------------------------------------------
       #    run test suite
       #----------------------------------------------
