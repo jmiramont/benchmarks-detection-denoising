@@ -46,7 +46,8 @@ spatstat-interface = { version = "^0.1.2", optional = true }
 # Jupyter notebooks to be edited in VSCode
 notebooks = ["ipykernel"]
 docs = ["Sphinx", "sphinx-rtd-theme"]
-rtools = ['rpy2', 'spatstat-interface']
+rtools = ["rpy2", "spatstat-interface"]
+matlab_tools = ["matlabengine"]
 
 # Documentation is generated with Sphinx
 # https://www.sphinx-doc.org/en/master/index.html
