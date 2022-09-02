@@ -56,8 +56,8 @@ jobs:
 #       #----------------------------------------------
 #       # -----  install & configure poetry  ---------
 #       #----------------------------------------------
-#       - name: Install Poetry
-#         uses: snok/install-poetry@v1
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
 
         # with:
         #   virtualenvs-create: true
@@ -161,10 +161,13 @@ jobs:
         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
         # in pyproject.toml
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root --all-extras
+        run: poetry install --no-root --extras "matlab_tools"
 
       - name: Install package
-        run: poetry install --all-extras
+        run: poetry install --extras "matlab_tools"
+        
+      - name: Install rtools
+        run: poetry run pip install rpy2 spatstat-interface
         
       - name: Run the Benchmark
         run: poetry run python run_this_benchmark_denoising.py
