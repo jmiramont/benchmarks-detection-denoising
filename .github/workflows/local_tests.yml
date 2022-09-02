@@ -30,6 +30,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout project
         uses: actions/checkout@v2
+        with:         
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          persist-credentials: true
 
      #----------------------------------------------
      #-------  install & configure Python  ---------
@@ -113,9 +116,10 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          ssh: true
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-        
+          
       #----------------------------------------------
       #    deploy documentation
       #----------------------------------------------  
