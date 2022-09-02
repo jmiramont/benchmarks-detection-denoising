@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Local Tests
+name: Tests
 
 on: workflow_dispatch
 
@@ -21,9 +21,9 @@ jobs:
 # #         os: ["ubuntu-latest", "macos-latest"]
 #         os: ["ubuntu-latest"]
 #         # python-version: ["3.7", "3.8", "3.9"]
-        
-#     runs-on: ${{ matrix.os }}
-
+#         python-version: ["3.9"]
+    
+#    runs-on: ${{ matrix.os }}
     runs-on: self-hosted
 
     steps:
@@ -31,46 +31,46 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v2
 
-#      #----------------------------------------------
-#      #-------  install & configure Python  ---------
-#      #---------------------------------------------- 
-#       - name: Install Python
-#         uses: actions/setup-python@v2
-#         with:
-#           python-version: "3.9"
+     #----------------------------------------------
+     #-------  install & configure Python  ---------
+     #---------------------------------------------- 
+      - name: Install Python 
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
       
-#      #----------------------------------------------
-#      #-------  install & configure R  --------------
-#      #---------------------------------------------- 
-# #       - name: Install R
-# #         uses: r-lib/actions/setup-r@v1
-# #         with:
-# #           r-version: "4.1.0" # The R version to download (if necessary) and use.
+     #----------------------------------------------
+     #-------  install & configure R  --------------
+     #---------------------------------------------- 
+      - name: Install R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: "4.1.0" # The R version to download (if necessary) and use.
           
-# #      ----------------------------------------------
-# #      -------  install & configure MATLAB  ---------
-# #      ----------------------------------------------      
-# #       - name: Set up MATLAB
-# #         uses: matlab-actions/setup-matlab@v1
+     #----------------------------------------------
+     #-------  install & configure MATLAB  ---------
+     #----------------------------------------------      
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v1
       
-# #       #----------------------------------------------
-# #       # -----  install & configure poetry  ---------
-# #       #----------------------------------------------
-#       - name: Install Poetry
-#         uses: snok/install-poetry@v1
+      #----------------------------------------------
+      #  -----  install & configure poetry  ---------
+      #----------------------------------------------
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
 
-#         # with:
-#         #   virtualenvs-create: true
-#         #   virtualenvs-in-project: true
-#       #----------------------------------------------
-#       #       load cached venv if cache exists
-#       #----------------------------------------------
-#       - name: Load cached venv
-#         id: cached-poetry-dependencies
-#         uses: actions/cache@v2
-#         with:
-#           path: .venv
-#           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+        # with:
+        #   virtualenvs-create: true
+        #   virtualenvs-in-project: true
+      #----------------------------------------------
+      #       load cached venv if cache exists
+      #----------------------------------------------
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       #----------------------------------------------
       # install dependencies if cache does not exist
@@ -79,14 +79,14 @@ jobs:
         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
         # in pyproject.toml
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root --extras "matlab_tools"
+        run: poetry install --extras "matlab_tools"
 
       #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
       - name: Install package
         run: poetry install --extras "matlab_tools"
-
+        
       - name: Install rtools
         run: poetry run pip install rpy2 spatstat-interface
 
@@ -113,8 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
   benchmark_denoising:
-#     runs-on: "ubuntu-latest"
-    runs-on: self-hosted
+    runs-on: "ubuntu-latest"
     needs: [test]
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -124,24 +123,24 @@ jobs:
      #----------------------------------------------
      #-------  install & configure Python  ---------
      #---------------------------------------------- 
-#       - name: Install Python ${{ matrix.python-version }}
-#         uses: actions/setup-python@v2
-#         with:
-#           python-version: ${{ matrix.python-version }}
+      - name: Install Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
       
-#      #----------------------------------------------
-#      #-------  install & configure R  --------------
-#      #---------------------------------------------- 
-#       - name: Install R
-#         uses: r-lib/actions/setup-r@v1
-#         with:
-#           r-version: "4.1.0" # The R version to download (if necessary) and use.
+     #----------------------------------------------
+     #-------  install & configure R  --------------
+     #---------------------------------------------- 
+      - name: Install R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: "4.1.0" # The R version to download (if necessary) and use.
           
-#      #----------------------------------------------
-#      #-------  install & configure MATLAB  ---------
-#      #----------------------------------------------      
-#       - name: Set up MATLAB
-#         uses: matlab-actions/setup-matlab@v1
+     #----------------------------------------------
+     #-------  install & configure MATLAB  ---------
+     #----------------------------------------------      
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v1
       
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -161,13 +160,9 @@ jobs:
         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
         # in pyproject.toml
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root --extras "matlab_tools"
-
+        run: poetry install --no-root --all-extras
       - name: Install package
-        run: poetry install --extras "matlab_tools"
-        
-      - name: Install rtools
-        run: poetry run pip install rpy2 spatstat-interface
+        run: poetry install --all-extras
         
       - name: Run the Benchmark
         run: poetry run python run_this_benchmark_denoising.py
