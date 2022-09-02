@@ -1,0 +1,21 @@
+,Method,Parameter,Signal_id,Repetition,0,10
+0,contour_filtering,"((), {})",LinearChirp,0,1.6822234916411463,11.641926656777102
+1,contour_filtering,"((), {})",LinearChirp,1,1.8329743889623407,11.482554492674842
+2,contour_filtering,"((), {})",LinearChirp,2,1.7500863678016536,11.89960800216382
+3,contour_filtering,"((), {})",LinearChirp,3,2.243454121860248,11.93569512473493
+4,contour_filtering,"((), {})",LinearChirp,4,2.34275496062007,11.707429968606622
+5,delaunay_triangulation,"((), {})",LinearChirp,0,1.97018197533311,16.098054056087797
+6,delaunay_triangulation,"((), {})",LinearChirp,1,4.71698284871019,15.480033355669107
+7,delaunay_triangulation,"((), {})",LinearChirp,2,2.3203059470568794,16.32878436934377
+8,delaunay_triangulation,"((), {})",LinearChirp,3,3.0280423011531035,16.68978702101621
+9,delaunay_triangulation,"((), {})",LinearChirp,4,2.181648135143717,16.427330854365586
+10,empty_space,"((), {})",LinearChirp,0,4.066197946817138,15.92684821905564
+11,empty_space,"((), {})",LinearChirp,1,5.391475022813962,15.37476717360313
+12,empty_space,"((), {})",LinearChirp,2,1.4872601938496242,17.05761863950232
+13,empty_space,"((), {})",LinearChirp,3,2.907026707503275,16.66748927757429
+14,empty_space,"((), {})",LinearChirp,4,3.3051804263406654,16.011387419621215
+15,hard_thresholding,"((), {})",LinearChirp,0,8.849743051271158,18.404120307978204
+16,hard_thresholding,"((), {})",LinearChirp,1,10.38466197295383,17.48586779596165
+17,hard_thresholding,"((), {})",LinearChirp,2,8.565193102905557,18.675642097634583
+18,hard_thresholding,"((), {})",LinearChirp,3,9.53023781786272,18.65994002252778
+19,hard_thresholding,"((), {})",LinearChirp,4,8.689706844268365,17.663514024976465
