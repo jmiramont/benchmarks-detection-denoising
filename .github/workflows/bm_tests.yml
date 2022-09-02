@@ -77,13 +77,13 @@ jobs:
         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
         # in pyproject.toml
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root
+        run: poetry install --no-root --all-extras
 
       #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
       - name: Install package
-        run: poetry install
+        run: poetry install --all-extras
 
       #----------------------------------------------
       #    run test suite
