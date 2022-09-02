@@ -4,13 +4,13 @@ version = "0.1.0"
 description = "A benchmark for testing tf methods."
 authors = ["Juan Miramont <jmiramont@univ-nantes.fr>"]
 
-[virtualenvs]
-# Create local virtualenv stored in .venv (Python version used depends on VSCode selected interpreter)
-# https://python-poetry.org/docs/configuration/#virtualenvsin-project
-# poetry config virtualenvs.create true --local
-# poetry config virtualenvs.in-project true --local
-create = true
-in-project = true
+# [virtualenvs]
+# # Create local virtualenv stored in .venv (Python version used depends on VSCode selected interpreter)
+# # https://python-poetry.org/docs/configuration/#virtualenvsin-project
+# # poetry config virtualenvs.create true --local
+# # poetry config virtualenvs.in-project true --local
+# create = true
+# in-project = true
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.10"
@@ -29,8 +29,8 @@ matlabengine = { version = "^9.12.16", optional = true }
 ipykernel = {version = "^6.6.1", optional = true}
 Sphinx = {version = "^4.5.0", optional = true}
 sphinx-rtd-theme = {version = "^1.0.0", optional = true}
-rpy2 = { version = "^3.5.4", optional = false }
-spatstat-interface = { version = "^0.1.2", optional = true }
+# rpy2 = { version = "^3.5.4", optional = true }
+# spatstat-interface = { version = "^0.1.2", optional = true }
 
 [tool.poetry.extras]
 # Documentation
@@ -60,7 +60,6 @@ matlab_tools = ["matlabengine"]
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
 
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
