@@ -100,70 +100,6 @@ jobs:
         # -ra -q -vv --cov=spatstat_interface --cov-report=xml
         run: poetry run pytest
         
-      #----------------------------------------------
-      #    deploy documentation
-      #----------------------------------------------  
-  
-      - name: Deploy documentation to gh-pages branch
-        uses: s0/git-publish-subdir-action@develop
-        env:
-          REPO: self
-          BRANCH: gh-pages
-          FOLDER: docs/_build/html
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-  benchmark_denoising:
-    runs-on: self-hosted
-    needs: [test]
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout project
-        uses: actions/checkout@v2
-      
-#      #----------------------------------------------
-#      #-------  install & configure Python  ---------
-#      #---------------------------------------------- 
-#       - name: Install Python ${{ matrix.python-version }}
-#         uses: actions/setup-python@v2
-#         with:
-#           python-version: ${{ matrix.python-version }}
-      
-#      #----------------------------------------------
-#      #-------  install & configure R  --------------
-#      #---------------------------------------------- 
-#       - name: Install R
-#         uses: r-lib/actions/setup-r@v1
-#         with:
-#           r-version: "4.1.0" # The R version to download (if necessary) and use.
-          
-#      #----------------------------------------------
-#      #-------  install & configure MATLAB  ---------
-#      #----------------------------------------------      
-#       - name: Set up MATLAB
-#         uses: matlab-actions/setup-matlab@v1
-      
-#       - name: Install Poetry
-#         uses: snok/install-poetry@v1
-
-#         # with:
-#         #   virtualenvs-create: true
-#         #   virtualenvs-in-project: true
-    
-#       - name: Load cached venv
-#         id: cached-poetry-dependencies
-#         uses: actions/cache@v2
-#         with:
-#           path: .venv
-#           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install main (non-optional) and dev dependencies
-        # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
-        # in pyproject.toml
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root --extras "matlab_tools"
-      - name: Install package
-        run: poetry install --extras "matlab_tools"
-        
       - name: Run the Benchmark
         run: poetry run python run_this_benchmark_denoising.py
 
@@ -179,18 +115,98 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+        
+      #----------------------------------------------
+      #    deploy documentation
+      #----------------------------------------------  
+  
+#       - name: Deploy documentation to gh-pages branch
+#         uses: s0/git-publish-subdir-action@develop
+#         env:
+#           REPO: self
+#           BRANCH: gh-pages
+#           FOLDER: docs/_build/html
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+#   benchmark_denoising:
+#     runs-on: self-hosted
+#     needs: [test]
+#     steps:
+#       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#       - name: Checkout project
+#         uses: actions/checkout@v2
+      
+# #      #----------------------------------------------
+# #      #-------  install & configure Python  ---------
+# #      #---------------------------------------------- 
+# #       - name: Install Python ${{ matrix.python-version }}
+# #         uses: actions/setup-python@v2
+# #         with:
+# #           python-version: ${{ matrix.python-version }}
+      
+# #      #----------------------------------------------
+# #      #-------  install & configure R  --------------
+# #      #---------------------------------------------- 
+# #       - name: Install R
+# #         uses: r-lib/actions/setup-r@v1
+# #         with:
+# #           r-version: "4.1.0" # The R version to download (if necessary) and use.
+          
+# #      #----------------------------------------------
+# #      #-------  install & configure MATLAB  ---------
+# #      #----------------------------------------------      
+# #       - name: Set up MATLAB
+# #         uses: matlab-actions/setup-matlab@v1
+      
+# #       - name: Install Poetry
+# #         uses: snok/install-poetry@v1
 
-      - name: Publish results
-        env:
-          SRC_FOLDER_PATH: 'results'
-          TARGET_BRANCH: 'gh-pages'
-        run: |
-          files=$(find $SRC_FOLDER_PATH -type f) # get the file list
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
-          git fetch                         # fetch branches
-          git checkout $TARGET_BRANCH       # checkout to your branch
-          git checkout ${GITHUB_REF##*/} -- $files # copy files from the source branch
-          git add -A
-          git diff-index --quiet HEAD ||  git commit -am "deploy files"  # commit to the repository (ignore if no modification)
-          git push origin $TARGET_BRANCH # push to remote branch
+# #         # with:
+# #         #   virtualenvs-create: true
+# #         #   virtualenvs-in-project: true
+    
+# #       - name: Load cached venv
+# #         id: cached-poetry-dependencies
+# #         uses: actions/cache@v2
+# #         with:
+# #           path: .venv
+# #           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+
+#       - name: Install main (non-optional) and dev dependencies
+#         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
+#         # in pyproject.toml
+#         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+#         run: poetry install --no-root --extras "matlab_tools"
+#       - name: Install package
+#         run: poetry install --extras "matlab_tools"
+        
+#       - name: Run the Benchmark
+#         run: poetry run python run_this_benchmark_denoising.py
+
+#       - name: Commit files
+#         run: |
+#           git config --local user.email "MeBot@github.com"
+#           git config --local user.name "MeBot"
+#           git add results --all
+#           git commit -m "Add changes" -a
+          
+#       - name: Push changes
+#         uses: ad-m/github-push-action@master
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           branch: ${{ github.ref }}
+
+#       - name: Publish results
+#         env:
+#           SRC_FOLDER_PATH: 'results'
+#           TARGET_BRANCH: 'gh-pages'
+#         run: |
+#           files=$(find $SRC_FOLDER_PATH -type f) # get the file list
+#           git config --global user.name 'GitHub Action'
+#           git config --global user.email 'action@github.com'
+#           git fetch                         # fetch branches
+#           git checkout $TARGET_BRANCH       # checkout to your branch
+#           git checkout ${GITHUB_REF##*/} -- $files # copy files from the source branch
+#           git add -A
+#           git diff-index --quiet HEAD ||  git commit -am "deploy files"  # commit to the repository (ignore if no modification)
+#           git push origin $TARGET_BRANCH # push to remote branch
