@@ -1047,13 +1047,14 @@ docs = ["jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "jaraco.packaging (>=9)
 
 [extras]
 docs = ["Sphinx", "sphinx-rtd-theme"]
+matlab_tools = ["matlabengine"]
 notebooks = ["ipykernel"]
 rtools = ["rpy2", "spatstat-interface"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "1505d524c8d68339e2644b54f4582c43cf8d5531353c790ac02c301daf306fb9"
+content-hash = "1557b456738a12b978f5271f42ec2b5872f9d1319d3bfa704629d73e4ff05810"
 
 [metadata.files]
 alabaster = [
