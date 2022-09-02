@@ -78,13 +78,13 @@ jobs:
         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
         # in pyproject.toml
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root --extras "matlab_tools rtools"
+        run: poetry install --no-root --all-extras
 
       #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
       - name: Install package
-        run: poetry install --extras "matlab_tools rtools"
+        run: poetry install --all-extras
 
       #----------------------------------------------
       #    run test suite
@@ -156,10 +156,9 @@ jobs:
         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
         # in pyproject.toml
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root --extras "rtools matlab_tools"
-
+        run: poetry install --no-root --all-extras
       - name: Install package
-        run: poetry install --extras "rtools matlab_tools"
+        run: poetry install --all-extras
         
       - name: Run the Benchmark
         run: poetry run python run_this_benchmark_denoising.py
