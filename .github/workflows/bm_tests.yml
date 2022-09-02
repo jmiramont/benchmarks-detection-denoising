@@ -16,13 +16,15 @@ jobs:
   # This workflow contains a single job called "test"
   test:
   # The type of runner that the job will run on
-    strategy:
-      matrix:
-#         os: ["ubuntu-latest", "macos-latest"]
-        os: ["ubuntu-latest"]
-        # python-version: ["3.7", "3.8", "3.9"]
-        python-version: ["3.9"]
-    runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+# #         os: ["ubuntu-latest", "macos-latest"]
+#         os: ["ubuntu-latest"]
+#         # python-version: ["3.7", "3.8", "3.9"]
+#         python-version: ["3.9"]
+#     runs-on: ${{ matrix.os }}
+
+    runs-on: self-hosted
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -108,7 +110,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
   benchmark_denoising:
-    runs-on: "ubuntu-latest"
+#     runs-on: "ubuntu-latest"
+    runs-on: self-hosted
     needs: [test]
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
