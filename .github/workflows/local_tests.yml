@@ -21,7 +21,7 @@ jobs:
 # #         os: ["ubuntu-latest", "macos-latest"]
 #         os: ["ubuntu-latest"]
 #         # python-version: ["3.7", "3.8", "3.9"]
-#         python-version: ["3.9"]
+        
 #     runs-on: ${{ matrix.os }}
 
     runs-on: self-hosted
@@ -34,10 +34,10 @@ jobs:
      #----------------------------------------------
      #-------  install & configure Python  ---------
      #---------------------------------------------- 
-#       - name: Install Python ${{ matrix.python-version }}
-#         uses: actions/setup-python@v2
-#         with:
-#           python-version: ${{ matrix.python-version }}
+      - name: Install Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
       
      #----------------------------------------------
      #-------  install & configure R  --------------
