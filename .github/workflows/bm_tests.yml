@@ -78,13 +78,13 @@ jobs:
         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
         # in pyproject.toml
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root --all-extras
+        run: poetry install --no-root --extras "matlab_tools rtools"
 
       #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
       - name: Install package
-        run: poetry install --all-extras
+        run: poetry install --extras "matlab_tools rtools"
 
       #----------------------------------------------
       #    run test suite
