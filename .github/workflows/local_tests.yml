@@ -113,56 +113,56 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
   benchmark_denoising:
-    runs-on: "ubuntu-latest"
+    runs-on: self-hosted
     needs: [test]
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout project
         uses: actions/checkout@v2
       
-     #----------------------------------------------
-     #-------  install & configure Python  ---------
-     #---------------------------------------------- 
-      - name: Install Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+#      #----------------------------------------------
+#      #-------  install & configure Python  ---------
+#      #---------------------------------------------- 
+#       - name: Install Python ${{ matrix.python-version }}
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: ${{ matrix.python-version }}
       
-     #----------------------------------------------
-     #-------  install & configure R  --------------
-     #---------------------------------------------- 
-      - name: Install R
-        uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: "4.1.0" # The R version to download (if necessary) and use.
+#      #----------------------------------------------
+#      #-------  install & configure R  --------------
+#      #---------------------------------------------- 
+#       - name: Install R
+#         uses: r-lib/actions/setup-r@v1
+#         with:
+#           r-version: "4.1.0" # The R version to download (if necessary) and use.
           
-     #----------------------------------------------
-     #-------  install & configure MATLAB  ---------
-     #----------------------------------------------      
-      - name: Set up MATLAB
-        uses: matlab-actions/setup-matlab@v1
+#      #----------------------------------------------
+#      #-------  install & configure MATLAB  ---------
+#      #----------------------------------------------      
+#       - name: Set up MATLAB
+#         uses: matlab-actions/setup-matlab@v1
       
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+#       - name: Install Poetry
+#         uses: snok/install-poetry@v1
 
-        # with:
-        #   virtualenvs-create: true
-        #   virtualenvs-in-project: true
+#         # with:
+#         #   virtualenvs-create: true
+#         #   virtualenvs-in-project: true
     
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v2
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+#       - name: Load cached venv
+#         id: cached-poetry-dependencies
+#         uses: actions/cache@v2
+#         with:
+#           path: .venv
+#           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install main (non-optional) and dev dependencies
         # see [tool.poetry.dependencies] and [tool.poetry.dev-dependencies]
         # in pyproject.toml
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-root --all-extras
+        run: poetry install --no-root --extras "matlab_tools"
       - name: Install package
-        run: poetry install --all-extras
+        run: poetry install --extras "matlab_tools"
         
       - name: Run the Benchmark
         run: poetry run python run_this_benchmark_denoising.py
