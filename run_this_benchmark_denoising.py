@@ -1,9 +1,8 @@
 if __name__ == "__main__":
     # from unittest import result
-    from methods.spatstats_utils import ComputeStatistics
     import importlib
     from methods import *
-    from methods.benchmark_utils import MethodTemplate as MethodTemplate
+    from benchmark_demo.benchmark_utils import MethodTemplate as MethodTemplate
     import time
     import inspect
     

@@ -5,7 +5,7 @@ from methods import *
 import pytest
 from benchmark_demo.SignalBank import SignalBank
 from benchmark_demo.utilstf import add_snr
-from methods.benchmark_utils import MethodTemplate
+from benchmark_demo.benchmark_utils import MethodTemplate
 
 #---------------------------------------------------------------------------------------
 """ This collects all the methods in the folder "methods" and make a list of them.

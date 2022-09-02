@@ -1,4 +1,4 @@
-from methods.benchmark_utils import MethodTemplate, MatlabInterface
+from benchmark_demo.benchmark_utils import MethodTemplate, MatlabInterface
 # You must import the MethodTemplate abstract class and the MatlabInterface class.
 
 # Create an interface with the matlab engine by passing the name of the function file 
