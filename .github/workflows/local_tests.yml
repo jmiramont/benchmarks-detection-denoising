@@ -113,24 +113,24 @@ jobs:
           git add results --all
           git commit -m "Add changes" -a
           
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          ssh: true
+#       - name: Push changes
+#         uses: ad-m/github-push-action@master
+#         with:
+#           ssh: true
 #           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+#           branch: ${{ github.ref }}
           
       #----------------------------------------------
       #    deploy documentation
       #----------------------------------------------  
   
-#       - name: Deploy documentation to gh-pages branch
-#         uses: s0/git-publish-subdir-action@develop
-#         env:
-#           REPO: self
-#           BRANCH: gh-pages
-#           FOLDER: docs/_build/html
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy documentation to gh-pages branch
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: gh-pages
+          FOLDER: docs/_build/html
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
 #   benchmark_denoising:
 #     runs-on: self-hosted
