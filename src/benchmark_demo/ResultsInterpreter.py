@@ -101,7 +101,8 @@ class ResultsInterpreter:
 
         for signal_id in self.signal_ids:
             methods_names = list()
-            snr_out_values = np.zeros((1, len([col for col in df.columns.values[4::]])))
+            snr_out_mean = np.zeros((1, len([col for col in df.columns.values[4::]])))
+            snr_out_std = np.zeros((1, len([col for col in df.columns.values[4::]])))
             aux_dic = dict()
 
             df2 = df[df['Signal_id']==signal_id]
@@ -112,27 +113,88 @@ class ResultsInterpreter:
                     for params in self.methods_and_params_dic[metodo]:
                         methods_names.append(tag + params)
                         valores = df2[(df2['Method']==metodo)&(df2['Parameter']==params)]
-                        valores = valores.iloc[:,4::].to_numpy().mean(axis = 0)
-                        valores.resize((1,valores.shape[0]))
-                        snr_out_values = np.concatenate((snr_out_values,valores))
+                        # Compute the means
+                        valores_mean = valores.iloc[:,4::].to_numpy().mean(axis = 0)
+                        valores_mean.resize((1,valores_mean.shape[0]))
+                        snr_out_mean = np.concatenate((snr_out_mean,valores_mean))
+                        # Compute the std
+                        valores_std = valores.iloc[:,4::].to_numpy().std(axis = 0)
+                        valores_std.resize((1,valores_std.shape[0]))
+                        snr_out_std = np.concatenate((snr_out_std,valores_std))
+
                 else:
                     methods_names.append(tag)
                     valores = df2[df2['Method']==metodo]
-                    valores = valores.iloc[:,4::].to_numpy().mean(axis = 0)
-                    valores.resize((1,valores.shape[0]))
-                    snr_out_values = np.concatenate((snr_out_values,valores))
+                    # Compute the means
+                    valores_mean = valores.iloc[:,4::].to_numpy().mean(axis = 0)
+                    valores_mean.resize((1,valores_mean.shape[0]))
+                    snr_out_mean = np.concatenate((snr_out_mean,valores_mean))
+                    # Compute the std
+                    valores_std = valores.iloc[:,4::].to_numpy().std(axis = 0)
+                    valores_std.resize((1,valores_std.shape[0]))
+                    snr_out_std = np.concatenate((snr_out_std,valores_std))
 
-            snr_out_values = snr_out_values[1::]
+            snr_out_mean = snr_out_mean[1::]
+            snr_out_std = snr_out_std[1::]
             aux_dic[column_names[0]] = methods_names 
             for i in range(1,len(column_names)):
-                aux_dic[str(column_names[i])] = snr_out_values[:,i-1]
+                aux_dic[str(column_names[i])] = snr_out_mean[:,i-1]
 
             df_means.append(pd.DataFrame(aux_dic))
 
         return df_means
 
+    def get_df_std(self):
+        """ Generates a DataFrame of std results to .md file. 
 
-    
+        Returns:
+            str: String containing the table.
+        """
+        # if filename is None:
+            # filename = 'results'
+
+        df = self.benchmark.get_results_as_df()
+        column_names = ['Method'] + [col for col in df.columns.values[4::]]
+        output_string = ''
+        df_std = list()
+
+        for signal_id in self.signal_ids:
+            methods_names = list()
+            snr_out_std = np.zeros((1, len([col for col in df.columns.values[4::]])))
+            aux_dic = dict()
+
+            df2 = df[df['Signal_id']==signal_id]
+            for metodo in self.methods_and_params_dic:
+                tag = metodo
+                aux = df2[df2['Method']==metodo]
+                if len(self.methods_and_params_dic[metodo])>1:
+                    for params in self.methods_and_params_dic[metodo]:
+                        methods_names.append(tag + params)
+                        valores = df2[(df2['Method']==metodo)&(df2['Parameter']==params)]
+                        # Compute the std
+                        valores_std = valores.iloc[:,4::].to_numpy().std(axis = 0)
+                        valores_std.resize((1,valores_std.shape[0]))
+                        snr_out_std = np.concatenate((snr_out_std,valores_std))
+
+                else:
+                    methods_names.append(tag)
+                    valores = df2[df2['Method']==metodo]
+                    # Compute the std
+                    valores_std = valores.iloc[:,4::].to_numpy().std(axis = 0)
+                    valores_std.resize((1,valores_std.shape[0]))
+                    snr_out_std = np.concatenate((snr_out_std,valores_std))
+
+            snr_out_std = snr_out_std[1::]
+            aux_dic[column_names[0]] = methods_names 
+            for i in range(1,len(column_names)):
+                aux_dic[str(column_names[i])] = snr_out_std[:,i-1]
+
+            df_std.append(pd.DataFrame(aux_dic))
+
+        return df_std
+
+
+
     def get_table_means(self):
         """ Generates a table of mean results to .md file. 
 
@@ -148,7 +210,9 @@ class ResultsInterpreter:
         for signal_id in self.signal_ids:
             methods_names = list()
             snr_out_values = np.zeros((1, len([col for col in df.columns.values[4::]])))
-            aux_dic = dict()
+            snr_out_values_std = np.zeros((1, len([col for col in df.columns.values[4::]])))
+            aux_dic_mean = dict()
+            aux_dic_std = dict()
 
             # Generate DataFrame with only signal information
             df2 = df[df['Signal_id']==signal_id]
@@ -164,35 +228,57 @@ class ResultsInterpreter:
                     for params in self.methods_and_params_dic[metodo]:
                         methods_names.append(tag+'+'+params)
                         valores = df2[(df2['Method']==metodo)&(df2['Parameter']==params)]
-                        valores = valores.iloc[:,4::].to_numpy().mean(axis = 0)
-                        valores.resize((1,valores.shape[0]))
-                        snr_out_values = np.concatenate((snr_out_values,valores))
+                        # Computing mean
+                        valores_mean = valores.iloc[:,4::].to_numpy().mean(axis = 0)
+                        valores_mean.resize((1,valores_mean.shape[0]))
+                        snr_out_values = np.concatenate((snr_out_values,valores_mean))
+                        # Computing std
+                        valores_std = valores.iloc[:,4::].to_numpy().std(axis = 0)
+                        valores_std.resize((1,valores_std.shape[0]))
+                        snr_out_values_std = np.concatenate((snr_out_values_std,valores_std))
                 else:
                     methods_names.append(tag)
                     valores = df2[df2['Method']==metodo]
-                    valores = valores.iloc[:,4::].to_numpy().mean(axis = 0)
-                    valores.resize((1,valores.shape[0]))
-                    snr_out_values = np.concatenate((snr_out_values,valores))
+                    # Computing mean
+                    valores_mean = valores.iloc[:,4::].to_numpy().mean(axis = 0)
+                    valores_mean.resize((1,valores_mean.shape[0]))
+                    snr_out_values = np.concatenate((snr_out_values,valores_mean))
+                    # Computing std
+                    valores_std = valores.iloc[:,4::].to_numpy().std(axis = 0)
+                    valores_std.resize((1,valores_std.shape[0]))
+                    snr_out_values_std = np.concatenate((snr_out_values_std,valores_std))
+
+
+
 
             snr_out_values = snr_out_values[1::]
-            aux_dic[column_names[0]] = methods_names 
+            snr_out_values_std = snr_out_values_std[1::]
+            aux_dic_mean[column_names[0]] = methods_names
+            aux_dic_std[column_names[0]] = methods_names  
             for i in range(1,len(column_names)):
                 # aux_dic['SNRin: '+ str(column_names[i]) + 'dB'] = snr_out_values[:,i-1]
-                aux_dic[str(column_names[i])] = snr_out_values[:,i-1]
+                aux_dic_mean[str(column_names[i])] = snr_out_values[:,i-1]
+                aux_dic_std[str(column_names[i])] = snr_out_values_std[:,i-1]
 
-            df_means = pd.DataFrame(aux_dic)
+            df_means = pd.DataFrame(aux_dic_mean)
+            df_std = pd.DataFrame(aux_dic_std)
+
             # print(df_means)
             # print(signal_id)
             # print(df_means.to_markdown())
-            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ 'results_'+signal_id+'.csv)' +'\n'+ df_means.to_markdown() + '\n'
+            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/figures//'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ 'results_'+signal_id+'.csv)' +'\n'+ df_means.to_markdown() + '\n'
             output_string += aux_string
 
-            filename = os.path.join('results','plot_'+signal_id+'.html')
+            # Generate .html plots files with plotly
+            filename = os.path.join('results/figures','plot_'+signal_id+'.html')
             with open(filename, 'w') as f:
                 df3 = df_means.set_index('Method + Param').stack().reset_index()
-                # print(df3)
                 df3.rename(columns = {'level_1':'SNRin', 0:'QRF'}, inplace = True)
-                fig = px.line(df3, x="SNRin", y="QRF", color='Method + Param', markers=True)
+                df3_std = df_std.set_index('Method + Param').stack().reset_index()
+                df3_std.rename(columns = {'level_1':'SNRin', 0:'std'}, inplace = True)
+                df3['std'] = df3_std['std']
+                # print(df3)
+                fig = px.line(df3, x="SNRin", y="QRF", color='Method + Param', markers=True, error_x = "SNRin", error_y = "std")
                 f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
 
         return output_string
@@ -478,14 +564,19 @@ class ResultsInterpreter:
 
         return True
 
-    def save_html_plots(self):
-        df_means  = self.get_df_means()
-        df = df_means[0]
-        df = df.set_index('Method').stack().reset_index()
-        df.rename(columns = {'level_1':'SNRin', 0:'QRF'}, inplace = True)
-        with open('p_graph.html', 'a') as f:
-            for df in df_means:
-                df = df.set_index('Method').stack().reset_index()
-                df.rename(columns = {'level_1':'SNRin', 0:'QRF'}, inplace = True)
-                fig = px.line(df, x="SNRin", y="QRF", color='Method', markers=True,width=200, height=200)
-                f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+    # def save_html_plots(self):
+    #     df_means  = self.get_df_means()
+    #     df_std = self.get_df_std()
+    #     # df = df_means[0]
+    #     # df = df.set_index('Method').stack().reset_index()
+    #     # df.rename(columns = {'level_1':'SNRin', 0:'QRF'}, inplace = True)
+    #     with open('p_graph.html', 'a') as f:
+    #         for df, dfs in zip(df_means,df_std):
+    #             df = df.set_index('Method').stack().reset_index()
+    #             df.rename(columns = {'level_1':'SNRin', 0:'QRF'}, inplace = True)
+    #             dfs = df_std[0].set_index('Method').stack().reset_index()
+    #             dfs.rename(columns = {'level_1':'SNRin', 0:'std'}, inplace = True)
+                
+    #             df['std'] = dfs['std']
+    #             fig = px.line(df, x="SNRin", y="QRF", color='Method', markers=True)
+    #             f.write(fig.to_html(full_html=False, include_plotlyjs='cdn'))

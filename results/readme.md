@@ -28,7 +28,7 @@ SNRin values:
 * LinearChirp 
 
 ## Mean results tables: 
-### Signal: LinearChirp  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/plot_LinearChirp.html)    [[Get .csv]](results_LinearChirp.csv)
+### Signal: LinearChirp  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/figures//plot_LinearChirp.html)    [[Get .csv]](results_LinearChirp.csv)
 |    | Method + Param         |       0 |       10 |
 |---:|:-----------------------|--------:|---------:|
 |  0 | block_thresholding     | 5.48839 |  7.87122 |
