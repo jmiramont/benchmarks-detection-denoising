@@ -42,15 +42,13 @@
 <li class="toctree-l2"><a class="reference internal" href="benchmark_demo.html">benchmark_demo package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">methods package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-methods.benchmark_utils">methods.benchmark_utils module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-methods.contours_utils">methods.contours_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-methods.method_block_tresholding">methods.method_block_tresholding module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-methods.method_contours">methods.method_contours module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-methods.method_delaunay_triangulation">methods.method_delaunay_triangulation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-methods.method_empty_space">methods.method_empty_space module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-methods.method_hard_threshold">methods.method_hard_threshold module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#methods-method-identity-module">methods.method_identity module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#methods-method-spatstats-module">methods.method_spatstats module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-methods.spatstats_utils">methods.spatstats_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#methods-prueba-matlab-methods-module">methods.prueba_matlab_methods module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-methods">Module contents</a></li>
 </ul>
 </li>
@@ -87,35 +85,6 @@
 <h1>methods package<a class="headerlink" href="#methods-package" title="Permalink to this headline"></a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
-</section>
-<section id="module-methods.benchmark_utils">
-<span id="methods-methodtemplate-module"></span><h2>methods.benchmark_utils module<a class="headerlink" href="#module-methods.benchmark_utils" title="Permalink to this headline"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="methods.benchmark_utils.MethodTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">methods.benchmark_utils.</span></span><span class="sig-name descname"><span class="pre">MethodTemplate</span></span><a class="reference internal" href="_modules/methods/MethodTemplate.html#MethodTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.benchmark_utils.MethodTemplate" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="methods.benchmark_utils.MethodTemplate.get_parameters">
-<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/MethodTemplate.html#MethodTemplate.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.benchmark_utils.MethodTemplate.get_parameters" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="methods.benchmark_utils.MethodTemplate.id">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#methods.benchmark_utils.MethodTemplate.id" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="methods.benchmark_utils.MethodTemplate.method">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/MethodTemplate.html#MethodTemplate.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.benchmark_utils.MethodTemplate.method" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="methods.benchmark_utils.MethodTemplate.task">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task</span></span><a class="headerlink" href="#methods.benchmark_utils.MethodTemplate.task" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </section>
 <section id="module-methods.contours_utils">
 <span id="methods-contours-utils-module"></span><h2>methods.contours_utils module<a class="headerlink" href="#module-methods.contours_utils" title="Permalink to this headline"></a></h2>
@@ -265,15 +234,49 @@
 </dd></dl>
 
 </section>
+<section id="module-methods.method_block_tresholding">
+<span id="methods-method-block-tresholding-module"></span><h2>methods.method_block_tresholding module<a class="headerlink" href="#module-methods.method_block_tresholding" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="methods.method_block_tresholding.NewMethod">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">methods.method_block_tresholding.</span></span><span class="sig-name descname"><span class="pre">NewMethod</span></span><a class="reference internal" href="_modules/methods/method_block_tresholding.html#NewMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_block_tresholding.NewMethod" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">benchmark_demo.benchmark_utils.MethodTemplate</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="methods.method_block_tresholding.NewMethod.get_parameters">
+<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_block_tresholding.html#NewMethod.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_block_tresholding.NewMethod.get_parameters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="methods.method_block_tresholding.NewMethod.method">
+<span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_block_tresholding.html#NewMethod.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_block_tresholding.NewMethod.method" title="Permalink to this definition"></a></dt>
+<dd><p>_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signals</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>params</strong> (<em>_type_</em>) – _description_</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-methods.method_contours">
 <span id="methods-method-contours-module"></span><h2>methods.method_contours module<a class="headerlink" href="#module-methods.method_contours" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="methods.method_contours.NewMethod">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">methods.method_contours.</span></span><span class="sig-name descname"><span class="pre">NewMethod</span></span><a class="reference internal" href="_modules/methods/method_contours.html#NewMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_contours.NewMethod" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#methods.benchmark_utils.MethodTemplate" title="methods.benchmark_utils.MethodTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">methods.benchmark_utils.MethodTemplate</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">benchmark_demo.benchmark_utils.MethodTemplate</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="methods.method_contours.NewMethod.method">
-<span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_contours.html#NewMethod.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_contours.NewMethod.method" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_contours.html#NewMethod.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_contours.NewMethod.method" title="Permalink to this definition"></a></dt>
 <dd><p>_summary_</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -299,33 +302,109 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="methods.method_delaunay_triangulation.NewMethod">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">NewMethod</span></span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#NewMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.NewMethod" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#methods.benchmark_utils.MethodTemplate" title="methods.benchmark_utils.MethodTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">methods.benchmark_utils.MethodTemplate</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">benchmark_demo.benchmark_utils.MethodTemplate</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="methods.method_delaunay_triangulation.NewMethod.method">
-<span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#NewMethod.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.NewMethod.method" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#NewMethod.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.NewMethod.method" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="methods.method_delaunay_triangulation.adjacent_triangle">
-<span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">adjacent_triangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_tri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#adjacent_triangle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.adjacent_triangle" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.method_delaunay_triangulation.counting_edges">
-<span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">counting_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeros</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#counting_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.counting_edges" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="methods.method_delaunay_triangulation.compute_scale_triangles">
+<span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">compute_scale_triangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_reps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#compute_scale_triangles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.compute_scale_triangles" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="methods.method_delaunay_triangulation.delaunay_triangulation_denoising">
-<span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">delaunay_triangulation_denoising</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">UB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ngroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_group_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#delaunay_triangulation_denoising"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.delaunay_triangulation_denoising" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">delaunay_triangulation_denoising</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">UB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ngroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_group_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adapt_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#delaunay_triangulation_denoising"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.delaunay_triangulation_denoising" title="Permalink to this definition"></a></dt>
+<dd><p>Signal filtering by domain detection using Delaunay triangulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>LB</strong> (<em>float</em><em>, </em><em>optional</em>) – _description_. Defaults to 1.85.</p></li>
+<li><p><strong>UB</strong> (<em>int</em><em>, </em><em>optional</em>) – _description_. Defaults to 3.</p></li>
+<li><p><strong>return_dic</strong> (<em>bool</em><em>, </em><em>optional</em>) – _description_. Defaults to False.</p></li>
+<li><p><strong>grouping</strong> (<em>bool</em><em>, </em><em>optional</em>) – _description_. Defaults to True.</p></li>
+<li><p><strong>ngroups</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+<li><p><strong>min_group_size</strong> (<em>int</em><em>, </em><em>optional</em>) – _description_. Defaults to 1.</p></li>
+<li><p><strong>q</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+<li><p><strong>adapt_thr</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="methods.method_delaunay_triangulation.describe_triangles">
+<span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">describe_triangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeros</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#describe_triangles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.describe_triangles" title="Permalink to this definition"></a></dt>
+<dd><p>_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tri</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>zeros</strong> (<em>_type_</em>) – _description_</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="methods.method_delaunay_triangulation.find_adjacent_triangles">
+<span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">find_adjacent_triangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_tri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#find_adjacent_triangles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.find_adjacent_triangles" title="Permalink to this definition"></a></dt>
+<dd><p>_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tri</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>first_tri</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="methods.method_delaunay_triangulation.grouping_triangles">
 <span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">grouping_triangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeros</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ngroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_group_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#grouping_triangles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.grouping_triangles" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>zeros</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>tri</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>ngroups</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+<li><p><strong>min_group_size</strong> (<em>int</em><em>, </em><em>optional</em>) – _description_. Defaults to 1.</p></li>
+<li><p><strong>q</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="methods.method_delaunay_triangulation.mask_triangles">
@@ -333,9 +412,25 @@
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="methods.method_delaunay_triangulation.pointsInTriangles">
-<span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">pointsInTriangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TRI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#pointsInTriangles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.pointsInTriangles" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="methods.method_delaunay_triangulation.points_in_triangles">
+<span class="sig-prename descclassname"><span class="pre">methods.method_delaunay_triangulation.</span></span><span class="sig-name descname"><span class="pre">points_in_triangles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TRI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_delaunay_triangulation.html#points_in_triangles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_delaunay_triangulation.points_in_triangles" title="Permalink to this definition"></a></dt>
+<dd><p>_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>TRI</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>vertices</strong> (<em>_type_</em>) – _description_</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-methods.method_empty_space">
@@ -343,17 +438,17 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="methods.method_empty_space.NewMethod">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">methods.method_empty_space.</span></span><span class="sig-name descname"><span class="pre">NewMethod</span></span><a class="reference internal" href="_modules/methods/method_empty_space.html#NewMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_empty_space.NewMethod" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#methods.benchmark_utils.MethodTemplate" title="methods.benchmark_utils.MethodTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">methods.benchmark_utils.MethodTemplate</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">benchmark_demo.benchmark_utils.MethodTemplate</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="methods.method_empty_space.NewMethod.method">
-<span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_empty_space.html#NewMethod.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_empty_space.NewMethod.method" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_empty_space.html#NewMethod.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_empty_space.NewMethod.method" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="methods.method_empty_space.empty_space_denoising">
-<span class="sig-prename descclassname"><span class="pre">methods.method_empty_space.</span></span><span class="sig-name descname"><span class="pre">empty_space_denoising</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radi_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radi_expand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_empty_space.html#empty_space_denoising"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_empty_space.empty_space_denoising" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">methods.method_empty_space.</span></span><span class="sig-name descname"><span class="pre">empty_space_denoising</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radi_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radi_expand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adapt_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_empty_space.html#empty_space_denoising"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_empty_space.empty_space_denoising" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -372,10 +467,10 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="methods.method_hard_threshold.NewMethod">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">methods.method_hard_threshold.</span></span><span class="sig-name descname"><span class="pre">NewMethod</span></span><a class="reference internal" href="_modules/methods/method_hard_threshold.html#NewMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_hard_threshold.NewMethod" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#methods.benchmark_utils.MethodTemplate" title="methods.benchmark_utils.MethodTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">methods.benchmark_utils.MethodTemplate</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">benchmark_demo.benchmark_utils.MethodTemplate</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="methods.method_hard_threshold.NewMethod.method">
-<span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_hard_threshold.html#NewMethod.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_hard_threshold.NewMethod.method" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/method_hard_threshold.html#NewMethod.method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.method_hard_threshold.NewMethod.method" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -386,195 +481,8 @@
 <dd></dd></dl>
 
 </section>
-<section id="methods-method-identity-module">
-<h2>methods.method_identity module<a class="headerlink" href="#methods-method-identity-module" title="Permalink to this headline"></a></h2>
-</section>
-<section id="methods-method-spatstats-module">
-<h2>methods.method_spatstats module<a class="headerlink" href="#methods-method-spatstats-module" title="Permalink to this headline"></a></h2>
-</section>
-<section id="module-methods.spatstats_utils">
-<span id="methods-spatstats-utils-module"></span><h2>methods.spatstats_utils module<a class="headerlink" href="#module-methods.spatstats_utils" title="Permalink to this headline"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="methods.spatstats_utils.ComputeStatistics">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">ComputeStatistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spatstat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#ComputeStatistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.ComputeStatistics" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A class that encapsulates the code for computing functional statistics.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="methods.spatstats_utils.ComputeStatistics.compute_Fest">
-<span class="sig-name descname"><span class="pre">compute_Fest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_des</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rs'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#ComputeStatistics.compute_Fest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.ComputeStatistics.compute_Fest" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="methods.spatstats_utils.ComputeStatistics.compute_Lest">
-<span class="sig-name descname"><span class="pre">compute_Lest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_des</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#ComputeStatistics.compute_Lest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.ComputeStatistics.compute_Lest" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="methods.spatstats_utils.ComputeStatistics.compute_positions_and_bounds">
-<span class="sig-name descname"><span class="pre">compute_positions_and_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#ComputeStatistics.compute_positions_and_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.ComputeStatistics.compute_positions_and_bounds" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.spatstats_utils.Kfunction">
-<span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">Kfunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#Kfunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.Kfunction" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.spatstats_utils.compute_S0">
-<span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">compute_S0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#compute_S0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.compute_S0" title="Permalink to this definition"></a></dt>
-<dd><p>_summary_</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>radius</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>statistic</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
-<li><p><strong>Sm</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_description_</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>_type_</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.spatstats_utils.compute_T_statistic">
-<span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">compute_T_statistic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#compute_T_statistic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.compute_T_statistic" title="Permalink to this definition"></a></dt>
-<dd><p>_summary_</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>radius</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>rmax</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>Sm</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>S0</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>pnorm</strong> (<em>int</em><em>, </em><em>optional</em>) – _description_. Defaults to 2.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_description_</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>_type_</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.spatstats_utils.compute_hyp_test">
-<span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">compute_hyp_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MC_reps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">199</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'L'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#compute_hyp_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.compute_hyp_test" title="Permalink to this definition"></a></dt>
-<dd><p>Compute hypothesis tests based on Montecarlo simulations.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>signal</strong> (<em>ndarray</em>) – Numpy ndarray with the signal.</p></li>
-<li><p><strong>sc</strong> (<a class="reference internal" href="#methods.spatstats_utils.ComputeStatistics" title="methods.spatstats_utils.ComputeStatistics"><em>ComputeStatistics</em></a><em>, </em><em>optional</em>) – This is an object of the ComputeStatistics</p></li>
-<li><p><strong>class</strong> – </p></li>
-<li><p><strong>python</strong> (<em>that encapsulates the initialization of the spatstat-interface</em>) – </p></li>
-<li><p><strong>time.</strong> (<em>package. This allows avoiding reinitialize the interface each</em>) – </p></li>
-<li><p><strong>None.</strong> (<em>Defaults to</em>) – </p></li>
-<li><p><strong>MC_reps</strong> (<em>int</em><em>, </em><em>optional</em>) – Repetitions of the Montecarlo simulations.</p></li>
-<li><p><strong>199.</strong> (<em>Defaults to</em>) – </p></li>
-<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Significance of the tests. Defaults to 0.05.</p></li>
-<li><p><strong>statistic</strong> (<em>str</em><em>, </em><em>optional</em>) – Functional statistic computed on the point process</p></li>
-<li><p><strong>'L'.</strong> (<em>determined by the zeros of spectrogram of the signal. Defaults to</em>) – </p></li>
-<li><p><strong>pnorm</strong> (<em>int</em><em>, </em><em>optional</em>) – Summary statistics for the envelope-tests. Common values</p></li>
-<li><p><strong>norm</strong> (<em>for this parameter are &quot;np.inf&quot; for the supremum</em>) – </p></li>
-<li><p><strong>2</strong> (<em>or &quot;2&quot; for the usual</em>) – </p></li>
-<li><p><strong>2.</strong> (<em>norm. Defaults to</em>) – </p></li>
-<li><p><strong>radius</strong> (<em>float</em><em>, </em><em>optional</em>) – Vector of radius used for the computation of the</p></li>
-<li><p><strong>None.</strong> – </p></li>
-<li><p><strong>rmax</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum radius to compute the test. One test per value</p></li>
-<li><p><strong>None</strong> (<em>in rmax is compute. If it is</em>) – </p></li>
-<li><p><strong>used.</strong> (<em>the values given in &quot;radius&quot; are</em>) – </p></li>
-<li><p><strong>None.</strong> – </p></li>
-<li><p><strong>return_values</strong> (<em>bool</em><em>, </em><em>optional</em>) – If False, returns a dictionary with the</p></li>
-<li><p><strong>True</strong> (<em>results of the test for each statistic and value of rmax. If</em>) – </p></li>
-<li><p><strong>returns</strong> (<em>also</em>) – </p></li>
-<li><p><strong>False.</strong> (<em>the empirical statistic and the simulated statistics. Defaults to</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns a dictionary with the results. If more than one statistic is
-given as input parameter, the dictionary will have one entry per statistic.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.spatstats_utils.compute_mc_sim">
-<span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">compute_mc_sim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nfft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MC_reps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">199</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'L'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#compute_mc_sim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.compute_mc_sim" title="Permalink to this definition"></a></dt>
-<dd><p>Compute the Montecarlo simulations.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>signal</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>sc</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
-<li><p><strong>Nfft</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
-<li><p><strong>MC_reps</strong> (<em>int</em><em>, </em><em>optional</em>) – _description_. Defaults to 199.</p></li>
-<li><p><strong>statistic</strong> (<em>str</em><em>, </em><em>optional</em>) – _description_. Defaults to ‘L’.</p></li>
-<li><p><strong>pnorm</strong> (<em>int</em><em>, </em><em>optional</em>) – _description_. Defaults to 2.</p></li>
-<li><p><strong>radius</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
-<li><p><strong>rmax</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_description_</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>_type_</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.spatstats_utils.compute_scale">
-<span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">compute_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nfft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#compute_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.compute_scale" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.spatstats_utils.compute_statistics">
-<span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">compute_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_exp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pnorm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#compute_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.compute_statistics" title="Permalink to this definition"></a></dt>
-<dd><p>Compute the given functional statistics.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sts</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>sc</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>simulation_pos</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>pos_exp</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>radius</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>rmax</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>pnorm</strong> (<em>_type_</em>) – _description_</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_description_</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>_type_</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.spatstats_utils.ginibreGaf">
-<span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">ginibreGaf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#ginibreGaf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.ginibreGaf" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="methods.spatstats_utils.pairCorrPlanarGaf">
-<span class="sig-prename descclassname"><span class="pre">methods.spatstats_utils.</span></span><span class="sig-name descname"><span class="pre">pairCorrPlanarGaf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/methods/spatstats_utils.html#pairCorrPlanarGaf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#methods.spatstats_utils.pairCorrPlanarGaf" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
+<section id="methods-prueba-matlab-methods-module">
+<h2>methods.prueba_matlab_methods module<a class="headerlink" href="#methods-prueba-matlab-methods-module" title="Permalink to this headline"></a></h2>
 </section>
 <section id="module-methods">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-methods" title="Permalink to this headline"></a></h2>

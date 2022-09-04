@@ -79,7 +79,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="nn">sg</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">factorial</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span> <span class="k">as</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">complex128</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">pi</span> <span class="k">as</span> <span class="n">pi</span>
 
 <div class="viewcode-block" id="get_round_window"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.get_round_window">[docs]</a><span class="k">def</span> <span class="nf">get_round_window</span><span class="p">(</span><span class="n">Nfft</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Generates a round Gaussian window, i.e. same essential support in time and </span>
@@ -122,10 +122,18 @@
 
     <span class="n">Npad</span> <span class="o">=</span> <span class="n">N</span><span class="o">//</span><span class="mi">2</span>
     <span class="n">Nfft</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
-    <span class="n">signal_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">Npad</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">signal</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">complex128</span><span class="p">:</span>
+        <span class="n">signal_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">Npad</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">complex128</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">signal_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">Npad</span><span class="p">)</span>
+
+    <span class="c1"># signal_pad = np.zeros(N+2*Npad)</span>
     <span class="n">signal_pad</span><span class="p">[</span><span class="n">Npad</span><span class="p">:</span><span class="n">Npad</span><span class="o">+</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span>
     <span class="c1"># computing STFT</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">stft_padded</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">stft</span><span class="p">(</span><span class="n">signal_pad</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">nperseg</span><span class="o">=</span><span class="n">Nfft</span><span class="p">,</span> <span class="n">noverlap</span> <span class="o">=</span> <span class="n">Nfft</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">signal</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">complex128</span><span class="p">:</span>
+        <span class="n">stft_padded</span> <span class="o">=</span> <span class="n">stft_padded</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">Nfft</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span>
+        
     <span class="n">stft</span> <span class="o">=</span> <span class="n">stft_padded</span><span class="p">[:,</span><span class="n">Npad</span><span class="p">:</span><span class="n">Npad</span><span class="o">+</span><span class="n">N</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">stft</span><span class="p">,</span> <span class="n">stft_padded</span><span class="p">,</span> <span class="n">Npad</span></div>
 
@@ -317,7 +325,7 @@
     <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">n</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">T</span></div>
     
 
-<div class="viewcode-block" id="add_snr"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.add_snr">[docs]</a><span class="k">def</span> <span class="nf">add_snr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">snr</span><span class="p">,</span><span class="n">K</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="add_snr"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.add_snr">[docs]</a><span class="k">def</span> <span class="nf">add_snr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">snr</span><span class="p">,</span><span class="n">complex_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Adds noise to a signal x with SNR equal to snr. SNR is defined as </span>
 <span class="sd">    SNR (dB) = 10 * log10(Ex/En), where Ex and En are the energy of the signal and the </span>
 <span class="sd">    noise, respectively.</span>
@@ -337,18 +345,22 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">Px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 
-    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-    <span class="c1"># n = n-np.mean(n)</span>
-    
-    <span class="n">Pn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># Create the noise for signal with given SNR:</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,)</span>
+    <span class="k">if</span> <span class="n">complex_noise</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">complex</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,)</span>
+    <span class="n">Pn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># Normalize to 1 the variance of noise.</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Pn</span><span class="p">)</span>
-
-    <span class="n">Pn</span> <span class="o">=</span> <span class="n">Px</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span> <span class="n">snr</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">Pn</span> <span class="o">=</span> <span class="n">Px</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span> <span class="n">snr</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># Give noise the prescribed variance.</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Pn</span><span class="p">)</span>
+
+    <span class="c1"># Pn = Px * 10 ** (- snr / 10)</span>
+    <span class="c1"># n = n * np.sqrt(Pn)</span>
     <span class="c1"># snr_out1 = 20 * np.log10(np.sqrt(np.sum(x**2))/np.sqrt(np.sum(n**2)))</span>
     <span class="n">snr_out</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">Px</span> <span class="o">/</span> <span class="n">Pn</span><span class="p">)</span>
-    <span class="c1"># print(snr_out)</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">n</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;snr_out:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">snr_out</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">n</span><span class="p">,</span><span class="n">n</span></div>
 
 
 <div class="viewcode-block" id="hermite_poly"><a class="viewcode-back" href="../../benchmark_demo.html#benchmark_demo.utilstf.hermite_poly">[docs]</a><span class="k">def</span> <span class="nf">hermite_poly</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="p">,</span> <span class="n">return_all</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
@@ -421,6 +433,8 @@
         <span class="k">return</span> <span class="n">hfunc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">hfunc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">hfunc</span></div>
+        
+    
 </pre></div>
 
            </div>

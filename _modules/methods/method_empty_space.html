@@ -64,13 +64,14 @@
            <div itemprop="articleBody">
              
   <h1>Source code for methods.method_empty_space</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">methods.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span>
+<span></span><span class="kn">from</span> <span class="nn">benchmark_demo.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span>
 <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">KDTree</span>
 <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">ConvexHull</span><span class="p">,</span> <span class="n">Delaunay</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">spst</span>
 <span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="nn">sg</span>
 <span class="kn">from</span> <span class="nn">benchmark_demo.utilstf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">benchmark_demo.spatstats_utils</span> <span class="kn">import</span> <span class="n">compute_scale</span>
 
 
 <div class="viewcode-block" id="find_center_empty_balls"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.find_center_empty_balls">[docs]</a><span class="k">def</span> <span class="nf">find_center_empty_balls</span><span class="p">(</span><span class="n">Sww</span><span class="p">,</span> <span class="n">pos_exp</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">radi_seg</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -118,11 +119,27 @@
     <span class="k">return</span> <span class="n">hull_d</span><span class="p">,</span> <span class="n">mask</span></div>
 
 
-<div class="viewcode-block" id="empty_space_denoising"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.empty_space_denoising">[docs]</a><span class="k">def</span> <span class="nf">empty_space_denoising</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">radi_seg</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">radi_expand</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">return_dic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">signal</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)))</span>
+<div class="viewcode-block" id="empty_space_denoising"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.empty_space_denoising">[docs]</a><span class="k">def</span> <span class="nf">empty_space_denoising</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span>
+                            <span class="n">radi_seg</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+                            <span class="n">radi_expand</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+                            <span class="n">adapt_thr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">return_dic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
-    <span class="n">Nfft</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    
+                                
+    <span class="c1"># if len(signal.shape) == 1:</span>
+    <span class="c1">#     signal = np.resize(signal,(1,len(signal)))</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+    <span class="n">Nfft</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">N</span>
+
+    <span class="c1"># Compute and adaptive threshold if its required, otherwise use &quot;LB&quot;</span>
+    <span class="k">if</span> <span class="n">adapt_thr</span><span class="p">:</span>
+        <span class="n">scale_pp</span> <span class="o">=</span> <span class="n">compute_scale</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">Nfft</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">scale_pp</span><span class="p">)</span>
+        <span class="n">radi_seg</span> <span class="o">=</span> <span class="n">scale_pp</span>
+        <span class="n">radi_expand</span> <span class="o">=</span> <span class="n">scale_pp</span>
+
     <span class="n">g</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">get_round_window</span><span class="p">(</span><span class="n">Nfft</span><span class="p">)</span>
     <span class="n">Sww</span><span class="p">,</span> <span class="n">stft</span><span class="p">,</span> <span class="n">stft_padded</span><span class="p">,</span> <span class="n">Npad</span> <span class="o">=</span> <span class="n">get_spectrogram</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>
     <span class="n">pos</span> <span class="o">=</span> <span class="n">find_zeros_of_spectrogram</span><span class="p">(</span><span class="n">Sww</span><span class="p">)</span>
@@ -131,7 +148,6 @@
     <span class="n">pos_aux</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">a</span>
     <span class="n">empty_mask</span> <span class="o">=</span> <span class="n">find_center_empty_balls</span><span class="p">(</span><span class="n">Sww</span><span class="p">,</span> <span class="n">pos_aux</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">radi_seg</span><span class="o">=</span><span class="n">radi_seg</span><span class="p">)</span>
     <span class="n">hull_d</span> <span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">get_convex_hull</span><span class="p">(</span><span class="n">Sww</span><span class="p">,</span> <span class="n">pos_aux</span><span class="p">,</span> <span class="n">empty_mask</span><span class="p">,</span> <span class="n">radi_expand</span><span class="o">=</span><span class="n">radi_expand</span><span class="p">)</span>
-    <span class="c1"># mask[:] = 1</span>
     <span class="n">xr</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">reconstruct_signal_2</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">stft_padded</span><span class="p">,</span> <span class="n">Npad</span><span class="p">,</span> <span class="n">Nfft</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">return_dic</span><span class="p">:</span>
@@ -146,19 +162,10 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;empty_space&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>
-        
 
-<div class="viewcode-block" id="NewMethod.method"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.NewMethod.method">[docs]</a>    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">signals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">signals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">signals</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">signals</span><span class="p">)))</span>
-
-        <span class="n">signals_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">signals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">signal</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">signals</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">signals_output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">empty_space_denoising</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">signals_output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">empty_space_denoising</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>    
-        <span class="k">return</span> <span class="n">signals_output</span></div></div>
+<div class="viewcode-block" id="NewMethod.method"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.NewMethod.method">[docs]</a>    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">signal_output</span> <span class="o">=</span> <span class="n">empty_space_denoising</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>    
+        <span class="k">return</span> <span class="n">signal_output</span></div></div>
         
 </pre></div>
 
