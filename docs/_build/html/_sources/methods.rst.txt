@@ -4,18 +4,18 @@ methods package
 Submodules
 ----------
 
-methods.benchmark_utils module
------------------------------
-
-.. automodule:: methods.benchmark_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 methods.contours\_utils module
 ------------------------------
 
 .. automodule:: methods.contours_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+methods.method\_block\_tresholding module
+-----------------------------------------
+
+.. automodule:: methods.method_block_tresholding
    :members:
    :undoc-members:
    :show-inheritance:
@@ -52,26 +52,10 @@ methods.method\_hard\_threshold module
    :undoc-members:
    :show-inheritance:
 
-methods.method\_identity module
--------------------------------
+methods.prueba\_matlab\_methods module
+--------------------------------------
 
-.. automodule:: methods.method_identity
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-methods.method\_spatstats module
---------------------------------
-
-.. automodule:: methods.method_spatstats
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-methods.spatstats\_utils module
--------------------------------
-
-.. automodule:: methods.spatstats_utils
+.. automodule:: methods.prueba_matlab_methods
    :members:
    :undoc-members:
    :show-inheritance:

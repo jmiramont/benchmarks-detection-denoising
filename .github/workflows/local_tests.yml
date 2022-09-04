@@ -102,9 +102,14 @@ jobs:
         # In the template repository options passed are
         # -ra -q -vv --cov=spatstat_interface --cov-report=xml
         run: poetry run pytest
-        
+
       - name: Run the Benchmark
         run: poetry run python run_this_benchmark_denoising.py
+
+      # - name: update docs
+      #   run: |
+      #     cd docs
+
 
       - name: Commit files
         run: |
