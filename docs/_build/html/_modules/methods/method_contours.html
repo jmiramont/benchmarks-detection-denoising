@@ -64,7 +64,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for methods.method_contours</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">methods.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span>
+<span></span><span class="kn">from</span> <span class="nn">benchmark_demo.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span>
 <span class="c1"># You must import the MethodTemplate abstract class.</span>
 <span class="kn">from</span> <span class="nn">methods.contours_utils</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -75,7 +75,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>
         
 
-<div class="viewcode-block" id="NewMethod.method"><a class="viewcode-back" href="../../methods.html#methods.method_contours.NewMethod.method">[docs]</a>    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="NewMethod.method"><a class="viewcode-back" href="../../methods.html#methods.method_contours.NewMethod.method">[docs]</a>    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;_summary_</span>
 
 <span class="sd">        Args:</span>
@@ -85,17 +85,10 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            _type_: _description_</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">signals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">signals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">signals</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">signals</span><span class="p">)))</span>
 
-        <span class="n">signals_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">signals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">signal</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">signals</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">signals_output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">contours_filtering</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">signals_output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">contours_filtering</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">signal_output</span> <span class="o">=</span> <span class="n">contours_filtering</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">signals_output</span></div></div>
+        <span class="k">return</span> <span class="n">signal_output</span></div></div>
 
     <span class="c1"># def get_parameters(self):            # Use it to parametrize your method.</span>
     <span class="c1">#   return [{&#39;q&#39;: 0.95}, ]    </span>
