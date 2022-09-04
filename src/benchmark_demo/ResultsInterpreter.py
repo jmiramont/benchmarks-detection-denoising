@@ -1,3 +1,4 @@
+from sqlite3 import DatabaseError
 import pandas as pd
 import seaborn as sns
 from benchmark_demo.Benchmark import Benchmark
@@ -262,8 +263,26 @@ class ResultsInterpreter:
             df_means = pd.DataFrame(aux_dic_mean)
             df_std = pd.DataFrame(aux_dic_std)
 
+            # print(df_means)
+
+            # ddd = {'':df_means[column_names[0]]}
+            df_results = pd.DataFrame()
+            df_results[column_names[0]] = df_means[column_names[0]]
+            for col_ind in range(1,len(column_names)):
+                # print(column_names[col_ind])
+                # df_aux = pd.DataFrame()
+                # df_aux['QRF (mean)'] = df_means[str(column_names[col_ind])]
+                # df_aux['QRF (sd)'] = df_std[str(column_names[col_ind])]
+                # ddd['SNRin='+str(column_names[col_ind])+'dB (mean)'] = df_aux
+                df_results['SNRin='+str(column_names[col_ind])+'dB (mean)'] = df_means[str(column_names[col_ind])]
+                df_results['SNRin='+str(column_names[col_ind])+'dB (std)'] = df_std[str(column_names[col_ind])]
+
+            # df_results = pd.concat(ddd,axis=1)
+            # print(df_results)
+
+
             # Table header with links
-            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/figures/html/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ './csv_files/results_'+signal_id+'.csv)' +'\n'+ df_means.to_markdown() + '\n'
+            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/figures/html/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ './csv_files/results_'+signal_id+'.csv)' +'\n'+ df_results.to_markdown() + '\n'
             output_string += aux_string
 
             # Generate .html interactive plots files with plotly
