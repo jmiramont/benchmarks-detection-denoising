@@ -216,11 +216,12 @@ class ResultsInterpreter:
 
             # Generate DataFrame with only signal information
             df2 = df[df['Signal_id']==signal_id]
-            # Save .csv file.
-            filename = os.path.join('results','results_'+signal_id+'.csv')
+            
+            # Save .csv file for the signal.
+            filename = os.path.join('results','csv_files','results_'+signal_id+'.csv')
             df2.to_csv(filename)
 
-
+            # For each method, generates the mean and std of results, and get figures.
             for metodo in self.methods_and_params_dic:
                 tag = metodo
                 aux = df2[df2['Method']==metodo]
@@ -248,9 +249,6 @@ class ResultsInterpreter:
                     valores_std.resize((1,valores_std.shape[0]))
                     snr_out_values_std = np.concatenate((snr_out_values_std,valores_std))
 
-
-
-
             snr_out_values = snr_out_values[1::]
             snr_out_values_std = snr_out_values_std[1::]
             aux_dic_mean[column_names[0]] = methods_names
@@ -260,17 +258,16 @@ class ResultsInterpreter:
                 aux_dic_mean[str(column_names[i])] = snr_out_values[:,i-1]
                 aux_dic_std[str(column_names[i])] = snr_out_values_std[:,i-1]
 
+            # Generate DataFrames for plotting easily
             df_means = pd.DataFrame(aux_dic_mean)
             df_std = pd.DataFrame(aux_dic_std)
 
-            # print(df_means)
-            # print(signal_id)
-            # print(df_means.to_markdown())
-            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/figures//'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ 'results_'+signal_id+'.csv)' +'\n'+ df_means.to_markdown() + '\n'
+            # Table header with links
+            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/figures/html/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ './csv_files/results_'+signal_id+'.csv)' +'\n'+ df_means.to_markdown() + '\n'
             output_string += aux_string
 
-            # Generate .html plots files with plotly
-            filename = os.path.join('results/figures','plot_'+signal_id+'.html')
+            # Generate .html interactive plots files with plotly
+            filename = os.path.join('results','figures','html','plot_'+signal_id+'.html')
             with open(filename, 'w') as f:
                 df3 = df_means.set_index('Method + Param').stack().reset_index()
                 df3.rename(columns = {'level_1':'SNRin', 0:'QRF'}, inplace = True)
@@ -315,6 +312,8 @@ class ResultsInterpreter:
             # f.writelines(lines)
 
         output_string = self.get_table_means()
+        
+        self.save_csv_files()
 
         with open(filename, 'a') as f:
           f.write(output_string)
@@ -557,8 +556,8 @@ class ResultsInterpreter:
         df1 = self.get_benchmark_as_data_frame()
         df2 = self.rearrange_data_frame()
 
-        filename1 = os.path.join('results','denoising_results_raw.csv')
-        filename2 = os.path.join('results','denoising_results_rearranged.csv')
+        filename1 = os.path.join('results','csv_files','denoising_results_raw.csv')
+        filename2 = os.path.join('results','csv_files','denoising_results_rearranged.csv')
         df1.to_csv(filename1)
         df2.to_csv(filename2)
 
