@@ -76,7 +76,7 @@ jobs:
       #----------------------------------------------  
       - name: Create .nojekyll file.
         run: | 
-          > docs/.nojekyll
+          > .nojekyll
         
       - name: Deploy documentation to gh-pages branch
         uses: s0/git-publish-subdir-action@develop
