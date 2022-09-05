@@ -12,7 +12,6 @@ Welcome to Benchmark-demo's documentation!
 
    modules
 
-
 Indices and tables
 ==================
 
