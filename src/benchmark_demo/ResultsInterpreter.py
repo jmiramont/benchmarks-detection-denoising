@@ -219,8 +219,8 @@ class ResultsInterpreter:
             df2 = df[df['Signal_id']==signal_id]
             
             # Save .csv file for the signal.
-            filename = os.path.join('results','csv_files','results_'+signal_id+'.csv')
-            df2.to_csv(filename)
+            csv_filename = os.path.join('results',self.task,'csv_files','results_'+signal_id+'.csv')
+            df2.to_csv(csv_filename)
 
             # For each method, generates the mean and std of results, and get figures.
             for metodo in self.methods_and_params_dic:
@@ -263,9 +263,15 @@ class ResultsInterpreter:
             df_means = pd.DataFrame(aux_dic_mean)
             df_std = pd.DataFrame(aux_dic_std)
 
-            # print(df_means)
+            # Check maxima to highlight:
+            nparray_aux = df_means.iloc[:,1::].to_numpy()
+            maxinds = np.argmax(nparray_aux, axis=0)
 
-            # ddd = {'':df_means[column_names[0]]}
+            for col, max_ind in enumerate(maxinds):
+                df_means.iloc[max_ind,col+1] =  '**' + str(df_means.iloc[max_ind,col+1]) + '**'        
+
+
+            # Change column names to make it more human-readable
             df_results = pd.DataFrame()
             df_results[column_names[0]] = df_means[column_names[0]]
             for col_ind in range(1,len(column_names)):
@@ -277,17 +283,15 @@ class ResultsInterpreter:
                 df_results['SNRin='+str(column_names[col_ind])+'dB (mean)'] = df_means[str(column_names[col_ind])]
                 df_results['SNRin='+str(column_names[col_ind])+'dB (std)'] = df_std[str(column_names[col_ind])]
 
-            # df_results = pd.concat(ddd,axis=1)
-            # print(df_results)
-
 
             # Table header with links
-            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/figures/html/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ './csv_files/results_'+signal_id+'.csv)' +'\n'+ df_results.to_markdown() + '\n'
+            csv_filename = os.path.join('.',self.task,'csv_files','results_'+signal_id+'.csv')
+            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/denoising/figures/html/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]]('+ csv_filename +')' +'\n'+ df_results.to_markdown() + '\n'
             output_string += aux_string
 
             # Generate .html interactive plots files with plotly
-            filename = os.path.join('results','figures','html','plot_'+signal_id+'.html')
-            with open(filename, 'w') as f:
+            html_filename = os.path.join('results',self.task,'figures','html','plot_'+signal_id+'.html')
+            with open(html_filename, 'w') as f:
                 df3 = df_means.set_index('Method + Param').stack().reset_index()
                 df3.rename(columns = {'level_1':'SNRin', 0:'QRF'}, inplace = True)
                 df3_std = df_std.set_index('Method + Param').stack().reset_index()
@@ -322,9 +326,21 @@ class ResultsInterpreter:
         lines = lines + ['### Signals  \n'] + ['* ' + signid +' \n' for signid in self.signal_ids]
         # lines = lines + ['## Figures:\n ![Summary of results](results/../figures/plots_grid.png) \n'] 
         lines = lines + ['## Mean results tables: \n']
+
+        if self.task == "denoising":
+            lines = lines + ['Results shown here are the mean and standard deviation of \
+                              the Quality Reconstruction Factor. \
+                              Best performances are **bolded**. \n']
+        
+        if self.task == "detection":
+            lines = lines + ['Results shown here are the mean and standard deviation of \
+                            the estimated detection power. \
+                            Best performances are **bolded**. \n']
        
+
+
         if filename is None:
-            filename = os.path.join('results','readme.md')
+            filename = os.path.join('results','results_'+self.task+'.md')
 
         with open(filename, 'w') as f:
             f.write('\n'.join(lines))
@@ -575,8 +591,8 @@ class ResultsInterpreter:
         df1 = self.get_benchmark_as_data_frame()
         df2 = self.rearrange_data_frame()
 
-        filename1 = os.path.join('results','csv_files','denoising_results_raw.csv')
-        filename2 = os.path.join('results','csv_files','denoising_results_rearranged.csv')
+        filename1 = os.path.join('results',self.task,'csv_files','denoising_results_raw.csv')
+        filename2 = os.path.join('results',self.task,'csv_files','denoising_results_rearranged.csv')
         df1.to_csv(filename1)
         df2.to_csv(filename2)
 
