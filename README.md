@@ -2,7 +2,7 @@
 
 ## Documentation and Results
 
-[![Tests](https://github.com/jmiramont/benchmark-test/actions/workflows/bm_tests.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/bm_tests.yml)
+[![Last Benchmark](https://github.com/jmiramont/benchmark-test/actions/workflows/local_tests.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/local_tests.yml)
 [![Results](docs/readme_figures/results_badge.svg)](results/results_denoising.md)
 [![Documentation](docs/readme_figures/docs_badge.svg)](https://jmiramont.github.io/benchmark-test/)
 
