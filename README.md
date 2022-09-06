@@ -3,7 +3,7 @@
 ## Documentation and Results
 
 [![Tests](https://github.com/jmiramont/benchmark-test/actions/workflows/bm_tests.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/bm_tests.yml)
-[![Results](docs/readme_figures/results_badge.svg)](results/readme.md)
+[![Results](docs/readme_figures/results_badge.svg)](results/readme_denoising.md)
 [![Documentation](docs/readme_figures/docs_badge.svg)](https://jmiramont.github.io/benchmark-test/)
 
 ## Related work
