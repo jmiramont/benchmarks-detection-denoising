@@ -261,7 +261,7 @@ class ResultsInterpreter:
 
             # Generate DataFrames for plotting easily
             df_means = pd.DataFrame(aux_dic_mean)
-            df_means_aux = df_means
+            df_means_aux = df_means.copy()
             df_std = pd.DataFrame(aux_dic_std)
 
             # Check maxima to highlight:
