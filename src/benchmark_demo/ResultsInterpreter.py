@@ -261,6 +261,7 @@ class ResultsInterpreter:
 
             # Generate DataFrames for plotting easily
             df_means = pd.DataFrame(aux_dic_mean)
+            df_means_aux = df_means
             df_std = pd.DataFrame(aux_dic_std)
 
             # Check maxima to highlight:
@@ -268,7 +269,7 @@ class ResultsInterpreter:
             maxinds = np.argmax(nparray_aux, axis=0)
 
             for col, max_ind in enumerate(maxinds):
-                df_means.iloc[max_ind,col+1] =  '**' + str(df_means.iloc[max_ind,col+1]) + '**'        
+                df_means_aux.iloc[max_ind,col+1] =  '**' + str(df_means.iloc[max_ind,col+1]) + '**'        
 
 
             # Change column names to make it more human-readable
@@ -280,7 +281,7 @@ class ResultsInterpreter:
                 # df_aux['QRF (mean)'] = df_means[str(column_names[col_ind])]
                 # df_aux['QRF (sd)'] = df_std[str(column_names[col_ind])]
                 # ddd['SNRin='+str(column_names[col_ind])+'dB (mean)'] = df_aux
-                df_results['SNRin='+str(column_names[col_ind])+'dB (mean)'] = df_means[str(column_names[col_ind])]
+                df_results['SNRin='+str(column_names[col_ind])+'dB (mean)'] = df_means_aux[str(column_names[col_ind])]
                 df_results['SNRin='+str(column_names[col_ind])+'dB (std)'] = df_std[str(column_names[col_ind])]
 
 
