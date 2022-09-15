@@ -97,24 +97,19 @@ def get_spectrogram(signal,window=None):
 
 
 def find_zeros_of_spectrogram(S):
-    """Find the zeros of the spectrogram by searching for minima in a 3x3 submatrix of
-    the spectrogram.
-
-    Args:
-        S (ndarray): The spectrogram of a signal. 
-
-    Returns:
-        pos(ndarray): A Mx2 array where each row contains the coordinates of a zero of 
-        the spectrogram.
-    """
-
-    # detection of zeros of the spectrogram
-    th = 1e-14
-    y, x = extr2minth(S, th) # Find zero's coordinates
+    aux_ceros = ((S <= np.roll(S,  1, 0)) &
+            (S <= np.roll(S, -1, 0)) &
+            (S <= np.roll(S,  1, 1)) &
+            (S <= np.roll(S, -1, 1)) &
+            (S <= np.roll(S, [-1, -1], [0,1])) &
+            (S <= np.roll(S, [1, 1], [0,1])) &
+            (S <= np.roll(S, [-1, 1], [0,1])) &
+            (S <= np.roll(S, [1, -1], [0,1])) 
+            )
+    [y, x] = np.where(aux_ceros==True)
     pos = np.zeros((len(x), 2)) # Position of zeros in norm. coords.
     pos[:, 0] = y
     pos[:, 1] = x
-    # 2/15 Quedaron invertidos!!!!
     return pos
 
 
@@ -184,26 +179,26 @@ def reconstruct_signal_2(mask, stft, Npad, Nfft=None):
     return xr, t
 
 
-def extr2minth(M,th=1e-14):
-    """ Finds the local minima of the spectrogram matrix M.
+# def extr2minth(M,th=1e-14):
+#     """ Finds the local minima of the spectrogram matrix M.
 
-    Args:
-        M (_type_): Matrix with real values.
-        th (_type_): A given threshold.
+#     Args:
+#         M (_type_): Matrix with real values.
+#         th (_type_): A given threshold.
 
-    Returns:
-        _type_: _description_
-    """
+#     Returns:
+#         _type_: _description_
+#     """
 
-    C,R = M.shape
-    Mid_Mid = np.zeros((C,R), dtype=bool)
-    for c in range(1, C-1):
-        for r in range(1, R-1):
-            T = M[c-1:c+2,r-1:r+2]
-            Mid_Mid[c, r] = (np.min(T) == T[1, 1]) * (np.min(T) > th)
-            #Mid_Mid[c, r] = (np.min(T) == T[1, 1])
-    x, y = np.where(Mid_Mid)
-    return x, y
+#     C,R = M.shape
+#     Mid_Mid = np.zeros((C,R), dtype=bool)
+#     for c in range(1, C-1):
+#         for r in range(1, R-1):
+#             T = M[c-1:c+2,r-1:r+2]
+#             Mid_Mid[c, r] = (np.min(T) == T[1, 1]) * (np.min(T) > th)
+#             #Mid_Mid[c, r] = (np.min(T) == T[1, 1])
+#     x, y = np.where(Mid_Mid)
+#     return x, y
 
 
 def snr_comparison(x,x_hat):

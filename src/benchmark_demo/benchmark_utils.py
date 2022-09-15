@@ -60,3 +60,13 @@ class MatlabInterface():
                 
         return params_matlab    
 
+def sigmerge(x1,x2,ratio,return_noise=False):
+    ex1=np.mean(np.abs(x1)**2)
+    ex2=np.mean(np.abs(x2)**2)
+    h=np.sqrt(ex1/(ex2*10**(ratio/10)))
+    sig=x1+h*x2
+
+    if return_noise:
+        return sig, h*x2
+    else:
+        return sig
