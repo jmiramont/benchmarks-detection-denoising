@@ -7,7 +7,7 @@
 
 ## Run the notebooks locally
 
-In order to run the notebooks locally, you will first need a local copy of the repository. You can clone the repository in a local folder by using:
+In order to run the notebooks locally, you will first need a local copy of the repository. You can clone the repository in a local folder:
 
 ```bash
 git clone https://github.com/jmiramont/benchmark-test.git
