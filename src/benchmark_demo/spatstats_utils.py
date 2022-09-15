@@ -1,10 +1,11 @@
 import numpy as np
 from scipy.integrate import cumtrapz
+import scipy.signal as sg
 
 # for R to work
 # print('Importing modules for R to work...')
 import rpy2.robjects as robjects
-# from rpy2.robjects.packages import importr
+from rpy2.robjects.packages import importr
 # Activate automatic conversion of numpy floats and arrays to corresponding R objects
 from rpy2.robjects import numpy2ri
 # print('Finished.')
@@ -13,11 +14,31 @@ from rpy2.robjects import numpy2ri
 # print('Importing SpatstatInterface...')
 from spatstat_interface.interface import SpatstatInterface
 # print('Finished.')
+from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window, get_spectrogram, get_stft
 
-from benchmark_demo.utilstf import *
-# import time
-from methods.contours_utils import zeros_finder
-# import pickle
+
+
+def compute_positions_and_bounds(pos):
+        """Parse the python vector of positions of points ```pos``` into a R object.
+        Then, computes the bounds of the observation window for the computation of 
+        functional statistics. 
+
+        Args:
+            pos (numpy.array): Array with the coordinates of each point in the plane.
+
+        Returns:
+            u_r (FloatVector): R float vector with horizontal coordinates of the points.
+            v_r (FloatVector): R float vector with vertical coordinates of the points.
+            bounds_u (numpy.array): Array with the horizontal bounds of the window.
+            bounds_v (numpy.array): Array with the vertical bounds of the window.
+        """
+
+        u_r = robjects.FloatVector(pos[:, 1])                       
+        v_r = robjects.FloatVector(pos[:, 0])
+        bounds_u = np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]) 
+        bounds_v = np.array([np.min(pos[:, 0]), np.max(pos[:, 0])])
+
+        return u_r, v_r, bounds_u, bounds_v
 
 
 class ComputeStatistics():
@@ -37,18 +58,23 @@ class ComputeStatistics():
         
 
 
-    def compute_positions_and_bounds(self, pos):
-        u_r = robjects.FloatVector(pos[:, 1])                       
-        v_r = robjects.FloatVector(pos[:, 0])
-        bounds_u = np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]) 
-        bounds_v = np.array([np.min(pos[:, 0]), np.max(pos[:, 0])])
-
-        return u_r, v_r, bounds_u, bounds_v
-
+    
     def compute_Lest(self, pos, r_des):
+        """ Compute the functional statistic L, also referred as variance-normalized 
+        Ripley's K, for a point-process, the coordinates of the points given in ```pos```.
+        L is computed for the radius given in ```r_des```.
+
+        Args:
+            pos (_type_): Positions of the points in the point-process realization.
+            r_des (_type_): Desired radius to compute the L statistic.
+
+        Returns:
+            _type_: _description_
+        """
+
         radius_r = robjects.FloatVector(r_des)                      
 
-        u_r, v_r, bounds_u, bounds_v = self.compute_positions_and_bounds(pos)
+        u_r, v_r, bounds_u, bounds_v = compute_positions_and_bounds(pos)
         b_u = robjects.FloatVector(bounds_u)        
         b_v = robjects.FloatVector(bounds_v)
 
@@ -66,9 +92,22 @@ class ComputeStatistics():
 
 
     def compute_Fest(self, pos, r_des = None, estimator_type = 'rs'):
+        """Compute the functional statistic F, also referred as empty space function, 
+        for a point-process, the coordinates of the points given in ```pos```.
+        F is computed for the radius given in ```r_des```.
+        Args:
+            pos (_type_): Positions of the points in the point-process realization.
+            r_des (_type_, optional): Desired radius to compute the L statistic. 
+            Defaults to None.
+            estimator_type (str, optional): _description_. Defaults to 'rs'.
+
+        Returns:
+            _type_: _description_
+        """
+
         radius_r = robjects.FloatVector(r_des)
 
-        u_r, v_r, bounds_u, bounds_v = self.compute_positions_and_bounds(pos)
+        u_r, v_r, bounds_u, bounds_v = compute_positions_and_bounds(pos)
         b_u = robjects.FloatVector(bounds_u)        
         b_v = robjects.FloatVector(bounds_v)
         
@@ -84,6 +123,15 @@ class ComputeStatistics():
 
 
 def pairCorrPlanarGaf(r, L):
+    """_summary_
+
+    Args:
+        r (_type_): _description_
+        L (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     a = 0.5*L*r**2
     num = (np.sinh(a)**2+L**2/4*r**4)*np.cosh(a)-L*r**2*np.sinh(a)
     den = np.sinh(a)**3
@@ -95,6 +143,15 @@ def pairCorrPlanarGaf(r, L):
 
 
 def Kfunction(r, rho):
+    """_summary_
+
+    Args:
+        r (_type_): _description_
+        rho (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     K = np.zeros(len(rho))
     K[1:] = 2*np.pi*cumtrapz(r*rho, r)
 
@@ -102,6 +159,15 @@ def Kfunction(r, rho):
 
 
 def ginibreGaf(r, c):
+    """_summary_
+
+    Args:
+        r (_type_): _description_
+        c (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     rho = 1-np.exp(-c*r**2)
     return rho
 
@@ -166,7 +232,7 @@ def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2, rmin=0.0):
     return tm
 
 
-def compute_mc_sim(signal,
+def compute_monte_carlo_sim(signal,
                     sc=None,
                     Nfft=None,
                     MC_reps = 199,
@@ -174,7 +240,7 @@ def compute_mc_sim(signal,
                     pnorm = 2,
                     radius = None,
                     rmax = None):
-    """Compute the Montecarlo simulations.
+    """Compute the Monte Carlo simulations.
 
     Args:
         signal (_type_): _description_
@@ -209,7 +275,7 @@ def compute_mc_sim(signal,
 
     # Compute empirical statistic Sexp:
     stf, _, _, _ = get_spectrogram(signal, window=g)
-    pos_exp = zeros_finder(stf)/T
+    pos_exp = find_zeros_of_spectrogram(stf)/T
     simulation_pos = list()
 
     # Compute noise distribution of zeros.
@@ -218,7 +284,7 @@ def compute_mc_sim(signal,
         x = np.random.randn(N)
         stf, _, _, _ = get_spectrogram(x, window=g)
         # pos_aux = find_zeros_of_spectrogram(stf)
-        pos = zeros_finder(stf)/T    
+        pos = find_zeros_of_spectrogram(stf)/T    
         simulation_pos.append(pos)
 
     # end = time.time()
@@ -280,7 +346,7 @@ def compute_statistics(sts, sc, simulation_pos, pos_exp, radius, rmax, pnorm):
     return tm, t_exp.squeeze()
 
 
-def compute_hyp_test(signal, 
+def compute_envelope_test(signal, 
                     sc=None, 
                     MC_reps = 199, 
                     alpha = 0.05, 
@@ -325,7 +391,7 @@ def compute_hyp_test(signal,
     if isinstance(statistic,str):
         statistic = (statistic,)
 
-    output_dict, radius = compute_mc_sim(signal,
+    output_dict, radius = compute_monte_carlo_sim(signal,
                                         sc,
                                         Nfft,
                                         MC_reps=MC_reps,
@@ -342,7 +408,8 @@ def compute_hyp_test(signal,
             output_dict[sts] = {'reject_H0': reject_H0,
                                 'tm': tm,
                                 't_exp': t_exp,
-                                'k': k}
+                                'k': k,
+                                'radius':radius}
         else:
             output_dict[sts] = reject_H0
     
@@ -353,7 +420,92 @@ def compute_hyp_test(signal,
 
 
 
+def compute_rank_envelope_test(signal, nsim):
+    
+    spatstat = SpatstatInterface(update=False)
+    spatstat.import_package("core", "geom", update=False)
+    spatstat_random = importr('spatstat.random')
+    N = len(signal)
+    Nfft = 2*N
+    T = np.sqrt(Nfft)
+    window = np.exp(-np.pi*np.arange(-Nfft//2,Nfft//2)**2/Nfft)
+
+    # Generate empirical pp:
+    signal_aux = np.zeros((Nfft,))
+    signal_aux[Nfft//4:Nfft//4+N] = np.random.randn(N)
+    signal_aux[Nfft//4:Nfft//4+N]  = signal
+    _,_,stft = sg.stft(signal_aux, window = window, nperseg = Nfft, noverlap=Nfft-1)
+    stft = stft[:,Nfft//4:Nfft//4+N]
+    pos = find_zeros_of_spectrogram(np.abs(stft)**2)
+    pos = np.array(pos).T/T
+    u_r = robjects.FloatVector(pos[:, 1])                       
+    v_r = robjects.FloatVector(pos[:, 0])
+    b_u = robjects.FloatVector(np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]))
+    b_v = robjects.FloatVector(np.array([np.min(pos[:, 0]), np.max(pos[:, 0])]))
+    ppp_r = spatstat.geom.ppp(u_r, v_r, b_u, b_v)
+
+    # generate white noise zeros pp:
+    rbase = importr('base')
+    get_package = importr('GET')
+    list_ppp = rbase.list()
+    for i in range(nsim):
+        wnoise = np.zeros((Nfft,))
+        wnoise[Nfft//4:Nfft//4+N] = np.random.randn(N)
+        _,_,stft = sg.stft(wnoise, window = window, nperseg = Nfft, noverlap=Nfft-1)
+        stft = stft[:,Nfft//4:Nfft//4+N]
+        # pos = extr2min(np.abs(stft)**2)
+        pos = find_zeros_of_spectrogram(np.abs(stft)**2)
+        pos = np.array(pos).T/T
+        u_r = robjects.FloatVector(pos[:, 1])                       
+        v_r = robjects.FloatVector(pos[:, 0])
+        b_u = robjects.FloatVector(np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]))
+        b_v = robjects.FloatVector(np.array([np.min(pos[:, 0]), np.max(pos[:, 0])]))
+        ppp_noise = spatstat.geom.ppp(u_r, v_r, b_u, b_v)
+        list_ppp = rbase.c(list_ppp, spatstat.geom.as_solist(ppp_noise))
+
+    list_ppp = spatstat.geom.as_solist(list_ppp)
+
+    # Compute simulated envelopes:
+    envelopes = spatstat.core.envelope(ppp_r, fun='Fest', nsim=nsim, savefuns=True,
+                            correction='km', #transform=rbase.expression('.-r'), 
+                            simulate=list_ppp)
+
+    res = get_package.rank_envelope(envelopes)
+    print(res)
+
+    r = res[0]
+    obs = res[1]
+    central = res[2]
+    lo = res[3]
+    hi = res[4]
+    print('Listo.')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def compute_scale(signal, Nfft, sc=None):
+    """_summary_
+
+    Args:
+        signal (_type_): _description_
+        Nfft (_type_): _description_
+        sc (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
     if sc is None:
         sc = ComputeStatistics()
     # output = np.zeros((reps,len(radius)))
@@ -362,7 +514,7 @@ def compute_scale(signal, Nfft, sc=None):
     radius = np.arange(0.0, 4.0, 0.01)
     rmax = np.arange(0.5, 3.99, 0.01)
 
-    hyp_test_dict = compute_hyp_test(signal,
+    hyp_test_dict = compute_envelope_test(signal,
                                 sc=sc,
                                 MC_reps = 99,
                                 alpha = 0.01,
@@ -373,7 +525,7 @@ def compute_scale(signal, Nfft, sc=None):
                                 return_values=True)
 
     k =  hyp_test_dict['k']
-    print(k)
+    # print(k)
     tm = hyp_test_dict['tm']
     t_exp = hyp_test_dict['t_exp']
     reject_H0 = hyp_test_dict['reject_H0']
