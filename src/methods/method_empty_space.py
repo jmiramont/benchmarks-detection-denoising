@@ -55,7 +55,7 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
 
 def empty_space_denoising(signal,
                             radi_seg=0.9,
-                            radi_expand=0.9,
+                            radi_expand=None,
                             adapt_thr=False,
                             return_dic=False):
 
@@ -64,6 +64,8 @@ def empty_space_denoising(signal,
     # if len(signal.shape) == 1:
     #     signal = np.resize(signal,(1,len(signal)))
 
+    radi_expand = radi_seg
+    
     N = len(signal)
     Nfft = 2*N
 

@@ -1,8 +1,8 @@
 N: 1024
 Nsub: 512
 SNRin: [0, 10, 20, 30]
-repetitions: 30
-parallelize: True
+repetitions: 5
+parallelize: False
 verbosity: 4  
 using_signals: ['LinearChirp','CosChirp',           # Single-component signals
                 #'ToneSharpAttack', ToneDumped,                  # Dumped and Sharps attacks
