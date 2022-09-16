@@ -1,21 +1,14 @@
 import numpy as np
-from scipy.integrate import cumtrapz
+import matplotlib.pyplot as plt
 import scipy.signal as sg
-
-# for R to work
-# print('Importing modules for R to work...')
 import rpy2.robjects as robjects
-from rpy2.robjects.packages import importr
-# Activate automatic conversion of numpy floats and arrays to corresponding R objects
 from rpy2.robjects import numpy2ri
-# print('Finished.')
-# numpy2ri.activate() #numpy2ri.deactivate()
-# from spatstat_interface.utils import to_pandas_data_frame
-# print('Importing SpatstatInterface...')
-from spatstat_interface.interface import SpatstatInterface
-# print('Finished.')
-from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window, get_spectrogram, get_stft
+numpy2ri.activate()
+from rpy2.robjects.packages import importr
 
+from spatstat_interface.interface import SpatstatInterface
+from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window, get_spectrogram, get_stft
+from scipy.integrate import cumtrapz
 
 
 def compute_positions_and_bounds(pos):
@@ -420,8 +413,7 @@ def compute_envelope_test(signal,
 
 
 
-def compute_rank_envelope_test(signal, nsim):
-    
+def compute_rank_envelope_test(signal, nsim, rmin=0.0, rmax=1.2, return_dic = False):
     spatstat = SpatstatInterface(update=False)
     spatstat.import_package("core", "geom", update=False)
     spatstat_random = importr('spatstat.random')
@@ -437,7 +429,14 @@ def compute_rank_envelope_test(signal, nsim):
     _,_,stft = sg.stft(signal_aux, window = window, nperseg = Nfft, noverlap=Nfft-1)
     stft = stft[:,Nfft//4:Nfft//4+N]
     pos = find_zeros_of_spectrogram(np.abs(stft)**2)
-    pos = np.array(pos).T/T
+
+    # fig, ax = plt.subplots(1,1,figsize = (5,5))
+    # ax.imshow(np.log10(abs(stft)), origin='lower')
+    # ax.plot(pos[:,1],pos[:,0],'w+')
+    # plt.show()
+
+    pos = np.array(pos)/T
+
     u_r = robjects.FloatVector(pos[:, 1])                       
     v_r = robjects.FloatVector(pos[:, 0])
     b_u = robjects.FloatVector(np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]))
@@ -453,9 +452,8 @@ def compute_rank_envelope_test(signal, nsim):
         wnoise[Nfft//4:Nfft//4+N] = np.random.randn(N)
         _,_,stft = sg.stft(wnoise, window = window, nperseg = Nfft, noverlap=Nfft-1)
         stft = stft[:,Nfft//4:Nfft//4+N]
-        # pos = extr2min(np.abs(stft)**2)
         pos = find_zeros_of_spectrogram(np.abs(stft)**2)
-        pos = np.array(pos).T/T
+        pos = np.array(pos)/T
         u_r = robjects.FloatVector(pos[:, 1])                       
         v_r = robjects.FloatVector(pos[:, 0])
         b_u = robjects.FloatVector(np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]))
@@ -470,15 +468,36 @@ def compute_rank_envelope_test(signal, nsim):
                             correction='km', #transform=rbase.expression('.-r'), 
                             simulate=list_ppp)
 
+    # res = get_package.rank_envelope(envelopes)
+    envelopes = get_package.crop_curves(envelopes, r_min=rmin, r_max=rmax)
     res = get_package.rank_envelope(envelopes)
-    print(res)
 
     r = res[0]
     obs = res[1]
     central = res[2]
     lo = res[3]
     hi = res[4]
-    print('Listo.')
+
+    # fix, ax = plt.subplots(1,1)
+    # ax.fill_between(r, lo, hi, color='g', alpha=.8)
+    # ax.plot(r,obs,'r--')
+    # plt.show()
+
+    rejectH0 = any(hi<obs) or any(obs<lo)
+
+    output_dic = {  'rejectH0':rejectH0,
+                    'envelope_obs': obs,
+                    'envelope_lo': lo,
+                    'envelope_hi': hi,
+                    'envelope_central':central,
+                    'radi': r,
+                }
+
+    if return_dic:
+        return output_dic
+    else:
+        return rejectH0
+
 
 
 
