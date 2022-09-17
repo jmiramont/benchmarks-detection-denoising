@@ -55,7 +55,7 @@ class MatlabInterface():
         self.eng.eval("addpath('src/methods')")
         # sys.path.insert(0, os.path.abspath('../src/methods/'))
 
-    def matlab_function(self,signal,*params):
+    def matlab_function(self, signal, *params):
         """_summary_
 
         Args:
