@@ -123,7 +123,7 @@ class Benchmark:
                            complex_noise,
                            obj_fun)
 
-        # Inform parallelize parameters
+        # Parallelize parameters
         if self.parallel_flag:
             if self.verbosity > 1:
                 print("Number of processors: ", multiprocessing.cpu_count())    
@@ -134,10 +134,14 @@ class Benchmark:
         signal_bank = SignalBank(N, Nsub=self.Nsub)
         self.tmin = signal_bank.tmin # Save initial and end times of signals.
         self.tmax = signal_bank.tmax
+        if Nsub is None:
+            self.Nsub = signal_bank.Nsub
+
+        # print(self.tmin,self.tmax,self.Nsub)    
 
         self.signal_dic = signal_bank.signalDict
         if using_signals == 'all':
-            self.signal_ids = [llave for llave in self.signal_dic]
+            self.signal_ids = [akey for akey in self.signal_dic]
         else:
             self.signal_ids = using_signals
 
@@ -371,16 +375,17 @@ class Benchmark:
                 if self.verbosity > 2:
                     print('-- SNR: {} dB'.format(SNR))
 
-                noisy_signals, noise = self.add_snr_block(base_signal,
-                                                        SNR,
-                                                        self.repetitions,
-                                                        complex_noise=self.complex_noise
-                                                        )
+
+                self.noise_matrix = self.generate_noise()
+                
+                noisy_signals = self.sigmerge(base_signal, 
+                                            self.noise_matrix, 
+                                            SNR)
+
+                # print('Noisy_signals:',noisy_signals.shape)                                            
 
                 # Parallel loop.
                 if self.parallel_flag:
-                    
- 
                     parallel_list = list()
                     for method in self.methods:                                               
                         for p,params in enumerate(self.parameters[method]):
@@ -558,6 +563,32 @@ class Benchmark:
     
         return x+n.T, n.T
 
+    def sigmerge(self, x1, noise, ratio, return_noise=False):
+        # Get signal parameters.
+        N = self.N
+        tmin = self.tmin
+        tmax = self.tmax
+        Nsub = self.tmax-self.tmin
+        sig = np.zeros((noise.shape[0],N))
+
+        ex1=np.mean(np.abs(x1[tmin:tmax])**2)
+        ex2=np.mean(np.abs(noise)**2, axis=1)
+        h=np.sqrt(ex1/(ex2*10**(ratio/10)))
+        scaled_noise = noise*h.reshape((noise.shape[0],1))
+        sig[:,tmin:tmax]=x1[tmin:tmax]+scaled_noise
+
+        if return_noise:
+            return sig, scaled_noise
+        else:
+            return sig
+    
+
+    def generate_noise(self):
+        noise_matrix = np.random.randn(self.repetitions,self.Nsub)
+        if self.complex_noise:
+            noise_matrix += 1j*np.random.randn(self.repetitions,self.Nsub)
+
+        return noise_matrix
 
     def snr_comparison(self, x, x_hat):
         """
@@ -565,6 +596,7 @@ class Benchmark:
         """
         tmin = self.tmin
         tmax = self.tmax
+
         x = x[tmin:tmax]
         x_hat = x_hat[:,tmin:tmax]
 
