@@ -382,6 +382,14 @@ class Benchmark:
                                             self.noise_matrix, 
                                             SNR)
 
+                # noisy_signals, noise = self.add_snr_block(base_signal,
+                #                         SNR,
+                #                         self.repetitions,
+                #                         complex_noise=self.complex_noise
+                #                         )     
+
+                # noisy_signals  += noisy_signals                                                                          
+
                 # print('Noisy_signals:',noisy_signals.shape)                                            
 
                 # Parallel loop.
@@ -569,7 +577,7 @@ class Benchmark:
         tmin = self.tmin
         tmax = self.tmax
         Nsub = self.tmax-self.tmin
-        sig = np.zeros((noise.shape[0],N))
+        sig = 1e-6*np.random.randn(noise.shape[0],N)
 
         ex1=np.mean(np.abs(x1[tmin:tmax])**2)
         ex2=np.mean(np.abs(noise)**2, axis=1)

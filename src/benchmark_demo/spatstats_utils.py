@@ -466,7 +466,7 @@ def compute_rank_envelope_test(signal, nsim, rmin=0.0, rmax=1.2, return_dic = Fa
     # Compute simulated envelopes:
     envelopes = spatstat.core.envelope(ppp_r, fun='Fest', nsim=nsim, savefuns=True,
                             correction='km', #transform=rbase.expression('.-r'), 
-                            simulate=list_ppp)
+                            simulate=list_ppp, verbose='FALSE')
 
     # res = get_package.rank_envelope(envelopes)
     envelopes = get_package.crop_curves(envelopes, r_min=rmin, r_max=rmax)
@@ -484,6 +484,11 @@ def compute_rank_envelope_test(signal, nsim, rmin=0.0, rmax=1.2, return_dic = Fa
     # plt.show()
 
     rejectH0 = any(hi<obs) or any(obs<lo)
+    r_max_dif = None
+    ind_max_dif = None
+    if rejectH0:
+        ind_max_dif = np.argmax(lo-obs)
+        r_max_dif = r[ind_max_dif]
 
     output_dic = {  'rejectH0':rejectH0,
                     'envelope_obs': obs,
@@ -491,6 +496,8 @@ def compute_rank_envelope_test(signal, nsim, rmin=0.0, rmax=1.2, return_dic = Fa
                     'envelope_hi': hi,
                     'envelope_central':central,
                     'radi': r,
+                    'r_max_dif': r_max_dif,
+                    'ind_max_dif': ind_max_dif
                 }
 
     if return_dic:
