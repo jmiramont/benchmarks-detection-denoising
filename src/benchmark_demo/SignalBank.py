@@ -814,13 +814,13 @@ class SignalBank:
 
         chirp1[0:2*N7] = 0
         chirp1[5*N7:-1] = 0
-        chirp1[2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.25)    
+        chirp1[2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.5)    
 
         chirp2[0:N9] = 0
         chirp2[4*N9:5*N9] = 0
         chirp2[8*N9:-1] = 0
-        chirp2[N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
-        chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25)    
+        chirp2[N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.5)    
+        chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.5)    
 
         return chirp1+chirp2+chirp3
 
