@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.signal as sg
 import rpy2.robjects as robjects
 from rpy2.robjects import numpy2ri
-numpy2ri.activate()
+
 from rpy2.robjects.packages import importr
 
 from spatstat_interface.interface import SpatstatInterface
@@ -417,6 +417,10 @@ def compute_envelope_test(signal,
         tm, t_exp, Sm, Sexp, S0 = output_dict[sts]
         reject_H0 = np.zeros(tm.shape[1], dtype=bool)
         reject_H0[np.where(t_exp > tm[k])] = True
+
+        if reject_H0.size == 1:
+            reject_H0 = reject_H0[0]
+
         if return_values:
             output_dict[sts] = {'reject_H0': reject_H0,
                                 'tm': tm,
@@ -467,8 +471,8 @@ def generate_white_noise_zeros_pp(N, nsim, parallel=False):
     
 
 def compute_rank_envelope_test(signal,
-                                fun,
-                                correction,
+                                fun='Fest',
+                                correction='none',
                                 nsim=2499,
                                 alpha=0.05,
                                 rmin=0.0, 
@@ -528,6 +532,7 @@ def compute_rank_envelope_test(signal,
     res = package_GET.global_envelope_test(envelopes, alpha=alpha, type='rank')
     res_attr = rbase.attributes(res)
 
+    numpy2ri.activate()
     # Get p-value interval: Liberal (first index) and Conservative (second index).
     pval_int = res_attr[13]
     if ptype == 'conservative':
@@ -563,7 +568,8 @@ def compute_rank_envelope_test(signal,
         r_max_dif = r[ind_max_dif]
 
     # Generate output dictionary:
-    output_dic = {  'rejectH0':rejectH0,
+    if return_dic:
+        output_dic = {  'rejectH0':rejectH0,
                     'envelope_obs': obs,
                     'envelope_lo': lo,
                     'envelope_hi': hi,
@@ -572,8 +578,7 @@ def compute_rank_envelope_test(signal,
                     'r_max_dif': r_max_dif,
                     'ind_max_dif': ind_max_dif
                 }
-
-    if return_dic:
+    
         return output_dic
     else:
         return rejectH0

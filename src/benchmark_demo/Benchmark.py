@@ -353,24 +353,6 @@ class Benchmark:
         # self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
         return method_output
 
-    def get_args_and_kwargs(self,params):
-        if type(params) is dict:
-                args = []
-                kwargs = params
-        else:
-            dict_indicator = [type(i) is dict for i in params]
-            if any(dict_indicator):
-                assert len(params) == 2, "Parameters must be given as a dictionary or an iterable."
-                for i in range(len(params)):
-                    kwargs = params[np.where(dict_indicator)[0][0]]
-                    args = params[np.where([not i for i in dict_indicator])[0][0]]
-            else:
-                args = params
-                kwargs = dict()
-
-        return args, kwargs
-
-
     def run_test(self):
         """Run the benchmark.
 
@@ -411,7 +393,7 @@ class Benchmark:
                     parallel_list = list()
                     for method in self.methods:                                               
                         for p,params in enumerate(self.parameters[method]):
-                            args, kwargs = self.get_args_and_kwargs(params)
+                            args, kwargs = get_args_and_kwargs(params)
                             for noisy_signal in noisy_signals:
                                 parallel_list.append([method, (args, kwargs), noisy_signal])
 
@@ -432,8 +414,14 @@ class Benchmark:
                             print('--- Method: '+ method)                    
 
                         for p, params in enumerate(self.parameters[method]):
-                            args, kwargs = self.get_args_and_kwargs(params)
-                            method_output = np.zeros_like(noisy_signals)
+                            args, kwargs = get_args_and_kwargs(params)
+                            
+                            if self.task == 'denoising':
+                                method_output = np.zeros_like(noisy_signals)
+
+                            if self.task == 'detection':
+                                method_output = np.zeros((self.repetitions)).astype(bool)
+                             
                             
                             for idx,noisy_signal in enumerate(noisy_signals):
                                 if self.parallel_flag:  # Get results from parallel...
@@ -441,10 +429,10 @@ class Benchmark:
                                     method_output[idx] = tmp
                                     k += 1     
                                 else:                   # Or from serial computation.
-                                    method_output[idx] = self.inner_loop([method,
+                                    tmp = self.inner_loop([method,
                                                                         (args, kwargs), 
                                                                         noisy_signal])        
-                            
+                                    method_output[idx] = tmp
                             # Either way, results are saved in a nested dictionary.
                             result =  self.objectiveFunction(base_signal, method_output)             
                             # params_dic['Params'+str(p)] = result
@@ -667,3 +655,20 @@ class Benchmark:
 
 def detection_perf_function(original_signal, detection_output):
     return detection_output
+
+def get_args_and_kwargs(params):
+        if type(params) is dict:
+                args = []
+                kwargs = params
+        else:
+            dict_indicator = [type(i) is dict for i in params]
+            if any(dict_indicator):
+                assert len(params) == 2, "Parameters must be given as a dictionary or an iterable."
+                for i in range(len(params)):
+                    kwargs = params[np.where(dict_indicator)[0][0]]
+                    args = params[np.where([not i for i in dict_indicator])[0][0]]
+            else:
+                args = params
+                kwargs = dict()
+
+        return args, kwargs

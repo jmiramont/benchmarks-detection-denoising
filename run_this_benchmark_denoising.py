@@ -50,14 +50,14 @@ if __name__ == "__main__":
     config['parameters'] = dictionary_of_parameters
     config['task'] = 'denoising'
 
-    if config['add_new_methods']:
-        # config.pop('add_new_methods')
-        filename = 'results\last_benchmark'
-        with open(filename + '.pkl', 'rb') as f:
-            benchmark = pickle.load(f)
-        benchmark.add_new_method(config['methods'],config['parameters']) 
-    else:
-        config.pop('add_new_methods') 
+    if 'add_new_methods' in config.keys():
+        if config['add_new_methods']:
+            # config.pop('add_new_methods')
+            filename = 'results\last_benchmark'
+            with open(filename + '.pkl', 'rb') as f:
+                benchmark = pickle.load(f)
+            benchmark.add_new_method(config['methods'],config['parameters']) 
+    else: 
         benchmark = Benchmark(**config)    
 
     np.random.seed(0)

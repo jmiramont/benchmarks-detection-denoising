@@ -1,3 +1,4 @@
+from ctypes import sizeof
 import numpy as np
 import importlib
 import inspect
@@ -6,6 +7,7 @@ import pytest
 from benchmark_demo.SignalBank import SignalBank
 from benchmark_demo.utilstf import add_snr
 from benchmark_demo.benchmark_utils import MethodTemplate
+from benchmark_demo.Benchmark import get_args_and_kwargs
 
 #---------------------------------------------------------------------------------------
 """ This collects all the methods in the folder "methods" and make a list of them.
@@ -65,9 +67,11 @@ def test_methods_parameters():
     for method_instance in list_of_methods:
         method_id = method_instance.id
         parameters = method_instance.get_parameters()
-        assert isinstance(parameters[0][0], list) or isinstance(parameters[0][0], tuple), \
+        for params in parameters:
+            args, kwargs = get_args_and_kwargs(params)
+            assert isinstance(args, list) or isinstance(parameters[0][0], tuple), \
                     method_id +"'s positional arguments should be a list or a tuple."
-        assert isinstance(parameters[0][1], dict), \
+            assert isinstance(kwargs, dict), \
                     method_id +"'s keyword arguments should be a dictionary."
 
 
@@ -79,12 +83,12 @@ def test_denoising_methods_outputs_shape(dummy_input):
             method_id = method_instance.id
             print(method_id)
             parameters = method_instance.get_parameters()
-            for args, kwargs in parameters:
+            for params in parameters:
+                args, kwargs = get_args_and_kwargs(params)
                 output = method_instance.method(dummy_input, *args, **kwargs)
                 assert (output.shape == dummy_input.shape), (method_id 
                                         +' output should have the same shape as input.')
 
-#! This has to be corrected.
 # Test the shape of the outputs for detection methods
 # def test_detection_methods_outputs_shape(dummy_input):
 #     for method_instance in list_of_methods:
@@ -93,25 +97,25 @@ def test_denoising_methods_outputs_shape(dummy_input):
 #             print(method_id)
 #             parameters = method_instance.get_parameters()
 #             for params in parameters:
-#                 output = method_instance.method(dummy_input, params=params)
-#                 assert (output.size == dummy_input.shape[0]), (method_id 
-#                                         +' output should have one value per signal.')
+#                 args, kwargs = get_args_and_kwargs(params)
+#                 output = method_instance.method(dummy_input, *args, **kwargs)
+#                 assert sizeof(output) == 1 , 'Detection methods should output boolean values.'
                 
 
 # Test the type of the outputs
-def test_methods_outputs_type(dummy_input):
+def test_denoising_methods_outputs_type(dummy_input):
         for method_instance in list_of_methods:
-            if method_instance.task == 'denoising':
-                method_id = method_instance.id
-                print(method_id)
-                # output = method_instance.method(dummy_input, params=None)
-                parameters = method_instance.get_parameters()
-                for args, kwargs in parameters:
-                    output = method_instance.method(dummy_input, *args, **kwargs)
+            method_id = method_instance.id
+            print(method_id)
+            parameters = method_instance.get_parameters()
+            for params in parameters:
+                args, kwargs = get_args_and_kwargs(params)
+                output = method_instance.method(dummy_input, *args, **kwargs)
+                if method_instance.task == 'denoising':
                     assert (type(output) is np.ndarray), (method_id 
                                                     +' output should be numpy.ndarray.')
             
-            if method_instance.task == 'detection': # ! This has to be implemented.
-                assert True
+                if method_instance.task == 'detection': # ! This has to be implemented.
+                    assert type(output) is bool or type(output) is np.bool_ , 'Detection methods should output boolean values.'
 
 # test_denoising_methods_outputs_shape(dummy_input())
