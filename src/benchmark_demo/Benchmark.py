@@ -4,7 +4,7 @@ import pandas as pd
 import numbers
 import pickle
 import multiprocessing
-from typing import Callable
+# from typing import Callable, is_typeddict
 # import json
 # import sys
 # import warnings
@@ -107,6 +107,7 @@ class Benchmark:
         self.results = None
         self.verbosity = None
         self.complex_noise = None
+        self.noise_matrix = None
         self.methods_and_params_dic = dict()
         
         # Check input parameters and initialize the object attributes
@@ -218,6 +219,9 @@ class Benchmark:
         if not (self.methods.keys() == self.parameters.keys()):
             # sys.stderr.write
             raise ValueError("Both methods and parameters dictionaries should have the same keys.\n")
+
+        # If we are here, this is a new benchmark, so the all the methods are new:
+        self.this_method_is_new = {method:True for method in self.methods_ids}
 
         # Check if N is an entire:
         if type(N) is int:
@@ -349,6 +353,23 @@ class Benchmark:
         # self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
         return method_output
 
+    def get_args_and_kwargs(self,params):
+        if type(params) is dict:
+                args = []
+                kwargs = params
+        else:
+            dict_indicator = [type(i) is dict for i in params]
+            if any(dict_indicator):
+                assert len(params) == 2, "Parameters must be given as a dictionary or an iterable."
+                for i in range(len(params)):
+                    kwargs = params[np.where(dict_indicator)[0][0]]
+                    args = params[np.where([not i for i in dict_indicator])[0][0]]
+            else:
+                args = params
+                kwargs = dict()
+
+        return args, kwargs
+
 
     def run_test(self):
         """Run the benchmark.
@@ -365,7 +386,7 @@ class Benchmark:
         method_dic = dict()
         SNR_dic = dict()
 
-        # These loops here run all the experiments and save the results in nested dictionaries.
+        # This run all the experiments and save the results in nested dictionaries.
         for signal_id in self.signal_ids:
             if self.verbosity > 1:
                 print('- Signal '+ signal_id)
@@ -375,30 +396,22 @@ class Benchmark:
                 if self.verbosity > 2:
                     print('-- SNR: {} dB'.format(SNR))
 
-
-                self.noise_matrix = self.generate_noise()
-                
+                # If the benchmark has been run before, re-run again with the same noise.
+                if self.noise_matrix is None:
+                    self.noise_matrix = self.generate_noise()
+                            
                 noisy_signals = self.sigmerge(base_signal, 
-                                            self.noise_matrix, 
+                                            self.noise_matrix,
                                             SNR)
 
-                # noisy_signals, noise = self.add_snr_block(base_signal,
-                #                         SNR,
-                #                         self.repetitions,
-                #                         complex_noise=self.complex_noise
-                #                         )     
-
-                # noisy_signals  += noisy_signals                                                                          
-
-                # print('Noisy_signals:',noisy_signals.shape)                                            
-
-                # Parallel loop.
+                # ------------------------- Parallel loop ------------------------------
                 if self.parallel_flag:
                     parallel_list = list()
                     for method in self.methods:                                               
                         for p,params in enumerate(self.parameters[method]):
+                            args, kwargs = self.get_args_and_kwargs(params)
                             for noisy_signal in noisy_signals:
-                                parallel_list.append([method, params, noisy_signal])
+                                parallel_list.append([method, (args, kwargs), noisy_signal])
 
                     # Here implement the parallel stuff
                     pool = multiprocessing.Pool(processes=self.processes) 
@@ -408,32 +421,36 @@ class Benchmark:
                     if self.verbosity > 1:    
                         print('Parallel loop finished.') 
 
-                k = 0  # This is used to get the parallel results if its the case.
-                for method in self.methods:    
-                    if self.verbosity > 3:
-                        print('--- Method: '+ method)                    
+                # ---------------------- Serial loop -----------------------------------
+                k = 0  # This is used to get the parallel results if it's necessary.
+                for method in self.methods:
+                    if self.this_method_is_new[method]:
 
-                    for p, params in enumerate(self.parameters[method]):
-                        method_output = np.zeros_like(noisy_signals)
-                        
-                        for idx,noisy_signal in enumerate(noisy_signals):
-                            if self.parallel_flag:  # Get results from parallel...
-                                tmp = parallel_results[k]
-                                method_output[idx] = tmp
-                                k += 1     
-                            else:                   # Or from serial computation.
-                                method_output[idx] = self.inner_loop([method,
-                                                                    params, 
-                                                                    noisy_signal])        
-                        
-                        # Either way, results are saved in a nested dictionary.
-                        result =  self.objectiveFunction(base_signal, method_output)             
-                        # params_dic['Params'+str(p)] = result
-                        params_dic[str(params)] = result
+                        if self.verbosity > 3:
+                            print('--- Method: '+ method)                    
 
-                    self.methods_and_params_dic[method] = [key for key in params_dic] 
-                    method_dic[method] = params_dic    
-                    params_dic = dict()
+                        for p, params in enumerate(self.parameters[method]):
+                            args, kwargs = self.get_args_and_kwargs(params)
+                            method_output = np.zeros_like(noisy_signals)
+                            
+                            for idx,noisy_signal in enumerate(noisy_signals):
+                                if self.parallel_flag:  # Get results from parallel...
+                                    tmp = parallel_results[k]
+                                    method_output[idx] = tmp
+                                    k += 1     
+                                else:                   # Or from serial computation.
+                                    method_output[idx] = self.inner_loop([method,
+                                                                        (args, kwargs), 
+                                                                        noisy_signal])        
+                            
+                            # Either way, results are saved in a nested dictionary.
+                            result =  self.objectiveFunction(base_signal, method_output)             
+                            # params_dic['Params'+str(p)] = result
+                            params_dic[str(params)] = result
+
+                        self.methods_and_params_dic[method] = [key for key in params_dic] 
+                        method_dic[method] = params_dic    
+                        params_dic = dict()
            
                 SNR_dic[SNR] = method_dic
                 method_dic = dict()
@@ -444,7 +461,6 @@ class Benchmark:
         self.results = results_dic # Save results for later.
         if self.verbosity > 0:
             print('The test has finished.')
-
         return results_dic
 
         
@@ -464,7 +480,7 @@ class Benchmark:
             filename = 'a_benchmark'
 
         a_copy = self
-        a_copy.methods = None
+        a_copy.methods = {key:None for key in a_copy.methods}
         with open(filename + '.pkl', 'wb') as f:
             pickle.dump(a_copy, f)    
 
@@ -502,6 +518,31 @@ class Benchmark:
         
         df2 = df[aux2]
         return df2
+
+
+    def add_new_method(self, new_method, parameters=None):
+        # Check methods is a dictionary and update existing dictionary of methods.
+        if type(new_method) is not dict:
+            raise ValueError("Methods should be a dictionary.\n")
+            
+        # If no parameters are given to the benchmark.
+        if parameters is None:
+            new_parameters = {key: (((),{}),) for key in new_method}
+        else:
+            if type(parameters) is not dict:
+                raise ValueError("Parameters should be a dictionary or None.\n")
+
+        for key in new_method:
+                self.methods[key] = new_method[key]
+                self.methods_ids.append(key)
+                self.parameters[key] = new_parameters[key]
+
+
+        #Check both dictionaries have the same keys:
+        if not (self.methods.keys() == self.parameters.keys()):
+            # sys.stderr.write
+            raise ValueError("Both methods and parameters dictionaries should have the same keys.\n")
+
 
 
 # Other functions:
@@ -590,7 +631,6 @@ class Benchmark:
         else:
             return sig
     
-
     def generate_noise(self):
         noise_matrix = np.random.randn(self.repetitions,self.Nsub)
         if self.complex_noise:
