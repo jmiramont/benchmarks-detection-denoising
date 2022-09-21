@@ -7,8 +7,9 @@ numpy2ri.activate()
 from rpy2.robjects.packages import importr
 
 from spatstat_interface.interface import SpatstatInterface
-from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window, get_spectrogram, get_stft
+from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window, get_spectrogram
 from scipy.integrate import cumtrapz
+import multiprocessing
 
 
 def compute_positions_and_bounds(pos):
@@ -30,8 +31,20 @@ def compute_positions_and_bounds(pos):
         v_r = robjects.FloatVector(pos[:, 0])
         bounds_u = np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]) 
         bounds_v = np.array([np.min(pos[:, 0]), np.max(pos[:, 0])])
+        b_u = robjects.FloatVector(bounds_u)        
+        b_v = robjects.FloatVector(bounds_v)
 
-        return u_r, v_r, bounds_u, bounds_v
+        return u_r, v_r, b_u, b_v
+
+def get_white_noise_zeros(stft_params):
+    N,Nfft = stft_params
+    window = np.exp(-np.pi*np.arange(-Nfft//2,Nfft//2)**2/Nfft)
+    wnoise = np.zeros((Nfft,))
+    wnoise[Nfft//4:Nfft//4+N] = np.random.randn(N)
+    _,_,stft = sg.stft(wnoise, window = window, nperseg = Nfft, noverlap=Nfft-1)
+    stft = stft[:,Nfft//4:Nfft//4+N]
+    pos = find_zeros_of_spectrogram(np.abs(stft)**2)
+    return pos
 
 
 class ComputeStatistics():
@@ -50,8 +63,6 @@ class ComputeStatistics():
         self.spatstat.import_package("core", "geom", update=False)
         
 
-
-    
     def compute_Lest(self, pos, r_des):
         """ Compute the functional statistic L, also referred as variance-normalized 
         Ripley's K, for a point-process, the coordinates of the points given in ```pos```.
@@ -65,15 +76,11 @@ class ComputeStatistics():
             _type_: _description_
         """
 
-        radius_r = robjects.FloatVector(r_des)                      
-
-        u_r, v_r, bounds_u, bounds_v = compute_positions_and_bounds(pos)
-        b_u = robjects.FloatVector(bounds_u)        
-        b_v = robjects.FloatVector(bounds_v)
-
+        radi = robjects.FloatVector(r_des)                      
+        u_r, v_r, b_u, b_v = compute_positions_and_bounds(pos)
         ppp_r = self.spatstat.geom.ppp(u_r, v_r, b_u, b_v)
         numpy2ri.deactivate()
-        L_r = self.spatstat.core.Lest(ppp_r, r=radius_r) 
+        L_r = self.spatstat.core.Lest(ppp_r, r=radi) 
 
         radius = np.array(L_r.rx2('r')) 
         Lborder = np.array(L_r.rx2('border'))
@@ -99,16 +106,11 @@ class ComputeStatistics():
         """
 
         radius_r = robjects.FloatVector(r_des)
-
-        u_r, v_r, bounds_u, bounds_v = compute_positions_and_bounds(pos)
-        b_u = robjects.FloatVector(bounds_u)        
-        b_v = robjects.FloatVector(bounds_v)
-        
+        u_r, v_r, b_u, b_v = compute_positions_and_bounds(pos)        
         ppp_r = self.spatstat.geom.ppp(u_r, v_r, b_u, b_v)
         numpy2ri.deactivate()
         F_r = self.spatstat.core.Fest(ppp_r, r=radius_r) 
         # F_r = self.spatstat.core.Fest(ppp_r) 
-
         radius = np.array(F_r.rx2('r')) 
         Fborder = np.array(F_r.rx2(estimator_type))
         
@@ -192,7 +194,7 @@ def compute_S0(radius, Sexp, statistic = None, Sm = None):
 
 
 def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2, rmin=0.0, one_sided=False):
-    """_summary_
+    """Computes the T sumary statistic using the norm given as an argument.
 
     Args:
         radius (_type_): _description_
@@ -200,10 +202,13 @@ def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2, rmin=0.0, one_sided=False
         Sm (_type_): _description_
         S0 (_type_): _description_
         pnorm (int, optional): _description_. Defaults to 2.
+        rmin (float, optional): _description_. Defaults to 0.0.
+        one_sided (bool, optional): _description_. Defaults to False.
 
     Returns:
         _type_: _description_
     """
+
     if len(Sm.shape) == 1:
         Sm.resize((1,Sm.size))
 
@@ -225,14 +230,20 @@ def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2, rmin=0.0, one_sided=False
                     difS = difS[difS>0]
 
                 tm[i,k] = np.linalg.norm(difS, ord=pnorm)
+
+                # Use the squared 2-norm if this is the case.
+                if pnorm==2:
+                    tm[i,k] = tm[i,k]**2
+
     return tm
 
-def compute_statistics(sts, sc, simulation_pos, pos_exp, radius, rmax, pnorm,one_sided):
-    """Compute the given functional statistics.
+
+def compute_statistics(sts, cs, simulation_pos, pos_exp, radius, rmax, pnorm,one_sided):
+    """ Compute the given functional statistics.
 
     Args:
         sts (_type_): _description_
-        sc (_type_): _description_
+        cs (_type_): _description_
         simulation_pos (_type_): _description_
         pos_exp (_type_): _description_
         radius (_type_): _description_
@@ -248,15 +259,15 @@ def compute_statistics(sts, sc, simulation_pos, pos_exp, radius, rmax, pnorm,one
     Sm = np.zeros((MC_reps, len(radius)))
 
     # A dictionary with the functions to compute the statistics.
-    if sc is None:
-        sc = ComputeStatistics()
+    if cs is None:
+        cs = ComputeStatistics()
 
     stats_dict = dict()
-    stats_dict['L'] = sc.compute_Lest
-    stats_dict['F'] = sc.compute_Fest
-    stats_dict['Frs'] = lambda a,b: sc.compute_Fest(a,b, estimator_type='rs')
-    stats_dict['Fkm'] = lambda a,b: sc.compute_Fest(a,b, estimator_type='km')
-    stats_dict['Fcs'] = lambda a,b: sc.compute_Fest(a,b, estimator_type='cs')
+    stats_dict['L'] = cs.compute_Lest
+    stats_dict['F'] = cs.compute_Fest
+    stats_dict['Frs'] = lambda a,b: cs.compute_Fest(a,b, estimator_type='rs')
+    stats_dict['Fkm'] = lambda a,b: cs.compute_Fest(a,b, estimator_type='km')
+    stats_dict['Fcs'] = lambda a,b: cs.compute_Fest(a,b, estimator_type='cs')
 
     # Compute empirical S.
     Sexp, _ = stats_dict[sts](pos_exp, radius)
@@ -275,8 +286,9 @@ def compute_statistics(sts, sc, simulation_pos, pos_exp, radius, rmax, pnorm,one
 
     return tm, t_exp.squeeze(), Sm, Sexp, S0
 
+
 def compute_monte_carlo_sims(signal,
-                    sc=None,
+                    cs=None,
                     Nfft=None,
                     MC_reps = 199,
                     statistic='L',
@@ -288,7 +300,7 @@ def compute_monte_carlo_sims(signal,
 
     Args:
         signal (_type_): _description_
-        sc (_type_, optional): _description_. Defaults to None.
+        cs (_type_, optional): _description_. Defaults to None.
         Nfft (_type_, optional): _description_. Defaults to None.
         MC_reps (int, optional): _description_. Defaults to 199.
         statistic (str, optional): _description_. Defaults to 'L'.
@@ -303,7 +315,7 @@ def compute_monte_carlo_sims(signal,
     # rmax*(base)/np.sqrt(2*base) Use this for rmax in samples!
     N = len(signal)
     if Nfft is None:
-        Nfft = N
+        Nfft = 2*N
         
     if radius is None:
         # radius = np.linspace(0, 4.0, 50)
@@ -323,29 +335,30 @@ def compute_monte_carlo_sims(signal,
     simulation_pos = list()
 
     # Compute noise distribution of zeros.
-    # start = time.time()
+    # start = time.time() 
     for i in range(MC_reps):   
-        x = np.random.randn(N)
-        stf, _, _, _ = get_spectrogram(x, window=g)
-        # pos_aux = find_zeros_of_spectrogram(stf)
-        pos = find_zeros_of_spectrogram(stf)/T    
+        pos = get_white_noise_zeros([N, Nfft])/T     
         simulation_pos.append(pos)
-
     # end = time.time()
     # print(end-start)
     
     output = dict()
     for sts in statistic:
-        tm, t_exp, Sm, Sexp, S0 = compute_statistics(sts,sc,simulation_pos,pos_exp,radius,rmax,pnorm,one_sided)
+        tm, t_exp, Sm, Sexp, S0 = compute_statistics(sts,
+                                                    cs,
+                                                    simulation_pos,
+                                                    pos_exp,
+                                                    radius,
+                                                    rmax,
+                                                    pnorm,
+                                                    one_sided)
         output[sts] = (tm,t_exp, Sm, Sexp, S0)
    
     return output, radius
 
 
-
-
 def compute_envelope_test(signal, 
-                    sc=None, 
+                    cs=None, 
                     MC_reps = 199, 
                     alpha = 0.05, 
                     statistic='L',
@@ -358,7 +371,7 @@ def compute_envelope_test(signal,
 
     Args:
         signal (ndarray): Numpy ndarray with the signal.
-        sc (ComputeStatistics, optional): This is an object of the ComputeStatistics
+        cs (ComputeStatistics, optional): This is an object of the ComputeStatistics
         class, that encapsulates the initialization of the spatstat-interface python
         package. This allows avoiding reinitialize the interface each time. 
         Defaults to None.
@@ -391,7 +404,7 @@ def compute_envelope_test(signal,
         statistic = (statistic,)
 
     output_dict, radius = compute_monte_carlo_sims(signal,
-                                        sc,
+                                        cs,
                                         Nfft,
                                         MC_reps=MC_reps,
                                         statistic=statistic,
@@ -421,30 +434,31 @@ def compute_envelope_test(signal,
     else: # returns (tm, t_exp) if only one statistic was computed.
         return output_dict[statistic[0]] 
 
-def generate_white_noise_zeros_pp(N,nsim):
+
+def generate_white_noise_zeros_pp(N, nsim, parallel=False):
     # STFT parameters.
     Nfft = 2*N
     T = np.sqrt(Nfft)
-    window = np.exp(-np.pi*np.arange(-Nfft//2,Nfft//2)**2/Nfft)
 
     # R packages.
     rbase = importr('base')
     spatstat = SpatstatInterface(update=False)
     spatstat.import_package("core", "geom", update=False)
-    # spatstat_random = importr('spatstat.random')
-    
+    parallel_list = [[N,Nfft] for i in range(nsim)]
+
+    if parallel:
+        nprocesses = 4
+        pool = multiprocessing.Pool(processes=nprocesses) 
+        list_of_zeros = pool.map(get_white_noise_zeros, parallel_list) 
+        pool.close() 
+        pool.join()
+    else:
+        list_of_zeros = map(get_white_noise_zeros,parallel_list) 
+
     list_ppp = rbase.list()
-    for i in range(nsim):
-        wnoise = np.zeros((Nfft,))
-        wnoise[Nfft//4:Nfft//4+N] = np.random.randn(N)
-        _,_,stft = sg.stft(wnoise, window = window, nperseg = Nfft, noverlap=Nfft-1)
-        stft = stft[:,Nfft//4:Nfft//4+N]
-        pos = find_zeros_of_spectrogram(np.abs(stft)**2)
+    for pos in list_of_zeros:
         pos = np.array(pos)/T
-        u_r = robjects.FloatVector(pos[:, 1])                       
-        v_r = robjects.FloatVector(pos[:, 0])
-        b_u = robjects.FloatVector(np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]))
-        b_v = robjects.FloatVector(np.array([np.min(pos[:, 0]), np.max(pos[:, 0])]))
+        u_r, v_r, b_u, b_v = compute_positions_and_bounds(pos)
         ppp_noise = spatstat.geom.ppp(u_r, v_r, b_u, b_v)
         list_ppp = rbase.c(list_ppp, spatstat.geom.as_solist(ppp_noise))
 
@@ -453,15 +467,16 @@ def generate_white_noise_zeros_pp(N,nsim):
     
 
 def compute_rank_envelope_test(signal,
-                                nsim, 
+                                fun,
+                                correction,
+                                nsim=2499,
+                                alpha=0.05,
                                 rmin=0.0, 
                                 rmax=1.2,
-                                alpha=0.05,
                                 ptype = 'conservative',
-                                fun='Fest',
-                                correction='km',
-                                ppp_sim=None, 
-                                return_dic = False):
+                                ppp_sim=None,
+                                return_dic = False,
+                                **kwargs):
 
     spatstat = SpatstatInterface(update=False)
     spatstat.import_package("core", "geom", update=False)
@@ -488,25 +503,29 @@ def compute_rank_envelope_test(signal,
     # plt.show()
 
     pos = np.array(pos)/T
-    u_r = robjects.FloatVector(pos[:, 1])                       
-    v_r = robjects.FloatVector(pos[:, 0])
-    b_u = robjects.FloatVector(np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]))
-    b_v = robjects.FloatVector(np.array([np.min(pos[:, 0]), np.max(pos[:, 0])]))
+    u_r, v_r, b_u, b_v = compute_positions_and_bounds(pos)
     ppp_r = spatstat.geom.ppp(u_r, v_r, b_u, b_v)
 
     if ppp_sim is None:
-        list_ppp = generate_white_noise_zeros_pp(N,nsim)
-    else:
-        list_ppp = ppp_sim
+        ppp_sim = generate_white_noise_zeros_pp(N,nsim)
+
+
+    if 'transform' in kwargs.keys():
+        kwargs['transform'] = rbase.expression(kwargs['transform'])
+
 
     # Compute simulated envelopes:
-    envelopes = spatstat.core.envelope(ppp_r, fun=fun, nsim=nsim, savefuns=True,
-                            correction=correction, #transform=rbase.expression('.-r'), 
-                            simulate=list_ppp, verbose='FALSE')
+    envelopes = spatstat.core.envelope(ppp_r, 
+                                    fun=fun, 
+                                    nsim=nsim, 
+                                    savefuns=True,
+                                    correction=correction, 
+                                    simulate=ppp_sim, 
+                                    verbose='FALSE', 
+                                    **kwargs)
 
     envelopes = package_GET.crop_curves(envelopes, r_min=rmin, r_max=rmax)
     res = package_GET.global_envelope_test(envelopes, alpha=alpha, type='rank')
-
     res_attr = rbase.attributes(res)
 
     # Get p-value interval: Liberal (first index) and Conservative (second index).
@@ -560,19 +579,19 @@ def compute_rank_envelope_test(signal,
         return rejectH0
 
 
-def compute_scale(signal, Nfft, sc=None):
+def compute_scale(signal, Nfft, cs=None):
     """_summary_
 
     Args:
         signal (_type_): _description_
         Nfft (_type_): _description_
-        sc (_type_, optional): _description_. Defaults to None.
+        cs (_type_, optional): _description_. Defaults to None.
 
     Returns:
         _type_: _description_
     """
-    if sc is None:
-        sc = ComputeStatistics()
+    if cs is None:
+        cs = ComputeStatistics()
     # output = np.zeros((reps,len(radius)))
     statistics = 'F' #('L','Frs','Fcs','Fkm')
     pnorm = np.inf
@@ -580,7 +599,7 @@ def compute_scale(signal, Nfft, sc=None):
     rmax = np.arange(0.5, 3.99, 0.01)
 
     hyp_test_dict = compute_envelope_test(signal,
-                                sc=sc,
+                                cs=cs,
                                 MC_reps = 99,
                                 alpha = 0.01,
                                 statistic=statistics,
