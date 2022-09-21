@@ -45,23 +45,32 @@ if __name__ == "__main__":
     # Load parameters from configuration file.
     with open("config_denoising.yaml", "r") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
-
+    
     config['methods'] = dictionary_of_methods
     config['parameters'] = dictionary_of_parameters
-    config['task'] = 'denoising' 
-    np.random.seed(0) 
-    my_benchmark = Benchmark(**config)
+    config['task'] = 'denoising'
 
+    if config['add_new_methods']:
+        # config.pop('add_new_methods')
+        filename = 'results\last_benchmark'
+        with open(filename + '.pkl', 'rb') as f:
+            benchmark = pickle.load(f)
+        benchmark.add_new_method(config['methods'],config['parameters']) 
+    else:
+        config.pop('add_new_methods') 
+        benchmark = Benchmark(**config)    
+
+    np.random.seed(0)
     start = time.time()
-    my_results = my_benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
+    my_results = benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
     end = time.time()
     print("The time of execution:", end-start)
-    df = my_benchmark.get_results_as_df() # This formats the results on a DataFrame
+    df = benchmark.get_results_as_df() # This formats the results on a DataFrame
     print(df)
     
     # Save the benchmark to a file. Notice that only the methods_ids are saved.
-    my_benchmark.save_to_file(filename = 'results/last_benchmark')
-    results_interpreter = ResultsInterpreter(my_benchmark)
+    benchmark.save_to_file(filename = 'results/last_benchmark')
+    results_interpreter = ResultsInterpreter(benchmark)
     # results_interpreter.save_csv_files()
     results_interpreter.save_report()
     # results_interpreter.get_summary_plots(size=(3,2))
