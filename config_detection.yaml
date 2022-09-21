@@ -1,4 +1,6 @@
-SNRin: [0, 10, 20, 30]
+N: 256
+# Nsub: None
+SNRin: [0, 5, 10, 20, 30]
 using_signals: ['LinearChirp',]
 repetitions: 200
 verbosity: 4
