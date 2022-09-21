@@ -1,5 +1,5 @@
 N: 512
-Nsub: 256
+# Nsub: None
 SNRin: [0, 10, 20, 30]
 repetitions: 5
 parallelize: False
@@ -13,3 +13,6 @@ using_signals: ['LinearChirp','CosChirp',]           # Single-component signals
                 #'HermiteFunction',                              # Hermite type signals  
                 # 'McTripleImpulse',]
                 #'McOnOffTones','McOnOff2']                      # Modes that born and die
+                
+# Run again the same benchmark but with new methods:
+add_new_methods: True

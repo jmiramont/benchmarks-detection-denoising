@@ -381,7 +381,9 @@ class Benchmark:
             print('Running benchmark...')
 
         # Dictionaries for the results. This helps to express the results later using a DataFrame.
-        results_dic = dict()
+        if self.results is None:
+            self.results = dict()
+
         params_dic = dict()
         method_dic = dict()
         SNR_dic = dict()
@@ -455,13 +457,18 @@ class Benchmark:
                 SNR_dic[SNR] = method_dic
                 method_dic = dict()
 
-            results_dic[signal_id] = SNR_dic   
+            self.results[signal_id] = SNR_dic   
             SNR_dic = dict()
 
-        self.results = results_dic # Save results for later.
+        # self.results = results_dic # Save results for later.
         if self.verbosity > 0:
             print('The test has finished.')
-        return results_dic
+        
+        # Don't use old methods if run again.
+        for method in self.this_method_is_new:
+            self.this_method_is_new = False
+
+        return self.results
 
         
     def save_to_file(self,filename = None):
@@ -520,29 +527,32 @@ class Benchmark:
         return df2
 
 
-    def add_new_method(self, new_method, parameters=None):
+    def add_new_method(self, methods, parameters=None):
         # Check methods is a dictionary and update existing dictionary of methods.
-        if type(new_method) is not dict:
+        if type(methods) is not dict:
             raise ValueError("Methods should be a dictionary.\n")
             
         # If no parameters are given to the benchmark.
         if parameters is None:
-            new_parameters = {key: (((),{}),) for key in new_method}
+            parameters = {key: (((),{}),) for key in methods}
         else:
             if type(parameters) is not dict:
                 raise ValueError("Parameters should be a dictionary or None.\n")
 
-        for key in new_method:
-                self.methods[key] = new_method[key]
+        for key in methods:
+            if key not in self.methods.keys():
+                self.methods[key] = methods[key]
                 self.methods_ids.append(key)
-                self.parameters[key] = new_parameters[key]
-
+                self.parameters[key] = parameters[key]
+                self.this_method_is_new[key] = True
 
         #Check both dictionaries have the same keys:
         if not (self.methods.keys() == self.parameters.keys()):
             # sys.stderr.write
             raise ValueError("Both methods and parameters dictionaries should have the same keys.\n")
 
+        # New methods cannot be parallelized (for now).
+        self.parallel_flag = False
 
 
 # Other functions:
