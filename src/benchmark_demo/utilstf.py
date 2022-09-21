@@ -88,7 +88,7 @@ def get_spectrogram(signal,window=None):
 
     N = np.max(signal.shape)
     if window is None:
-        Nfft = N
+        Nfft = 2*N
         window, _ = get_round_window(Nfft)
 
     stft, stft_padded, Npad = get_stft(signal, window)
@@ -363,4 +363,21 @@ def hermite_fun(N, q, t=None, T=None, return_all = False):
     else:
         return hfunc[-1], hfunc
         
-    
+def sigmerge(x1, noise, ratio, return_noise=False, tmin=0, tmax=None):
+        # Get signal parameters.
+        N = len(x1)
+        if tmax is None:
+            tmax = N
+            
+        sig = 1e-6*np.random.randn(noise.shape[0],N)
+
+        ex1=np.mean(np.abs(x1[tmin:tmax])**2)
+        ex2=np.mean(np.abs(noise)**2, axis=1)
+        h=np.sqrt(ex1/(ex2*10**(ratio/10)))
+        scaled_noise = noise*h.reshape((noise.shape[0],1))
+        sig[:,tmin:tmax]=x1[tmin:tmax]+scaled_noise
+
+        if return_noise:
+            return sig, scaled_noise
+        else:
+            return sig

@@ -165,7 +165,7 @@ def ginibreGaf(r, c):
     return rho
 
 
-def compute_S0(radius, statistic = None, Sm = None):
+def compute_S0(radius, Sexp, statistic = None, Sm = None):
     """_summary_
 
     Args:
@@ -185,13 +185,13 @@ def compute_S0(radius, statistic = None, Sm = None):
 
     if statistic != 'L':
         if Sm is not None:
-            Smean = np.mean(Sm, axis=0)
+            Smean = np.mean(np.concatenate((Sm,Sexp.reshape(1,Sexp.size)),axis=0), axis=0)
             return Smean
         else:
             return None
 
 
-def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2, rmin=0.0):
+def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2, rmin=0.0, one_sided=False):
     """_summary_
 
     Args:
@@ -220,19 +220,70 @@ def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2, rmin=0.0):
             if int_ub<int_lb:
                 tm[i,k] = 0
             else:
-                tm[i,k] = np.linalg.norm(Sm[i,int_lb:int_ub+1]-S0[0,int_lb:int_ub+1], ord=pnorm)
-    
+                difS = (S0[0,int_lb:int_ub+1]-Sm[i,int_lb:int_ub+1])
+                if one_sided:
+                    difS = difS[difS>0]
+
+                tm[i,k] = np.linalg.norm(difS, ord=pnorm)
     return tm
 
+def compute_statistics(sts, sc, simulation_pos, pos_exp, radius, rmax, pnorm,one_sided):
+    """Compute the given functional statistics.
 
-def compute_monte_carlo_sim(signal,
+    Args:
+        sts (_type_): _description_
+        sc (_type_): _description_
+        simulation_pos (_type_): _description_
+        pos_exp (_type_): _description_
+        radius (_type_): _description_
+        rmax (_type_): _description_
+        pnorm (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
+    MC_reps = len(simulation_pos)
+    tm = np.zeros((MC_reps, len(rmax)))
+    Sm = np.zeros((MC_reps, len(radius)))
+
+    # A dictionary with the functions to compute the statistics.
+    if sc is None:
+        sc = ComputeStatistics()
+
+    stats_dict = dict()
+    stats_dict['L'] = sc.compute_Lest
+    stats_dict['F'] = sc.compute_Fest
+    stats_dict['Frs'] = lambda a,b: sc.compute_Fest(a,b, estimator_type='rs')
+    stats_dict['Fkm'] = lambda a,b: sc.compute_Fest(a,b, estimator_type='km')
+    stats_dict['Fcs'] = lambda a,b: sc.compute_Fest(a,b, estimator_type='cs')
+
+    # Compute empirical S.
+    Sexp, _ = stats_dict[sts](pos_exp, radius)
+
+    # Compute the statistic Sm for the m-th realization of noise.
+    for i, pos in enumerate(simulation_pos):
+        Sm[i,:], _ = stats_dict[sts](pos, radius) 
+
+    S0 = compute_S0(radius, Sexp, statistic = sts, Sm=Sm)
+    # Compute the T statistic as T= Sm-S_0 where S_0 is the theoretic or average value.
+    tm = compute_T_statistic(radius, rmax, Sm, S0, pnorm=pnorm,one_sided=one_sided)
+    # sort values of t for null hypothesis
+    tm = np.sort(tm, axis=0)[::-1, :]
+    # Compute empirical statistic texp
+    t_exp = compute_T_statistic(radius, rmax, Sexp, S0, pnorm=pnorm,one_sided=one_sided)
+
+    return tm, t_exp.squeeze(), Sm, Sexp, S0
+
+def compute_monte_carlo_sims(signal,
                     sc=None,
                     Nfft=None,
                     MC_reps = 199,
                     statistic='L',
                     pnorm = 2,
                     radius = None,
-                    rmax = None):
+                    rmax = None,
+                    one_sided=False):
     """Compute the Monte Carlo simulations.
 
     Args:
@@ -285,58 +336,12 @@ def compute_monte_carlo_sim(signal,
     
     output = dict()
     for sts in statistic:
-        tm, t_exp = compute_statistics(sts,sc,simulation_pos,pos_exp,radius,rmax,pnorm)
-        output[sts] = (tm,t_exp)
+        tm, t_exp, Sm, Sexp, S0 = compute_statistics(sts,sc,simulation_pos,pos_exp,radius,rmax,pnorm,one_sided)
+        output[sts] = (tm,t_exp, Sm, Sexp, S0)
    
     return output, radius
 
-def compute_statistics(sts, sc, simulation_pos, pos_exp, radius, rmax, pnorm):
-    """Compute the given functional statistics.
 
-    Args:
-        sts (_type_): _description_
-        sc (_type_): _description_
-        simulation_pos (_type_): _description_
-        pos_exp (_type_): _description_
-        radius (_type_): _description_
-        rmax (_type_): _description_
-        pnorm (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-
-    MC_reps = len(simulation_pos)
-    tm = np.zeros((MC_reps, len(rmax)))
-    Sm = np.zeros((MC_reps, len(radius)))
-
-    # A dictionary with the functions to compute the statistics.
-    if sc is None:
-        sc = ComputeStatistics()
-
-    stats_dict = dict()
-    stats_dict['L'] = sc.compute_Lest
-    stats_dict['F'] = sc.compute_Fest
-    stats_dict['Frs'] = lambda a,b: sc.compute_Fest(a,b, estimator_type='rs')
-    stats_dict['Fkm'] = lambda a,b: sc.compute_Fest(a,b, estimator_type='km')
-    stats_dict['Fcs'] = lambda a,b: sc.compute_Fest(a,b, estimator_type='cs')
-
-    # Compute empirical S.
-    Sexp, _ = stats_dict[sts](pos_exp, radius)
-
-    # Compute the statistic Sm for the m-th realization of noise.
-    for i, pos in enumerate(simulation_pos):
-        Sm[i,:], _ = stats_dict[sts](pos, radius) 
-
-    S0 = compute_S0(radius, statistic = sts, Sm=Sm)
-    # Compute the T statistic as T= Sm-S_0 where S_0 is the theoretic or average value.
-    tm = compute_T_statistic(radius, rmax, Sm, S0, pnorm=pnorm)
-    # sort values of t for null hypothesis
-    tm = np.sort(tm, axis=0)[::-1, :]
-    # Compute empirical statistic texp
-    t_exp = compute_T_statistic(radius, rmax, Sexp, S0, pnorm=pnorm)
-
-    return tm, t_exp.squeeze()
 
 
 def compute_envelope_test(signal, 
@@ -347,8 +352,9 @@ def compute_envelope_test(signal,
                     pnorm = 2, 
                     radius=None, 
                     rmax=None,
+                    one_sided=False,
                     return_values=False):
-    """ Compute hypothesis tests based on Montecarlo simulations.
+    """ Compute hypothesis tests based on Monte Carlo simulations.
 
     Args:
         signal (ndarray): Numpy ndarray with the signal.
@@ -356,7 +362,7 @@ def compute_envelope_test(signal,
         class, that encapsulates the initialization of the spatstat-interface python
         package. This allows avoiding reinitialize the interface each time. 
         Defaults to None.
-        MC_reps (int, optional): Repetitions of the Montecarlo simulations. 
+        MC_reps (int, optional): Repetitions of the Monte Carlo simulations. 
         Defaults to 199.
         alpha (float, optional): Significance of the tests. Defaults to 0.05.
         statistic (str, optional): Functional statistic computed on the point process 
@@ -384,23 +390,27 @@ def compute_envelope_test(signal,
     if isinstance(statistic,str):
         statistic = (statistic,)
 
-    output_dict, radius = compute_monte_carlo_sim(signal,
+    output_dict, radius = compute_monte_carlo_sims(signal,
                                         sc,
                                         Nfft,
                                         MC_reps=MC_reps,
                                         statistic=statistic,
                                         pnorm=pnorm,
                                         radius=radius,
-                                        rmax=rmax)
+                                        rmax=rmax,
+                                        one_sided=one_sided)
     
     for sts in statistic:
-        tm, t_exp = output_dict[sts]
+        tm, t_exp, Sm, Sexp, S0 = output_dict[sts]
         reject_H0 = np.zeros(tm.shape[1], dtype=bool)
         reject_H0[np.where(t_exp > tm[k])] = True
         if return_values:
             output_dict[sts] = {'reject_H0': reject_H0,
                                 'tm': tm,
                                 't_exp': t_exp,
+                                'Sm':Sm,
+                                'Sexp':Sexp, 
+                                'S0':S0,
                                 'k': k,
                                 'radius':radius}
         else:
@@ -411,12 +421,54 @@ def compute_envelope_test(signal,
     else: # returns (tm, t_exp) if only one statistic was computed.
         return output_dict[statistic[0]] 
 
+def generate_white_noise_zeros_pp(N,nsim):
+    # STFT parameters.
+    Nfft = 2*N
+    T = np.sqrt(Nfft)
+    window = np.exp(-np.pi*np.arange(-Nfft//2,Nfft//2)**2/Nfft)
 
-
-def compute_rank_envelope_test(signal, nsim, rmin=0.0, rmax=1.2, return_dic = False):
+    # R packages.
+    rbase = importr('base')
     spatstat = SpatstatInterface(update=False)
     spatstat.import_package("core", "geom", update=False)
-    spatstat_random = importr('spatstat.random')
+    # spatstat_random = importr('spatstat.random')
+    
+    list_ppp = rbase.list()
+    for i in range(nsim):
+        wnoise = np.zeros((Nfft,))
+        wnoise[Nfft//4:Nfft//4+N] = np.random.randn(N)
+        _,_,stft = sg.stft(wnoise, window = window, nperseg = Nfft, noverlap=Nfft-1)
+        stft = stft[:,Nfft//4:Nfft//4+N]
+        pos = find_zeros_of_spectrogram(np.abs(stft)**2)
+        pos = np.array(pos)/T
+        u_r = robjects.FloatVector(pos[:, 1])                       
+        v_r = robjects.FloatVector(pos[:, 0])
+        b_u = robjects.FloatVector(np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]))
+        b_v = robjects.FloatVector(np.array([np.min(pos[:, 0]), np.max(pos[:, 0])]))
+        ppp_noise = spatstat.geom.ppp(u_r, v_r, b_u, b_v)
+        list_ppp = rbase.c(list_ppp, spatstat.geom.as_solist(ppp_noise))
+
+    list_ppp = spatstat.geom.as_solist(list_ppp)
+    return list_ppp
+    
+
+def compute_rank_envelope_test(signal,
+                                nsim, 
+                                rmin=0.0, 
+                                rmax=1.2,
+                                alpha=0.05,
+                                ptype = 'conservative',
+                                fun='Fest',
+                                correction='km',
+                                ppp_sim=None, 
+                                return_dic = False):
+
+    spatstat = SpatstatInterface(update=False)
+    spatstat.import_package("core", "geom", update=False)
+    # spatstat_random = importr('spatstat.random')
+    rbase = importr('base')
+    package_GET = importr('GET')
+    
     N = len(signal)
     Nfft = 2*N
     T = np.sqrt(Nfft)
@@ -436,42 +488,36 @@ def compute_rank_envelope_test(signal, nsim, rmin=0.0, rmax=1.2, return_dic = Fa
     # plt.show()
 
     pos = np.array(pos)/T
-
     u_r = robjects.FloatVector(pos[:, 1])                       
     v_r = robjects.FloatVector(pos[:, 0])
     b_u = robjects.FloatVector(np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]))
     b_v = robjects.FloatVector(np.array([np.min(pos[:, 0]), np.max(pos[:, 0])]))
     ppp_r = spatstat.geom.ppp(u_r, v_r, b_u, b_v)
 
-    # generate white noise zeros pp:
-    rbase = importr('base')
-    get_package = importr('GET')
-    list_ppp = rbase.list()
-    for i in range(nsim):
-        wnoise = np.zeros((Nfft,))
-        wnoise[Nfft//4:Nfft//4+N] = np.random.randn(N)
-        _,_,stft = sg.stft(wnoise, window = window, nperseg = Nfft, noverlap=Nfft-1)
-        stft = stft[:,Nfft//4:Nfft//4+N]
-        pos = find_zeros_of_spectrogram(np.abs(stft)**2)
-        pos = np.array(pos)/T
-        u_r = robjects.FloatVector(pos[:, 1])                       
-        v_r = robjects.FloatVector(pos[:, 0])
-        b_u = robjects.FloatVector(np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]))
-        b_v = robjects.FloatVector(np.array([np.min(pos[:, 0]), np.max(pos[:, 0])]))
-        ppp_noise = spatstat.geom.ppp(u_r, v_r, b_u, b_v)
-        list_ppp = rbase.c(list_ppp, spatstat.geom.as_solist(ppp_noise))
-
-    list_ppp = spatstat.geom.as_solist(list_ppp)
+    if ppp_sim is None:
+        list_ppp = generate_white_noise_zeros_pp(N,nsim)
+    else:
+        list_ppp = ppp_sim
 
     # Compute simulated envelopes:
-    envelopes = spatstat.core.envelope(ppp_r, fun='Fest', nsim=nsim, savefuns=True,
-                            correction='km', #transform=rbase.expression('.-r'), 
+    envelopes = spatstat.core.envelope(ppp_r, fun=fun, nsim=nsim, savefuns=True,
+                            correction=correction, #transform=rbase.expression('.-r'), 
                             simulate=list_ppp, verbose='FALSE')
 
-    # res = get_package.rank_envelope(envelopes)
-    envelopes = get_package.crop_curves(envelopes, r_min=rmin, r_max=rmax)
-    res = get_package.rank_envelope(envelopes)
+    envelopes = package_GET.crop_curves(envelopes, r_min=rmin, r_max=rmax)
+    res = package_GET.global_envelope_test(envelopes, alpha=alpha, type='rank')
 
+    res_attr = rbase.attributes(res)
+
+    # Get p-value interval: Liberal (first index) and Conservative (second index).
+    pval_int = res_attr[13]
+    if ptype == 'conservative':
+        pval = pval_int[1]
+    
+    if ptype == 'liberal':
+        pval = pval_int[0]
+
+    # Get envelopes and r.
     r = res[0]
     obs = res[1]
     central = res[2]
@@ -483,13 +529,21 @@ def compute_rank_envelope_test(signal, nsim, rmin=0.0, rmax=1.2, return_dic = Fa
     # ax.plot(r,obs,'r--')
     # plt.show()
 
-    rejectH0 = any(hi<obs) or any(obs<lo)
+    # Check rejection of H0:
+    if pval < alpha:
+        rejectH0 = True
+    else:
+        rejectH0 = False
+
+    # If rejected, compute the maximum distance between the empirical statistic and the
+    # envelopes (it might be useful as an approximate scale of interaction).
     r_max_dif = None
     ind_max_dif = None
     if rejectH0:
         ind_max_dif = np.argmax(lo-obs)
         r_max_dif = r[ind_max_dif]
 
+    # Generate output dictionary:
     output_dic = {  'rejectH0':rejectH0,
                     'envelope_obs': obs,
                     'envelope_lo': lo,
@@ -504,21 +558,6 @@ def compute_rank_envelope_test(signal, nsim, rmin=0.0, rmax=1.2, return_dic = Fa
         return output_dic
     else:
         return rejectH0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def compute_scale(signal, Nfft, sc=None):
