@@ -38,12 +38,12 @@ def compute_positions_and_bounds(pos):
 
 def get_white_noise_zeros(stft_params):
     N,Nfft = stft_params
-    window = np.exp(-np.pi*np.arange(-Nfft//2,Nfft//2)**2/Nfft)
-    wnoise = np.zeros((Nfft,))
-    wnoise[Nfft//4:Nfft//4+N] = np.random.randn(N)
-    _,_,stft = sg.stft(wnoise, window = window, nperseg = Nfft, noverlap=Nfft-1)
-    stft = stft[:,Nfft//4:Nfft//4+N]
-    pos = find_zeros_of_spectrogram(np.abs(stft)**2)
+    wnoise = np.random.randn(N)
+
+    # Get round window and scale for normalization.    
+    g, T = get_round_window(Nfft)
+    stf, _, _, _ = get_spectrogram(wnoise, window=g)
+    pos = find_zeros_of_spectrogram(stf)
     return pos
 
 
@@ -91,7 +91,7 @@ class ComputeStatistics():
         return L[2], radius
 
 
-    def compute_Fest(self, pos, r_des = None, estimator_type = 'rs'):
+    def compute_Fest(self, pos, r_des = None, correction = 'rs', var_stb=False):
         """Compute the functional statistic F, also referred as empty space function, 
         for a point-process, the coordinates of the points given in ```pos```.
         F is computed for the radius given in ```r_des```.
@@ -112,8 +112,11 @@ class ComputeStatistics():
         F_r = self.spatstat.core.Fest(ppp_r, r=radius_r) 
         # F_r = self.spatstat.core.Fest(ppp_r) 
         radius = np.array(F_r.rx2('r')) 
-        Fborder = np.array(F_r.rx2(estimator_type))
-        
+        Fborder = np.array(F_r.rx2(correction))
+
+        if var_stb:
+            Fborder = np.arcsin(np.sqrt(Fborder))
+
         return Fborder, radius
 
 
@@ -265,9 +268,10 @@ def compute_statistics(sts, cs, simulation_pos, pos_exp, radius, rmax, pnorm,one
     stats_dict = dict()
     stats_dict['L'] = cs.compute_Lest
     stats_dict['F'] = cs.compute_Fest
-    stats_dict['Frs'] = lambda a,b: cs.compute_Fest(a,b, estimator_type='rs')
-    stats_dict['Fkm'] = lambda a,b: cs.compute_Fest(a,b, estimator_type='km')
-    stats_dict['Fcs'] = lambda a,b: cs.compute_Fest(a,b, estimator_type='cs')
+    stats_dict['Frs'] = lambda a,b: cs.compute_Fest(a,b, correction='rs')
+    stats_dict['Fkm'] = lambda a,b: cs.compute_Fest(a,b, correction='km')
+    stats_dict['Fkm_vs'] = lambda a,b: cs.compute_Fest(a,b, correction='km', var_stb=True)
+    stats_dict['Fcs'] = lambda a,b: cs.compute_Fest(a,b, correction='cs')
 
     # Compute empirical S.
     Sexp, _ = stats_dict[sts](pos_exp, radius)
@@ -326,15 +330,16 @@ def compute_monte_carlo_sims(signal,
 
     if rmax is None:
         rmax = radius
-        
+
+    # Get round window and scale for normalization.    
     g, T = get_round_window(Nfft)
 
     # Compute empirical statistic Sexp:
     stf, _, _, _ = get_spectrogram(signal, window=g)
     pos_exp = find_zeros_of_spectrogram(stf)/T
-    simulation_pos = list()
-
+    
     # Compute noise distribution of zeros.
+    simulation_pos = list()
     # start = time.time() 
     for i in range(MC_reps):   
         pos = get_white_noise_zeros([N, Nfft])/T     
@@ -513,10 +518,8 @@ def compute_rank_envelope_test(signal,
     if ppp_sim is None:
         ppp_sim = generate_white_noise_zeros_pp(N,nsim)
 
-
     if 'transform' in kwargs.keys():
         kwargs['transform'] = rbase.expression(kwargs['transform'])
-
 
     # Compute simulated envelopes:
     envelopes = spatstat.core.envelope(ppp_r, 
@@ -641,6 +644,38 @@ def compute_scale(signal, Nfft, cs=None):
             radius_of_rejection = 0.5
     
     return radius_of_rejection
+
+def compute_scale2(signal):
+    """_summary_
+
+    Args:
+        signal (_type_): _description_
+        Nfft (_type_): _description_
+        cs (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
+    
+    output_dic = compute_rank_envelope_test(signal,
+                                        fun='Fest', 
+                                        correction='best', 
+                                        return_dic=True,
+                                        transform='asin(sqrt(.))',
+                                        )
+
+    reject_H0 = output_dic['reject_H0']
+  
+    if not reject_H0:
+        print('No detection.')
+        radius_of_rejection = 0.8
+    else:
+        radius_of_rejection = output_dic['r_max_dif']
+    
+    return radius_of_rejection
+
+
+
 
 
     # def spatialStatsFromR(pos):

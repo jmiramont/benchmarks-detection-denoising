@@ -3,6 +3,7 @@ from benchmark_demo.utilstf import *
 from scipy.spatial import ConvexHull, Delaunay
 import matplotlib.pyplot as plt
 from benchmark_demo.spatstats_utils import compute_scale, ComputeStatistics
+import matplotlib.path as mpltPath
 
 def points_in_triangles(S,TRI,vertices):
     """_summary_
@@ -137,13 +138,12 @@ def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
     energy_per_group = list()
     masks_of_each_group = list()
 
+    mask = np.zeros_like(S)
     for group in groups_of_triangles:
-        mask = np.zeros_like(S)
-        for triangle in group:
-            mask = mask + points_in_triangles(S, triangle, zeros)
-
-        energy_per_group.append(np.sum(S*mask))
-        masks_of_each_group.append(mask)
+        group_mask = mask_triangles3(S, group, zeros)
+        mask += group_mask 
+        energy_per_group.append(np.sum(S*group_mask))
+        masks_of_each_group.append(group_mask)
 
     if q is not None:
         ind_group = np.where(energy_per_group > np.quantile(energy_per_group,q))
@@ -205,6 +205,32 @@ def mask_triangles(F, tri, selection):
 
     return mask
 
+def mask_triangles2(F, triangles, zeros):
+    mask = np.zeros(F.shape)
+    points = np.array([[i,j] for i in range(F.shape[0]) for j in range(F.shape[1])])
+    inside2 = np.zeros((points.shape[0],)).astype(bool)
+    for tri in triangles:
+            path = mpltPath.Path(zeros[tri,:])
+            inside2 += path.contains_points(points)   
+    for point in points[inside2,:]:         
+        mask[tuple(point)] = 1
+    return mask
+
+def mask_triangles3(F, triangles, zeros):
+    mask = np.zeros(F.shape)
+    triangles = triangles.astype(int)
+    # inside2 = np.zeros((points.shape[0],)).astype(bool)
+    for tri in triangles:
+            min_row, min_col = np.min(zeros[tri,:],axis=0)
+            max_row, max_col = np.max(zeros[tri,:],axis=0)   
+            points = np.array([[i,j] for i in range(int(max_row+1-min_row)) for j in range(int(max_col+1-min_col))])
+            tri_vert = zeros[tri,:] - [int(min_row), int(min_col)]
+            path = mpltPath.Path(tri_vert)
+            inside2 = path.contains_points(points)
+            points = points + [int(min_row), int(min_col)]
+            for point in points[inside2,:]:         
+                mask[tuple(point)] = 1
+    return mask
 
 def compute_scale_triangles(signal, edges_signal, mc_reps=99,alpha = 0.01):
     N = len(signal)
@@ -257,7 +283,7 @@ def delaunay_triangulation_denoising(signal,
                                     LB=1.75,
                                     UB=3, 
                                     return_dic = False,
-                                    grouping=True, 
+                                    grouping=False, 
                                     ngroups=None, 
                                     min_group_size=1,
                                     q=None,
@@ -340,7 +366,8 @@ def delaunay_triangulation_denoising(signal,
                                                         min_group_size=min_group_size,
                                                         q = q)
     else:
-        mask = mask_triangles(stft, delaunay_graph, np.where(selection))  
+        # mask = mask_triangles(stft, delaunay_graph, np.where(selection))  
+        mask = mask_triangles3(stft, tri_select, zeros)  
 
     # Apply the reconstruction formula to the masked STFT to filter the signal.
     signal_r, t = reconstruct_signal_2(mask, stft_padded, Npad, Nfft)

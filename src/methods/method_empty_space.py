@@ -5,10 +5,10 @@ import numpy as np
 import scipy.stats as spst
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
-from benchmark_demo.spatstats_utils import compute_scale
+from benchmark_demo.spatstats_utils import compute_scale2
 
 
-def find_center_empty_balls(Sww, pos_exp, a, radi_seg=1):
+def find_center_empty_balls(Sww, pos_exp, a, radi_seg):
     # define a kd-tree with zeros
     kdpos = KDTree(pos_exp)
 
@@ -26,13 +26,14 @@ def find_center_empty_balls(Sww, pos_exp, a, radi_seg=1):
     return empty_mask
 
 
-def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand=0.5):
+def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand):
     # extract region of interest
     Nfft = Sww.shape[1]
     fmin = int(np.sqrt(Nfft))//2
     fmax = empty_mask.shape[0] - fmin
     tmin = int(np.sqrt(Nfft))//2
     tmax = empty_mask.shape[1] - tmin
+
     sub_empty = empty_mask[fmin:fmax, tmin:tmax]
     vecx = (np.arange(0, sub_empty.shape[0]))
     vecy = (np.arange(0, sub_empty.shape[1]))
@@ -59,21 +60,15 @@ def empty_space_denoising(signal,
                             adapt_thr=False,
                             return_dic=False):
 
-    
-                                
-    # if len(signal.shape) == 1:
-    #     signal = np.resize(signal,(1,len(signal)))
-
     radi_expand = radi_seg
-    
     N = len(signal)
     Nfft = 2*N
 
     # Compute and adaptive threshold if its required, otherwise use "LB"
     if adapt_thr:
-        scale_pp = compute_scale(signal, Nfft)
+        scale_pp = compute_scale2(signal)
         print(scale_pp)
-        radi_seg = scale_pp
+        radi_seg = scale_pp # Override LB
         radi_expand = scale_pp
 
     g, a = get_round_window(Nfft)

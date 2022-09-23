@@ -423,15 +423,15 @@ class Benchmark:
                                 method_output = np.zeros((self.repetitions)).astype(bool)
                              
                             
-                            for idx,noisy_signal in enumerate(noisy_signals):
+                            for idx, noisy_signal in enumerate(noisy_signals):
                                 if self.parallel_flag:  # Get results from parallel...
                                     tmp = parallel_results[k]
                                     method_output[idx] = tmp
                                     k += 1     
                                 else:                   # Or from serial computation.
                                     tmp = self.inner_loop([method,
-                                                                        (args, kwargs), 
-                                                                        noisy_signal])        
+                                                        (args, kwargs), 
+                                                        noisy_signal])        
                                     method_output[idx] = tmp
                             # Either way, results are saved in a nested dictionary.
                             result =  self.objectiveFunction(base_signal, method_output)             
@@ -616,12 +616,13 @@ class Benchmark:
         tmin = self.tmin
         tmax = self.tmax
         Nsub = self.tmax-self.tmin
-        sig = 1e-6*np.random.randn(noise.shape[0],N)
+        sig = np.random.randn(noise.shape[0],N)
 
         ex1=np.mean(np.abs(x1[tmin:tmax])**2)
         ex2=np.mean(np.abs(noise)**2, axis=1)
         h=np.sqrt(ex1/(ex2*10**(ratio/10)))
         scaled_noise = noise*h.reshape((noise.shape[0],1))
+        sig = sig*h.reshape((noise.shape[0],1))
         sig[:,tmin:tmax]=x1[tmin:tmax]+scaled_noise
 
         if return_noise:
@@ -655,6 +656,7 @@ class Benchmark:
 
 def detection_perf_function(original_signal, detection_output):
     return detection_output
+
 
 def get_args_and_kwargs(params):
         if type(params) is dict:
