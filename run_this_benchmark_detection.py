@@ -60,7 +60,7 @@ if __name__ == "__main__":
     else:
         benchmark = Benchmark(**config)    
 
-    np.random.seed(0)
+    
     start = time.time()
     my_results = benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
     end = time.time()

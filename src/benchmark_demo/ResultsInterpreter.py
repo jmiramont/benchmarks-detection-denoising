@@ -456,9 +456,6 @@ class ResultsInterpreter:
             axis (matplotlib.Axes, optional): The axis object where the plot will be 
             generated. Defaults to None.
         """
-
-        markers = ['o','d','s','*']
-        line_style = ['--' for i in self.methods_ids]
         sns.barplot(x="SNRin", y="QRF", hue="Method",
                     data=df, errwidth = 0.7,
                     ax = axis)
@@ -534,7 +531,12 @@ class ResultsInterpreter:
         return fig
 
 
-    def get_summary_plots(self, size=(3,3), savetofile=True, filename=None):
+    def get_summary_plots(self, 
+                        size=(3,3), 
+                        savetofile=True, 
+                        filename=None, 
+                        plot_type='lines'):
+                        
         """ Generates individual QRF plots for each signal, displaying the performance 
         of all methods for all noise conditions.
 
@@ -556,13 +558,26 @@ class ResultsInterpreter:
         
         for signal_id in self.signal_ids:
             fig,ax = plt.subplots(1,1)
+            
             print(signal_id) 
             # sns.set_theme() 
             df_aux = df_rearr[df_rearr['Signal_id']==signal_id]
             indexes = df_aux['Parameter']!='None'
-            df_aux.loc[indexes,'Method'] = df_aux.loc[indexes,'Method'] +'-'+ df_aux.loc[indexes,'Parameter']  
-            self.get_snr_plot(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
+            df_aux.loc[indexes,'Method'] = df_aux.loc[indexes,'Method']+'-'+ df_aux.loc[indexes,'Parameter']
+
+            if plot_type == 'lines':
+                self.get_snr_plot(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
+
+
+            if plot_type == 'bars':
+                self.get_snr_plot_bars(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
+
+            if self.benchmark.task == "detection":
+                ax.set_ylabel('Detection Power')
+                ax.set_ylim([0, 2])
+
             ax.grid(linewidth = 0.5)
+            ax.set_axisbelow(True)
             ax.set_title(signal_id)
             ax.legend(loc='upper left', frameon=False, fontsize = 'small')
             # sns.despine(offset=10, trim=True)
