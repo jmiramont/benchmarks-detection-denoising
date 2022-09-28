@@ -52,13 +52,16 @@ if __name__ == "__main__":
 
     if 'add_new_methods' in config.keys():
         if config['add_new_methods']:
-            # config.pop('add_new_methods')
+            
             filename = 'results\last_benchmark_detection'
             with open(filename + '.pkl', 'rb') as f:
                 benchmark = pickle.load(f)
             benchmark.add_new_method(config['methods'],config['parameters']) 
+        else:
+            config.pop('add_new_methods') 
+            benchmark = Benchmark(**config)    
     else:
-        benchmark = Benchmark(**config)    
+        benchmark = Benchmark(**config)   
 
     
     start = time.time()

@@ -365,19 +365,29 @@ class Benchmark:
         # Dictionaries for the results. This helps to express the results later using a DataFrame.
         if self.results is None:
             self.results = dict()
+            
+            # Create dictionary tree:
+            for signal_id in self.signal_ids: 
+                SNR_dic = dict()
+                for SNR in self.SNRin:
+                    method_dic = dict()
+                    for method in self.methods:
+                        params_dic = dict()
+                        # for params in self.parameters[method]:
+                        #     params_dic[str(params)] = 'Deep' 
+                        method_dic[method] = params_dic                     
+                    SNR_dic[SNR] = method_dic
+                self.results[signal_id] = SNR_dic        
 
-        params_dic = dict()
-        method_dic = dict()
-        SNR_dic = dict()
 
         # This run all the experiments and save the results in nested dictionaries.
         for signal_id in self.signal_ids:
-            if self.verbosity > 1:
+            if self.verbosity >= 1:
                 print('- Signal '+ signal_id)
 
             base_signal = self.signal_dic[signal_id]()
             for SNR in self.SNRin:
-                if self.verbosity > 2:
+                if self.verbosity >= 2:
                     print('-- SNR: {} dB'.format(SNR))
 
                 # If the benchmark has been run before, re-run again with the same noise.
@@ -391,7 +401,9 @@ class Benchmark:
                 # ------------------------- Parallel loop ------------------------------
                 if self.parallel_flag:
                     parallel_list = list()
-                    for method in self.methods:                                               
+                    for method in self.methods:
+                        if self.verbosity >= 1:
+                            print('--- Parallel loop -- Method: '+method+'(all parameters)')                                               
                         for p,params in enumerate(self.parameters[method]):
                             args, kwargs = get_args_and_kwargs(params)
                             for noisy_signal in noisy_signals:
@@ -402,18 +414,21 @@ class Benchmark:
                     parallel_results = pool.map(self.inner_loop, parallel_list) 
                     pool.close() 
                     pool.join()
-                    if self.verbosity > 1:    
-                        print('Parallel loop finished.') 
+                    if self.verbosity >= 1:    
+                        print('--- Parallel loop finished.') 
 
                 # ---------------------- Serial loop -----------------------------------
                 k = 0  # This is used to get the parallel results if it's necessary.
                 for method in self.methods:
                     if self.this_method_is_new[method]:
-
-                        if self.verbosity > 3:
+                        params_dic = dict()
+                        if self.verbosity >= 3:
                             print('--- Method: '+ method)                    
 
                         for p, params in enumerate(self.parameters[method]):
+                            if self.verbosity >= 4:
+                                print('---- Parameters Combination: '+ str(p)) 
+                            
                             args, kwargs = get_args_and_kwargs(params)
                             
                             if self.task == 'denoising':
@@ -433,20 +448,24 @@ class Benchmark:
                                                         (args, kwargs), 
                                                         noisy_signal])        
                                     method_output[idx] = tmp
+                            
                             # Either way, results are saved in a nested dictionary.
-                            result =  self.objectiveFunction(base_signal, method_output)             
+                            result =  self.objectiveFunction(base_signal, method_output)
+                        
                             # params_dic['Params'+str(p)] = result
                             params_dic[str(params)] = result
-
+                            
+                        self.results[signal_id][SNR][method] = params_dic
                         self.methods_and_params_dic[method] = [key for key in params_dic] 
-                        method_dic[method] = params_dic    
-                        params_dic = dict()
-           
-                SNR_dic[SNR] = method_dic
-                method_dic = dict()
 
-            self.results[signal_id] = SNR_dic   
-            SNR_dic = dict()
+            #   method_dic[method] = params_dic    
+                        
+           
+            #     SNR_dic[SNR] = method_dic
+            #     method_dic = dict()
+
+            # self.results[signal_id] = SNR_dic   
+            # SNR_dic = dict()
 
         # self.results = results_dic # Save results for later.
         if self.verbosity > 0:
@@ -454,7 +473,7 @@ class Benchmark:
         
         # Don't use old methods if run again.
         for method in self.this_method_is_new:
-            self.this_method_is_new = False
+            self.this_method_is_new[method] = False
 
         return self.results
 

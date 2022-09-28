@@ -52,14 +52,17 @@ if __name__ == "__main__":
 
     if 'add_new_methods' in config.keys():
         if config['add_new_methods']:
-            # config.pop('add_new_methods')
+            
             filename = 'results\last_benchmark'
             with open(filename + '.pkl', 'rb') as f:
                 benchmark = pickle.load(f)
             benchmark.add_new_method(config['methods'],config['parameters']) 
-    else: 
-        benchmark = Benchmark(**config)    
-
+        else:
+            config.pop('add_new_methods') 
+            benchmark = Benchmark(**config)    
+    else:
+        benchmark = Benchmark(**config)
+         
     np.random.seed(0)
     start = time.time()
     my_results = benchmark.run_test() # Run the test. my_results is a nested dictionary with the results for each of the variables of the simulation.
