@@ -3,14 +3,19 @@ import matplotlib.pyplot as plt
 import scipy.signal as sg
 import rpy2.robjects as robjects
 from rpy2.robjects import numpy2ri
-
 from rpy2.robjects.packages import importr
-
 from spatstat_interface.interface import SpatstatInterface
 from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window, get_spectrogram
 from scipy.integrate import cumtrapz
 import multiprocessing
-
+# from tftb.processing.cohen import Spectrogram
+# from tftb.generators import amgauss
+# def roundgauss(n,k=1e-6):
+#     L=np.sqrt(n)
+#     l=np.floor(np.sqrt(-n*np.log(k)/np.pi))+1
+#     w=amgauss(2*l+1,l+1,L)
+#     w=w/np.linalg.norm(w)
+#     return w, L
 
 def compute_positions_and_bounds(pos):
         """Parse the python vector of positions of points ```pos``` into a R object.
@@ -36,14 +41,20 @@ def compute_positions_and_bounds(pos):
 
         return u_r, v_r, b_u, b_v
 
+
+
 def get_white_noise_zeros(stft_params):
     N,Nfft = stft_params
     wnoise = np.random.randn(N)
 
     # Get round window and scale for normalization.    
     g, T = get_round_window(Nfft)
+    # g, T = roundgauss(Nfft,k=1e-6)
+    # spec = Spectrogram(wnoise, fwindow=g, n_fbins=Nfft)
+    # spec.run()
+    # stf = np.abs(spec.tfr[0:N+1,:])
     stf, _, _, _ = get_spectrogram(wnoise, window=g)
-    pos = find_zeros_of_spectrogram(stf)
+    pos = find_zeros_of_spectrogram(np.abs(stf))
     return pos
 
 
@@ -587,65 +598,7 @@ def compute_rank_envelope_test(signal,
         return rejectH0
 
 
-def compute_scale(signal, Nfft, cs=None):
-    """_summary_
-
-    Args:
-        signal (_type_): _description_
-        Nfft (_type_): _description_
-        cs (_type_, optional): _description_. Defaults to None.
-
-    Returns:
-        _type_: _description_
-    """
-    if cs is None:
-        cs = ComputeStatistics()
-    # output = np.zeros((reps,len(radius)))
-    statistics = 'F' #('L','Frs','Fcs','Fkm')
-    pnorm = np.inf
-    radius = np.arange(0.0, 4.0, 0.01)
-    rmax = np.arange(0.5, 3.99, 0.01)
-
-    hyp_test_dict = compute_envelope_test(signal,
-                                cs=cs,
-                                MC_reps = 99,
-                                alpha = 0.01,
-                                statistic=statistics,
-                                pnorm = pnorm,
-                                radius = radius,
-                                rmax=rmax,
-                                return_values=True)
-
-    k =  hyp_test_dict['k']
-    # print(k)
-    tm = hyp_test_dict['tm']
-    t_exp = hyp_test_dict['t_exp']
-    reject_H0 = hyp_test_dict['reject_H0']
-  
-
-    if np.all(reject_H0 == False):
-        print('No detection.')
-        radius_of_rejection = 0.9
-
-    else:
-        radi_of_rejection = rmax[np.where(reject_H0 == True)]
-        t_exp_rejection = t_exp[np.where(reject_H0 == True)]
-        t_exp_rejection *= 10000
-        t_exp_rejection = np.round(t_exp_rejection)/10000
-        max_t_exp = np.max(t_exp_rejection)
-        radius_of_rejection = 0.0
-
-        for i in range(len(t_exp_rejection)-5):
-            if np.all(t_exp_rejection[i:i+5]==max_t_exp):
-                radius_of_rejection = radi_of_rejection[i]
-                break
-
-        if radius_of_rejection < 0.5:
-            radius_of_rejection = 0.5
-    
-    return radius_of_rejection
-
-def compute_scale2(signal):
+def compute_scale(signal, **test_params):
     """_summary_
 
     Args:
@@ -657,14 +610,9 @@ def compute_scale2(signal):
         _type_: _description_
     """
     
-    output_dic = compute_rank_envelope_test(signal,
-                                        fun='Fest', 
-                                        correction='best', 
-                                        return_dic=True,
-                                        transform='asin(sqrt(.))',
-                                        )
+    output_dic = compute_rank_envelope_test(signal, return_dic=True, **test_params)
 
-    reject_H0 = output_dic['reject_H0']
+    reject_H0 = output_dic['rejectH0']
   
     if not reject_H0:
         print('No detection.')

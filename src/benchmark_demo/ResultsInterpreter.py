@@ -354,11 +354,7 @@ class ResultsInterpreter:
         with open(filename, 'a') as f:
           f.write(output_string)
 
-        # last_line = '|--------------------------------------------------------------------:|'
-        
-        # with open(filename, 'a') as f:
-        #     f.write('\n'.join(last_line))
-
+    
     def get_snr_plot(self, df, x=None, y=None, hue=None, axis = None):
         """ Generates a Quality Reconstruction Factor (QRF) vs. SNRin plot. The QRF is 
         computed as: 

@@ -5,7 +5,7 @@ import numpy as np
 import scipy.stats as spst
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
-from benchmark_demo.spatstats_utils import compute_scale2
+from benchmark_demo.spatstats_utils import compute_scale
 
 
 def find_center_empty_balls(Sww, pos_exp, a, radi_seg):
@@ -58,7 +58,9 @@ def empty_space_denoising(signal,
                             radi_seg=0.9,
                             radi_expand=None,
                             adapt_thr=False,
-                            return_dic=False):
+                            test_params = None,
+                            return_dic=False,
+                            ):
 
     radi_expand = radi_seg
     N = len(signal)
@@ -66,7 +68,16 @@ def empty_space_denoising(signal,
 
     # Compute and adaptive threshold if its required, otherwise use "LB"
     if adapt_thr:
-        scale_pp = compute_scale2(signal)
+        if test_params is None:
+            scale_pp = compute_scale(signal,{
+                                            'fun':'Fest', 
+                                            'correction':'best', 
+                                            'transform':'asin(sqrt(.))',
+                                            }
+                                    )
+        else:
+            scale_pp = compute_scale(signal,**test_params)
+
         print(scale_pp)
         radi_seg = scale_pp # Override LB
         radi_expand = scale_pp
