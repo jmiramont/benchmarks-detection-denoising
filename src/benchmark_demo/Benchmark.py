@@ -346,8 +346,13 @@ class Benchmark:
             method_output = self.methods[method](noisy_signals,*args,**kwargs)
         except BaseException as err:
             print(f"Unexpected error {err=}, {type(err)=} in method {method}. Watch out for NaN values.")
-            method_output = np.empty(noisy_signals.shape)
-            method_output[:] = np.nan
+            
+            if self.task == 'denoising':
+                method_output = np.empty(noisy_signals.shape)
+                method_output[:] = np.nan
+
+            if self.task == 'detection':
+                method_output = np.nan
 
         #! Rewrite this part.
         # self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
