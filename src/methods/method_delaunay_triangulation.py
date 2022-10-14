@@ -287,7 +287,8 @@ def delaunay_triangulation_denoising(signal,
                                     ngroups=None, 
                                     min_group_size=1,
                                     q=None,
-                                    adapt_thr=False):
+                                    adapt_thr=False,
+                                    test_params = None):
 
     """Signal filtering by domain detection using Delaunay triangulation.
 
@@ -337,14 +338,22 @@ def delaunay_triangulation_denoising(signal,
     edges, longest_edges, area_triangle = describe_triangles(delaunay_graph,vertices)
 
     # Compute and adaptive threshold if its required, otherwise use "LB"
+        # Compute and adaptive threshold if its required, otherwise use "LB"
     if adapt_thr:
-        # scale_pp = 1.2*compute_scale(signal, Nfft)
-        # LB = 2*scale_pp
-        LB = compute_scale_triangles(signal, longest_edges, mc_reps=99, alpha=0.01)
-        print('Threshold:{}'.format(LB))
+        if test_params is None:
+            test_params = {
+                            'fun':'Fest', 
+                            'correction':'rs', 
+                            'transform':'asin(sqrt(.))',
+                        }
+        
+        scale_pp = compute_scale(signal,**test_params)
+        LB = 2*scale_pp
+        print(LB)
+        # LB = compute_scale_triangles(signal, longest_edges, mc_reps=99, alpha=0.01)
+        # print('Threshold:{}'.format(LB))
 
     area_thr =  0 #LB/8
-
 
     # print(area_triangle)
     # Select triangles that fulfill all the conditions

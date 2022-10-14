@@ -1,7 +1,8 @@
-N: 512
-Nsub: 256
+N: 256
+Nsub: 128
 SNRin: [0, 5, 10, 20, 30]
 using_signals: ['LinearChirp',]
-repetitions: 200
+repetitions: 1000
 verbosity: 4
-parallelize: False
+parallelize: True
+# add_new_methods: True

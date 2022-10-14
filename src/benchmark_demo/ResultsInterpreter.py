@@ -81,7 +81,7 @@ class ResultsInterpreter:
             
         df3 = pd.concat(aux_dic,axis = 0)
         df3 = df3.reset_index()
-        df3 = df3.drop('level_1', 1)
+        df3 = df3.drop(labels='level_1', axis=1)
         df3.columns.values[0] = 'SNRin'
         return df3
 
@@ -424,20 +424,32 @@ class ResultsInterpreter:
             generated. Defaults to None.
         """
 
+
+
         markers = ['o','d','s','*']
         line_style = ['--' for i in self.methods_ids]
         sns.pointplot(x="SNRin", y="QRF", hue="Method",
                     capsize=0.15, height=10, aspect=1.0, dodge=0.5,
                     kind="point", data=df, errwidth = 0.7,
                     ax = axis) #linestyles=line_style,
-            
-            # axis.set_xticks(u)
-            # axis.set_yticks(u)
-            # axis.set_xlabel(x + ' (dB)')
-            # axis.set_ylabel(y + ' (dB)')
+
+        axis.set_xlabel('SNRin (dB)')
+
+        if self.benchmark.task == 'denoising':
+            axis.set_ylabel('QRF (dB)')
         
-    def get_snr_plot_bars(self, df, x=None, y=None, hue=None, axis = None):
-        """ Generates a Quality Reconstruction Factor (QRF) vs. SNRin plot. The QRF is 
+        if self.benchmark.task == 'detection':
+            axis.set_ylabel('Detection Power')
+
+    def get_snr_plot_bars(self, 
+                            df, 
+                            x=None, 
+                            y=None, 
+                            hue=None, 
+                            errbar_fun=('ci',95), 
+                            axis = None
+                            ):
+        """ Generates a Quality Reconstruction Factor (QRF) vs. SNRin barplot. The QRF is 
         computed as: 
         QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]
         where x is the noiseless signal and x_r is de denoised estimation of x.
@@ -452,15 +464,26 @@ class ResultsInterpreter:
             axis (matplotlib.Axes, optional): The axis object where the plot will be 
             generated. Defaults to None.
         """
-        sns.barplot(x="SNRin", y="QRF", hue="Method",
-                    data=df, errwidth = 0.7,
-                    ax = axis)
-            
-            # axis.set_xticks(u)
-            # axis.set_yticks(u)
-            # axis.set_xlabel(x + ' (dB)')
-            # axis.set_ylabel(y + ' (dB)')    
 
+
+        barfig = sns.barplot(x="SNRin", 
+                            y="QRF", # Its QRF in the DataFrame, but changed later.
+                            hue="Method",
+                            data=df, 
+                            dodge=True, 
+                            errorbar=errbar_fun,
+                            errwidth = 0.7,
+                            capsize=.02,
+                            ax = axis)
+        
+        axis.set_xlabel('SNRin (dB)')
+        if self.benchmark.task == 'denoising':
+            axis.set_ylabel(r'QRF (dB)')
+        
+        if self.benchmark.task == 'detection':
+            axis.set_ylabel(r'Detection Power')
+            
+        return barfig
 
     def get_summary_grid(self, filename = None, savetofile=True):
         """ Generates a grid of QRF plots for each signal, displaying the performance 
@@ -530,17 +553,33 @@ class ResultsInterpreter:
     def get_summary_plots(self, 
                         size=(3,3), 
                         savetofile=True, 
-                        filename=None, 
+                        filename=None,
+                        filter_crit= 'all',
+                        filter_str = None,
+                        errbar_fun = ('ci',95),
+                        ax = None, 
                         plot_type='lines'):
-                        
-        """ Generates individual QRF plots for each signal, displaying the performance 
-        of all methods for all noise conditions.
+        """Generates individual performance plots for each signal, displaying the 
+        performance measure of all methods for all noise conditions.
 
         Args:
-            size (tuple, optional): Size of the figure in inches. Defaults to (3,3).
+            size (tuple, optional): Size (in inches) of the figures. Defaults to (3,3).
+            savetofile (bool, optional): Whether to save or not the figures. 
+            Defaults to True.
+            filename (_type_, optional): Path and file name to save the figures. If None
+            figures are saved in "results/figures" . Defaults to None.
+            filter_str (_type_, optional): A string, or a list of strings, to select 
+            the methods to plot. If None, plots all the methods. Defaults to None.
+            filter_crit (str, optional): A criterion to use the strings passed in 
+            filter_str. If 'all', only choose those methods where all the strings 
+            appear in the "Method" column of the resuls DataFrame. If 'any', select the 
+            methods for wich any of the strings appear in the mentioned column. 
+            Defaults to 'all'.
+            
+            plot_type (str, optional): _description_. Defaults to 'lines'.
 
         Returns:
-            Matplotlib.Figure: Returns a figure handle.
+            _type_: _description_
         """
         
         Nsignals = len(self.signal_ids)
@@ -551,34 +590,59 @@ class ResultsInterpreter:
         #                 nrows_ncols=(3,Nsignals//3),  # creates 2x2 grid of axes
         #                 axes_pad=0.5,  # pad between axes in inch.
         #                 )
-        
+        # plt.rcParams.update({
+        #             "text.usetex": True,
+        #             "font.family": "Helvetica"
+        #                 })
         for signal_id in self.signal_ids:
-            fig,ax = plt.subplots(1,1)
-            
+            if ax is None:
+                fig, ax = plt.subplots(1,1)
+            else:
+                fig = plt.gca()
+                
+
             print(signal_id) 
             # sns.set_theme() 
             df_aux = df_rearr[df_rearr['Signal_id']==signal_id]
-            indexes = df_aux['Parameter']!='None'
-            df_aux.loc[indexes,'Method'] = df_aux.loc[indexes,'Method']+'-'+ df_aux.loc[indexes,'Parameter']
+
+            # If the method has different parameters, add the parameters to the name.
+            indexes = df_aux['Parameter']!='{(),{}}'
+            method_and_params = df_aux.loc[indexes,'Method']+'-'+ df_aux.loc[indexes,'Parameter']
+            df_aux.loc[indexes,'Method'] = method_and_params 
+            
+            # Filter methods using the string given:
+            if filter_str is not None:
+                if filter_crit == 'all':
+                    a = [np.all([j in i for j in filter_str]) for i in df_aux['Method']]
+                if filter_crit == 'any':
+                    a = [np.any([j in i for j in filter_str]) for i in df_aux['Method']]
+                    
+                method_and_params = df_aux.iloc[a,:]
+                df_aux = method_and_params
 
             if plot_type == 'lines':
                 self.get_snr_plot(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
 
-
             if plot_type == 'bars':
-                self.get_snr_plot_bars(df_aux, x='SNRin', y='QRF', hue='Method', axis = ax)
+                self.get_snr_plot_bars(df_aux, 
+                                        x='SNRin', 
+                                        y='QRF', 
+                                        hue='Method', 
+                                        errbar_fun=errbar_fun,
+                                        axis = ax)
 
             if self.benchmark.task == "detection":
                 ax.set_ylabel('Detection Power')
                 ax.set_ylim([0, 2])
 
-            ax.grid(linewidth = 0.5)
+            ax.grid(linewidth = 0.1)
             ax.set_axisbelow(True)
             ax.set_title(signal_id)
             ax.legend(loc='upper left', frameon=False, fontsize = 'small')
             # sns.despine(offset=10, trim=True)
             fig.set_size_inches(size)
             
+            # Save figures to file.
             if savetofile:
                 if filename is None:
                     fig.savefig('results/figures/plot_'+ signal_id +'.pdf',
@@ -588,6 +652,7 @@ class ResultsInterpreter:
                                 bbox_inches='tight')# , format='svg')
 
             list_figs.append(fig)
+            ax = None # Create new figure in the next interation of the loop.
         return list_figs
 
     def save_csv_files(self):

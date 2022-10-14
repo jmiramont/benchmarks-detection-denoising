@@ -17,6 +17,7 @@ import multiprocessing
 #     w=w/np.linalg.norm(w)
 #     return w, L
 
+
 def compute_positions_and_bounds(pos):
         """Parse the python vector of positions of points ```pos``` into a R object.
         Then, computes the bounds of the observation window for the computation of 
@@ -252,7 +253,7 @@ def compute_T_statistic(radius, rmax, Sm, S0, pnorm=2, rmin=0.0, one_sided=False
     return tm
 
 
-def compute_statistics(sts, cs, simulation_pos, pos_exp, radius, rmax, pnorm,one_sided):
+def compute_statistics(sts, cs, simulation_pos, pos_exp, radius, rmax, pnorm, one_sided):
     """ Compute the given functional statistics.
 
     Args:
@@ -280,6 +281,7 @@ def compute_statistics(sts, cs, simulation_pos, pos_exp, radius, rmax, pnorm,one
     stats_dict['L'] = cs.compute_Lest
     stats_dict['F'] = cs.compute_Fest
     stats_dict['Frs'] = lambda a,b: cs.compute_Fest(a,b, correction='rs')
+    stats_dict['Frs_vs'] = lambda a,b: cs.compute_Fest(a,b, correction='rs', var_stb=True)
     stats_dict['Fkm'] = lambda a,b: cs.compute_Fest(a,b, correction='km')
     stats_dict['Fkm_vs'] = lambda a,b: cs.compute_Fest(a,b, correction='km', var_stb=True)
     stats_dict['Fcs'] = lambda a,b: cs.compute_Fest(a,b, correction='cs')
@@ -529,8 +531,12 @@ def compute_rank_envelope_test(signal,
     if ppp_sim is None:
         ppp_sim = generate_white_noise_zeros_pp(N,nsim)
 
-    if 'transform' in kwargs.keys():
-        kwargs['transform'] = rbase.expression(kwargs['transform'])
+    if 'envelope' in kwargs.keys():
+        extra_args = kwargs['envelope'].copy()
+        if 'transform' in extra_args.keys():
+            extra_args['transform'] = rbase.expression(extra_args['transform'])
+    else:
+        extra_args = {}
 
     # Compute simulated envelopes:
     envelopes = spatstat.core.envelope(ppp_r, 
@@ -539,11 +545,22 @@ def compute_rank_envelope_test(signal,
                                     savefuns=True,
                                     correction=correction, 
                                     simulate=ppp_sim, 
-                                    verbose='FALSE', 
-                                    **kwargs)
+                                    verbose='FALSE',
+                                    # transform= rbase.expression('asin(sqrt(.))'),
+                                    **extra_args)
 
     envelopes = package_GET.crop_curves(envelopes, r_min=rmin, r_max=rmax)
-    res = package_GET.global_envelope_test(envelopes, alpha=alpha, type='rank')
+
+    if 'global_envelope_test' in kwargs.keys():
+        extra_args = kwargs['global_envelope_test'].copy() 
+    else:
+        extra_args = {}   
+       
+    
+    res = package_GET.global_envelope_test(envelopes, 
+                                            alpha=alpha, 
+                                            type='rank', 
+                                            **extra_args)
     res_attr = rbase.attributes(res)
 
     numpy2ri.activate()
@@ -623,7 +640,91 @@ def compute_scale(signal, **test_params):
     return radius_of_rejection
 
 
+def compute_global_mad_test(signal, 
+                    cs=None, 
+                    MC_reps = 199, 
+                    alpha = 0.05, 
+                    statistic='L',
+                    pnorm = 2, 
+                    radius=None, 
+                    rmax=None,
+                    one_sided=False,
+                    return_values=False):
+    """ Compute global MAD hypothesis tests based on Monte Carlo simulations.
 
+    Args:
+        signal (ndarray): Numpy ndarray with the signal.
+        cs (ComputeStatistics, optional): This is an object of the ComputeStatistics
+        class, that encapsulates the initialization of the spatstat-interface python
+        package. This allows avoiding reinitialize the interface each time. 
+        Defaults to None.
+        MC_reps (int, optional): Repetitions of the Monte Carlo simulations. 
+        Defaults to 199.
+        alpha (float, optional): Significance of the tests. Defaults to 0.05.
+        statistic (str, optional): Functional statistic computed on the point process 
+        determined by the zeros of spectrogram of the signal. Defaults to 'L'.
+        pnorm (int, optional): Summary statistics for the envelope-tests. Common values 
+        for this parameter are "np.inf" for the supremum norm, or "2" for the usual 2 
+        norm. Defaults to 2.
+        radius (float, optional): Vector of radius used for the computation of the 
+        functional statistics. Defaults to None.
+        rmax (float, optional): Maximum radius to compute the test. One test per value 
+        in rmax is compute. If it is None, the values given in "radius" are used. 
+        Defaults to None.
+        return_values (bool, optional): If False, returns a dictionary with the 
+        results of the test for each statistic and value of rmax. If True, also returns 
+        the empirical statistic and the simulated statistics. Defaults to False.
+
+    Returns:
+        dict: Returns a dictionary with the results. If more than one statistic is 
+        given as input parameter, the dictionary will have one entry per statistic.
+    """
+    
+    N = len(signal)
+    Nfft = 2*N
+    k = int(np.floor(alpha*(MC_reps+1))) # corresponding k value
+    if isinstance(statistic,str):
+        statistic = (statistic,)
+
+    output_dict, radius = compute_monte_carlo_sims(signal,
+                                        cs,
+                                        Nfft,
+                                        MC_reps=MC_reps,
+                                        statistic=statistic,
+                                        pnorm=pnorm,
+                                        radius=radius,
+                                        rmax=rmax,
+                                        one_sided=one_sided)
+    
+    for sts in statistic:
+        _, _, Sm, Sexp, S0 = output_dict[sts]
+
+        # Compute extreme values
+        texp = np.max(np.abs(Sexp-S0))
+        tsim = np.max(np.abs(Sm-S0), axis=1)
+        tsim = np.sort(tsim, axis=0)[::-1]
+
+        if texp > tsim[k]:
+            reject_H0 = True
+        else:
+            reject_H0 = False
+
+        if return_values:
+            output_dict[sts] = {'reject_H0': reject_H0,
+                                'Sm':Sm,
+                                'Sexp':Sexp, 
+                                'S0':S0,
+                                'texp' : texp,
+                                'tsim' : tsim,
+                                'k': k,
+                                'radius':radius}
+        else:
+            output_dict[sts] = reject_H0
+    
+    if len(statistic)>1:    
+        return output_dict 
+    else: # returns (tm, t_exp) if only one statistic was computed.
+        return output_dict[statistic[0]]
 
 
     # def spatialStatsFromR(pos):

@@ -6,6 +6,7 @@ import scipy.stats as spst
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
 from benchmark_demo.spatstats_utils import compute_scale
+# from numba import njit
 
 
 def find_center_empty_balls(Sww, pos_exp, a, radi_seg):
