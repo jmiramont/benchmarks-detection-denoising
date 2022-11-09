@@ -347,6 +347,8 @@ class Benchmark:
         except BaseException as err:
             print(f"Unexpected error {err=}, {type(err)=} in method {method}. Watch out for NaN values.")
             
+            # TODO Write a log here with the error. Should identify the repetition.
+            
             if self.task == 'denoising':
                 method_output = np.empty(noisy_signals.shape)
                 method_output[:] = np.nan

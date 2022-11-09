@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 import sys
-
-import matlab.engine
-
-from typeguard import is_typeddict
+import importlib.util 
 import numpy as np
+
+matlab_is_present = importlib.util.find_spec('matlab')
+if matlab_is_present:
+    import matlab.engine
+
 
 class MethodTemplate(ABC):
     """_summary_

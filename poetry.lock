@@ -11,7 +11,7 @@ name = "appnope"
 version = "0.1.3"
 description = "Disable App Nap on macOS >= 10.9"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [[package]]
@@ -19,7 +19,7 @@ name = "asttokens"
 version = "2.0.8"
 description = "Annotate AST trees with source code positions"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [package.dependencies]
@@ -40,7 +40,7 @@ python-versions = ">=3.5"
 dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "mypy (>=0.900,!=0.940)", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "sphinx", "sphinx-notfound-page", "zope.interface"]
 docs = ["furo", "sphinx", "sphinx-notfound-page", "zope.interface"]
 tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "zope.interface"]
-tests_no_zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
+tests-no-zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "Babel"
@@ -58,7 +58,7 @@ name = "backcall"
 version = "0.2.0"
 description = "Specifications for callback functions passed in to an API"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [[package]]
@@ -85,7 +85,7 @@ name = "cffi"
 version = "1.15.1"
 description = "Foreign Function Interface for Python calling C code."
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [package.dependencies]
@@ -100,7 +100,7 @@ optional = true
 python-versions = ">=3.6.0"
 
 [package.extras]
-unicode_backport = ["unicodedata2"]
+unicode-backport = ["unicodedata2"]
 
 [[package]]
 name = "cmocean"
@@ -152,7 +152,7 @@ name = "debugpy"
 version = "1.6.3"
 description = "An implementation of the Debug Adapter Protocol for Python"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [[package]]
@@ -160,7 +160,7 @@ name = "decorator"
 version = "5.1.1"
 description = "Decorators for Humans"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.5"
 
 [[package]]
@@ -176,7 +176,7 @@ name = "entrypoints"
 version = "0.4"
 description = "Discover and load entry points from installed packages."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [[package]]
@@ -184,7 +184,7 @@ name = "executing"
 version = "1.1.0"
 description = "Get the currently executing AST node of a frame, and other information"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [package.extras]
@@ -257,7 +257,7 @@ name = "ipykernel"
 version = "6.16.0"
 description = "IPython Kernel for Jupyter"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -281,7 +281,7 @@ name = "ipython"
 version = "8.5.0"
 description = "IPython: Productive Interactive Computing"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.8"
 
 [package.dependencies]
@@ -309,14 +309,14 @@ notebook = ["ipywidgets", "notebook"]
 parallel = ["ipyparallel"]
 qtconsole = ["qtconsole"]
 test = ["pytest (<7.1)", "pytest-asyncio", "testpath"]
-test_extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.19)", "pandas", "pytest (<7.1)", "pytest-asyncio", "testpath", "trio"]
+test-extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.19)", "pandas", "pytest (<7.1)", "pytest-asyncio", "testpath", "trio"]
 
 [[package]]
 name = "jedi"
 version = "0.18.1"
 description = "An autocompletion tool for Python that can be used for text editors."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -345,7 +345,7 @@ name = "jupyter-client"
 version = "7.3.5"
 description = "Jupyter protocol implementation and client libraries"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -366,7 +366,7 @@ name = "jupyter-core"
 version = "4.11.1"
 description = "Jupyter core package. A base package on which Jupyter projects rely."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -433,7 +433,7 @@ name = "matplotlib-inline"
 version = "0.1.6"
 description = "Inline Matplotlib backend for Jupyter"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.5"
 
 [package.dependencies]
@@ -444,7 +444,7 @@ name = "nest-asyncio"
 version = "1.5.6"
 description = "Patch asyncio to allow nested event loops"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.5"
 
 [[package]]
@@ -501,7 +501,7 @@ name = "parso"
 version = "0.8.3"
 description = "A Python Parser"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.extras]
@@ -513,7 +513,7 @@ name = "pexpect"
 version = "4.8.0"
 description = "Pexpect allows easy control of interactive console applications."
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [package.dependencies]
@@ -524,7 +524,7 @@ name = "pickleshare"
 version = "0.7.5"
 description = "Tiny 'shelve'-like database with concurrency support"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [[package]]
@@ -567,7 +567,7 @@ name = "prompt-toolkit"
 version = "3.0.31"
 description = "Library for building powerful interactive command lines in Python"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6.2"
 
 [package.dependencies]
@@ -578,7 +578,7 @@ name = "psutil"
 version = "5.9.2"
 description = "Cross-platform lib for process and system monitoring in Python."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.extras]
@@ -589,7 +589,7 @@ name = "ptyprocess"
 version = "0.7.0"
 description = "Run a subprocess in a pseudo terminal"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [[package]]
@@ -597,7 +597,7 @@ name = "pure-eval"
 version = "0.2.2"
 description = "Safely evaluate AST nodes without side effects"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [package.extras]
@@ -616,7 +616,7 @@ name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
@@ -624,7 +624,7 @@ name = "Pygments"
 version = "2.13.0"
 description = "Pygments is a syntax highlighting package written in Python."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.extras]
@@ -697,7 +697,7 @@ name = "pywin32"
 version = "304"
 description = "Python for Window Extensions"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [[package]]
@@ -713,7 +713,7 @@ name = "pyzmq"
 version = "24.0.1"
 description = "Python bindings for 0MQ"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -736,7 +736,7 @@ urllib3 = ">=1.21.1,<1.27"
 
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
-use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
+use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "rpy2"
@@ -971,7 +971,7 @@ name = "stack-data"
 version = "0.5.1"
 description = "Extract data from python stack frames and tracebacks for informative displays"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [package.dependencies]
@@ -1017,7 +1017,7 @@ name = "tornado"
 version = "6.2"
 description = "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
 category = "main"
-optional = true
+optional = false
 python-versions = ">= 3.7"
 
 [[package]]
@@ -1025,7 +1025,7 @@ name = "traitlets"
 version = "5.4.0"
 description = ""
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [package.extras]
@@ -1094,7 +1094,7 @@ name = "wcwidth"
 version = "0.2.5"
 description = "Measures the displayed width of unicode strings in a terminal"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [[package]]
@@ -1111,14 +1111,14 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 
 [extras]
 docs = ["Sphinx", "sphinx-rtd-theme"]
-matlab_tools = ["matlabengine"]
+matlab-tools = ["matlabengine"]
 notebooks = ["ipykernel"]
 rtools = ["rpy2", "spatstat-interface"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "63a2400399b34a1df3de73248a3b2df6737bd2667525a7219b659c33d3c55b48"
+content-hash = "38461050c63c319d625304fc4032666cfa6949c2ace8b62e7b91007d97393e17"
 
 [metadata.files]
 alabaster = [
@@ -1871,6 +1871,13 @@ PyYAML = [
     {file = "PyYAML-6.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:f84fbc98b019fef2ee9a1cb3ce93e3187a6df0b2538a651bfb890254ba9f90b5"},
     {file = "PyYAML-6.0-cp310-cp310-win32.whl", hash = "sha256:2cd5df3de48857ed0544b34e2d40e9fac445930039f3cfe4bcc592a1f836d513"},
     {file = "PyYAML-6.0-cp310-cp310-win_amd64.whl", hash = "sha256:daf496c58a8c52083df09b80c860005194014c3698698d1a57cbcfa182142a3a"},
+    {file = "PyYAML-6.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:d4b0ba9512519522b118090257be113b9468d804b19d63c71dbcf4a48fa32358"},
+    {file = "PyYAML-6.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:81957921f441d50af23654aa6c5e5eaf9b06aba7f0a19c18a538dc7ef291c5a1"},
+    {file = "PyYAML-6.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:afa17f5bc4d1b10afd4466fd3a44dc0e245382deca5b3c353d8b757f9e3ecb8d"},
+    {file = "PyYAML-6.0-cp311-cp311-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:dbad0e9d368bb989f4515da330b88a057617d16b6a8245084f1b05400f24609f"},
+    {file = "PyYAML-6.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:432557aa2c09802be39460360ddffd48156e30721f5e8d917f01d31694216782"},
+    {file = "PyYAML-6.0-cp311-cp311-win32.whl", hash = "sha256:bfaef573a63ba8923503d27530362590ff4f576c626d86a9fed95822a8255fd7"},
+    {file = "PyYAML-6.0-cp311-cp311-win_amd64.whl", hash = "sha256:01b45c0191e6d66c470b6cf1b9531a771a83c1c4208272ead47a3ae4f2f603bf"},
     {file = "PyYAML-6.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:897b80890765f037df3403d22bab41627ca8811ae55e9a722fd0392850ec4d86"},
     {file = "PyYAML-6.0-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:50602afada6d6cbfad699b0c7bb50d5ccffa7e46a3d738092afddc1f9758427f"},
     {file = "PyYAML-6.0-cp36-cp36m-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:48c346915c114f5fdb3ead70312bd042a953a8ce5c7106d5bfb1a5254e47da92"},
@@ -2072,7 +2079,6 @@ stack-data = [
 ]
 tabulate = [
     {file = "tabulate-0.8.10-py3-none-any.whl", hash = "sha256:0ba055423dbaa164b9e456abe7920c5e8ed33fcc16f6d1b2f2d152c8e1e8b4fc"},
-    {file = "tabulate-0.8.10-py3.8.egg", hash = "sha256:436f1c768b424654fce8597290d2764def1eea6a77cfa5c33be00b1bc0f4f63d"},
     {file = "tabulate-0.8.10.tar.gz", hash = "sha256:6c57f3f3dd7ac2782770155f3adb2db0b1a269637e42f27599925e64b114f519"},
 ]
 tenacity = [
