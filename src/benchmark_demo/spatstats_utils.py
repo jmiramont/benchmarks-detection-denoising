@@ -1,21 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as sg
-import rpy2.robjects as robjects
-from rpy2.robjects import numpy2ri
-from rpy2.robjects.packages import importr
-from spatstat_interface.interface import SpatstatInterface
+import importlib.util 
+rpy2_is_present = importlib.util.find_spec('rpy2')
+if rpy2_is_present:
+    import rpy2.robjects as robjects
+    from rpy2.robjects import numpy2ri
+    from rpy2.robjects.packages import importr
+    from spatstat_interface.interface import SpatstatInterface
+
 from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window, get_spectrogram
 from scipy.integrate import cumtrapz
 import multiprocessing
-# from tftb.processing.cohen import Spectrogram
-# from tftb.generators import amgauss
-# def roundgauss(n,k=1e-6):
-#     L=np.sqrt(n)
-#     l=np.floor(np.sqrt(-n*np.log(k)/np.pi))+1
-#     w=amgauss(2*l+1,l+1,L)
-#     w=w/np.linalg.norm(w)
-#     return w, L
 
 
 def compute_positions_and_bounds(pos):
@@ -499,19 +495,38 @@ def compute_rank_envelope_test(signal,
                                 ppp_sim=None,
                                 return_dic = False,
                                 **kwargs):
+    """ Compute a ranked envelopes test.
 
+    Args:
+        signal (_type_): _description_
+        fun (str, optional): _description_. Defaults to 'Fest'.
+        correction (str, optional): _description_. Defaults to 'none'.
+        nsim (int, optional): _description_. Defaults to 2499.
+        alpha (float, optional): _description_. Defaults to 0.05.
+        rmin (float, optional): _description_. Defaults to 0.0.
+        rmax (float, optional): _description_. Defaults to 1.2.
+        ptype (str, optional): _description_. Defaults to 'conservative'.
+        ppp_sim (_type_, optional): _description_. Defaults to None.
+        return_dic (bool, optional): _description_. Defaults to False.
+
+    Returns:
+        _type_: _description_
+    """
+
+    # Initialize interface with R.
     spatstat = SpatstatInterface(update=False)
     spatstat.import_package("core", "geom", update=False)
     # spatstat_random = importr('spatstat.random')
     rbase = importr('base')
     package_GET = importr('GET')
     
+    # STFT parameters.
     N = len(signal)
     Nfft = 2*N
     T = np.sqrt(Nfft)
     window = np.exp(-np.pi*np.arange(-Nfft//2,Nfft//2)**2/Nfft)
 
-    # Generate empirical pp:
+    # Generate empirical point-process:
     signal_aux = np.zeros((Nfft,))
     signal_aux[Nfft//4:Nfft//4+N] = np.random.randn(N)
     signal_aux[Nfft//4:Nfft//4+N]  = signal
@@ -531,12 +546,12 @@ def compute_rank_envelope_test(signal,
     if ppp_sim is None:
         ppp_sim = generate_white_noise_zeros_pp(N,nsim)
 
-    if 'envelope' in kwargs.keys():
-        extra_args = kwargs['envelope'].copy()
-        if 'transform' in extra_args.keys():
-            extra_args['transform'] = rbase.expression(extra_args['transform'])
-    else:
-        extra_args = {}
+    
+    # If a transform is passed as an extra (optional) parameter, apply first the
+    # expression parsing function from R.
+    extra_args = kwargs.copy() # Better copying before modifying input parameters.
+    if 'transform' in extra_args.keys():
+        extra_args['transform'] = rbase.expression(extra_args['transform'])
 
     # Compute simulated envelopes:
     envelopes = spatstat.core.envelope(ppp_r, 
@@ -546,29 +561,27 @@ def compute_rank_envelope_test(signal,
                                     correction=correction, 
                                     simulate=ppp_sim, 
                                     verbose='FALSE',
-                                    # transform= rbase.expression('asin(sqrt(.))'),
                                     **extra_args)
-
+    
+    # Crop envelopes if required.
     envelopes = package_GET.crop_curves(envelopes, r_min=rmin, r_max=rmax)
 
-    if 'global_envelope_test' in kwargs.keys():
-        extra_args = kwargs['global_envelope_test'].copy() 
-    else:
-        extra_args = {}   
-       
-    
+    # Compute the actual test now.
     res = package_GET.global_envelope_test(envelopes, 
                                             alpha=alpha, 
                                             type='rank', 
-                                            **extra_args)
+                                            alternative = 'less') # <- We are doing 
+                                                                  # one-sided tests.
+
+    # Get the attributes from the results of the test.
     res_attr = rbase.attributes(res)
 
-    numpy2ri.activate()
     # Get p-value interval: Liberal (first index) and Conservative (second index).
+    numpy2ri.activate()
     pval_int = res_attr[13]
     if ptype == 'conservative':
         pval = pval_int[1]
-    
+
     if ptype == 'liberal':
         pval = pval_int[0]
 

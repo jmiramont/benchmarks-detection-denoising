@@ -279,6 +279,7 @@ def add_snr(x,snr,complex_noise=False):
     if complex_noise:
         n = n.astype(complex)
         n += 1j*np.random.randn(N,)
+        
     Pn = np.sum(np.abs(n) ** 2, axis = 0) # Normalize to 1 the variance of noise.
     n = n / np.sqrt(Pn)
     Pn = Px * 10 ** (- snr / 10) # Give noise the prescribed variance.

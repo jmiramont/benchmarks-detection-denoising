@@ -8,8 +8,10 @@ import string
 
 class Signal(np.ndarray):
 
-    def __new__(subtype, shape, dtype=float, buffer=None, offset=0,
-                strides=None, order=None, ncomps=None):
+    def __new__(subtype, array, instf=None, dtype=float, buffer=None, offset=0,
+                strides=None, order=None):
+
+        shape = array.shape
         # Create the ndarray instance of our type, given the usual
         # ndarray input arguments.  This will call the standard
         # ndarray constructor, but return an object of our type.
@@ -17,7 +19,14 @@ class Signal(np.ndarray):
         obj = super().__new__(subtype, shape, dtype,
                               buffer, offset, strides, order)
         # set the new 'info' attribute to the value passed
-        obj.ncomps = ncomps
+        # obj._ncomps = ncomps
+        obj[:] = array[:]
+        obj._comps = [array.copy(), ]
+        if instf is None:
+            obj._instf = [np.zeros_like(array),]
+        else:
+            obj._instf = [instf.copy(),]    
+
         # Finally, we must return the newly created object:
         return obj
 
@@ -45,8 +54,70 @@ class Signal(np.ndarray):
         # method sees all creation of default objects - with the
         # InfoArray.__new__ constructor, but also with
         # arr.view(InfoArray).
-        self.ncomps = getattr(obj, 'ncomps', None)
+        self._comps = getattr(obj, '_comps', [obj, ])
+        self._instf = getattr(obj, '_instf', list()) 
+        
+        # [np.zeros_like(self._comps[0]),]
+
+        # self._ncomps = getattr(obj,'_ncomps', None)
         # We do not need to return anything
+    
+    # def __init__(self, array=None, instf=None):
+    #     self.comps = list()
+    #     self.comps.append(array)
+
+    #     if instf is None:  
+    #         self.instf = np.zeros_like(array)
+    #     else:
+    #         self.instf = instf
+
+    # def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+    #     args = []
+        
+    #     for i, input_ in enumerate(inputs):
+    #         if isinstance(input_, Signal):
+    #             args.append(input_.view(np.ndarray))
+    #         else:
+    #             args.append(input_)
+
+    #     results = super().__array_ufunc__(ufunc, method, *args, **kwargs)
+
+    #     return results
+    
+    def __add__(self,x):
+        obj = super().__add__(x)
+
+        if isinstance(x, Signal):
+            if len(x) == len(x.comps[0]):
+               obj = obj.view(Signal)
+               obj._comps = []
+               obj._instf = []
+               for cp, instf in zip([*self.comps, *x.comps],
+                                                    [*self.instf, *x.instf]):
+                    obj.add_comp(cp, instf=instf)
+
+        return obj
+
+    @property
+    def ncomps(self):
+        return len(self._comps)
+
+    @property
+    def comps(self):
+        return self._comps
+
+    @property
+    def instf(self):
+        return self._instf    
+    
+    def add_comp(self, new_comp, **kwargs):
+        self._comps.append(new_comp)
+        if 'instf' in kwargs.keys():
+            self._instf.append(kwargs['instf'])
+
+    def add_instf(self, new_instf, **kwargs):
+        self._instf.append(new_instf)        
+
 
 class SignalBank:
     """
@@ -156,13 +227,17 @@ class SignalBank:
             by this signal bank, and N is the length of the signals.    
     """
     
-    def __init__(self, N = 2**8, Nsub = None):
+    def __init__(self, N = 2**8, Nsub = None, return_signal=False):
         """ Builds a dictionary of functions that return multiple signals.
         Args:
             N (int, optional): Length of the signals. Defaults to 2**8.
             Nsub (int, optional): Generates signals of length Nsub,
             then zero pads the vector to reach length N. Defaults to 2**8.
+            return_signal (bool, optional): If True, functions will return a Signal
+            object, that encapsulates more information of the signal such as the number
+            of components, each individual component and their instantaneous frequency.
         """
+        self.return_signal = return_signal
 
         self.N = N
         if Nsub is None: 
@@ -187,6 +262,7 @@ class SignalBank:
 
         self.generate_signal_dict()
 
+    # TODO
     def check_inst_freq(self, instf):
         """Check that the instantaneous frequency (if available) of a generated signal
         is withing certain margins to avoid aliasing and border effects.
@@ -232,6 +308,21 @@ class SignalBank:
 
         return self.SignalDict.keys()
 
+    def get_all_signals(self):
+        """Returns an array of shape [K,N] where K is the number of signals generated
+        by this signal bank, and N is the length of the signals.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+
+        signals = np.zeros((len(self.signalDict),self.N))
+        for k, key in enumerate(self.signalDict):
+            signals[k] = self.signalDict[key]()
+        return signals
+
+
+# Monocomponent signals --------------------------------------------------------
 
     def signal_linear_chirp(self, a=None, b=None, instfreq = False):
         """Returns a linear chirp, the instantaneous frequency of which is a linear
@@ -271,22 +362,140 @@ class SignalBank:
         x = np.cos(2*pi*phase)*sg.tukey(Nsub,0.25) 
         signal = np.zeros((N,))
         signal[tmin:tmax] = x
-        
 
-        # signal2 = Signal(signal.shape)
-        # signal2[:] = signal[:]
-        # signal2.ncomps=1
-
+        # Cast to Signal class.
+        signal = Signal(array=signal, instf=instf)
+    
         if instfreq:
             return signal, instf, tmin, tmax
         else:
             return signal
+      
+    def signal_tone_dumped(self):
+        """Generates a dumped tone whose normalized frequency is 0.25.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+
+        N = self.N
+        eps = 1e-6
+        t = np.arange(N)+eps
+        c = 1/N/10
+        prec = 1e-1 # Precision at sample N for the envelope.
+        alfa = -np.log(prec*N/((N-c)**2))/N
+        e = np.exp(-alfa*t)*((t-c)**2/t)
+        e[0] = 0
+        chirp = self.signal_linear_chirp(a = 0, b = 0.25)
+        return e*chirp
+
+    def signal_tone_sharp_attack(self):
+        """Generates a dumped tone that is modulated with a rectangular window.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+
+        N = self.N
+        dumpcos = self.signal_tone_dumped()
+        indmax = np.argmax(dumpcos)
+        dumpcos[0:indmax] = 0
+        return dumpcos    
+
+    def signal_exp_chirp(self, finit=None, fend=None, exponent=2, r_instf=False):
+        """Generates an exponential chirp.
+
+        Args:
+            finit (float, optional): Initial normalized frequency. Defaults to None.
+            fend (float, optional): End normalized frequency. Defaults to None.
+            exponent (int, optional): Exponent. Defaults to 2.
+            r_instf (bool, optional): When True returns the instantaneous frequency
+            along with the signal. Defaults to False.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+        
+        N = self.N
+        tmin = self.tmin
+        tmax = self.tmax      
+        Nsub = self.Nsub
+        tsub = np.arange(Nsub)/Nsub
+
+        if finit is None:
+            finit=1.5*self.fmin
+
+        if fend is None:    
+            fend=self.fmax
+
+        instf =  finit*np.exp(np.log(fend/finit)*tsub**exponent)
+
+        if not r_instf:    
+            self.check_inst_freq(instf)
+
+        phase = np.cumsum(instf)
+        x = np.cos(2*pi*phase)
+        signal = np.zeros((N,))
+        signal[tmin:tmax] = x*sg.windows.tukey(Nsub,0.25)
+
+        # Cast to Signal class.
+        signal = Signal(array=signal, instf=instf)
+
+        if r_instf:
+            return signal, instf, tmin, tmax
+        else:
+            return signal
+
+    def signal_cos_chirp(self, omega = 1.2, a1=0.5, f0=0.25, a2=0.125, checkinstf = True):
+        """Generates a cosenoidal chirp, the instantenous frequency of which is given by
+        the formula: "f0 + a1*cos(2*pi*omega)", and the maximum amplitude of which is
+        determined by "a2".
+
+        Args:
+            omega (float, optional): Frequency of the instantaneous frequency.
+            Defaults to 1.5.
+            a1 (int, optional): Amplitude of the frequency modulation Defaults to 1.
+            f0 (float, optional): Central frequency. Defaults to 0.25.
+            a2 (float, optional): Amplitude of the signal. Defaults to 0.125.
+            checkinstf (bool, optional): If True checks that dhe instantaneous frequency
+            of the signal is within the limits. Defaults to True.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+
+        N = self.N
+        tmin = self.tmin
+        tmax = self.tmax      
+        Nsub = self.Nsub
+        tsub = np.arange(Nsub)
+        instf = f0 + a2*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
+        
+        if checkinstf:
+            self.check_inst_freq(instf)    
+
+        phase = np.cumsum(instf)
+        x = a1*np.cos(2*pi*phase)*sg.tukey(Nsub,0.25)     
+        signal = np.zeros((N,))
+        signal[tmin:tmax] = x
+
+        # Cast to Signal class.
+        signal = Signal(array=signal, instf=instf)
+
+        return signal
+
+# Multicomponent signals here --------------------------------------------------
 
     def signal_mc_parallel_chirps(self):
         comp1 = self.signal_linear_chirp(a=0.1, b=0.15, instfreq = False)
         comp2 = self.signal_linear_chirp(a=0.1, b=0.25, instfreq = False)
 
-        return comp1+comp2
+        signal = Signal(comp1.shape)
+        signal[:] = comp1+comp2
+        for cp in (comp1,comp2):
+            signal.add_comp(cp, instf=cp.instf)
+
+        return signal
 
     def signal_mc_parallel_chirps_unbalanced(self):
         comp1 = self.signal_linear_chirp(a=0.1, b=0.15, instfreq = False)
@@ -318,7 +527,6 @@ class SignalBank:
 
         return chirp1+chirp2+chirp3
 
-
     def signal_mc_crossing_chirps(self):
         """Returns a multi component signal with two chirps crossing, i.e. two chirps 
         whose instantaneous frequency coincide in one point of the time frequency plane.
@@ -335,7 +543,6 @@ class SignalBank:
         chirp1 = self.signal_linear_chirp(a = -a, b = 0.5 - b)
         chirp2 = self.signal_linear_chirp(a = a, b = b)
         return chirp1 + chirp2
-
 
     def signal_mc_pure_tones(self, ncomps=5, a1=None, b1=None):
         """Generates a multicomponent signal comprising several pure tones harmonically
@@ -394,74 +601,6 @@ class SignalBank:
         b1=self.fmin
         return self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)
 
-        
-    def signal_tone_dumped(self):
-        """Generates a dumped tone whose normalized frequency is 0.25.
-
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
-
-        N = self.N
-        eps = 1e-6
-        t = np.arange(N)+eps
-        c = 1/N/10
-        prec = 1e-1 # Precision at sample N for the envelope.
-        alfa = -np.log(prec*N/((N-c)**2))/N
-        e = np.exp(-alfa*t)*((t-c)**2/t)
-        e[0] = 0
-        chirp = self.signal_linear_chirp(a = 0, b = 0.25)
-        return e*chirp
-
-
-    def signal_tone_sharp_attack(self):
-        """Generates a dumped tone that is modulated with a rectangular window.
-
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
-
-        N = self.N
-        dumpcos = self.signal_tone_dumped()
-        indmax = np.argmax(dumpcos)
-        dumpcos[0:indmax] = 0
-        return dumpcos    
-
-
-    def signal_cos_chirp(self, omega = 1.2, a1=0.5, f0=0.25, a2=0.125, checkinstf = True):
-        """Generates a cosenoidal chirp, the instantenous frequency of which is given by
-        the formula: "f0 + a1*cos(2*pi*omega)", and the maximum amplitude of which is
-        determined by "a2".
-
-        Args:
-            omega (float, optional): Frequency of the instantaneous frequency.
-            Defaults to 1.5.
-            a1 (int, optional): Amplitude of the frequency modulation Defaults to 1.
-            f0 (float, optional): Central frequency. Defaults to 0.25.
-            a2 (float, optional): Amplitude of the signal. Defaults to 0.125.
-            checkinstf (bool, optional): If True checks that dhe instantaneous frequency
-            of the signal is within the limits. Defaults to True.
-
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
-
-        N = self.N
-        tmin = self.tmin
-        tmax = self.tmax      
-        Nsub = self.Nsub
-        tsub = np.arange(Nsub)
-        instf = f0 + a2*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
-        if checkinstf:
-            self.check_inst_freq(instf)    
-
-        phase = np.cumsum(instf)
-        x = a1*np.cos(2*pi*phase)*sg.tukey(Nsub,0.25)     
-        signal = np.zeros((N,))
-        signal[tmin:tmax] = x
-        return signal
-
-
     def signal_mc_double_cos_chirp(self):
         """Generates a multicomponent signal with two cosenoidal chirps.
 
@@ -490,7 +629,6 @@ class SignalBank:
         signal = np.zeros((N,))
         signal[tmin:tmax] = x
         return signal
-
 
     def signal_mc_cos_plus_tone(self):
         """Generates a multicomponent signal comprised by two cosenoidal chirps and a
@@ -523,86 +661,6 @@ class SignalBank:
         signal = np.zeros((N,))
         signal[tmin:tmax] = x
         return signal
-
-    
-    # def signal_mc_synthetic_mixture(self):
-    #     """Generates a multicomponent signal with different types of components.
-
-    #     Returns:
-    #         numpy.ndarray: Returns a numpy array with the signal.
-    #     """
-        
-    #     N = self.N
-    #     signal = np.zeros((N,))
-    #     tmin = self.tmin
-    #     tmax = N-tmin
-    #     Nsub = tmax-tmin
-    #     # print(Nchirp)
-    #     # print(N-Nchirp)
-    #     imp_loc_1 = 2*tmin
-    #     imp_loc_2 = 3*tmin
-        
-    #     Nchirp = Nsub-4*tmin
-    #     t = np.arange(Nchirp)
-            
-    #     chirp1 = np.cos(2*pi*0.1*t)
-    #     b = 0.12
-    #     a = (0.3-0.12)/Nchirp/2
-    #     chirp2 = np.cos(2*pi*(a*t**2 + b*t))
-        
-    #     signal[imp_loc_1] = 10
-    #     signal[imp_loc_2] = 10
-
-    #     instf = 0.35 + 0.05*np.cos(2*pi*1.25*t/Nchirp + pi)
-    #     coschirp = np.cos(2*pi*np.cumsum(instf))
-    #     signal[4*tmin:4*tmin+Nchirp] = chirp1+chirp2+coschirp
-    #     # signal[N-Nchirp:N] = coschirp
-    #     return signal
-
-    
-    def signal_hermite_function(self, order = 18, t0 = 0.5, f0 = 0.25):
-        """Generates a round hermite function of a given order. The spectrogram of
-        Hermite functions are given by an annular ridge in the time frequency plane, the
-        center of which is given by (t0,f0).
-
-        Args:
-            order (int, optional): Order of the Hermite function. Defaults to 18.
-            t0 (float, optional): Time coordinate of the center of the spectrogram.
-            Defaults to 0.5.
-            f0 (float, optional): Frequency coordinate of the center of the spectrogram.
-            Defaults to 0.25.
-
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
-        
-        N = self.N
-        t0 = int(N*t0)
-        t = np.arange(N)-t0
-        return hermite_fun(N, order, t=t, T = np.sqrt(2*N))*np.cos(2*pi*f0*t)
-
-    
-    def signal_hermite_elipse(self, order = 30, t0 = 0.5, f0 = 0.25):
-        """Generates a non-round Hermite function of a given order. The spectrogram of
-        Hermite functions are given by an elipsoidal ridge in the time frequency plane,
-        the center of which is given by (t0,f0).
-
-        Args:
-            order (int, optional): Order of the Hermite function. Defaults to 18.
-            t0 (float, optional): Time coordinate of the center of the spectrogram.
-            Defaults to 0.5.
-            f0 (float, optional): Frequency coordinate of the center of the spectrogram.
-            Defaults to 0.25.
-
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
-        
-        N = self.N
-        t0 = int(N*t0)
-        t = np.arange(N)-t0
-        return hermite_fun(N, order, t=t, T = 1.5*np.sqrt(2*N))*np.cos(2*pi*f0*t)
-
 
     def signal_mc_triple_impulse(self, Nimpulses = 3):
         """Generates three equispaced impulses in time.
@@ -663,98 +721,6 @@ class SignalBank:
         xr, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
         return xr
 
-
-    def signal_exp_chirp(self, finit=None, fend=None, exponent=2, r_instf=False):
-        """Generates an exponential chirp.
-
-        Args:
-            finit (float, optional): Initial normalized frequency. Defaults to None.
-            fend (float, optional): End normalized frequency. Defaults to None.
-            exponent (int, optional): Exponent. Defaults to 2.
-            r_instf (bool, optional): When True returns the instantaneous frequency
-            along with the signal. Defaults to False.
-
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
-        
-        N = self.N
-        tmin = self.tmin
-        tmax = self.tmax      
-        Nsub = self.Nsub
-        tsub = np.arange(Nsub)/Nsub
-
-        if finit is None:
-            finit=1.5*self.fmin
-
-        if fend is None:    
-            fend=self.fmax
-
-        instf =  finit*np.exp(np.log(fend/finit)*tsub**exponent)
-
-        if not r_instf:    
-            self.check_inst_freq(instf)
-
-        phase = np.cumsum(instf)
-        x = np.cos(2*pi*phase)
-        signal = np.zeros((N,))
-        signal[tmin:tmax] = x*sg.windows.tukey(Nsub,0.25)
-
-        if r_instf:
-            return signal, instf, tmin, tmax
-        else:
-            return signal
-
-           
-    def signal_mc_exp_chirps(self):
-        """Generates a multicomponent signal comprising three exponential chirps.
-
-
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
-        
-        N = self.N
-        signal = np.zeros((N,))
-        aux = np.zeros((N,))
-        exponents = [4, 3, 2]
-        finits = [self.fmin, 1.8*self.fmin, 2.5*self.fmin]
-        fends = [0.3, 0.8, 1.2]
-        ncomps = len(fends)
-
-        max_freq = self.fmax
-
-        for i in range(ncomps):
-            _, instf, tmin, tmax = self.signal_exp_chirp(finit=finits[i],
-                                                         fend=fends[i],
-                                                         exponent=exponents[i],
-                                                         r_instf=True)    
-
-            instf2 = instf            
-            if instf[0] >= max_freq:
-                break
-            
-            instf2 = instf2[np.where(instf2 < max_freq)]
-            tukwin = sg.windows.tukey(len(instf2),0.25)
-
-            self.check_inst_freq(instf2)
-            phase = np.cumsum(instf2)
-            x = np.cos(2*pi*phase)
-            tukwin = sg.windows.tukey(len(x),0.25)
-            x = x*tukwin
-            signal[tmin:tmin+len(x)] = x
-
-            aux += signal
-        return aux
-
-    # def signal_mc_modulated_tones(self):
-    #     return self.signal_mc_multi_cos()
-
-
-    # def signal_mc_modulated_tones_2(self):
-    #     return self.signal_mc_multi_cos_2()
-
-
     def signal_mc_multi_cos(self):
         """Generates a multicomponent signal comprising three cosenoidal chirps with
         different frequency modulation parameters.
@@ -769,7 +735,6 @@ class SignalBank:
         # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
         return x1+x2+x3
 
-
     def signal_mc_multi_cos_2(self):
         """Generates a multicomponent signal comprising three cosenoidal chirps with 
         different frequency modulation parameters.
@@ -783,7 +748,6 @@ class SignalBank:
         x3 = self.signal_cos_chirp(omega = 5, a1=1,     f0=self.fmax-0.03, a2=0.02)       
         # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
         return x1+x2+x3
-
 
     def signal_mc_synthetic_mixture_2(self):
         """Generates a multicomponent signal with different types of components.
@@ -832,7 +796,6 @@ class SignalBank:
         signal = x0+x1+x2 
         return signal
 
-
     def signal_mc_on_off_tones(self):
         """Generates a multicomponent signal comprising components that "born" and "die"
         at different times.
@@ -872,6 +835,102 @@ class SignalBank:
 
         return chirp1+chirp2+chirp3
 
+# Other signals ----------------------------------------------------------------
+
+    def signal_hermite_function(self, order = 18, t0 = 0.5, f0 = 0.25):
+        """Generates a round hermite function of a given order. The spectrogram of
+        Hermite functions are given by an annular ridge in the time frequency plane, the
+        center of which is given by (t0,f0).
+
+        Args:
+            order (int, optional): Order of the Hermite function. Defaults to 18.
+            t0 (float, optional): Time coordinate of the center of the spectrogram.
+            Defaults to 0.5.
+            f0 (float, optional): Frequency coordinate of the center of the spectrogram.
+            Defaults to 0.25.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+        
+        N = self.N
+        t0 = int(N*t0)
+        t = np.arange(N)-t0
+        return hermite_fun(N, order, t=t, T = np.sqrt(2*N))*np.cos(2*pi*f0*t)
+  
+    def signal_hermite_elipse(self, order = 30, t0 = 0.5, f0 = 0.25):
+        """Generates a non-round Hermite function of a given order. The spectrogram of
+        Hermite functions are given by an elipsoidal ridge in the time frequency plane,
+        the center of which is given by (t0,f0).
+
+        Args:
+            order (int, optional): Order of the Hermite function. Defaults to 18.
+            t0 (float, optional): Time coordinate of the center of the spectrogram.
+            Defaults to 0.5.
+            f0 (float, optional): Frequency coordinate of the center of the spectrogram.
+            Defaults to 0.25.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+        
+        N = self.N
+        t0 = int(N*t0)
+        t = np.arange(N)-t0
+        return hermite_fun(N, order, t=t, T = 1.5*np.sqrt(2*N))*np.cos(2*pi*f0*t)
+
+
+           
+    # def signal_mc_exp_chirps(self):
+    #     """Generates a multicomponent signal comprising three exponential chirps.
+
+
+    #     Returns:
+    #         numpy.ndarray: Returns a numpy array with the signal.
+    #     """
+        
+    #     N = self.N
+    #     signal = np.zeros((N,))
+    #     aux = np.zeros((N,))
+    #     exponents = [4, 3, 2]
+    #     finits = [self.fmin, 1.8*self.fmin, 2.5*self.fmin]
+    #     fends = [0.3, 0.8, 1.2]
+    #     ncomps = len(fends)
+
+    #     max_freq = self.fmax
+
+    #     for i in range(ncomps):
+    #         _, instf, tmin, tmax = self.signal_exp_chirp(finit=finits[i],
+    #                                                      fend=fends[i],
+    #                                                      exponent=exponents[i],
+    #                                                      r_instf=True)    
+
+    #         instf2 = instf            
+    #         if instf[0] >= max_freq:
+    #             break
+            
+    #         instf2 = instf2[np.where(instf2 < max_freq)]
+    #         tukwin = sg.windows.tukey(len(instf2),0.25)
+
+    #         self.check_inst_freq(instf2)
+    #         phase = np.cumsum(instf2)
+    #         x = np.cos(2*pi*phase)
+    #         tukwin = sg.windows.tukey(len(x),0.25)
+    #         x = x*tukwin
+    #         signal[tmin:tmin+len(x)] = x
+
+    #         aux += signal
+    #     return aux
+
+    # def signal_mc_modulated_tones(self):
+    #     return self.signal_mc_multi_cos()
+
+
+    # def signal_mc_modulated_tones_2(self):
+    #     return self.signal_mc_multi_cos_2()
+
+
+
 
 
     # def signal_mc_synthetic_mixture_3(self):
@@ -910,17 +969,5 @@ class SignalBank:
 
     
 
-    def get_all_signals(self):
-        """Returns an array of shape [K,N] where K is the number of signals generated
-        by this signal bank, and N is the length of the signals.
-
-        Returns:
-            numpy.ndarray: Returns a numpy array with the signal.
-        """
-
-        signals = np.zeros((len(self.signalDict),self.N))
-        for k, key in enumerate(self.signalDict):
-            signals[k] = self.signalDict[key]()
-        return signals
-
+    
     

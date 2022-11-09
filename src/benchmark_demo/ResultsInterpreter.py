@@ -447,11 +447,11 @@ class ResultsInterpreter:
                             y=None, 
                             hue=None, 
                             errbar_fun=('ci',95), 
-                            axis = None
-                            ):
-        """ Generates a Quality Reconstruction Factor (QRF) vs. SNRin barplot. The QRF is 
-        computed as: 
-        QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]
+                            axis = None,
+                            errbar_params = None):
+        """ Generates a Quality Reconstruction Factor (QRF) vs. SNRin barplot. 
+        The QRF is computed as: 
+                        QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]
         where x is the noiseless signal and x_r is de denoised estimation of x.
 
         Args:
@@ -464,27 +464,32 @@ class ResultsInterpreter:
             axis (matplotlib.Axes, optional): The axis object where the plot will be 
             generated. Defaults to None.
         """
+        
 
+        if errbar_params is None:
+           errbar_params = {'errwidth':0.1,
+                            'capsize':0.02,
+                            }
 
         barfig = sns.barplot(x="SNRin", 
-                            y="QRF", # Its QRF in the DataFrame, but changed later.
+                            y="QRF", # It's QRF in the DataFrame, but changed later.
                             hue="Method",
                             data=df, 
                             dodge=True, 
                             errorbar=errbar_fun,
-                            errwidth = 0.7,
-                            capsize=.02,
-                            ax = axis)
+                            ax = axis,
+                            **errbar_params)
         
         axis.set_xlabel('SNRin (dB)')
         if self.benchmark.task == 'denoising':
-            axis.set_ylabel(r'QRF (dB)')
+            axis.set_ylabel('QRF (dB)')
         
         if self.benchmark.task == 'detection':
-            axis.set_ylabel(r'Detection Power')
+            axis.set_ylabel('Detection Power')
             
         return barfig
 
+    # ! Deprecated 07/11/22 -- JMM
     def get_summary_grid(self, filename = None, savetofile=True):
         """ Generates a grid of QRF plots for each signal, displaying the performance 
         of all methods for all noise conditions.
@@ -495,7 +500,7 @@ class ResultsInterpreter:
         Returns:
             Matplotlib.Figure: Returns a figure handle.
         """
-        
+        print('WARNING: Deprecated')
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
         sns.set(style="ticks", rc={"lines.linewidth": 0.7})
@@ -557,6 +562,7 @@ class ResultsInterpreter:
                         filter_crit= 'all',
                         filter_str = None,
                         errbar_fun = ('ci',95),
+                        errbar_params = None,
                         ax = None, 
                         plot_type='lines'):
         """Generates individual performance plots for each signal, displaying the 
@@ -629,6 +635,7 @@ class ResultsInterpreter:
                                         y='QRF', 
                                         hue='Method', 
                                         errbar_fun=errbar_fun,
+                                        errbar_params=errbar_params,
                                         axis = ax)
 
             if self.benchmark.task == "detection":
