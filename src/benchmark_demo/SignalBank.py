@@ -119,6 +119,8 @@ class Signal(np.ndarray):
         self._instf.append(new_instf)        
 
 
+
+
 class SignalBank:
     """
     Create a bank of signals. This class encapsulates the signal generation code,
@@ -262,6 +264,17 @@ class SignalBank:
 
         self.generate_signal_dict()
 
+    # # Create a decorator to cast the output of functions, so that we can activate and
+    # # deactivate the use of the Signal class, and use just numpy arrays instead.
+    # def modify_output(self, signal_generation_function):
+    #     def wrapper(*args,**kwargs):
+    #         signal = signal_generation_function(*args,**kwargs)
+    #         if not self.return_signal:
+    #             return signal.view(np.ndarray)
+    #         else:
+    #             return signal    
+    #     return wrapper
+
     # TODO
     def check_inst_freq(self, instf):
         """Check that the instantaneous frequency (if available) of a generated signal
@@ -276,7 +289,6 @@ class SignalBank:
         # if np.all(instf>=self.fmin):
         #     print('Warning: instf<fmin')
         return True
-    
 
     def generate_signal_dict(self):
         """ This function is used by the class constructor to generate a dictionary of 
@@ -324,7 +336,7 @@ class SignalBank:
 
 # Monocomponent signals --------------------------------------------------------
 
-    def signal_linear_chirp(self, a=None, b=None, instfreq = False):
+    def _signal_linear_chirp(self, a=None, b=None, instfreq = False):
         """Returns a linear chirp, the instantaneous frequency of which is a linear
         function with slope "a" and initial normalized frequency "b".
 
@@ -371,6 +383,139 @@ class SignalBank:
         else:
             return signal
       
+    def _signal_tone_dumped(self):
+        """Generates a dumped tone whose normalized frequency is 0.25.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+
+        N = self.N
+        eps = 1e-6
+        t = np.arange(N)+eps
+        c = 1/N/10
+        prec = 1e-1 # Precision at sample N for the envelope.
+        alfa = -np.log(prec*N/((N-c)**2))/N
+        e = np.exp(-alfa*t)*((t-c)**2/t)
+        e[0] = 0
+        chirp = self.signal_linear_chirp(a = 0, b = 0.25)
+        return e*chirp
+
+    def _signal_tone_sharp_attack(self):
+        """Generates a dumped tone that is modulated with a rectangular window.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+
+        N = self.N
+        dumpcos = self.signal_tone_dumped()
+        indmax = np.argmax(dumpcos)
+        dumpcos[0:indmax] = 0
+        return dumpcos    
+
+    def _signal_exp_chirp(self, finit=None, fend=None, exponent=2, r_instf=False):
+        """Generates an exponential chirp.
+
+        Args:
+            finit (float, optional): Initial normalized frequency. Defaults to None.
+            fend (float, optional): End normalized frequency. Defaults to None.
+            exponent (int, optional): Exponent. Defaults to 2.
+            r_instf (bool, optional): When True returns the instantaneous frequency
+            along with the signal. Defaults to False.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+        
+        N = self.N
+        tmin = self.tmin
+        tmax = self.tmax      
+        Nsub = self.Nsub
+        tsub = np.arange(Nsub)/Nsub
+
+        if finit is None:
+            finit=1.5*self.fmin
+
+        if fend is None:    
+            fend=self.fmax
+
+        instf =  finit*np.exp(np.log(fend/finit)*tsub**exponent)
+
+        if not r_instf:    
+            self.check_inst_freq(instf)
+
+        phase = np.cumsum(instf)
+        x = np.cos(2*pi*phase)
+        signal = np.zeros((N,))
+        signal[tmin:tmax] = x*sg.windows.tukey(Nsub,0.25)
+
+        # Cast to Signal class.
+        signal = Signal(array=signal, instf=instf)
+
+        if r_instf:
+            return signal, instf, tmin, tmax
+        else:
+            return signal
+
+    def _signal_cos_chirp(self, omega = 1.2, a1=0.5, f0=0.25, a2=0.125, checkinstf = True):
+        """Generates a cosenoidal chirp, the instantenous frequency of which is given by
+        the formula: "f0 + a1*cos(2*pi*omega)", and the maximum amplitude of which is
+        determined by "a2".
+
+        Args:
+            omega (float, optional): Frequency of the instantaneous frequency.
+            Defaults to 1.5.
+            a1 (int, optional): Amplitude of the frequency modulation Defaults to 1.
+            f0 (float, optional): Central frequency. Defaults to 0.25.
+            a2 (float, optional): Amplitude of the signal. Defaults to 0.125.
+            checkinstf (bool, optional): If True checks that dhe instantaneous frequency
+            of the signal is within the limits. Defaults to True.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+
+        N = self.N
+        tmin = self.tmin
+        tmax = self.tmax      
+        Nsub = self.Nsub
+        tsub = np.arange(Nsub)
+        instf = f0 + a2*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
+
+        if checkinstf:
+            self.check_inst_freq(instf)    
+
+        phase = np.cumsum(instf)
+        x = a1*np.cos(2*pi*phase)*sg.tukey(Nsub,0.25)     
+        signal = np.zeros((N,))
+        signal[tmin:tmax] = x
+
+        # Cast to Signal class.
+        signal = Signal(array=signal, instf=instf)
+
+        return signal
+
+# Output monocomponent signals -------------------------------------------------
+    def signal_linear_chirp(self, a=None, b=None, instfreq = False):
+        """Returns a linear chirp, the instantaneous frequency of which is a linear
+        function with slope "a" and initial normalized frequency "b".
+
+
+        Args:
+            a (int, optional): Slope of the instantaneous frequency. Defaults to None.
+            b (int, optional): Initial instantaneous frequency. Defaults to None.
+            instfreq (bool, optional): When True, returns a vector with the
+            instantaneous frequency. Defaults to False.
+
+        Returns:
+            list or ndarray: If input parameter "instfreq" is True, returns the a list
+            of ndarray type objects with the signal and its instantaneous frequency.
+        """
+
+        signal = self._signal_linear_chirp(a=a, b=b, instfreq=instfreq)
+        return signal.view(np.ndarray)
+      
     def signal_tone_dumped(self):
         """Generates a dumped tone whose normalized frequency is 0.25.
 
@@ -415,36 +560,8 @@ class SignalBank:
         Returns:
             numpy.ndarray: Returns a numpy array with the signal.
         """
-        
-        N = self.N
-        tmin = self.tmin
-        tmax = self.tmax      
-        Nsub = self.Nsub
-        tsub = np.arange(Nsub)/Nsub
-
-        if finit is None:
-            finit=1.5*self.fmin
-
-        if fend is None:    
-            fend=self.fmax
-
-        instf =  finit*np.exp(np.log(fend/finit)*tsub**exponent)
-
-        if not r_instf:    
-            self.check_inst_freq(instf)
-
-        phase = np.cumsum(instf)
-        x = np.cos(2*pi*phase)
-        signal = np.zeros((N,))
-        signal[tmin:tmax] = x*sg.windows.tukey(Nsub,0.25)
-
-        # Cast to Signal class.
-        signal = Signal(array=signal, instf=instf)
-
-        if r_instf:
-            return signal, instf, tmin, tmax
-        else:
-            return signal
+        signal = self._signal_exp_chirp(finit=finit, fend=fend, exponent=exponent, r_instf=r_instf)
+        return signal.view(np.ndarray)
 
     def signal_cos_chirp(self, omega = 1.2, a1=0.5, f0=0.25, a2=0.125, checkinstf = True):
         """Generates a cosenoidal chirp, the instantenous frequency of which is given by
@@ -463,50 +580,36 @@ class SignalBank:
         Returns:
             numpy.ndarray: Returns a numpy array with the signal.
         """
+        signal = self._signal_cos_chirp(omega = omega, a1=a1, f0=f0, a2=a2, checkinstf=checkinstf)
+        return signal.view(np.ndarray)
 
-        N = self.N
-        tmin = self.tmin
-        tmax = self.tmax      
-        Nsub = self.Nsub
-        tsub = np.arange(Nsub)
-        instf = f0 + a2*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
-        
-        if checkinstf:
-            self.check_inst_freq(instf)    
-
-        phase = np.cumsum(instf)
-        x = a1*np.cos(2*pi*phase)*sg.tukey(Nsub,0.25)     
-        signal = np.zeros((N,))
-        signal[tmin:tmax] = x
-
-        # Cast to Signal class.
-        signal = Signal(array=signal, instf=instf)
-
-        return signal
 
 # Multicomponent signals here --------------------------------------------------
 
     def signal_mc_parallel_chirps(self):
-        comp1 = self.signal_linear_chirp(a=0.1, b=0.15, instfreq = False)
-        comp2 = self.signal_linear_chirp(a=0.1, b=0.25, instfreq = False)
+        comp1 = self._signal_linear_chirp(a=0.1, b=0.15)
+        comp2 = self._signal_linear_chirp(a=0.1, b=0.25)
+        signal = comp1+comp2
 
-        signal = Signal(comp1.shape)
-        signal[:] = comp1+comp2
-        for cp in (comp1,comp2):
-            signal.add_comp(cp, instf=cp.instf)
+        if not self.return_signal:
+            return signal.view(np.ndarray)
 
         return signal
 
     def signal_mc_parallel_chirps_unbalanced(self):
-        comp1 = self.signal_linear_chirp(a=0.1, b=0.15, instfreq = False)
-        comp2 = self.signal_linear_chirp(a=0.1, b=0.25, instfreq = False)
+        comp1 = self._signal_linear_chirp(a=0.1, b=0.15, instfreq = False)
+        comp2 = self._signal_linear_chirp(a=0.1, b=0.25, instfreq = False)
+        signal = comp1+0.2*comp2
 
-        return comp1+0.5*comp2
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+
+        return signal
 
     def signal_mc_on_off_2(self):
-        chirp1 = self.signal_linear_chirp(a=0.1, b=0.10, instfreq = False)
-        chirp2 = self.signal_linear_chirp(a=0.1, b=0.20, instfreq = False)
-        chirp3 = self.signal_linear_chirp(a=0.1, b=0.30, instfreq = False)
+        chirp1 = self._signal_linear_chirp(a=0.1, b=0.10, instfreq = False)
+        chirp2 = self._signal_linear_chirp(a=0.1, b=0.20, instfreq = False)
+        chirp3 = self._signal_linear_chirp(a=0.1, b=0.30, instfreq = False)
 
         Nsub = self.N
         N3 = Nsub//3
@@ -524,8 +627,12 @@ class SignalBank:
         chirp2[N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
         chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25) 
 
+        signal = chirp1+chirp2+chirp3
 
-        return chirp1+chirp2+chirp3
+        if not self.return_signal:
+            return signal.view(np.ndarray)    
+
+        return signal
 
     def signal_mc_crossing_chirps(self):
         """Returns a multi component signal with two chirps crossing, i.e. two chirps 
@@ -540,9 +647,15 @@ class SignalBank:
         a = self.fmax-self.fmin
         b = self.fmin
         
-        chirp1 = self.signal_linear_chirp(a = -a, b = 0.5 - b)
-        chirp2 = self.signal_linear_chirp(a = a, b = b)
-        return chirp1 + chirp2
+        chirp1 = self._signal_linear_chirp(a = -a, b = 0.5 - b)
+        chirp2 = self._signal_linear_chirp(a = a, b = b)
+
+        signal = chirp1 + chirp2
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        
+        return signal
 
     def signal_mc_pure_tones(self, ncomps=5, a1=None, b1=None):
         """Generates a multicomponent signal comprising several pure tones harmonically
@@ -571,21 +684,33 @@ class SignalBank:
             if b1 < self.fmin:
                 b1 = self.fmin
 
-        for i in range(ncomps):
-            chirp, instf, tmin, _ = self.signal_linear_chirp(a = a1*(i+1),
-                                                             b = b1*(i+1),
-                                                             instfreq=True)
-            if instf[0] >= max_freq:
-                break
-
-            idx = np.where(instf < max_freq)[0] + tmin -1
-            tukwin = sg.windows.tukey(idx.shape[0],0.5)
-            chirp[idx] = chirp[idx]*tukwin
-            idx = np.where(instf >= max_freq)[0] + tmin -1
-            chirp[idx] = tukwin[-1]  
+        signal = self._signal_linear_chirp(a = a1, b = b1)
         
-            aux += chirp
-        return aux
+        for i in range(1,ncomps):
+            chirp = self._signal_linear_chirp(a = a1*(i+1), b = b1*(i+1))
+            if chirp.instf[0][0] >= max_freq:
+                break
+            signal = signal + chirp
+
+        # for i in range(ncomps):
+        #     chirp, instf, tmin, _ = self.signal_linear_chirp(a = a1*(i+1),
+        #                                                      b = b1*(i+1),
+        #                                                      instfreq=True)
+        #     if instf[0] >= max_freq:
+        #         break
+
+        #     idx = np.where(instf < max_freq)[0] + tmin -1
+        #     tukwin = sg.windows.tukey(idx.shape[0],0.5)
+        #     chirp[idx] = chirp[idx]*tukwin
+        #     idx = np.where(instf >= max_freq)[0] + tmin -1
+        #     chirp[idx] = tukwin[-1]  
+        
+        #     aux += chirp
+        
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        
+        return signal
 
     def signal_mc_multi_linear(self, ncomps=5):
         """Generates a multicomponent signal with multiple linear chirps.
@@ -729,9 +854,9 @@ class SignalBank:
             numpy.ndarray: Returns a numpy array with the signal.
         """
 
-        x1 = self.signal_cos_chirp(omega = 8, a1=1, f0=self.fmin+0.04, a2=0.03)
-        x2 = self.signal_cos_chirp(omega = 6, a1=1, f0=self.fmid, a2=0.02)       
-        x3 = self.signal_cos_chirp(omega = 4, a1=1, f0=self.fmax-0.03, a2=0.02)       
+        x1 = self._signal_cos_chirp(omega = 8, a1=1, f0=self.fmin+0.04, a2=0.03)
+        x2 = self._signal_cos_chirp(omega = 6, a1=1, f0=self.fmid, a2=0.02)       
+        x3 = self._signal_cos_chirp(omega = 4, a1=1, f0=self.fmax-0.03, a2=0.02)       
         # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
         return x1+x2+x3
 
@@ -743,9 +868,9 @@ class SignalBank:
             numpy.ndarray: Returns a numpy array with the signal.
         """
         
-        x1 = self.signal_cos_chirp(omega = 5, a1=1.5,   f0=self.fmin+0.04, a2=0.03)
-        x2 = self.signal_cos_chirp(omega = 5, a1=1.2,   f0=self.fmid, a2=0.02)   
-        x3 = self.signal_cos_chirp(omega = 5, a1=1,     f0=self.fmax-0.03, a2=0.02)       
+        x1 = self._signal_cos_chirp(omega = 5, a1=1.5,   f0=self.fmin+0.04, a2=0.03)
+        x2 = self._signal_cos_chirp(omega = 5, a1=1.2,   f0=self.fmid, a2=0.02)   
+        x3 = self._signal_cos_chirp(omega = 5, a1=1,     f0=self.fmax-0.03, a2=0.02)       
         # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
         return x1+x2+x3
 
