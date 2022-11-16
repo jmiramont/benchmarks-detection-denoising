@@ -72,8 +72,10 @@ def empty_space_denoising(signal,
         if test_params is None:
             scale_pp = compute_scale(signal,{
                                             'fun':'Fest', 
-                                            'correction':'best', 
+                                            'correction':'rs', 
                                             'transform':'asin(sqrt(.))',
+                                            # 'rmin':0.65,
+                                            # 'rmax':1.05,
                                             }
                                     )
         else:
