@@ -747,7 +747,11 @@ class SignalBank:
 
         a1=self.fmin/2
         b1=self.fmin
-        return self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)
+        signal = self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal        
 
     def signal_mc_multi_linear_2(self, ncomps=5):
         """Generates a multicomponent signal with multiple linear chirps.
@@ -761,7 +765,11 @@ class SignalBank:
 
         a1=self.fmin/2
         b1=self.fmin/2
-        return self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)    
+        signal = self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)
+        
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal            
 
     def signal_mc_double_cos_chirp(self):
         """Generates a multicomponent signal with two cosenoidal chirps.
@@ -790,7 +798,10 @@ class SignalBank:
         x = x*sg.tukey(Nsub,0.25)     
         signal = np.zeros((N,))
         signal[tmin:tmax] = x
-        return signal
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal        
 
     def signal_mc_cos_plus_tone(self):
         """Generates a multicomponent signal comprised by two cosenoidal chirps and a
@@ -822,6 +833,9 @@ class SignalBank:
         x = x*sg.tukey(Nsub,0.25)     
         signal = np.zeros((N,))
         signal[tmin:tmax] = x
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
         return signal
 
 
@@ -837,7 +851,11 @@ class SignalBank:
         x2 = self._signal_cos_chirp(omega = 6, a1=1, f0=self.fmid, a2=0.02)       
         x3 = self._signal_cos_chirp(omega = 4, a1=1, f0=self.fmax-0.03, a2=0.02)       
         # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
-        return x1+x2+x3
+        signal = x1+x2+x3
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal        
 
     def signal_mc_multi_cos_2(self):
         """Generates a multicomponent signal comprising three cosenoidal chirps with 

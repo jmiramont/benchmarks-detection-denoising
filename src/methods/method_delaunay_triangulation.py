@@ -281,14 +281,15 @@ def compute_scale_triangles(signal, edges_signal, mc_reps=99,alpha = 0.01):
 
 def delaunay_triangulation_denoising(signal,
                                     LB=1.75,
-                                    UB=3, 
-                                    return_dic = False,
+                                    UB=2.5,
+                                    margin = 0,                        
                                     grouping=False, 
                                     ngroups=None, 
                                     min_group_size=1,
                                     q=None,
-                                    adapt_thr=False,
-                                    test_params = None):
+                                    adapt_thr=False,                                
+                                    return_dic = False,
+                                    test_params = None,):
 
     """Signal filtering by domain detection using Delaunay triangulation.
 
@@ -312,7 +313,7 @@ def delaunay_triangulation_denoising(signal,
     Nfft = 2*N
     g, T = get_round_window(Nfft)
     stft, stft_padded, Npad = get_stft(signal,g)
-    margin = 5
+    margin = 0
 
     # Computes the spectrogram and its zeros.
     S = np.abs(stft)**2
@@ -353,7 +354,7 @@ def delaunay_triangulation_denoising(signal,
         # LB = compute_scale_triangles(signal, longest_edges, mc_reps=99, alpha=0.01)
         # print('Threshold:{}'.format(LB))
 
-    area_thr =  0 #LB/8
+    area_thr =  LB/4
 
     # print(area_triangle)
     # Select triangles that fulfill all the conditions
