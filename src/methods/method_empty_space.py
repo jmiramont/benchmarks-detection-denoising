@@ -74,8 +74,8 @@ def empty_space_denoising(signal,
                                             'fun':'Fest', 
                                             'correction':'rs', 
                                             'transform':'asin(sqrt(.))',
-                                            # 'rmin':0.65,
-                                            # 'rmax':1.05,
+                                            'rmin':0.65,
+                                            'rmax':1.05,
                                             }
                                     )
         else:
