@@ -869,7 +869,11 @@ class SignalBank:
         x2 = self._signal_cos_chirp(omega = 5, a1=1.2,   f0=self.fmid, a2=0.02)   
         x3 = self._signal_cos_chirp(omega = 5, a1=1,     f0=self.fmax-0.03, a2=0.02)       
         # x4 = self.signal_cos_chirp(omega = 10, a1=1, f0=0.42, a2=0.05)              
-        return x1+x2+x3
+        signal = x1+x2+x3
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal           
 
     def signal_mc_synthetic_mixture_1(self):
         """Generates a multicomponent signal with different types of components.
@@ -916,7 +920,10 @@ class SignalBank:
         x2[tmin:tmin+len(phase2)] = np.cos(2*pi*phase2)*sg.tukey(len(phase2),0.25) 
 
         signal = x0+x1+x2 
-        return signal
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal       
 
 
     def signal_mc_synthetic_mixture_2(self):
@@ -977,7 +984,10 @@ class SignalBank:
         x4[tmin:tmax] *= sg.tukey(Nsub,0.75)
 
         signal = x1 + x2 + x3 + x4
-        return signal        
+        
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal           
 
 
     def signal_mc_synthetic_mixture_3(self):
@@ -1021,11 +1031,9 @@ class SignalBank:
 
         signal += x3
 
-
-        return signal
-
-
-
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal   
 
     def signal_mc_on_off_tones(self):
         """Generates a multicomponent signal comprising components that "born" and "die"
@@ -1065,7 +1073,11 @@ class SignalBank:
         chirp2[N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.5)    
         chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.5)    
 
-        return chirp1+chirp2+chirp3
+        signal = chirp1+chirp2+chirp3
+        
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal           
 
 # Other signals ----------------------------------------------------------------
 
@@ -1088,7 +1100,7 @@ class SignalBank:
         N = self.N
         t0 = int(N*t0)
         t = np.arange(N)-t0
-        return hermite_fun(N, order, t=t, T = np.sqrt(2*N))*np.cos(2*pi*f0*t)
+        return hermite_fun(N, order, t=t, T = np.sqrt(2*N))*np.cos(2*pi*f0*t)        
   
     def signal_hermite_elipse(self, order = 30, t0 = 0.5, f0 = 0.25):
         """Generates a non-round Hermite function of a given order. The spectrogram of
