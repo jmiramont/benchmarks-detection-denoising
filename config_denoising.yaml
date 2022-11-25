@@ -16,4 +16,4 @@ verbosity: 4
 #                 #'McOnOffTones','McOnOff2']                      # Modes that born and die
                 
 # Run again the same benchmark but with new methods:
-add_new_methods: True
+# add_new_methods: True
