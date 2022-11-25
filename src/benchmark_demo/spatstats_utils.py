@@ -12,7 +12,7 @@ if rpy2_is_present:
 from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window, get_spectrogram
 from scipy.integrate import cumtrapz
 import multiprocessing
-
+import pickle
 
 def compute_positions_and_bounds(pos):
         """Parse the python vector of positions of points ```pos``` into a R object.
@@ -640,7 +640,27 @@ def compute_scale(signal, **test_params):
         _type_: _description_
     """
     
-    output_dic = compute_rank_envelope_test(signal, return_dic=True, **test_params)
+    # If the simulated ppp are present, use them, otherwise, generate the simulation and
+    # save it so that it can be used later (this saves time, avoiding re-simulation).
+    nsim = 2499
+    N = len(signal)
+    try:
+        with open('ppp_simulations_N_{}_Nsim_{}.mcsim'.format(N,nsim), 'rb') as handle:
+            ppp_simulation = pickle.load(handle)
+    except:
+        list_ppp = generate_white_noise_zeros_pp(N, nsim=nsim)
+        ppp_simulation = {'list_ppp':list_ppp,
+                    'N' : N,
+                    'nsim' : nsim
+                    }
+        with open('ppp_simulations_N_{}_Nsim_{}.mcsim'.format(N,nsim), 'wb') as handle:
+            pickle.dump(ppp_simulation, handle, protocol=pickle.HIGHEST_PROTOCOL)   
+
+
+    output_dic = compute_rank_envelope_test(signal,
+                                         return_dic=True, 
+                                         ppp_sim=ppp_simulation['list_ppp'],
+                                         **test_params)
 
     reject_H0 = output_dic['rejectH0']
   
