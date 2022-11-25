@@ -578,8 +578,7 @@ class ResultsInterpreter:
             the methods to plot. If None, plots all the methods. Defaults to None.
             filter_crit (str, optional): A criterion to use the strings passed in 
             filter_str. If 'all', only choose those methods where all the strings 
-            appear in the "Method" column of the resuls DataFrame. If 'any', select the 
-            methods for wich any of the strings appear in the mentioned column. 
+            appear in the "Method" column of the resuls DataFrame. If 'any', select the methods for wich any of the strings appear in the mentioned column. 
             Defaults to 'all'.
             
             plot_type (str, optional): _description_. Defaults to 'lines'.
