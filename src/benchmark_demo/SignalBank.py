@@ -3,10 +3,16 @@ from numpy import pi as pi
 import scipy.signal as sg
 from benchmark_demo.utilstf import hermite_fun, get_stft, reconstruct_signal_2
 import string
+import numbers
 # from matplotlib import pyplot as plt
 
 
 class Signal(np.ndarray):
+
+    """ 
+    A class that emulates a signal by behaving like a Numpy array for practical purposes but containing information of the signal such as the number of components and their instantaneous frequency.
+
+    """
 
     def __new__(subtype, array, instf=None, dtype=float, buffer=None, offset=0,
                 strides=None, order=None):
@@ -19,13 +25,22 @@ class Signal(np.ndarray):
         obj = super().__new__(subtype, shape, dtype,
                               buffer, offset, strides, order)
         # set the new 'info' attribute to the value passed
-        # obj._ncomps = ncomps
+        
+        if len(array)==1:
+            return array
+
+        # Get the values of the ndarray
         obj[:] = array[:]
+
+        # Add new attributes to the object
         obj._comps = [array.copy(), ]
+
         if instf is None:
             obj._instf = [np.zeros_like(array),]
         else:
             obj._instf = [instf.copy(),]    
+
+        # obj._ncomps = None
 
         # Finally, we must return the newly created object:
         return obj
@@ -55,7 +70,8 @@ class Signal(np.ndarray):
         # InfoArray.__new__ constructor, but also with
         # arr.view(InfoArray).
         self._comps = getattr(obj, '_comps', [obj, ])
-        self._instf = getattr(obj, '_instf', list()) 
+        self._instf = getattr(obj, '_instf', list())
+        # self._instf = getattr(obj, '_ncomps', [obj, ])  
         
         # [np.zeros_like(self._comps[0]),]
 
@@ -71,36 +87,50 @@ class Signal(np.ndarray):
     #     else:
     #         self.instf = instf
 
-    # def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
-    #     args = []
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        args = []
         
-    #     for i, input_ in enumerate(inputs):
-    #         if isinstance(input_, Signal):
-    #             args.append(input_.view(np.ndarray))
-    #         else:
-    #             args.append(input_)
+        for i, input_ in enumerate(inputs):
+            # args.append(input_)
+            if isinstance(input_, Signal):
+                args.append(input_.view(np.ndarray))
+            else:
+                args.append(input_)
+        results = super().__array_ufunc__(ufunc, method, *args, **kwargs)
 
-    #     results = super().__array_ufunc__(ufunc, method, *args, **kwargs)
+        if isinstance(results, np.ndarray): # and ufunc.__name__ =='__add__':
+               results = results.view(Signal)
+               results._comps = []
+               results._instf = []
+               for ip in [a_signal for a_signal in inputs if isinstance(a_signal,Signal)]:
+                   for cp, instf in zip([*ip.comps],[*ip.instf]):
+                        results.add_comp(cp, instf=instf)
 
-    #     return results
+        return results
     
-    def __add__(self,x):
-        obj = super().__add__(x)
+    # def __add__(self,x):
+    #     obj = super().__add__(x)
 
-        if isinstance(x, Signal):
-            if len(x) == len(x.comps[0]):
-               obj = obj.view(Signal)
-               obj._comps = []
-               obj._instf = []
-               for cp, instf in zip([*self.comps, *x.comps],
-                                                    [*self.instf, *x.instf]):
-                    obj.add_comp(cp, instf=instf)
+    #     # if isinstance(x, Signal):
+    #     #     if len(x) == len(x.comps[0]):
+    #     #        obj = obj.view(Signal)
+    #     #        obj._comps = []
+    #     #        obj._instf = []
+    #     #        for cp, instf in zip([*self.comps, *x.comps],
+    #     #                                             [*self.instf, *x.instf]):
+    #     #             obj.add_comp(cp, instf=instf)
 
-        return obj
+    #     return obj
+
+
+    @property
+    def total_comps(self):
+        return len(self._comps)
 
     @property
     def ncomps(self):
-        return len(self._comps)
+        self.component_counter()
+        return self._ncomps
 
     @property
     def comps(self):
@@ -116,7 +146,20 @@ class Signal(np.ndarray):
             self._instf.append(kwargs['instf'])
 
     def add_instf(self, new_instf, **kwargs):
-        self._instf.append(new_instf)        
+        self._instf.append(new_instf)
+
+    def component_counter(self):
+        N = len(self)
+        cc = np.zeros((N,), dtype=int)
+        th = 0.0
+        for component in self._comps:
+            for i in range(N):
+                if np.sum(np.abs(component[i]))>th:
+                    cc[i] += 1
+        
+        self._ncomps = cc
+
+
 
 
 class SignalBank:
@@ -261,17 +304,6 @@ class SignalBank:
         # print(self.fmax)
 
         self.generate_signal_dict()
-
-    # # Create a decorator to cast the output of functions, so that we can activate and
-    # # deactivate the use of the Signal class, and use just numpy arrays instead.
-    # def modify_output(self, signal_generation_function):
-    #     def wrapper(*args,**kwargs):
-    #         signal = signal_generation_function(*args,**kwargs)
-    #         if not self.return_signal:
-    #             return signal.view(np.ndarray)
-    #         else:
-    #             return signal    
-    #     return wrapper
 
     # TODO
     def check_inst_freq(self, instf):
