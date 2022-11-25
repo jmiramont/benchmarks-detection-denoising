@@ -1,18 +1,19 @@
-N: 512
+N: 1024
 # Nsub: None
-SNRin: [0, 10, 20, 30]
+SNRin: [-10, -5, 0, 10, 20, 30]
 repetitions: 5
 parallelize: True
 verbosity: 4  
-using_signals: ['LinearChirp','CosChirp',]           # Single-component signals
-                #'ToneSharpAttack', ToneDumped,                  # Dumped and Sharps attacks
-                #'McCrossingChirps',                             # Crossing-components  
-                # 'McMultiLinear', 'McCosPlusTone',               # Multi-Component signals  
-                # 'McMultiCos2',                                  # Multi-Component Non-Harmonic  
-                #'McSyntheticMixture2',
-                #'HermiteFunction',                              # Hermite type signals  
-                # 'McTripleImpulse',]
-                #'McOnOffTones','McOnOff2']                      # Modes that born and die
+# using_signals: ['LinearChirp','CosChirp',]           # Single-component signals
+#                 'ToneSharpAttack', ToneDumped,                  # Dumped and Sharps attacks
+#                 # 'McCrossingChirps',                             # Crossing-components  
+#                 'McMultiLinear', 'McMultiLinear2',               # Multi-Component signals  
+#                 'McMultiCos2',                                  # Multi-Component Non-Harmonic  
+#                 'McSyntheticMixture1','McSyntheticMixture2','McSyntheticMixture3',
+#                 'McSyntheticMixture4',
+#                 #'HermiteFunction',                              # Hermite type signals  
+#                 # 'McTripleImpulse',]
+#                 #'McOnOffTones','McOnOff2']                      # Modes that born and die
                 
 # Run again the same benchmark but with new methods:
 add_new_methods: True

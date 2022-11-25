@@ -281,7 +281,7 @@ def compute_scale_triangles(signal, edges_signal, mc_reps=99,alpha = 0.01):
 
 def delaunay_triangulation_denoising(signal,
                                     LB=1.75,
-                                    UB=2.5,
+                                    UB=3.0,
                                     margin = 0,                        
                                     grouping=False, 
                                     ngroups=None, 
@@ -339,13 +339,14 @@ def delaunay_triangulation_denoising(signal,
     edges, longest_edges, area_triangle = describe_triangles(delaunay_graph,vertices)
 
     # Compute and adaptive threshold if its required, otherwise use "LB"
-        # Compute and adaptive threshold if its required, otherwise use "LB"
     if adapt_thr:
         if test_params is None:
             test_params = {
                             'fun':'Fest', 
                             'correction':'rs', 
                             'transform':'asin(sqrt(.))',
+                            'rmin':0.65,
+                            'rmax':1.05,                            
                         }
         
         scale_pp = compute_scale(signal,**test_params)
@@ -354,7 +355,7 @@ def delaunay_triangulation_denoising(signal,
         # LB = compute_scale_triangles(signal, longest_edges, mc_reps=99, alpha=0.01)
         # print('Threshold:{}'.format(LB))
 
-    area_thr =  LB/4
+    area_thr =  0 #LB/8
 
     # print(area_triangle)
     # Select triangles that fulfill all the conditions
@@ -405,6 +406,5 @@ class NewMethod(MethodTemplate):
         signal_output = delaunay_triangulation_denoising(signal, *args, **kwargs)    
         return signal_output
 
-
-    # def get_parameters(self):            # Use it to parametrize your method.
-    #      return (None, {'cs': AAA})
+    def get_parameters(self):            # Use it to parametrize your method.
+        return [{'adapt_thr': True},]    # Use adaptive threshold.

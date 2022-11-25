@@ -26,13 +26,44 @@ def find_center_empty_balls(Sww, pos_exp, a, radi_seg):
 
     return empty_mask
 
+# def paint_empty_balls(Sww, pos_exp, a, radi_seg):
+#     radi_seg = int(np.floor(radi_seg * a))
+#     # define a kd-tree with zeros
+#     kdpos = KDTree((pos_exp*a).astype(int))
+
+#     # define a grid corresponding to the time-frequency paving
+#     vecx = (np.arange(0, Sww.shape[0]))
+#     vecy = (np.arange(0, Sww.shape[1]))
+#     g = np.transpose(np.meshgrid(vecy, vecx))
+#     g.resize(Sww.size,2)
+#     # Find the TF points without zeros around in a radius of T.
+#     result = kdpos.query_ball_point(g, radi_seg).T
+
+#     # Create a circular patch to move:
+#     gridTree = KDTree(g)
+#     ref_point = np.array((Sww.shape[1]//2, Sww.shape[0]//2))
+#     idx = gridTree.query_ball_point(ref_point, radi_seg)
+#     patch_idx = np.floor(g[idx]).astype(int) - ref_point
+
+#     # Paint balls of radius T around those points.
+#     mask = np.zeros_like(Sww)
+#     for point in g[np.where([result[i] == [] for i in range(len(result))])]:
+#         aux_patch = patch_idx + point
+#         aux_patch = np.delete(aux_patch, np.where(np.logical_or(aux_patch[:,0]<0, aux_patch[:,0]>=Sww.shape[1])), axis=0)
+#         aux_patch = np.delete(aux_patch, np.where(np.logical_or(aux_patch[:,1]<0, aux_patch[:,1]>=Sww.shape[0])), axis=0)          
+#         for idx in aux_patch:
+#             mask[idx[1],idx[0]] = True
+
+
+#     return mask    
+
 
 def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand):
     # extract region of interest
     Nfft = Sww.shape[1]
-    fmin = int(np.sqrt(Nfft))//2
+    fmin = 0 #int(np.sqrt(Nfft))//2
     fmax = empty_mask.shape[0] - fmin
-    tmin = int(np.sqrt(Nfft))//2
+    tmin = 0 #int(np.sqrt(Nfft))//2
     tmax = empty_mask.shape[1] - tmin
 
     sub_empty = empty_mask[fmin:fmax, tmin:tmax]
@@ -41,18 +72,19 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand):
     g = np.transpose(np.meshgrid(vecx, vecy))
     u, v = np.where(sub_empty)
     kdpos = KDTree(np.array([u, v]).T)
-    result = kdpos.query_ball_point(g, radi_expand*np.sqrt(Nfft))
-    sub_empty = np.zeros(result.shape, dtype=bool)
+    # result = kdpos.query_ball_point(g, radi_expand*np.sqrt(Nfft))
+    sub_empty = np.zeros(sub_empty.shape, dtype=bool)
     for i in range(sub_empty.shape[1]):
         for j in range(sub_empty.shape[0]):
-            sub_empty[j, i] = len(result[j, i]) > 0
+            result = kdpos.query_ball_point(g[j,i], radi_expand*np.sqrt(Nfft))
+            sub_empty[j, i] = len(result) > 0
 
     u, v = np.where(sub_empty)
-    points = np.array([u, v]).T
-    hull_d = Delaunay(points) # for convenience
+    # points = np.array([u, v]).T
+    # hull_d = Delaunay(points) # for convenience
     mask = np.zeros(Sww.shape)
     mask[fmin:fmax, tmin:tmax] = sub_empty
-    return hull_d, mask
+    return mask #,hull_d, 
 
 
 def empty_space_denoising(signal,
@@ -86,13 +118,14 @@ def empty_space_denoising(signal,
         radi_expand = scale_pp
 
     g, a = get_round_window(Nfft)
-    Sww, stft, stft_padded, Npad = get_spectrogram(signal,g)
+    Sww, _, stft_padded, Npad = get_spectrogram(signal,g)
     pos = find_zeros_of_spectrogram(Sww)
     pos_aux = pos.copy()
     pos_aux[:,0] = pos[:,1]/a
     pos_aux[:,1] = pos[:,0]/a
     empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
-    hull_d , mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=radi_expand)
+    mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=radi_expand)
+    # mask = paint_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
     xr, t = reconstruct_signal_2(mask, stft_padded, Npad, Nfft)
 
     if return_dic:
@@ -111,4 +144,6 @@ class NewMethod(MethodTemplate):
     def method(self, signal, *args, **kwargs):
         signal_output = empty_space_denoising(signal, *args, **kwargs)    
         return signal_output
-        
+    
+    def get_parameters(self):            # Use it to parametrize your method.
+        return [{'adapt_thr': True},]    # Use adaptive threshold.

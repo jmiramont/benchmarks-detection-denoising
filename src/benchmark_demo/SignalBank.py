@@ -875,7 +875,7 @@ class SignalBank:
             return signal.view(np.ndarray)
         return signal           
 
-    def signal_mc_synthetic_mixture_1(self):
+    def signal_mc_synthetic_mixture(self):
         """Generates a multicomponent signal with different types of components.
 
         Returns:
@@ -1016,14 +1016,12 @@ class SignalBank:
         instf2 = np.ones((Nsub,))*(self.fmid-self.fmin)/2
         instf2 = instf2[tmid::]
         phase2 = np.cumsum(instf2)
-        x2 = np.cos(2*pi*phase2)*sg.windows.tukey(len(phase2),0.25)
-
+        x2 = np.cos(2*pi*phase2)#*sg.windows.tukey(len(phase2),0.25)
         
         instf3 = np.ones((N,))*((self.fmid-self.fmin)/3 + self.fmid)
         phase3 = np.cumsum(instf3)
         tloc = 3*N//4
         x3 = 5*np.cos(2*pi*phase3)*np.exp(-np.pi*(np.arange(N)-tloc)**2/(N/8))
-        
         
         signal = np.zeros((N,))
         signal[tmin:tmin+len(x)] = x
@@ -1034,6 +1032,95 @@ class SignalBank:
         if not self.return_signal:
             return signal.view(np.ndarray)
         return signal   
+
+
+    def signal_mc_synthetic_mixture_4(self):
+        """Generates a multicomponent signal with different types of components.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+        def rect_window(N,ti,te):
+            rw = np.zeros((N,))
+            rw[ti:te] = 1
+            return rw            
+
+        N = self.N
+        t = np.arange(N)
+        tmin = self.tmin
+        tmax = N-tmin
+        Nsub = tmax-tmin
+        tsub = np.arange(Nsub)
+        fmax = self.fmax
+        fmin = self.fmin
+
+        tt = int(Nsub//2.5)
+        t_init = 4*tmin 
+
+        f_init = (0.25-fmin)/2 + fmin
+        f_end = fmax
+        m = (f_end-f_init)/tt
+
+        # instf1 = (m*(t-t_init) + f_init)*rect_window(N,t_init,t_init+tt)
+        # phase1 = np.cumsum(instf1)
+        # x1 = np.cos(2*pi*phase1)*rect_window(N,t_init,t_init+tt)
+        # x1[t_init:t_init+tt]*=sg.tukey(tt,0.25)
+
+        c = 1/tt/10
+        prec = 1e-1 # Precision at sample N for the envelope.
+        alfa = -np.log(prec*tt/((tt-c)**2))/tt
+        e = np.exp(-alfa*np.arange(tt))*((np.arange(tt)-c)**2/np.arange(tt))
+        e[0] = 0
+        e /= np.max(e)
+
+        signal = np.zeros(N,)
+        for i in range(1,6):
+            instf1 = np.zeros(N,)
+            instf1[t_init:t_init+tt] = (e*fmin*0.9**i+i*fmin+0.05)
+            phase1 = np.cumsum(instf1)
+            x1 = 0.9**(i-1)*np.cos(2*pi*phase1)*rect_window(N,t_init,t_init+tt)
+            x1[t_init:t_init+tt]*=sg.tukey(tt,0.25)
+            signal = signal + x1
+        
+        t_init += int(1.01*tt)
+
+        for i in range(1,6):
+            instf1 = np.zeros(N,)
+            instf1[t_init:t_init+tt] = (e*fmin*0.9+i*fmin+0.03)
+            phase1 = np.cumsum(instf1)
+            x1 = 0.8**(i-1)*np.cos(2*pi*phase1)*rect_window(N,t_init,t_init+tt)
+            x1[t_init:t_init+tt]*=sg.tukey(tt,0.5)
+            signal = signal + x1
+
+
+        # instf2 = np.zeros(N,)
+        # instf2[t_init:t_init+tt] = (e*fmin*0.9+2*fmin+0.15)
+        # phase2 = np.cumsum(instf2)
+        # x2 = np.cos(2*pi*phase2)*rect_window(N,t_init,t_init+tt)
+        # x2[t_init:t_init+tt]*=sg.tukey(tt,0.2)
+
+        # # t_init += tt//2
+        # instf3 = np.zeros(N,)
+        # instf3[t_init:t_init+tt] = (e*fmin*0.9+3*fmin+0.15)
+        # phase3 = np.cumsum(instf3)
+        # x3 = np.cos(2*pi*phase3)*rect_window(N,t_init,t_init+tt)
+        # x3[t_init:t_init+tt]*=sg.tukey(tt,0.2)
+
+
+        # t_init += tt//2
+        # instf3 = (m*(t-t_init) + f_init)*rect_window(N,t_init,t_init+tt)
+        # phase3 = np.cumsum(instf3)
+        # x3 = np.cos(2*pi*phase3)*rect_window(N,t_init,t_init+tt)
+        # x3[t_init:t_init+tt]*=sg.tukey(tt,0.25)*e[-1::-1]
+
+
+        # x4 = np.cos(2*pi*fmin*np.ones((N,))*t)*rect_window(N,tmin,tmax)
+        # x4[tmin:tmax] *= sg.tukey(Nsub,0.75)
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal   
+
 
     def signal_mc_on_off_tones(self):
         """Generates a multicomponent signal comprising components that "born" and "die"
@@ -1182,57 +1269,57 @@ class SignalBank:
         xr, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
         return xr
            
-    
 
-    
-
-# def signal_mc_exp_chirps(self):
-    #     """Generates a multicomponent signal comprising three exponential chirps.
+    def signal_mc_exp_chirps(self):
+        """Generates a multicomponent signal comprising three exponential chirps.
 
 
     #     Returns:
     #         numpy.ndarray: Returns a numpy array with the signal.
     #     """
-        
-    #     N = self.N
-    #     signal = np.zeros((N,))
-    #     aux = np.zeros((N,))
-    #     exponents = [4, 3, 2]
-    #     finits = [self.fmin, 1.8*self.fmin, 2.5*self.fmin]
-    #     fends = [0.3, 0.8, 1.2]
-    #     ncomps = len(fends)
+        N = self.N
+        signal = np.zeros((N,))
+        aux = np.zeros((N,))
+        exponents = [4, 3, 2]
+        finits = [self.fmin, 1.8*self.fmin, 2.5*self.fmin]
+        fends = [0.3, 0.8, 1.2]
+        ncomps = len(fends)
 
-    #     max_freq = self.fmax
+        max_freq = self.fmax
 
-    #     for i in range(ncomps):
-    #         _, instf, tmin, tmax = self.signal_exp_chirp(finit=finits[i],
-    #                                                      fend=fends[i],
-    #                                                      exponent=exponents[i],
-    #                                                      r_instf=True)    
+        for i in range(ncomps):
+            _, instf, tmin, tmax = self._signal_exp_chirp(finit=finits[i],
+                                                         fend=fends[i],
+                                                         exponent=exponents[i],
+                                                         r_instf=True)    
 
-    #         instf2 = instf            
-    #         if instf[0] >= max_freq:
-    #             break
+            instf2 = instf            
+            if instf[0] >= max_freq:
+                break
             
-    #         instf2 = instf2[np.where(instf2 < max_freq)]
-    #         tukwin = sg.windows.tukey(len(instf2),0.25)
+            instf2 = instf2[np.where(instf2 < max_freq)]
+            tukwin = sg.windows.tukey(len(instf2),0.25)
 
-    #         self.check_inst_freq(instf2)
-    #         phase = np.cumsum(instf2)
-    #         x = np.cos(2*pi*phase)
-    #         tukwin = sg.windows.tukey(len(x),0.25)
-    #         x = x*tukwin
-    #         signal[tmin:tmin+len(x)] = x
+            self.check_inst_freq(instf2)
+            phase = np.cumsum(instf2)
+            x = np.cos(2*pi*phase)
+            tukwin = sg.windows.tukey(len(x),0.25)
+            x = x*tukwin
+            signal[tmin:tmin+len(x)] = x
 
-    #         aux += signal
-    #     return aux
+            aux += signal
+        return aux
 
-    # def signal_mc_modulated_tones(self):
-    #     return self.signal_mc_multi_cos()
+    #! Deprecated. 
+    def signal_mc_harmonic(self):
+        return self.signal_mc_multi_linear()
+
+    def signal_mc_modulated_tones(self):
+        return self.signal_mc_multi_cos()
 
 
-    # def signal_mc_modulated_tones_2(self):
-    #     return self.signal_mc_multi_cos_2()
+    def signal_mc_modulated_tones_2(self):
+        return self.signal_mc_multi_cos_2()
 
     
 
