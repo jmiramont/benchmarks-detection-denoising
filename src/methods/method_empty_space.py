@@ -99,19 +99,18 @@ def empty_space_denoising(signal,
     N = len(signal)
     Nfft = 2*N
 
-    # Compute and adaptive threshold if its required, otherwise use "LB"
+        # Compute and adaptive threshold if its required, otherwise use "LB"
     if adapt_thr:
         if test_params is None:
-            scale_pp = compute_scale(signal, test_params={
-                                                        'fun':'Fest', 
-                                                        'correction':'rs', 
-                                                        'transform':'asin(sqrt(.))',
-                                                        'rmin':0.65,
-                                                        'rmax':1.05,
-                                                        }
-                                    )
-        else:
-            scale_pp = compute_scale(signal,**test_params)
+            test_params = {
+                            'fun':'Fest', 
+                            'correction':'rs', 
+                            'transform':'asin(sqrt(.))',
+                            'rmin':0.65,
+                            'rmax':1.05,                            
+                        }
+        
+        scale_pp = compute_scale(signal,**test_params)
 
         print(scale_pp)
         radi_seg = scale_pp # Override LB
