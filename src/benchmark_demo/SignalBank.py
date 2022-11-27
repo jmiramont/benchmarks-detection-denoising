@@ -160,8 +160,6 @@ class Signal(np.ndarray):
         self._ncomps = cc
 
 
-
-
 class SignalBank:
     """
     Create a bank of signals. This class encapsulates the signal generation code,
@@ -673,14 +671,37 @@ class SignalBank:
         N9 = Nsub//9
 
         chirp1[0:2*N7] = 0
+        chirp1.comps[0][0:2*N7] = 0
+        chirp1.instf[0][0:2*N7] = 0
+
         chirp1[5*N7:-1] = 0
+        chirp1.comps[0][5*N7:-1] = 0
+        chirp1.instf[0][5*N7:-1] = 0
+        
         chirp1[2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.25)    
+        chirp1.comps[0][2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.25)    
+        
 
         chirp2[0:N9] = 0
+        chirp2.comps[0][0:N9] = 0
+        chirp2.instf[0][0:N9] = 0
+
+        
         chirp2[4*N9:5*N9] = 0
+        chirp2.comps[0][4*N9:5*N9] = 0
+        chirp2.instf[0][4*N9:5*N9] = 0
+
+        
         chirp2[8*N9:-1] = 0
+        chirp2.comps[0][8*N9:-1] = 0
+        chirp2.instf[0][8*N9:-1] = 0
+
+        
         chirp2[N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
+        chirp2.comps[0][N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
+        
         chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25) 
+        chirp2.comps[0][5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25)
 
         signal = chirp1+chirp2+chirp3
 
@@ -818,18 +839,31 @@ class SignalBank:
         tsub = np.arange(Nsub)
         omega1 = 1.5
         omega2 = 1.8
-        
-        instf1 = self.fmax-0.075 + 0.05*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)
-        self.check_inst_freq(instf1)    
-        instf2 = self.fmin+0.075 + 0.06*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)
-        self.check_inst_freq(instf2)
 
-        phase1 = np.cumsum(instf1)
-        phase2 = np.cumsum(instf2)
-        x = np.cos(2*pi*phase1) + np.cos(2*pi*phase2)
-        x = x*sg.tukey(Nsub,0.25)     
-        signal = np.zeros((N,))
-        signal[tmin:tmax] = x
+
+        chirp1 = self._signal_cos_chirp(omega=omega1, 
+                                    a1=1.0, 
+                                    f0=self.fmax-0.075, 
+                                    a2=0.05)
+
+        chirp2 = self._signal_cos_chirp(omega=omega2, 
+                                    a1=1.0, 
+                                    f0=self.fmin+0.075, 
+                                    a2=0.06)                                    
+        
+        # instf1 = self.fmax-0.075 + 0.05*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)
+        # self.check_inst_freq(instf1)    
+        # instf2 = self.fmin+0.075 + 0.06*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)
+        # self.check_inst_freq(instf2)
+
+        # phase1 = np.cumsum(instf1)
+        # phase2 = np.cumsum(instf2)
+        # x = np.cos(2*pi*phase1) + np.cos(2*pi*phase2)
+        # x = x*sg.tukey(Nsub,0.25)     
+        # signal = np.zeros((N,))
+        # signal[tmin:tmax] = x
+
+        signal = chirp1 + chirp2
 
         if not self.return_signal:
             return signal.view(np.ndarray)
@@ -851,20 +885,36 @@ class SignalBank:
         omega1 = 1.5
         omega2 = 1.8
 
-        instf1 = self.fmax-0.05 + 0.04*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)    
-        self.check_inst_freq(instf1)
-        instf2 = self.fmid + 0.04*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)
-        self.check_inst_freq(instf2)
-        instf3 = 1.8*self.fmin * np.ones((Nsub,))    
-        self.check_inst_freq(instf3)
+        chirp1 = self._signal_cos_chirp(omega=omega1, 
+                                    a1=1.0, 
+                                    f0=self.fmax-0.05, 
+                                    a2=0.04)
+
+        chirp2 = self._signal_cos_chirp(omega=omega2, 
+                                    a1=1.0, 
+                                    f0=self.fmid, 
+                                    a2=0.04)
+
+        chirp3 = self._signal_linear_chirp(a = 0, b = 1.8*self.fmin)                                      
+
+
+
+        # instf1 = self.fmax-0.05 + 0.04*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)    
+        # self.check_inst_freq(instf1)
+        # instf2 = self.fmid + 0.04*np.cos(2*pi*omega2*tsub/Nsub - pi*omega2)
+        # self.check_inst_freq(instf2)
+        # instf3 = 1.8*self.fmin * np.ones((Nsub,))    
+        # self.check_inst_freq(instf3)
         
-        phase1 = np.cumsum(instf1)
-        phase2 = np.cumsum(instf2)
-        phase3 = np.cumsum(instf3)
-        x = np.cos(2*pi*phase1) + np.cos(2*pi*phase2) + np.cos(2*pi*phase3)
-        x = x*sg.tukey(Nsub,0.25)     
-        signal = np.zeros((N,))
-        signal[tmin:tmax] = x
+        # phase1 = np.cumsum(instf1)
+        # phase2 = np.cumsum(instf2)
+        # phase3 = np.cumsum(instf3)
+        # x = np.cos(2*pi*phase1) + np.cos(2*pi*phase2) + np.cos(2*pi*phase3)
+        # x = x*sg.tukey(Nsub,0.25)     
+        # signal = np.zeros((N,))
+        # signal[tmin:tmax] = x
+
+        signal = chirp1 + chirp2 + chirp3
 
         if not self.return_signal:
             return signal.view(np.ndarray)
@@ -921,28 +971,32 @@ class SignalBank:
         Nsub = tmax-tmin
         tsub = np.arange(Nsub)
         fmax = self.fmax
+        
+        signal = np.zeros((N,))
+        instf0 = np.zeros_like(signal)
+        instf1 = np.zeros_like(signal)
+        instf2 = np.zeros_like(signal)
 
         omega = 7
         f0 = self.fmin + 0.07*tsub/Nsub
         f1 = 1.2*self.fmin + 0.25*tsub/Nsub
         f2 = 1.3*self.fmin + 0.53*tsub/Nsub
 
-        instf0 = f0+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
-        instf1 = f1+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
-        instf2 = f2+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
-        instf0 = instf0[np.where(instf0<fmax)]    
-        instf1 = instf1[np.where(instf1<fmax)]    
-        instf2 = instf2[np.where(instf2<fmax)]    
+        if0 = f0+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
+        if1 = f1+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        if2 = f2+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        if0 = if0[np.where(if0<fmax)]    
+        if1 = if1[np.where(if1<fmax)]    
+        if2 = if2[np.where(if2<fmax)]    
         
-        self.check_inst_freq(instf0)
-        self.check_inst_freq(instf1)
-        self.check_inst_freq(instf2)
+        self.check_inst_freq(if0)
+        self.check_inst_freq(if1)
+        self.check_inst_freq(if2)
         
-        phase0 = np.cumsum(instf0)
-        phase1 = np.cumsum(instf1)
-        phase2 = np.cumsum(instf2)
-
-        signal = np.zeros((N,))
+        phase0 = np.cumsum(if0)
+        phase1 = np.cumsum(if1)
+        phase2 = np.cumsum(if2)
+        
         x0 = np.zeros_like(signal)
         x1 = np.zeros_like(signal)
         x2 = np.zeros_like(signal)
@@ -951,7 +1005,17 @@ class SignalBank:
         x1[tmin:tmin+len(phase1)] = np.cos(2*pi*phase1)*sg.tukey(len(phase1),0.25) 
         x2[tmin:tmin+len(phase2)] = np.cos(2*pi*phase2)*sg.tukey(len(phase2),0.25) 
 
-        signal = x0+x1+x2 
+        instf0[tmin:tmin+len(if0)] = if0
+        instf1[tmin:tmin+len(if1)] = if1
+        instf2[tmin:tmin+len(if2)] = if2
+
+        chirp0 = Signal(x0, instf=instf0)
+        chirp1 = Signal(x1, instf=instf1)
+        chirp2 = Signal(x2, instf=instf2)
+
+        # signal = x0+x1+x2 
+
+        signal = chirp0 + chirp1 + chirp2 
 
         if not self.return_signal:
             return signal.view(np.ndarray)
@@ -998,7 +1062,6 @@ class SignalBank:
         e[0] = 0
         e /= np.max(e)
 
-
         t_init += tt//2
         instf2 = (m*(t-t_init) + f_init)*rect_window(N,t_init,t_init+tt)
         phase2 = np.cumsum(instf2)
@@ -1014,8 +1077,12 @@ class SignalBank:
 
         x4 = np.cos(2*pi*fmin*np.ones((N,))*t)*rect_window(N,tmin,tmax)
         x4[tmin:tmax] *= sg.tukey(Nsub,0.75)
+        instf4 = fmin*np.ones((N,))
 
-        signal = x1 + x2 + x3 + x4
+        signal = (Signal(x1, instf=instf1) 
+                + Signal(x2, instf=instf2) 
+                + Signal(x3, instf=instf3) 
+                + Signal(x4, instf=instf4))
         
         if not self.return_signal:
             return signal.view(np.ndarray)
@@ -1036,31 +1103,38 @@ class SignalBank:
         tmid = Nsub//2
         # tmid = tmid +(tmax-tmid)//5
         tsub = np.arange(Nsub)
-        
+        signal = np.zeros((N,))
+
         sigma = 0.005
         
-        instf1 = 1.5*self.fmin + 1*(tsub/Nsub-0.05)**2
-        instf1 = instf1[np.where(instf1<self.fmax)]
-        instf1 = instf1[np.where(self.fmin<instf1)]
-        phase1 = np.cumsum(instf1)
+        if1 = 1.5*self.fmin + 1*(tsub/Nsub-0.05)**2
+        if1 = if1[np.where(if1<self.fmax)]
+        if1 = if1[np.where(self.fmin<if1)]
+        phase1 = np.cumsum(if1)
         x = np.cos(2*pi*phase1)*sg.windows.tukey(len(phase1),0.25)
+        chirp1 = np.zeros_like(signal)
+        chirp1[tmin:tmin+len(x)] = x
+        instf1 = np.zeros_like(signal)
+        instf1[tmin:tmin+len(x)] =  if1
 
-        instf2 = np.ones((Nsub,))*(self.fmid-self.fmin)/2
-        instf2 = instf2[tmid::]
-        phase2 = np.cumsum(instf2)
-        x2 = np.cos(2*pi*phase2)#*sg.windows.tukey(len(phase2),0.25)
-        
+        if2 = np.ones((Nsub,))*(self.fmid-self.fmin)/2
+        if2 = if2[tmid::]
+        phase2 = np.cumsum(if2)
+        x2 = np.cos(2*pi*phase2)#*sg.windows.tukey(len(phase2),0.25)        
+        chirp2 = np.zeros_like(signal)
+        chirp2[tmid:tmid+len(x2)] =  x2 
+        instf2 = np.zeros_like(signal)
+        instf2[tmid:tmid+len(x2)] =  if2 
+
         instf3 = np.ones((N,))*((self.fmid-self.fmin)/3 + self.fmid)
         phase3 = np.cumsum(instf3)
         tloc = 3*N//4
-        x3 = 5*np.cos(2*pi*phase3)*np.exp(-np.pi*(np.arange(N)-tloc)**2/(N/8))
+        chirp3 = 5*np.cos(2*pi*phase3)*np.exp(-np.pi*(np.arange(N)-tloc)**2/(N/8))
         
-        signal = np.zeros((N,))
-        signal[tmin:tmin+len(x)] = x
-        signal[tmid:tmid+len(x2)] +=  x2 
-
-        signal += x3
-
+        signal = (Signal(chirp1, instf=instf1) 
+                + Signal(chirp2, instf=instf2) 
+                + Signal(chirp3, instf=None))
+        
         if not self.return_signal:
             return signal.view(np.ndarray)
         return signal   
@@ -1093,11 +1167,6 @@ class SignalBank:
         f_end = fmax
         m = (f_end-f_init)/tt
 
-        # instf1 = (m*(t-t_init) + f_init)*rect_window(N,t_init,t_init+tt)
-        # phase1 = np.cumsum(instf1)
-        # x1 = np.cos(2*pi*phase1)*rect_window(N,t_init,t_init+tt)
-        # x1[t_init:t_init+tt]*=sg.tukey(tt,0.25)
-
         c = 1/tt/10
         prec = 1e-1 # Precision at sample N for the envelope.
         alfa = -np.log(prec*tt/((tt-c)**2))/tt
@@ -1112,7 +1181,7 @@ class SignalBank:
             phase1 = np.cumsum(instf1)
             x1 = 0.9**(i-1)*np.cos(2*pi*phase1)*rect_window(N,t_init,t_init+tt)
             x1[t_init:t_init+tt]*=sg.tukey(tt,0.25)
-            signal = signal + x1
+            signal = signal + Signal(x1, instf=instf1)
         
         t_init += int(1.01*tt)
 
@@ -1122,7 +1191,7 @@ class SignalBank:
             phase1 = np.cumsum(instf1)
             x1 = 0.8**(i-1)*np.cos(2*pi*phase1)*rect_window(N,t_init,t_init+tt)
             x1[t_init:t_init+tt]*=sg.tukey(tt,0.5)
-            signal = signal + x1
+            signal = signal + Signal(x1, instf=instf1)
 
 
         # instf2 = np.zeros(N,)
@@ -1219,8 +1288,13 @@ class SignalBank:
         N = self.N
         t0 = int(N*t0)
         t = np.arange(N)-t0
-        return hermite_fun(N, order, t=t, T = np.sqrt(2*N))*np.cos(2*pi*f0*t)        
-  
+        signal = hermite_fun(N, order, t=t, T = np.sqrt(2*N))*np.cos(2*pi*f0*t)         
+        
+        if self.return_signal:
+            return signal.view(Signal)
+        return signal
+
+        
     def signal_hermite_elipse(self, order = 30, t0 = 0.5, f0 = 0.25):
         """Generates a non-round Hermite function of a given order. The spectrogram of
         Hermite functions are given by an elipsoidal ridge in the time frequency plane,
@@ -1240,7 +1314,12 @@ class SignalBank:
         N = self.N
         t0 = int(N*t0)
         t = np.arange(N)-t0
-        return hermite_fun(N, order, t=t, T = 1.5*np.sqrt(2*N))*np.cos(2*pi*f0*t)
+        signal =  hermite_fun(N, order, t=t, T = 1.5*np.sqrt(2*N))*np.cos(2*pi*f0*t)
+        
+        if self.return_signal:
+            return signal.view(Signal)
+        return signal
+
 
     def signal_mc_triple_impulse(self, Nimpulses = 3):
         """Generates three equispaced impulses in time.
@@ -1264,13 +1343,16 @@ class SignalBank:
         
         signal[tmin:tmax] = impulses
 
-
         stft, stft_padded, Npad = get_stft(signal)
         for i in range(stft.shape[1]):
             stft[:,i] *= sg.windows.tukey(stft.shape[0],0.95)
 
-        xr, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
-        return xr
+        signal, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
+
+        if self.return_signal:
+            return signal.view(Signal)
+        return signal
+
 
     def signal_mc_impulses(self, Nimpulses = 5):
         """Generates equispaced impulses in time.
@@ -1298,9 +1380,11 @@ class SignalBank:
         for i in range(stft.shape[1]):
             stft[:,i] *= sg.windows.tukey(stft.shape[0],0.95)
 
-        xr, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
-        return xr
-           
+        signal, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
+        
+        if self.return_signal:
+            return signal.view(Signal)
+        return signal           
 
     def signal_mc_exp_chirps(self):
         """Generates a multicomponent signal comprising three exponential chirps.
@@ -1311,7 +1395,7 @@ class SignalBank:
     #     """
         N = self.N
         signal = np.zeros((N,))
-        aux = np.zeros((N,))
+        
         exponents = [4, 3, 2]
         finits = [self.fmin, 1.8*self.fmin, 2.5*self.fmin]
         fends = [0.3, 0.8, 1.2]
@@ -1320,6 +1404,7 @@ class SignalBank:
         max_freq = self.fmax
 
         for i in range(ncomps):
+            aux = np.zeros((N,))
             _, instf, tmin, tmax = self._signal_exp_chirp(finit=finits[i],
                                                          fend=fends[i],
                                                          exponent=exponents[i],
@@ -1329,18 +1414,22 @@ class SignalBank:
             if instf[0] >= max_freq:
                 break
             
+            instf[np.where(instf2 > max_freq)] = 0
             instf2 = instf2[np.where(instf2 < max_freq)]
             tukwin = sg.windows.tukey(len(instf2),0.25)
 
             self.check_inst_freq(instf2)
-            phase = np.cumsum(instf2)
+            phase = np.cumsum(instf2*N)
             x = np.cos(2*pi*phase)
             tukwin = sg.windows.tukey(len(x),0.25)
             x = x*tukwin
-            signal[tmin:tmin+len(x)] = x
+            aux[tmin:tmin+len(x)] = x
 
-            aux += signal
-        return aux
+            signal = signal + Signal(aux, instf=instf)
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal           
 
     #! Deprecated. 
     def signal_mc_harmonic(self):
