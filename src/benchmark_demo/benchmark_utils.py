@@ -61,7 +61,7 @@ class MatlabInterface():
         
         for path in add2path:
             self.eng.eval("addpath('"+path+"')")
-
+            self.eng.eval("addpath(genpath('"+path+"'))")
         # sys.path.insert(0, os.path.abspath('../src/methods/'))
 
     def matlab_function(self, signal, *params):
