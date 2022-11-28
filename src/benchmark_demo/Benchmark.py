@@ -132,7 +132,7 @@ class Benchmark:
 
 
         # Generates a dictionary of signals
-        signal_bank = SignalBank(N, Nsub=self.Nsub)
+        signal_bank = SignalBank(N, Nsub=self.Nsub, return_signal=True)
         self.tmin = signal_bank.tmin # Save initial and end times of signals.
         self.tmax = signal_bank.tmax
         if Nsub is None:
