@@ -38,10 +38,10 @@ def dummy_input():
     N = 256
     Nsignals = 1
     dummy_input = np.zeros((Nsignals,N))
-    signal_bank = SignalBank(N)
+    signal_bank = SignalBank(N, return_signal=True)
     signal = signal_bank.signal_linear_chirp()
     noise = np.random.randn(N,)
-    signal += noise    
+    signal = signal + noise    
     return signal
 
 
