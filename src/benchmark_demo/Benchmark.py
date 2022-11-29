@@ -1,9 +1,11 @@
 import numpy as np
-from benchmark_demo.SignalBank import SignalBank
+from benchmark_demo.SignalBank import SignalBank, Signal
 import pandas as pd
 import numbers
 import pickle
 import multiprocessing
+import copy
+
 # from typing import Callable, is_typeddict
 # import json
 # import sys
@@ -340,17 +342,28 @@ class Benchmark:
             narray: Return a numpy array, the shape of which depends on the selected task.
         """
         
-        method, params, noisy_signals = benchmark_parameters
+        method, params, idx = benchmark_parameters
+
+        # Get the noisy signal (as a ndarray) and wrap it with the Signal class, adding
+        # the signal information from the base signal.
+        # This wrap class behaves like a numpy array, but encapsulates signal info, 
+        # like the total number of components or number of components per time.
+
+        noisy_signal = Signal(self.noisy_signals[idx])
+        noisy_signal.ncomps = self.base_signal_info['ncomps']
+        noisy_signal.total_comps = self.base_signal_info['total_comps']
+
+
         try:
             args, kwargs = params    
-            method_output = self.methods[method](noisy_signals,*args,**kwargs)
+            method_output = self.methods[method](noisy_signal,*args,**kwargs)
         except BaseException as err:
             print(f"Unexpected error {err=}, {type(err)=} in method {method}. Watch out for NaN values.")
             
             # TODO Write a log here with the error. Should identify the repetition.
             
             if self.task == 'denoising':
-                method_output = np.empty(noisy_signals.shape)
+                method_output = np.empty(noisy_signal.shape)
                 method_output[:] = np.nan
 
             if self.task == 'detection':
@@ -392,7 +405,9 @@ class Benchmark:
             if self.verbosity >= 1:
                 print('- Signal '+ signal_id)
 
-            base_signal = self.signal_dic[signal_id]()
+            self.base_signal = self.signal_dic[signal_id]()
+            self.base_signal_info = self.signal_dic[signal_id]().get_info()
+            
             for SNR in self.SNRin:
                 if self.verbosity >= 2:
                     print('-- SNR: {} dB'.format(SNR))
@@ -401,20 +416,28 @@ class Benchmark:
                 if self.noise_matrix is None:
                     self.noise_matrix = self.generate_noise()
                             
-                noisy_signals = self.sigmerge(base_signal, 
+                noisy_signals = self.sigmerge(self.base_signal, 
                                             self.noise_matrix,
                                             SNR)
+
+                # Access current noisy signals from the main loop.                                                    
+                self.noisy_signals = noisy_signals
+
+                
+                #===========================MAIN LOOP===================================
 
                 # ------------------------- Parallel loop ------------------------------
                 if self.parallel_flag:
                     parallel_list = list()
                     for method in self.methods:
                         if self.verbosity >= 1:
-                            print('--- Parallel loop -- Method: '+method+'(all parameters)')                                               
+                            print('--- Parallel loop -- Method: '
+                                +method
+                                +'(all parameters)')                                               
                         for p,params in enumerate(self.parameters[method]):
                             args, kwargs = get_args_and_kwargs(params)
-                            for noisy_signal in noisy_signals:
-                                parallel_list.append([method, (args, kwargs), noisy_signal])
+                            for idx, noisy_signal in enumerate(noisy_signals):
+                                parallel_list.append([method, (args, kwargs), idx])
 
                     # Here implement the parallel stuff
                     pool = multiprocessing.Pool(processes=self.processes) 
@@ -443,8 +466,7 @@ class Benchmark:
 
                             if self.task == 'detection':
                                 method_output = np.zeros((self.repetitions)).astype(bool)
-                             
-                            
+                                                         
                             for idx, noisy_signal in enumerate(noisy_signals):
                                 if self.parallel_flag:  # Get results from parallel...
                                     tmp = parallel_results[k]
@@ -453,11 +475,12 @@ class Benchmark:
                                 else:                   # Or from serial computation.
                                     tmp = self.inner_loop([method,
                                                         (args, kwargs), 
-                                                        noisy_signal])        
+                                                        idx])        
                                     method_output[idx] = tmp
                             
                             # Either way, results are saved in a nested dictionary.
-                            result =  self.objectiveFunction(base_signal, method_output)
+                            result =  self.objectiveFunction(self.base_signal, 
+                                                            method_output)
                         
                             # params_dic['Params'+str(p)] = result
                             params_dic[str(params)] = result
