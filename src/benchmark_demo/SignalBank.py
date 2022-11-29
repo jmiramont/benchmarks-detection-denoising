@@ -34,13 +34,13 @@ class Signal(np.ndarray):
 
         # Add new attributes to the object
         obj._comps = [array.copy(), ]
+        obj._ncomps = None
+        obj._total_comps = None
 
         if instf is None:
             obj._instf = [np.zeros_like(array),]
         else:
             obj._instf = [instf.copy(),]    
-
-        # obj._ncomps = None
 
         # Finally, we must return the newly created object:
         return obj
@@ -71,6 +71,8 @@ class Signal(np.ndarray):
         # arr.view(InfoArray).
         self._comps = getattr(obj, '_comps', [obj, ])
         self._instf = getattr(obj, '_instf', list())
+        self._ncomps = getattr(obj, '_ncomps', None)
+        self._total_comps = getattr(obj, '_total_comps', None)
         # self._instf = getattr(obj, '_ncomps', [obj, ])  
         
         # [np.zeros_like(self._comps[0]),]
@@ -125,12 +127,23 @@ class Signal(np.ndarray):
 
     @property
     def total_comps(self):
-        return len(self._comps)
+        if self._total_comps is None:            
+            self._total_comps = len(self._comps)
+        return self._total_comps
+
+    @total_comps.setter
+    def total_comps(self, value):
+        self._total_comps = value
 
     @property
     def ncomps(self):
-        self.component_counter()
+        if self._ncomps is None:
+            self.component_counter()
         return self._ncomps
+
+    @ncomps.setter
+    def ncomps(self,value):
+        self._ncomps = value    
 
     @property
     def comps(self):
@@ -155,10 +168,13 @@ class Signal(np.ndarray):
         for component in self._comps:
             for i in range(N):
                 if np.sum(np.abs(component[i]))>th:
-                    cc[i] += 1
-        
+                    cc[i] += 1        
         self._ncomps = cc
 
+    def get_info(self):
+        return {'ndarray': self.view(np.ndarray), 
+                'ncomps': self.ncomps, 
+                'total_comps':self.total_comps}
 
 class SignalBank:
     """

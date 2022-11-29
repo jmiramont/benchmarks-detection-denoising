@@ -73,7 +73,7 @@ class MatlabInterface():
         Returns:
             _type_: _description_
         """
-        all_params = list((signal,*params))
+        all_params = list((signal.copy(),*params))
         params = self.pre_parameters(*all_params)
         fun_handler = getattr(self.eng, self.matlab_function_name)
         return np.array(fun_handler(*params)[0].toarray())
@@ -97,24 +97,24 @@ class MatlabInterface():
                 
         return params_matlab    
 
-def sigmerge(x1,x2,ratio,return_noise=False):
-    """_summary_
+# def sigmerge(x1,x2,ratio,return_noise=False):
+#     """_summary_
 
-    Args:
-        x1 (_type_): _description_
-        x2 (_type_): _description_
-        ratio (_type_): _description_
-        return_noise (bool, optional): _description_. Defaults to False.
+#     Args:
+#         x1 (_type_): _description_
+#         x2 (_type_): _description_
+#         ratio (_type_): _description_
+#         return_noise (bool, optional): _description_. Defaults to False.
 
-    Returns:
-        _type_: _description_
-    """
-    ex1=np.mean(np.abs(x1)**2)
-    ex2=np.mean(np.abs(x2)**2)
-    h=np.sqrt(ex1/(ex2*10**(ratio/10)))
-    sig=x1+h*x2
+#     Returns:
+#         _type_: _description_
+#     """
+#     ex1=np.mean(np.abs(x1)**2)
+#     ex2=np.mean(np.abs(x2)**2)
+#     h=np.sqrt(ex1/(ex2*10**(ratio/10)))
+#     sig=x1+h*x2
 
-    if return_noise:
-        return sig, h*x2
-    else:
-        return sig
+#     if return_noise:
+#         return sig, h*x2
+#     else:
+#         return sig
