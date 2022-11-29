@@ -721,8 +721,10 @@ class SignalBank:
 
         signal = chirp1+chirp2+chirp3
 
+        #TODO: The total number of comps should be generated automatically.
         if not self.return_signal:
-            return signal.view(np.ndarray)    
+            signal = signal.view(np.ndarray)
+            signal.total_ncomps = 4
 
         return signal
 
@@ -1367,7 +1369,7 @@ class SignalBank:
         signal, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
 
         if self.return_signal:
-            signal.view(Signal)    
+            signal = signal.view(Signal)    
             signal.total_comps = Nimpulses
             
         return signal
