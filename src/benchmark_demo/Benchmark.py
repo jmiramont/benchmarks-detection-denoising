@@ -344,6 +344,9 @@ class Benchmark:
         
         method, params, idx = benchmark_parameters
 
+        if self.verbosity >= 4:
+            print('------ Inner loop. ' + method + ': ' + str(idx), flush=True )
+
         # Get the noisy signal (as a ndarray) and wrap it with the Signal class, adding
         # the signal information from the base signal.
         # This wrap class behaves like a numpy array, but encapsulates signal info, 
@@ -357,6 +360,7 @@ class Benchmark:
         try:
             args, kwargs = params    
             method_output = self.methods[method](noisy_signal,*args,**kwargs)
+            
         except BaseException as err:
             print(f"Unexpected error {err=}, {type(err)=} in method {method}. Watch out for NaN values.")
             
@@ -371,6 +375,7 @@ class Benchmark:
 
         #! Rewrite this part.
         # self.check_methods_output(method_output,noisy_signals) # Just checking if the output its valid.   
+        
         return method_output
 
     def run_test(self):

@@ -48,7 +48,7 @@ class MethodTemplate(ABC):
 class MatlabInterface():
     """_summary_
     """
-    def __init__(self, matlab_function_name, add2path=[]):
+    def __init__(self, matlab_function_name, add2path=[], matlab_warnings=False):
         """_summary_
 
         Args:
@@ -56,8 +56,14 @@ class MatlabInterface():
         """
         self.matlab_function_name = matlab_function_name
         self.eng = matlab.engine.start_matlab()
+        
+        if not matlab_warnings:
+            self.eng.eval("warning('off','all');",nargout=0)
+
         self.eng.eval("addpath('../src/methods')")
         self.eng.eval("addpath('src/methods')")
+
+        
         
         for path in add2path:
             self.eng.eval("addpath('"+path+"')")
