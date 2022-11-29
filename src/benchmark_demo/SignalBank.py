@@ -1278,6 +1278,7 @@ class SignalBank:
         chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.5)    
 
         signal = chirp1+chirp2+chirp3
+        signal.total_comps=4
         
         if not self.return_signal:
             return signal.view(np.ndarray)
@@ -1366,7 +1367,9 @@ class SignalBank:
         signal, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
 
         if self.return_signal:
-            return signal.view(Signal)
+            signal.view(Signal)    
+            signal.total_comps = Nimpulses
+            
         return signal
 
 
@@ -1399,7 +1402,9 @@ class SignalBank:
         signal, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
         
         if self.return_signal:
-            return signal.view(Signal)
+            signal = signal.view(Signal)
+            signal.total_comps = Nimpulses
+            
         return signal           
 
     def signal_mc_exp_chirps(self):
