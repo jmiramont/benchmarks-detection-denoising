@@ -40,9 +40,23 @@ def compute_positions_and_bounds(pos):
 
 
 
-def get_white_noise_zeros(stft_params):
-    N,Nfft = stft_params
+def get_white_noise_zeros(stft_params, complex_noise=False):
+    """Get the zeros of the spectrogram of (real or complex) white Gaussian noise.
+    If the noise generated is real, the zeros considered are those "far" from the time
+    axis.
+
+    Args:
+        stft_params (_type_): _description_
+        complex_noise (bool, optional): _description_. Defaults to False.
+
+    Returns:
+        _type_: _description_
+    """
+    N, Nfft = stft_params
     wnoise = np.random.randn(N)
+
+    if complex_noise:
+        wnoise += 1j*np.random.randn(N)
 
     # Get round window and scale for normalization.    
     g, T = get_round_window(Nfft)
@@ -52,6 +66,14 @@ def get_white_noise_zeros(stft_params):
     # stf = np.abs(spec.tfr[0:N+1,:])
     stf, _, _, _ = get_spectrogram(wnoise, window=g)
     pos = find_zeros_of_spectrogram(np.abs(stf))
+
+    # Get only the zeros "far" from the real axis if the noise is real.
+    if not complex_noise:
+        margin = T
+        valid_ceros = np.zeros((pos.shape[0],),dtype=bool)
+        valid_ceros[(margin<pos[:,0])] = True 
+        pos = pos[valid_ceros]
+
     return pos
 
 
@@ -453,7 +475,7 @@ def compute_envelope_test(signal,
         return output_dict[statistic[0]] 
 
 
-def generate_white_noise_zeros_pp(N, nsim, parallel=False):
+def generate_white_noise_zeros_pp(N, nsim, complex_noise=False, parallel=False):
     # STFT parameters.
     Nfft = 2*N
     T = np.sqrt(Nfft)
@@ -464,14 +486,16 @@ def generate_white_noise_zeros_pp(N, nsim, parallel=False):
     spatstat.import_package("core", "geom", update=False)
     parallel_list = [[N,Nfft] for i in range(nsim)]
 
+    white_noise_func = lambda params: get_white_noise_zeros(params, 
+                                                        complex_noise=complex_noise)
     if parallel:
         nprocesses = 4
         pool = multiprocessing.Pool(processes=nprocesses) 
-        list_of_zeros = pool.map(get_white_noise_zeros, parallel_list) 
+        list_of_zeros = pool.map(white_noise_func, parallel_list) 
         pool.close() 
         pool.join()
     else:
-        list_of_zeros = map(get_white_noise_zeros,parallel_list) 
+        list_of_zeros = map(white_noise_func,parallel_list) 
 
     list_ppp = rbase.list()
     for pos in list_of_zeros:
