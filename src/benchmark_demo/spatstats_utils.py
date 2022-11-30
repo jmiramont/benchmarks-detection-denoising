@@ -43,19 +43,22 @@ def compute_positions_and_bounds(pos):
 def get_white_noise_zeros(stft_params, complex_noise=False):
     """Get the zeros of the spectrogram of (real or complex) white Gaussian noise.
     If the noise generated is real, the zeros considered are those "far" from the time
-    axis.
+    axis. (See Bardenet, Flamant and Chainais 2020 for details.)
 
     Args:
-        stft_params (_type_): _description_
-        complex_noise (bool, optional): _description_. Defaults to False.
+        stft_params (list or tuple): The length N of the noise and Nfft, the number of
+                                    frequency bins of the short-time Fourier transform.
+        complex_noise (bool, optional): Use complex noise or not. Defaults to False.
 
     Returns:
-        _type_: _description_
+        numpy.ndarray: A Nx2 array with the positions of the N zeros found. The first 
+                        column correspond to the y coordinate, the second to the x one.
     """
     N, Nfft = stft_params
     wnoise = np.random.randn(N)
 
     if complex_noise:
+        wnoise = wnoise.astype(complex)
         wnoise += 1j*np.random.randn(N)
 
     # Get round window and scale for normalization.    
@@ -67,6 +70,11 @@ def get_white_noise_zeros(stft_params, complex_noise=False):
     stf, _, _, _ = get_spectrogram(wnoise, window=g)
     pos = find_zeros_of_spectrogram(np.abs(stf))
 
+    # fig, ax = plt.subplots(1,1)
+    # ax.imshow(-np.log10(abs(stf)), origin='lower')
+    # ax.plot(pos[:,1],pos[:,0],'w.')
+    # plt.show()
+
     # Get only the zeros "far" from the real axis if the noise is real.
     if not complex_noise:
         margin = T
@@ -74,12 +82,16 @@ def get_white_noise_zeros(stft_params, complex_noise=False):
         valid_ceros[(margin<pos[:,0])] = True 
         pos = pos[valid_ceros]
 
+    # fig, ax = plt.subplots(1,1)
+    # ax.imshow(-np.log10(abs(stf)), origin='lower')
+    # ax.plot(pos[:,1],pos[:,0],'w.')
+    # plt.show()
+
     return pos
 
 
 class ComputeStatistics():
     """A class that encapsulates the code for computing functional statistics.
-
     """
     
     def __init__(self, spatstat=None):
