@@ -10,7 +10,39 @@ import numbers
 class Signal(np.ndarray):
 
     """ 
-    A class that emulates a signal by behaving like a Numpy array for practical purposes but containing information of the signal such as the number of components and their instantaneous frequency.
+    A class that emulates a signal by behaving like a Numpy array for practical 
+    purposes but containing information of the signal such as the number of components 
+    and their instantaneous frequency (IF). This class is used in two ways:
+    
+    1. As a way of creating more complicated signals (i.e. with more components) and 
+    automatically stablish the number of components and IF by just defining them for 
+    the more simple, monocomponent signals. This way, when linearly combining two signals
+    all the information regarding the combined components and their instantaneous 
+    frequencies is saved and is accessible from the final signal.
+    
+    2. As a way of wrap up information of the signal when passed to a method in the 
+    Benchmark class. The idea is that methods called by this latter class only receive 
+    a signal and parameters for the method. Therefore, by encapsulating the information 
+    of the signal in the Signal object, the method can use it while keep treating the 
+    received signal as a regular numpy array.
+
+    A Signal class object has four attributes that differentiate it from a regular 
+    numpy array:
+    1. comps: A list with each of the individual components combined to produce the 
+    signal.
+    2. insft: A list with each of the individual components' instantenous frequency. 
+    The length of this list is the same as the comps list.
+    3. ncomps: A numpy array indicating the number of components present in each time 
+    sample of the signal.
+    4. total_comps: The total amount of components present within the duration of the 
+    signal. This is simply the length of comps.
+
+    Methods
+    -------
+
+        def add_comp(self, new_comp, **kwargs)
+        def add_instf(self, new_instf, **kwargs)
+
 
     """
 
@@ -154,14 +186,30 @@ class Signal(np.ndarray):
         return self._instf    
     
     def add_comp(self, new_comp, **kwargs):
+        """Add a new component, potentially with its instantaneous frequency. This 
+        latter can be added later.
+
+        Args:
+            new_comp (numpy.ndarray): New component to add.
+            instf (numpy.ndarray): The instantaneous frequency corresponding to new_comp
+        """
+
         self._comps.append(new_comp)
         if 'instf' in kwargs.keys():
             self._instf.append(kwargs['instf'])
 
     def add_instf(self, new_instf, **kwargs):
+        """Add a new instantaneous frequency.
+
+        Args:
+            new_instf (numpy.ndarray): A vector with the instantaneous frequency.
+        """
         self._instf.append(new_instf)
 
     def component_counter(self):
+        """ This functions counts the number of components per time sample, and set the 
+        corresponding attribute self._ncomps.
+        """
         N = len(self)
         cc = np.zeros((N,), dtype=int)
         th = 0.0
