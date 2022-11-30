@@ -319,13 +319,13 @@ def delaunay_triangulation_denoising(signal,
     S = np.abs(stft)**2
     zeros = find_zeros_of_spectrogram(S)
 
-    # Get only the zeros within the margins.
-    valid_ceros = np.zeros((zeros.shape[0],),dtype=bool)
-    valid_ceros[(margin<zeros[:,0]) 
+    # Get only the zeros within the margins
+    valid_zeros = np.zeros((zeros.shape[0],),dtype=bool)
+    valid_zeros[(margin<zeros[:,0]) 
                 & ((S.shape[0]-margin)>zeros[:,0])
                 & ((S.shape[1]-margin)>zeros[:,1])
                 & (margin<zeros[:,1]) ] = True
-    
+
     # Normalize the position of zeros
     vertices = zeros/T # Normalize
 
@@ -360,7 +360,7 @@ def delaunay_triangulation_denoising(signal,
     # print(area_triangle)
     # Select triangles that fulfill all the conditions
     for i,_ in enumerate(tri):
-        valid_tri[i] = np.all(valid_ceros[tri[i]])
+        valid_tri[i] = np.all(valid_zeros[tri[i]])
         side = longest_edges[i]
         area = area_triangle[i]
         selection[i] = (np.any(LB < side) 

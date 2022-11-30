@@ -1,4 +1,4 @@
-from sqlite3 import DatabaseError
+# from sqlite3 import DatabaseError
 import pandas as pd
 import seaborn as sns
 from benchmark_demo.Benchmark import Benchmark

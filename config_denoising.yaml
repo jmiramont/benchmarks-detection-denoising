@@ -1,7 +1,7 @@
 N: 1024
 # Nsub: None
 SNRin: [-10, -5, 0, 10, 20, 30]
-repetitions: 10
+repetitions: 100
 parallelize: 5
 verbosity: 4  
 using_signals: [ #'LinearChirp','CosChirp',]           # Single-component signals
