@@ -484,7 +484,7 @@ class SignalBank:
         Returns:
             numpy.ndarray: Returns a numpy array with the signal.
         """
-
+        
         N = self.N
         eps = 1e-6
         t = np.arange(N)+eps
@@ -1329,7 +1329,7 @@ class SignalBank:
 
         signal = chirp1+chirp2+chirp3
         signal.total_comps=4
-        
+
         if not self.return_signal:
             return signal.view(np.ndarray)
         return signal           
