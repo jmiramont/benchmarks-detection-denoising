@@ -67,8 +67,8 @@ def get_stft(signal, window = None):
     # computing STFT
     _, _, stft_padded = sg.stft(signal_pad, window=window, nperseg=Nfft, noverlap = Nfft-1)
     
-    if signal.dtype == complex128:
-        stft_padded = stft_padded[0:Nfft//2+1,:]
+    # if signal.dtype == complex128:
+    #     stft_padded = stft_padded[0:Nfft//2+1,:]
         
     stft = stft_padded[:,Npad:Npad+N]
     return stft, stft_padded, Npad
