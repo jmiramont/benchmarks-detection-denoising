@@ -195,7 +195,6 @@ class ResultsInterpreter:
         return df_std
 
 
-
     def get_table_means(self):
         """ Generates a table of mean results to .md file. 
 
@@ -269,7 +268,10 @@ class ResultsInterpreter:
             maxinds = np.argmax(nparray_aux, axis=0)
 
             for col, max_ind in enumerate(maxinds):
-                df_means_aux.iloc[max_ind,col+1] =  '**' + str(df_means.iloc[max_ind,col+1]) + '**'        
+                for i in range(len(df_means.loc[col+1])):
+                    df_means_aux.iloc[i,col+1] = '{:.2f}'.format(df_means.iloc[i,col+1])
+                
+                df_means_aux.iloc[max_ind,col+1] =  '**' + '{:.2f}'.format(df_means.iloc[max_ind,col+1]) + '**'        
 
 
             # Change column names to make it more human-readable
@@ -287,10 +289,11 @@ class ResultsInterpreter:
 
             # Table header with links
             csv_filename = os.path.join('.',self.task,'csv_files','results_'+signal_id+'.csv')
-            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/denoising/figures/html/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]](/results/denoising/csv_files/results_' + signal_id +'.csv' +')' +'\n'+ df_results.to_markdown() + '\n'
+            aux_string = '### Signal: '+ signal_id + '  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/denoising/figures/html/'+ 'plot_'+signal_id+'.html)  '+'  [[Get .csv]](/results/denoising/csv_files/results_' + signal_id +'.csv' +')' +'\n'+ df_results.to_markdown(floatfmt='.2f') + '\n'
             output_string += aux_string
 
             # Generate .html interactive plots files with plotly
+            #TODO Make this change with the github user!
             html_filename = os.path.join('results',self.task,'figures','html','plot_'+signal_id+'.html')
             with open(html_filename, 'w') as f:
                 df3 = df_means.set_index('Method + Param').stack().reset_index()
