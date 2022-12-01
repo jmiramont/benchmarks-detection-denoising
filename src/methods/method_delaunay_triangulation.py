@@ -326,6 +326,10 @@ def delaunay_triangulation_denoising(signal,
                 & ((S.shape[1]-margin)>zeros[:,1])
                 & (margin<zeros[:,1]) ] = True
 
+    # If signal is real, beware of taking zeros near the time axis
+    # if signal.dtype != complex128:
+    #     valid_zeros[(T<zeros[:,0])]=True 
+
     # Normalize the position of zeros
     vertices = zeros/T # Normalize
 

@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import complex128, dtype
 import matplotlib.pyplot as plt
 import scipy.signal as sg
 import importlib.util 
@@ -379,13 +380,24 @@ def compute_monte_carlo_sims(signal,
 
     # Compute empirical statistic Sexp:
     stf, _, _, _ = get_spectrogram(signal, window=g)
-    pos_exp = find_zeros_of_spectrogram(stf)/T
-    
+    pos_exp = find_zeros_of_spectrogram(stf)
+
+# If signal is real, do not take zeros near the time axis
+    if signal.dtype == complex128:
+        complex_signal = True
+    else:  
+        complex_signal=False
+        valid_zeros = np.zeros((pos_exp.shape[0],),dtype=bool)
+        valid_zeros[(T<pos_exp[:,0])]=True 
+        pos_exp = pos_exp[valid_zeros]
+
+    pos_exp /= T
     # Compute noise distribution of zeros.
     simulation_pos = list()
     # start = time.time() 
     for i in range(MC_reps):   
-        pos = get_white_noise_zeros([N, Nfft])/T     
+        pos = get_white_noise_zeros([N, Nfft],complex_noise=complex_signal)
+        pos/=T     
         simulation_pos.append(pos)
     # end = time.time()
     # print(end-start)
@@ -570,6 +582,15 @@ def compute_rank_envelope_test(signal,
     stft = stft[:,Nfft//4:Nfft//4+N]
     pos = find_zeros_of_spectrogram(np.abs(stft)**2)
 
+    # If signal is real, do not take zeros near the time axis
+    if signal.dtype == complex128:
+        complex_signal = True
+    else:  
+        complex_signal=False
+        valid_zeros = np.zeros((pos.shape[0],),dtype=bool)
+        valid_zeros[(T<pos[:,0])]=True 
+        pos = pos[valid_zeros]
+
     # fig, ax = plt.subplots(1,1,figsize = (5,5))
     # ax.imshow(np.log10(abs(stft)), origin='lower')
     # ax.plot(pos[:,1],pos[:,0],'w+')
@@ -580,7 +601,7 @@ def compute_rank_envelope_test(signal,
     ppp_r = spatstat.geom.ppp(u_r, v_r, b_u, b_v)
 
     if ppp_sim is None:
-        ppp_sim = generate_white_noise_zeros_pp(N,nsim)
+        ppp_sim = generate_white_noise_zeros_pp(N,nsim,complex_noise=complex_signal)
 
     
     # If a transform is passed as an extra (optional) parameter, apply first the
