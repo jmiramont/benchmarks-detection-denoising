@@ -58,12 +58,10 @@ class MatlabInterface():
         self.eng = matlab.engine.start_matlab()
         
         if not matlab_warnings:
-            self.eng.eval("warning('off','all');",nargout=0)
+            self.eng.eval("warning('off','all');", nargout=0)
 
         self.eng.eval("addpath('../src/methods')")
         self.eng.eval("addpath('src/methods')")
-
-        
         
         for path in add2path:
             self.eng.eval("addpath('"+path+"')")
