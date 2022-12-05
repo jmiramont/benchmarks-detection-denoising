@@ -137,9 +137,10 @@ class Signal(np.ndarray):
                results._comps = []
                results._instf = []
                for ip in [a_signal for a_signal in inputs if isinstance(a_signal,Signal)]:
-                   for cp, instf in zip([*ip.comps],[*ip.instf]):
+                    for cp, instf in zip([*ip.comps],[*ip.instf]):
                         results.add_comp(cp, instf=instf)
-
+                    
+                    results.total_comps += ip.total_comps 
         return results
     
     # def __add__(self,x):

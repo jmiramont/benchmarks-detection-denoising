@@ -27,7 +27,7 @@ def hard_thresholding(signal, coeff=3, dict_output=False):
 
 class NewMethod(MethodTemplate):
     def __init__(self):
-        self.id = 'hard_thresholding'
+        self.id = 'thresholding_hard'
         self.task = 'denoising'
 
 
