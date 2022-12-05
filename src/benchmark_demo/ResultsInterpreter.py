@@ -567,7 +567,8 @@ class ResultsInterpreter:
                         errbar_fun = ('ci',95),
                         errbar_params = None,
                         ax = None, 
-                        plot_type='lines'):
+                        plot_type='lines',
+                        magnitude = 'absolute'):
         """Generates individual performance plots for each signal, displaying the 
         performance measure of all methods for all noise conditions.
 
@@ -592,6 +593,11 @@ class ResultsInterpreter:
         
         Nsignals = len(self.signal_ids)
         df_rearr = self.rearrange_data_frame()
+
+        if magnitude == 'difference':
+            df_rearr['QRF'] = df_rearr['QRF'] - df_rearr['SNRin']
+
+
         list_figs = list()
 
         # grid = ImageGrid(fig, 111,  # similar to subplot(111)
