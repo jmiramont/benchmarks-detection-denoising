@@ -140,7 +140,7 @@ class Signal(np.ndarray):
                     for cp, instf in zip([*ip.comps],[*ip.instf]):
                         results.add_comp(cp, instf=instf)
                     
-                    results.total_comps += ip.total_comps 
+                    # results.total_comps += ip.total_comps 
         return results
     
     # def __add__(self,x):
@@ -164,9 +164,9 @@ class Signal(np.ndarray):
             self._total_comps = len(self._comps)
         return self._total_comps
 
-    @total_comps.setter
-    def total_comps(self, value):
-        self._total_comps = value
+    # @total_comps.setter
+    # def total_comps(self, value):
+    #     self._total_comps = value
 
     @property
     def ncomps(self):
@@ -174,9 +174,9 @@ class Signal(np.ndarray):
             self.component_counter()
         return self._ncomps
 
-    @ncomps.setter
-    def ncomps(self,value):
-        self._ncomps = value    
+    # @ncomps.setter
+    # def ncomps(self,value):
+    #     self._ncomps = value    
 
     @property
     def comps(self):
@@ -750,30 +750,30 @@ class SignalBank:
         chirp2[0:N9] = 0
         chirp2.comps[0][0:N9] = 0
         chirp2.instf[0][0:N9] = 0
-
-        
+        chirp2[8*N9:-1] = 0
+        chirp2.comps[0][8*N9:-1] = 0
+        chirp2.instf[0][8*N9:-1] = 0
         chirp2[4*N9:5*N9] = 0
         chirp2.comps[0][4*N9:5*N9] = 0
         chirp2.instf[0][4*N9:5*N9] = 0
 
         
-        chirp2[8*N9:-1] = 0
-        chirp2.comps[0][8*N9:-1] = 0
-        chirp2.instf[0][8*N9:-1] = 0
+        chirp2a = chirp2.copy()
+        chirp2a[N9:4*N9] = chirp2a[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
+        chirp2a.comps[0][N9:4*N9] = chirp2a[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
+        chirp2a._instf[0][5*N9:8*N9] = 0
 
-        
-        chirp2[N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
-        chirp2.comps[0][N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
-        
-        chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25) 
-        chirp2.comps[0][5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25)
+        chirp2b = chirp2.copy()
+        chirp2b[5*N9:8*N9] = chirp2b[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25) 
+        chirp2b.comps[0][5*N9:8*N9] = chirp2b[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25)
+        chirp2b._instf[0][N9:4*N9] = 0
 
-        signal = chirp1+chirp2+chirp3
+        signal = chirp1+chirp2a+chirp2b+chirp3
 
         #TODO: The total number of comps should be generated automatically.
         if not self.return_signal:
             signal = signal.view(np.ndarray)
-            signal.total_ncomps = 4
+            # signal.total_ncomps = 4
 
         return signal
 
@@ -1260,31 +1260,6 @@ class SignalBank:
             x1[t_init:t_init+tt]*=sg.tukey(tt,0.5)
             signal = signal + Signal(x1, instf=instf1)
 
-
-        # instf2 = np.zeros(N,)
-        # instf2[t_init:t_init+tt] = (e*fmin*0.9+2*fmin+0.15)
-        # phase2 = np.cumsum(instf2)
-        # x2 = np.cos(2*pi*phase2)*rect_window(N,t_init,t_init+tt)
-        # x2[t_init:t_init+tt]*=sg.tukey(tt,0.2)
-
-        # # t_init += tt//2
-        # instf3 = np.zeros(N,)
-        # instf3[t_init:t_init+tt] = (e*fmin*0.9+3*fmin+0.15)
-        # phase3 = np.cumsum(instf3)
-        # x3 = np.cos(2*pi*phase3)*rect_window(N,t_init,t_init+tt)
-        # x3[t_init:t_init+tt]*=sg.tukey(tt,0.2)
-
-
-        # t_init += tt//2
-        # instf3 = (m*(t-t_init) + f_init)*rect_window(N,t_init,t_init+tt)
-        # phase3 = np.cumsum(instf3)
-        # x3 = np.cos(2*pi*phase3)*rect_window(N,t_init,t_init+tt)
-        # x3[t_init:t_init+tt]*=sg.tukey(tt,0.25)*e[-1::-1]
-
-
-        # x4 = np.cos(2*pi*fmin*np.ones((N,))*t)*rect_window(N,tmin,tmax)
-        # x4[tmin:tmax] *= sg.tukey(Nsub,0.75)
-
         if not self.return_signal:
             return signal.view(np.ndarray)
         return signal   
@@ -1323,13 +1298,25 @@ class SignalBank:
         chirp1[2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.5)    
 
         chirp2[0:N9] = 0
+        chirp2._instf[0][0:N9] = 0
         chirp2[4*N9:5*N9] = 0
+        chirp2._instf[0][4*N9:5*N9] = 0
         chirp2[8*N9:-1] = 0
-        chirp2[N9:4*N9] = chirp2[N9:4*N9]*sg.windows.tukey(3*N9,0.5)    
-        chirp2[5*N9:8*N9] = chirp2[5*N9:8*N9]*sg.windows.tukey(3*N9,0.5)    
+        chirp2._instf[0][8*N9:-1] = 0
 
-        signal = chirp1+chirp2+chirp3
-        signal.total_comps=4
+        chirp2a = chirp2.copy()
+        chirp2a[N9:4*N9] = chirp2a[N9:4*N9]*sg.windows.tukey(3*N9,0.5)    
+        chirp2a[5*N9:8*N9] = 0
+        chirp2a._instf[0][5*N9:8*N9] = 0
+            
+        
+        chirp2b = chirp2.copy()
+        chirp2b[5*N9:8*N9] = chirp2b[5*N9:8*N9]*sg.windows.tukey(3*N9,0.5)    
+        chirp2b[N9:4*N9] = 0
+        chirp2b._instf[0][N9:4*N9] = 0
+
+        signal = chirp1+chirp2a+chirp2b+chirp3
+        # signal.total_comps=4
 
         if not self.return_signal:
             return signal.view(np.ndarray)
@@ -1404,12 +1391,14 @@ class SignalBank:
         tmax = N-tmin
         Nsub = tmax-tmin
         dloc = Nsub/(Nimpulses+1)
-        impulses = np.zeros((Nsub,))
-        signal = np.zeros((N,))
-        for i in range(Nimpulses):
-            impulses[int((i+1)*dloc -1 )] = 10
         
-        signal[tmin:tmax] = impulses
+        signal = np.zeros((N,))
+        comps = []
+        for i in range(Nimpulses):
+            impulse = np.zeros((N,))
+            impulse[int((i+1)*dloc)+tmin] = 10
+            comps.append(impulse.copy())
+            signal += impulse
 
         stft, stft_padded, Npad = get_stft(signal)
         for i in range(stft.shape[1]):
@@ -1419,7 +1408,8 @@ class SignalBank:
 
         if self.return_signal:
             signal = signal.view(Signal)    
-            signal.total_comps = Nimpulses
+            signal._comps = comps
+            signal._instf = comps
             
         return signal
 
@@ -1438,25 +1428,28 @@ class SignalBank:
         tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
-        dloc = Nsub/(Nimpulses+1)
-        impulses = np.zeros((Nsub,))
+        dloc = Nsub/(Nimpulses+1)        
         signal = np.zeros((N,))
+        comps = []
+
         for i in range(Nimpulses):
-            impulses[int((i+1)*dloc -1 )] = 2*(i+1)
-        
-        signal[tmin:tmax] = impulses
+            impulse = np.zeros((N,))
+            impulse[int((i+1)*dloc)+tmin] = 2*(i+1)
+            comps.append(impulse.copy())
+            signal += impulse
 
         stft, stft_padded, Npad = get_stft(signal)
         for i in range(stft.shape[1]):
             stft[:,i] *= sg.windows.tukey(stft.shape[0],0.95)
 
         signal, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
-        
+
         if self.return_signal:
-            signal = signal.view(Signal)
-            signal.total_comps = Nimpulses
-            
-        return signal           
+            signal = signal.view(Signal)    
+            signal._comps = comps 
+            signal._instf = comps
+
+        return signal
 
     def signal_mc_exp_chirps(self):
         """Generates a multicomponent signal comprising three exponential chirps.
