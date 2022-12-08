@@ -164,9 +164,9 @@ class Signal(np.ndarray):
             self._total_comps = len(self._comps)
         return self._total_comps
 
-    # @total_comps.setter
-    # def total_comps(self, value):
-    #     self._total_comps = value
+    @total_comps.setter
+    def total_comps(self, value):
+        self._total_comps = value
 
     @property
     def ncomps(self):
@@ -174,9 +174,9 @@ class Signal(np.ndarray):
             self.component_counter()
         return self._ncomps
 
-    # @ncomps.setter
-    # def ncomps(self,value):
-    #     self._ncomps = value    
+    @ncomps.setter
+    def ncomps(self,value):
+        self._ncomps = value    
 
     @property
     def comps(self):
@@ -1346,8 +1346,11 @@ class SignalBank:
         signal = hermite_fun(N, order, t=t, T = np.sqrt(2*N))*np.cos(2*pi*f0*t)         
         
         if self.return_signal:
-            return signal.view(Signal)
+            signal = signal.view(Signal)
+            signal._instf = signal[:]
+
         return signal
+
 
         
     def signal_hermite_elipse(self, order = 30, t0 = 0.5, f0 = 0.25):
@@ -1372,7 +1375,9 @@ class SignalBank:
         signal =  hermite_fun(N, order, t=t, T = 1.5*np.sqrt(2*N))*np.cos(2*pi*f0*t)
         
         if self.return_signal:
-            return signal.view(Signal)
+            signal = signal.view(Signal)
+            signal._instf = signal[:]
+
         return signal
 
 
