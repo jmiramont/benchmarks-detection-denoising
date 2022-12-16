@@ -118,7 +118,7 @@ def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
         saved_triangles = np.concatenate((saved_triangles,current_triangles),axis=0)
         
         if np.all(next_triangles == 0):
-            if saved_triangles.shape[0] >= min_group_size+1:
+            if saved_triangles.shape[0] >= min_group_size:
                 groups_of_triangles.append(saved_triangles[1::])
             
             saved_triangles = np.zeros((1,3))
@@ -133,23 +133,28 @@ def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
         else:
             current_triangles = next_triangles[1::]
 
-    ntri2 = sum(len(i) for i in groups_of_triangles) # control ntri1==ntri2
+    # ntri2 = sum(len(i) for i in groups_of_triangles) # control ntri1==ntri2
 
     energy_per_group = list()
     masks_of_each_group = list()
+    mask = np.zeros_like(S).astype(bool)
 
-    mask = np.zeros_like(S)
     for group in groups_of_triangles:
         group_mask = mask_triangles3(S, group, zeros)
         mask += group_mask 
         energy_per_group.append(np.sum(S*group_mask))
-        masks_of_each_group.append(group_mask)
+        masks_of_each_group.append(group_mask) # This is memory expensive
 
+    # Selection of groups by energy above a quantile of the total energy
     if q is not None:
         ind_group = np.where(energy_per_group > np.quantile(energy_per_group,q))
         groups_of_triangles = [groups_of_triangles[i] for i in ind_group[0]]
         masks_of_each_group = [masks_of_each_group[i] for i in ind_group[0]]
-
+        # masks_of_each_group = [mask_triangles3(S, groups_of_triangles[i], zeros) for i in ind_group[0]]
+        mask = sum(masks_of_each_group)
+        mask[np.where(mask>1)] = 1
+    
+    # Selection of the more energetic ngroups of triangles
     if ngroups is not None:
         if ngroups == 'all' or ngroups > len(groups_of_triangles):
             ngroups = len(groups_of_triangles)
@@ -157,10 +162,11 @@ def grouping_triangles(S, zeros, tri, ngroups=None, min_group_size=1, q = None):
         order_energy_basins = np.argsort(energy_per_group)[-1:0:-1]
         groups_of_triangles = [groups_of_triangles[i] for i in order_energy_basins[0:ngroups]]
         masks_of_each_group = [masks_of_each_group[i] for i in order_energy_basins[0:ngroups]]
-    
-    mask = sum(masks_of_each_group)
-    mask[np.where(mask>1)] = 1  
+        # masks_of_each_group = [mask_triangles3(S, groups_of_triangles[i], zeros) for i in order_energy_basins[0:ngroups]]
+        mask = sum(masks_of_each_group)
+        # mask[np.where(mask>1)] = 1  
 
+    # return the mask.
     return groups_of_triangles, mask
 
 def describe_triangles(tri,zeros):
@@ -217,7 +223,7 @@ def describe_triangles(tri,zeros):
 #     return mask
 
 def mask_triangles3(F, triangles, zeros):
-    mask = np.zeros(F.shape)
+    mask = np.zeros(F.shape).astype(bool)
     triangles = triangles.astype(int)
     # inside2 = np.zeros((points.shape[0],)).astype(bool)
     for tri in triangles:
@@ -229,7 +235,7 @@ def mask_triangles3(F, triangles, zeros):
             inside2 = path.contains_points(points)
             points = points + [int(min_row), int(min_col)]
             for point in points[inside2,:]:         
-                mask[tuple(point)] = 1
+                mask[tuple(point)] = True
     return mask
 
 def compute_scale_triangles(signal, edges_signal, mc_reps=99,alpha = 0.01):
@@ -287,8 +293,9 @@ def delaunay_triangulation_denoising(signal,
                                     ngroups=None, 
                                     min_group_size=1,
                                     q=None,
-                                    adapt_thr=False,                                
+                                    adapt_thr=False,                            return_mask = False,   
                                     return_dic = False,
+                                    Nfft = None,
                                     test_params = None,):
 
     """Signal filtering by domain detection using Delaunay triangulation.
@@ -310,22 +317,23 @@ def delaunay_triangulation_denoising(signal,
 
     # Set parameters
     N = len(signal)
-    Nfft = 2*N
+    if Nfft is None:
+        Nfft = 2*N
+
     g, T = get_round_window(Nfft)
-    stft, stft_padded, Npad = get_stft(signal,g)
-    margin = 0
+    stft = get_stft(signal, window = g, Nfft=Nfft)
 
     # Computes the spectrogram and its zeros.
-    S = np.abs(stft)**2
+    S = np.abs(stft[0:Nfft//2+1,:])**2
     zeros = find_zeros_of_spectrogram(S)
 
     # Get only the zeros within the margins
     valid_zeros = np.zeros((zeros.shape[0],),dtype=bool)
-    valid_zeros[(margin<zeros[:,0]) 
-                & ((S.shape[0]-margin)>zeros[:,0])
-                & ((S.shape[1]-margin)>zeros[:,1])
-                & (margin<zeros[:,1]) ] = True
-
+    valid_zeros[(0<=zeros[:,0]) 
+                & ((S.shape[0]-margin)>=zeros[:,0])
+                & ((S.shape[1]-margin)>=zeros[:,1])
+                & (0<=zeros[:,1]) ] = True
+    # valid_zeros[:]=True
     # If signal is real, beware of taking zeros near the time axis
     if signal.dtype != complex128:
         valid_zeros[(T<zeros[:,0])]=True 
@@ -345,7 +353,7 @@ def delaunay_triangulation_denoising(signal,
     # Compute and adaptive threshold if its required, otherwise use "LB"
     if adapt_thr:
         if test_params is None:
-            test_params = {
+            test_params = { 'alpha':0.05,
                             'fun':'Fest', 
                             'correction':'rs', 
                             'transform':'asin(sqrt(.))',
@@ -358,7 +366,7 @@ def delaunay_triangulation_denoising(signal,
         # LB = compute_scale_triangles(signal, longest_edges, mc_reps=99, alpha=0.01)
         # print('Threshold:{}'.format(LB))
 
-    area_thr =  0 #LB/8
+    area_thr =  0.3 #LB/8
 
     # print(area_triangle)
     # Select triangles that fulfill all the conditions
@@ -381,20 +389,64 @@ def delaunay_triangulation_denoising(signal,
                                                         q = q)
     else:
         # mask = mask_triangles(stft, delaunay_graph, np.where(selection))  
-        mask = mask_triangles3(stft, tri_select, zeros)  
+        mask = mask_triangles3(S, tri_select, zeros)  
+
+    # If just the mask is required
+    if return_mask:
+        return mask.astype(bool)
 
     # Apply the reconstruction formula to the masked STFT to filter the signal.
-    signal_r, t = reconstruct_signal_2(mask, stft_padded, Npad, Nfft)
-
+    # signal_r, t = reconstruct_signal_2(mask, stft_padded, Npad, Nfft)
+    signal_r = reconstruct_signal_3(mask, stft, window=g)
     # Return dictionary if requested, otherwise return the denoised signal.
     if return_dic:
         return {'s_r': signal_r,
-                'mask': mask,
+                'mask': mask.astype(bool),
                 'tri': tri,
                 'tri_select': tri_select,
-                'zeros': zeros}
+                'zeros': zeros,
+                'stft': stft}
     else:
         return signal_r
+
+def block_based_dt_denoising(signal,block_len=1024,**kwargs):
+    N = len(signal)
+    t_init = 0
+    mask = np.zeros((block_len+1, N),bool)
+    bn=0
+    signal_mean = np.mean(signal)
+    # signal -= signal_mean
+    while t_init<N:
+        print(t_init)
+        t_end = np.min([t_init+block_len,N])
+        block = signal[t_init:t_end]
+
+        if len(block) < block_len:
+            aux = np.random.randn(block_len,)*0.001
+            aux[0:len(block)] = block
+            block = aux
+
+        mask_block = delaunay_triangulation_denoising(block,
+                                        return_mask = True, # Just get the mask.
+                                        # margin= int(np.sqrt(block_len)),
+                                        **kwargs)
+                                        
+                                        # grouping = False,
+                                        # min_group_size=3,
+                                        # LB = 1.7,
+                                        # )
+        
+        mask[:,t_init:t_end] += mask_block[:,0:(t_end-t_init)]
+        t_init += (block_len-block_len//4)
+        bn += 1
+        print('Block: {}'.format(bn))
+    
+    print('Invertion...')
+    g, T = get_round_window(2*block_len)
+    stft = get_stft(signal, window = g, Nfft=2*block_len)
+    signal_r = reconstruct_signal_3(mask, stft, window=g)
+
+    return mask, stft, signal_r#+signal_mean
 
 
 class NewMethod(MethodTemplate):
