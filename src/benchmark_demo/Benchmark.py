@@ -192,7 +192,7 @@ class Benchmark:
             ValueError: If any parameter is not correctly parsed.
         """
         # Check verbosity
-        assert isinstance(verbosity,int) and 0<=verbosity<5 , 'Verbosity should be an integer between 0 and 4'
+        assert isinstance(verbosity,int) and 0<=verbosity<6 , 'Verbosity should be an integer between 0 and 5'
         self.verbosity = verbosity
 
         # Check the task is either 'denoising' or 'detection'.
@@ -326,7 +326,8 @@ class Benchmark:
         Set the performance function for the selected task (future tasks could easily add new performance functions)
         """
         
-        compFuncs = {'denoising': self.snr_comparison,
+        compFuncs = {#'denoising': lambda x: self.snr_comparison(*x,tmin=self.tmin,tmax=self.tmax),
+                    'denoising': self.snr_comparison,
                     'detection': detection_perf_function,
                     }
         return compFuncs[task]    
@@ -344,12 +345,12 @@ class Benchmark:
         
         method, params, idx = benchmark_parameters
 
-        if self.verbosity >= 4:
+        if self.verbosity >= 5:
             print('------ Inner loop. ' + method + ': ' + str(idx), flush=True )
 
         # Get the noisy signal (as a ndarray) and wrap it with the Signal class, adding
         # the signal information from the base signal.
-        # This wrap class behaves like a numpy array, but encapsulates signal info, 
+        # This wrapper class behaves like a numpy array, but encapsulates signal info, 
         # like the total number of components or number of components per time.
 
         noisy_signal = Signal(self.noisy_signals[idx])
@@ -467,9 +468,11 @@ class Benchmark:
                             args, kwargs = get_args_and_kwargs(params)
                             
                             if self.task == 'denoising':
+                                extrargs = {'tmin':self.tmin,'tmax':self.tmax}
                                 method_output = np.zeros_like(noisy_signals)
 
                             if self.task == 'detection':
+                                extrargs = {}
                                 method_output = np.zeros((self.repetitions)).astype(bool)
                                                          
                             for idx, noisy_signal in enumerate(noisy_signals):
@@ -485,7 +488,8 @@ class Benchmark:
                             
                             # Either way, results are saved in a nested dictionary.
                             result =  self.objectiveFunction(self.base_signal, 
-                                                            method_output)
+                                                            method_output,
+                                                            **extrargs)
                         
                             # params_dic['Params'+str(p)] = result
                             params_dic[str(params)] = result
@@ -599,9 +603,13 @@ class Benchmark:
 
 # Other functions:
     def dic2df(self, mydic):
-        """
-        This function transforms a dictionary of arbitrary depth into a pandas' 
-        DataFrame object.
+        """_summary_
+
+        Args:
+            mydic (_type_): _description_
+
+        Returns:
+            _type_: _description_
         """
         auxdic = dict()
         for key in mydic:
@@ -614,96 +622,67 @@ class Benchmark:
         df = pd.concat(auxdic,axis = 0)
         return df
 
+    def generate_noise(self):
+        """_summary_
 
-    def add_snr_block(self, x, snr, K=1, complex_noise=False):
+        Returns:
+            _type_: _description_
         """
-        Creates K realizations of the signal x with white Gaussian noise, with SNR 
-        equal to 'snr'. SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En 
-        are the energy of the signal and that of the noise respectively.
-        """
-        
+        noise_matrix = np.random.randn(self.repetitions,self.N)
+        if self.complex_noise:
+            noise_matrix += 1j*np.random.randn(self.repetitions,self.N)
+
+        return noise_matrix
+
+
+    # Static methods:
+    @staticmethod
+    def sigmerge(x1, noise, ratio, return_noise=False):
         # Get signal parameters.
-        N = self.N
-        tmin = self.tmin
-        tmax = self.tmax
-        Nsub = self.tmax-self.tmin
+        N = len(x1)
 
-        # Make sure signal's mean is zero.
-        x = x - np.mean(x)
-        Px = np.sum(x ** 2)
-        
-        # Create the noise for signal with given SNR:
-        n = np.random.randn(Nsub,K)
-        if complex_noise:
-            n = n.astype(complex)
-            n += 1j*np.random.randn(Nsub,K)
-        Pn = np.sum(np.abs(n) ** 2, axis = 0) # Normalize to 1 the variance of noise.
-        n = n / np.sqrt(Pn)
-        Pn = Px * 10 ** (- snr / 10) # Give noise the prescribed variance.
-        n = n * np.sqrt(Pn)
+        sig = np.random.randn(*noise.shape)
+        ex1=np.mean(np.abs(x1)**2)
 
-        # Complete the signal with noise outside the Nsub samples
-        aux = np.random.randn(N,K)
-        if complex_noise:
-            aux = aux.astype(complex)
-            aux += 1j*np.random.randn(N,K)
-        Paux = np.sum(np.abs(aux) ** 2, axis = 0)
-        aux = aux / np.sqrt(Paux)
-        Paux = Px * 10 ** (- snr / 10)
-        aux = aux * np.sqrt(Paux)
-        aux[tmin:tmax,:] = n
-        n = aux
-
-        # Checking:
-        nprobe=n[:,1].T
-        Ex = np.sum(x[tmin:tmax]**2)
-        Eprobe = np.sum((nprobe[tmin:tmax])**2)
-        # Ex = np.sum(x**2)
-        # Eprobe = np.sum((nprobe)**2)
-        # print("SNRout={}".format(10*np.log10(Ex/Eprobe)))
-    
-        return x+n.T, n.T
-
-    def sigmerge(self, x1, noise, ratio, return_noise=False):
-        # Get signal parameters.
-        N = self.N
-        tmin = self.tmin
-        tmax = self.tmax
-        Nsub = self.tmax-self.tmin
-        sig = np.random.randn(noise.shape[0],N)
-
-        ex1=np.mean(np.abs(x1[tmin:tmax])**2)
-        ex2=np.mean(np.abs(noise)**2, axis=1)
+        if len(noise.shape)==1:
+            ex2=np.mean(np.abs(noise)**2)
+        else:
+            ex2=np.mean(np.abs(noise)**2, axis=1)
         h=np.sqrt(ex1/(ex2*10**(ratio/10)))
-        scaled_noise = noise*h.reshape((noise.shape[0],1))
-        sig = sig*h.reshape((noise.shape[0],1))
-        sig[:,tmin:tmax]=x1[tmin:tmax]+scaled_noise
+
+        if len(noise.shape)>1:
+            h.resize((noise.shape[0],1))
+            
+        scaled_noise = noise*h
+        # sig = sig*h.reshape((noise.shape[0],1))
+        sig=x1+scaled_noise
 
         if return_noise:
             return sig, scaled_noise
         else:
             return sig
     
-    def generate_noise(self):
-        noise_matrix = np.random.randn(self.repetitions,self.Nsub)
-        if self.complex_noise:
-            noise_matrix += 1j*np.random.randn(self.repetitions,self.Nsub)
-
-        return noise_matrix
-
-    def snr_comparison(self, x, x_hat):
+    @staticmethod
+    def snr_comparison(x, x_hat, tmin=None, tmax=None):
         """
         Quality reconstruction factor for denoising performance characterization.
         """
-        tmin = self.tmin
-        tmax = self.tmax
+        if tmin is None:
+            tmin = 0
+
+        if tmax is None:
+            tmax = len(x)
 
         x = x[tmin:tmax]
-        x_hat = x_hat[:,tmin:tmax]
-
-        qrf = np.zeros((x_hat.shape[0],))
-        for i in range(x_hat.shape[0]):
-            qrf[i] = 10*np.log10(np.sum(x**2)/np.sum((x_hat[i,:]-x)**2))
+        
+        if len(x_hat.shape)==1:
+            x_hat = x_hat[tmin:tmax]
+            qrf = 10*np.log10(np.sum(x**2)/np.sum((x_hat-x)**2))
+        else:
+            x_hat = x_hat[:,tmin:tmax]
+            qrf = np.zeros((x_hat.shape[0],))
+            for i in range(x_hat.shape[0]):
+                qrf[i] = 10*np.log10(np.sum(x**2)/np.sum((x_hat[i,:]-x)**2))
         
         return qrf
 
@@ -728,3 +707,56 @@ def get_args_and_kwargs(params):
                 kwargs = dict()
 
         return args, kwargs
+
+
+
+# ! Deprecated
+# 
+# #    def add_snr_block(self, x, snr, K=1, complex_noise=False):
+#         """
+#         Creates K realizations of the signal x with white Gaussian noise, with SNR 
+#         equal to 'snr'. SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En 
+#         are the energy of the signal and that of the noise respectively.
+#         """
+        
+#         # Get signal parameters.
+#         N = self.N
+#         tmin = self.tmin
+#         tmax = self.tmax
+#         Nsub = self.tmax-self.tmin
+
+#         # Make sure signal's mean is zero.
+#         x = x - np.mean(x)
+#         Px = np.sum(x ** 2)
+        
+#         # Create the noise for signal with given SNR:
+#         n = np.random.randn(Nsub,K)
+#         if complex_noise:
+#             n = n.astype(complex)
+#             n += 1j*np.random.randn(Nsub,K)
+#         Pn = np.sum(np.abs(n) ** 2, axis = 0) # Normalize to 1 the variance of noise.
+#         n = n / np.sqrt(Pn)
+#         Pn = Px * 10 ** (- snr / 10) # Give noise the prescribed variance.
+#         n = n * np.sqrt(Pn)
+
+#         # Complete the signal with noise outside the Nsub samples
+#         aux = np.random.randn(N,K)
+#         if complex_noise:
+#             aux = aux.astype(complex)
+#             aux += 1j*np.random.randn(N,K)
+#         Paux = np.sum(np.abs(aux) ** 2, axis = 0)
+#         aux = aux / np.sqrt(Paux)
+#         Paux = Px * 10 ** (- snr / 10)
+#         aux = aux * np.sqrt(Paux)
+#         aux[tmin:tmax,:] = n
+#         n = aux
+
+#         # Checking:
+#         nprobe=n[:,1].T
+#         Ex = np.sum(x[tmin:tmax]**2)
+#         Eprobe = np.sum((nprobe[tmin:tmax])**2)
+#         # Ex = np.sum(x**2)
+#         # Eprobe = np.sum((nprobe)**2)
+#         # print("SNRout={}".format(10*np.log10(Ex/Eprobe)))
+    
+#         return x+n.T, n.T        

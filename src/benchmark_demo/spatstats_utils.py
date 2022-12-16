@@ -722,7 +722,7 @@ def compute_scale(signal, **test_params):
     reject_H0 = output_dic['rejectH0']
   
     if not reject_H0:
-        print('No detection.')
+        # print('No detection.')
         radius_of_rejection = 0.8
     else:
         radius_of_rejection = output_dic['r_max_dif']

@@ -111,8 +111,6 @@ def empty_space_denoising(signal,
                         }
         
         scale_pp = compute_scale(signal,**test_params)
-
-        print(scale_pp)
         radi_seg = scale_pp # Override LB
         radi_expand = scale_pp
 
