@@ -558,7 +558,8 @@ class ResultsInterpreter:
         return fig
 
 
-    def get_summary_plots(self, 
+    def get_summary_plots(self,
+                        df_rearr = None, 
                         size=(3,3), 
                         savetofile=True, 
                         filename=None,
@@ -592,7 +593,9 @@ class ResultsInterpreter:
         """
         
         Nsignals = len(self.signal_ids)
-        df_rearr = self.rearrange_data_frame()
+
+        if df_rearr is None:
+            df_rearr = self.rearrange_data_frame()
 
         if magnitude == 'difference':
             df_rearr['QRF'] = df_rearr['QRF'] - df_rearr['SNRin']
@@ -645,6 +648,9 @@ class ResultsInterpreter:
                                         errbar_fun=errbar_fun,
                                         errbar_params=errbar_params,
                                         axis = ax)
+            
+            if self.benchmark.task == "denoising" and magnitude == 'difference':
+                ax.set_ylabel('QRF - SNR')
 
             if self.benchmark.task == "detection":
                 ax.set_ylabel('Detection Power')

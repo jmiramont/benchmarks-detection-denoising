@@ -1351,6 +1351,7 @@ class SignalBank:
 
         return signal
 
+
         
     def signal_hermite_elipse(self, order = 30, t0 = 0.5, f0 = 0.25):
         """Generates a non-round Hermite function of a given order. The spectrogram of
