@@ -1120,7 +1120,7 @@ class SignalBank:
         instf1 = (m*(t-t_init) + f_init)*rect_window(N,t_init,t_init+tt)
         phase1 = np.cumsum(instf1)
         x1 = np.cos(2*pi*phase1)*rect_window(N,t_init,t_init+tt)
-        x1[t_init:t_init+tt]*=sg.tukey(tt,0.25)
+        x1[t_init:t_init+tt]*=sg.tukey(tt,0.4)
 
         c = 1/tt/10
         prec = 1e-1 # Precision at sample N for the envelope.
@@ -1171,14 +1171,12 @@ class SignalBank:
         # tmid = tmid +(tmax-tmid)//5
         tsub = np.arange(Nsub)
         signal = np.zeros((N,))
-
-        sigma = 0.005
         
-        if1 = 1.5*self.fmin + 1*(tsub/Nsub-0.05)**2
+        if1 = 1*self.fmin + 1*(tsub/Nsub-0.05)**2
         if1 = if1[np.where(if1<self.fmax)]
         if1 = if1[np.where(self.fmin<if1)]
         phase1 = np.cumsum(if1)
-        x = np.cos(2*pi*phase1)*sg.windows.tukey(len(phase1),0.25)
+        x = np.cos(2*pi*phase1)*sg.windows.tukey(len(phase1),0.5)
         chirp1 = np.zeros_like(signal)
         chirp1[tmin:tmin+len(x)] = x
         instf1 = np.zeros_like(signal)
@@ -1187,20 +1185,27 @@ class SignalBank:
         if2 = np.ones((Nsub,))*(self.fmid-self.fmin)/2
         if2 = if2[tmid::]
         phase2 = np.cumsum(if2)
-        x2 = np.cos(2*pi*phase2)#*sg.windows.tukey(len(phase2),0.25)        
+        x2 = np.cos(2*pi*phase2)*sg.windows.tukey(len(phase2),0.1)        
         chirp2 = np.zeros_like(signal)
         chirp2[tmid:tmid+len(x2)] =  x2 
         instf2 = np.zeros_like(signal)
-        instf2[tmid:tmid+len(x2)] =  if2 
+        instf2[tmid:tmid+len(x2)] =  if2
 
-        instf3 = np.ones((N,))*((self.fmid-self.fmin)/3 + self.fmid)
+        instf3 = np.ones((N,))*(2*(self.fmid-self.fmin)/3 + self.fmid)
         phase3 = np.cumsum(instf3)
-        tloc = 3*N//4
-        chirp3 = 5*np.cos(2*pi*phase3)*np.exp(-np.pi*(np.arange(N)-tloc)**2/(N/8))
+        tloc = 5*N//7
+        chirp3 = 3*np.cos(2*pi*phase3)*np.exp(-np.pi*(np.arange(N)-tloc)**2/(N/8))
+        
+        instf4 = np.ones((N,))*((self.fmid-self.fmin)/3 + self.fmid)
+        phase4 = np.cumsum(instf4)
+        tloc = 6*N//7
+        chirp4 = 5*np.cos(2*pi*phase4)*np.exp(-np.pi*(np.arange(N)-tloc)**2/(N/8))
+            
         
         signal = (Signal(chirp1, instf=instf1) 
                 + Signal(chirp2, instf=instf2) 
-                + Signal(chirp3, instf=None))
+                + Signal(chirp3, instf=None)
+                + Signal(chirp4, instf=None))
         
         if not self.return_signal:
             return signal.view(np.ndarray)

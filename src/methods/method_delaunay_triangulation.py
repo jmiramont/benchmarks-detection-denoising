@@ -195,26 +195,26 @@ def describe_triangles(tri,zeros):
     return sides, max_side, area_triangle
 
 
-def mask_triangles(F, tri, selection):
-    mask = np.zeros(F.shape)
-    for i in range(mask.shape[0]):
-        for j in range(mask.shape[1]):
-           simplex = tri.find_simplex((i,j))
-           if np.any(simplex == selection):
-               mask[i,j] = 1
+# def mask_triangles(F, tri, selection):
+#     mask = np.zeros(F.shape)
+#     for i in range(mask.shape[0]):
+#         for j in range(mask.shape[1]):
+#            simplex = tri.find_simplex((i,j))
+#            if np.any(simplex == selection):
+#                mask[i,j] = 1
 
-    return mask
+#     return mask
 
-def mask_triangles2(F, triangles, zeros):
-    mask = np.zeros(F.shape)
-    points = np.array([[i,j] for i in range(F.shape[0]) for j in range(F.shape[1])])
-    inside2 = np.zeros((points.shape[0],)).astype(bool)
-    for tri in triangles:
-            path = mpltPath.Path(zeros[tri,:])
-            inside2 += path.contains_points(points)   
-    for point in points[inside2,:]:         
-        mask[tuple(point)] = 1
-    return mask
+# def mask_triangles2(F, triangles, zeros):
+#     mask = np.zeros(F.shape)
+#     points = np.array([[i,j] for i in range(F.shape[0]) for j in range(F.shape[1])])
+#     inside2 = np.zeros((points.shape[0],)).astype(bool)
+#     for tri in triangles:
+#             path = mpltPath.Path(zeros[tri,:])
+#             inside2 += path.contains_points(points)   
+#     for point in points[inside2,:]:         
+#         mask[tuple(point)] = 1
+#     return mask
 
 def mask_triangles3(F, triangles, zeros):
     mask = np.zeros(F.shape)
@@ -327,8 +327,8 @@ def delaunay_triangulation_denoising(signal,
                 & (margin<zeros[:,1]) ] = True
 
     # If signal is real, beware of taking zeros near the time axis
-    # if signal.dtype != complex128:
-    #     valid_zeros[(T<zeros[:,0])]=True 
+    if signal.dtype != complex128:
+        valid_zeros[(T<zeros[:,0])]=True 
 
     # Normalize the position of zeros
     vertices = zeros/T # Normalize
@@ -355,7 +355,6 @@ def delaunay_triangulation_denoising(signal,
         
         scale_pp = compute_scale(signal,**test_params)
         LB = 2*scale_pp
-        print(LB)
         # LB = compute_scale_triangles(signal, longest_edges, mc_reps=99, alpha=0.01)
         # print('Threshold:{}'.format(LB))
 
@@ -407,6 +406,7 @@ class NewMethod(MethodTemplate):
         # self.cs = ComputeStatistics()
 
     def method(self, signal, *args, **kwargs):
+        # nc = signal.total_comps
         signal_output = delaunay_triangulation_denoising(signal, *args, **kwargs)    
         return signal_output
 
