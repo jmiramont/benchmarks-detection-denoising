@@ -4,12 +4,15 @@ from numpy import pi as pi
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
 
-def hard_thresholding(signal, coeff=3, dict_output=False):
+def hard_thresholding(signal, coeff=3, window=None, overlap=None,dict_output=False):
     
-    Nfft = len(signal)
-    g, a = get_round_window(Nfft)
-    S, stft, stft_padded, Npad = get_spectrogram(signal,g)
-
+    if window is None:
+        Nfft = len(signal)
+        window, a = get_round_window(Nfft)
+    
+    Nfft = len(window)
+    S, stft, stft_padded, Npad = get_spectrogram(signal,window=window,overlap=overlap)
+    
     gamma = np.median(np.abs(np.real(stft)))/0.6745
     thr = coeff*np.sqrt(2)*gamma
     mask = np.abs(stft)
@@ -17,10 +20,10 @@ def hard_thresholding(signal, coeff=3, dict_output=False):
     mask[mask>=thr] = 1
 
     # mask[:] = 1
-    xr, t = reconstruct_signal_2(mask, stft_padded, Npad)
+    xr, t = reconstruct_signal_2(mask, stft_padded, Npad, window = window,overlap=overlap) #Nfft=Nfft)
 
     if dict_output:
-        return {'xr': xr, 'mask': mask} 
+        return {'xr': xr, 'mask': mask, 'stft':stft} 
     else:
         return xr
 

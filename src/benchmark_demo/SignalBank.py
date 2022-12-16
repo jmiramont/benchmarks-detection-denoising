@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import pi as pi
 import scipy.signal as sg
+from scipy.io import wavfile
 from benchmark_demo.utilstf import hermite_fun, get_stft, reconstruct_signal_2
 import string
 import numbers
@@ -164,9 +165,9 @@ class Signal(np.ndarray):
             self._total_comps = len(self._comps)
         return self._total_comps
 
-    # @total_comps.setter
-    # def total_comps(self, value):
-    #     self._total_comps = value
+    @total_comps.setter
+    def total_comps(self, value):
+        self._total_comps = value
 
     @property
     def ncomps(self):
@@ -174,9 +175,9 @@ class Signal(np.ndarray):
             self.component_counter()
         return self._ncomps
 
-    # @ncomps.setter
-    # def ncomps(self,value):
-    #     self._ncomps = value    
+    @ncomps.setter
+    def ncomps(self,value):
+        self._ncomps = value    
 
     @property
     def comps(self):
@@ -936,6 +937,7 @@ class SignalBank:
             return signal.view(np.ndarray)
         return signal        
 
+
     def signal_mc_cos_plus_tone(self):
         """Generates a multicomponent signal comprised by two cosenoidal chirps and a
         single tone.
@@ -963,8 +965,6 @@ class SignalBank:
                                     a2=0.04)
 
         chirp3 = self._signal_linear_chirp(a = 0, b = 1.8*self.fmin)                                      
-
-
 
         # instf1 = self.fmax-0.05 + 0.04*np.cos(2*pi*omega1*tsub/Nsub - pi*omega1)    
         # self.check_inst_freq(instf1)
@@ -1287,7 +1287,6 @@ class SignalBank:
         N4 = N//4
         N7 = N//7
         N9 = N//9
-
         
         chirp1, instf, tmin, _ = self._signal_linear_chirp(a=0, b=b1, instfreq=True)
         chirp2, instf, tmin, _ = self._signal_linear_chirp(a=0, b=2*b1, instfreq=True)
@@ -1322,6 +1321,7 @@ class SignalBank:
             return signal.view(np.ndarray)
         return signal           
 
+
 # Other signals ----------------------------------------------------------------
 
     def signal_hermite_function(self, order = 18, t0 = 0.5, f0 = 0.25):
@@ -1346,7 +1346,9 @@ class SignalBank:
         signal = hermite_fun(N, order, t=t, T = np.sqrt(2*N))*np.cos(2*pi*f0*t)         
         
         if self.return_signal:
-            return signal.view(Signal)
+            signal = signal.view(Signal)
+            signal._instf = signal[:]
+
         return signal
 
         
@@ -1372,7 +1374,9 @@ class SignalBank:
         signal =  hermite_fun(N, order, t=t, T = 1.5*np.sqrt(2*N))*np.cos(2*pi*f0*t)
         
         if self.return_signal:
-            return signal.view(Signal)
+            signal = signal.view(Signal)
+            signal._instf = signal[:]
+
         return signal
 
 
@@ -1495,6 +1499,24 @@ class SignalBank:
         if not self.return_signal:
             return signal.view(np.ndarray)
         return signal           
+
+
+    def signal_speech(self, number=6, type='male'):
+        """_summary_
+
+        Args:
+            number (int, optional): _description_. Defaults to 6.
+            type (str, optional): _description_. Defaults to 'male'.
+
+        Returns:
+            _type_: _description_
+        """
+        filename = '../src/benchmark_demo/signals/{}_{}.wav'.format(number,type)
+        fs, x = wavfile.read(filename)
+        x = x/np.max(np.abs(x))
+        # print('Reading with scipy.io.wavfile.read:', x)
+        return x,fs
+
 
     #! Deprecated. 
     def signal_mc_harmonic(self):

@@ -32,6 +32,7 @@ sphinx-rtd-theme = {version = "^1.0.0", optional = true}
 rpy2 = { version = "^3.5.4", optional = true }
 spatstat-interface = { version = "^0.1.2", optional = true }
 numba = "^0.56.2"
+librosa = "^0.9.2"
 
 [tool.poetry.extras]
 # Documentation

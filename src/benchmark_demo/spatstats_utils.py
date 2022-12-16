@@ -583,13 +583,13 @@ def compute_rank_envelope_test(signal,
     pos = find_zeros_of_spectrogram(np.abs(stft)**2)
 
     # If signal is real, do not take zeros near the time axis
-    if signal.dtype == complex128:
-        complex_signal = True
-    else:  
-        complex_signal=False
-        valid_zeros = np.zeros((pos.shape[0],),dtype=bool)
-        valid_zeros[(T<pos[:,0])]=True 
-        pos = pos[valid_zeros]
+    # if signal.dtype == complex128:
+    #     complex_signal = True
+    # else:  
+    #     complex_signal=False
+    #     valid_zeros = np.zeros((pos.shape[0],),dtype=bool)
+    #     valid_zeros[(T<pos[:,0])]=True 
+    #     pos = pos[valid_zeros]
 
     # fig, ax = plt.subplots(1,1,figsize = (5,5))
     # ax.imshow(np.log10(abs(stft)), origin='lower')
@@ -723,7 +723,7 @@ def compute_scale(signal, **test_params):
   
     if not reject_H0:
         print('No detection.')
-        radius_of_rejection = 0.8
+        radius_of_rejection = 0.7
     else:
         radius_of_rejection = output_dic['r_max_dif']
     
