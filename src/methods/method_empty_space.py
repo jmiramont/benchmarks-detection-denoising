@@ -114,8 +114,12 @@ def empty_space_denoising(signal,
         radi_seg = scale_pp # Override LB
         radi_expand = scale_pp
 
+    
     g, a = get_round_window(Nfft)
-    Sww, _, stft_padded, Npad = get_spectrogram(signal,g)
+    stft = get_stft(signal, window = g, Nfft=Nfft)
+    # Computes the spectrogram and its zeros.
+    Sww = np.abs(stft[0:Nfft//2+1,:])**2
+
     pos = find_zeros_of_spectrogram(Sww)
     pos_aux = pos.copy()
     pos_aux[:,0] = pos[:,1]/a
@@ -123,7 +127,7 @@ def empty_space_denoising(signal,
     empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
     mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=radi_expand)
     # mask = paint_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
-    xr, t = reconstruct_signal_2(mask, stft_padded, Npad, Nfft)
+    xr = reconstruct_signal_3(mask, stft, window=g)
 
     if return_dic:
         return {'s_r': xr,

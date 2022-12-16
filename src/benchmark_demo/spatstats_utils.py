@@ -10,7 +10,7 @@ if rpy2_is_present:
     from rpy2.robjects.packages import importr
     from spatstat_interface.interface import SpatstatInterface
 
-from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window, get_spectrogram
+from benchmark_demo.utilstf import find_zeros_of_spectrogram, get_round_window,get_spectrogram, get_stft
 from scipy.integrate import cumtrapz
 import multiprocessing
 import pickle
@@ -62,13 +62,12 @@ def get_white_noise_zeros(stft_params, complex_noise=False):
         wnoise = wnoise.astype(complex)
         wnoise += 1j*np.random.randn(N)
 
-    # Get round window and scale for normalization.    
+    # Computes the spectrogram and its zeros.
     g, T = get_round_window(Nfft)
-    # g, T = roundgauss(Nfft,k=1e-6)
-    # spec = Spectrogram(wnoise, fwindow=g, n_fbins=Nfft)
-    # spec.run()
-    # stf = np.abs(spec.tfr[0:N+1,:])
-    stf, _, _, _ = get_spectrogram(wnoise, window=g)
+    stft = get_stft(wnoise, window = g, Nfft=Nfft)
+    stf = np.abs(stft[0:Nfft//2+1,:])**2
+
+    # Find Spectrogram Zeros
     pos = find_zeros_of_spectrogram(np.abs(stf))
 
     # fig, ax = plt.subplots(1,1)
@@ -375,14 +374,15 @@ def compute_monte_carlo_sims(signal,
     if rmax is None:
         rmax = radius
 
-    # Get round window and scale for normalization.    
+    # Computes the spectrogram and its zeros.
     g, T = get_round_window(Nfft)
+    stft = get_stft(signal, window = g, Nfft=Nfft)
+    stf = np.abs(stft[0:Nfft//2+1,:])**2
 
-    # Compute empirical statistic Sexp:
-    stf, _, _, _ = get_spectrogram(signal, window=g)
+    # Find zeros of the spectrogram
     pos_exp = find_zeros_of_spectrogram(stf)
 
-# If signal is real, do not take zeros near the time axis
+    # If signal is real, do not take zeros near the time axis
     if signal.dtype == complex128:
         complex_signal = True
     else:  
@@ -578,18 +578,22 @@ def compute_rank_envelope_test(signal,
     signal_aux = np.zeros((Nfft,))
     signal_aux[Nfft//4:Nfft//4+N] = np.random.randn(N)
     signal_aux[Nfft//4:Nfft//4+N]  = signal
-    _,_,stft = sg.stft(signal_aux, window = window, nperseg = Nfft, noverlap=Nfft-1)
-    stft = stft[:,Nfft//4:Nfft//4+N]
-    pos = find_zeros_of_spectrogram(np.abs(stft)**2)
+
+    g, T = get_round_window(Nfft)
+    stft = get_stft(signal_aux, window = g, Nfft=Nfft)
+    
+    # Computes the spectrogram and its zeros.
+    S = np.abs(stft[0:Nfft//2+1,Nfft//4:Nfft//4+N])**2
+    pos = find_zeros_of_spectrogram(S)
 
     # If signal is real, do not take zeros near the time axis
-    # if signal.dtype == complex128:
-    #     complex_signal = True
-    # else:  
-    #     complex_signal=False
-    #     valid_zeros = np.zeros((pos.shape[0],),dtype=bool)
-    #     valid_zeros[(T<pos[:,0])]=True 
-    #     pos = pos[valid_zeros]
+    if signal.dtype == complex128:
+        complex_signal = True
+    else:  
+        complex_signal=False
+        valid_zeros = np.zeros((pos.shape[0],),dtype=bool)
+        valid_zeros[(T<pos[:,0])]=True 
+        pos = pos[valid_zeros]
 
     # fig, ax = plt.subplots(1,1,figsize = (5,5))
     # ax.imshow(np.log10(abs(stft)), origin='lower')
