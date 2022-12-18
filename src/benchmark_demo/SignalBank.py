@@ -2,7 +2,7 @@ import numpy as np
 from numpy import pi as pi
 import scipy.signal as sg
 from scipy.io import wavfile
-from benchmark_demo.utilstf import hermite_fun, get_stft, reconstruct_signal_2
+from benchmark_demo.utilstf import hermite_fun, get_stft, reconstruct_signal_3, get_round_window
 import string
 import numbers
 # from matplotlib import pyplot as plt
@@ -1410,11 +1410,14 @@ class SignalBank:
             comps.append(impulse.copy())
             signal += impulse
 
-        stft, stft_padded, Npad = get_stft(signal)
+        g,_ = get_round_window(2*N)
+        stft_complete = get_stft(signal, window=g, Nfft=2*N)
+        stft = stft_complete[0:N+1,:]
+
         for i in range(stft.shape[1]):
             stft[:,i] *= sg.windows.tukey(stft.shape[0],0.95)
 
-        signal, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
+        signal = reconstruct_signal_3(np.ones_like(stft), stft_complete, window=g)
 
         if self.return_signal:
             signal = signal.view(Signal)    
@@ -1448,11 +1451,14 @@ class SignalBank:
             comps.append(impulse.copy())
             signal += impulse
 
-        stft, stft_padded, Npad = get_stft(signal)
+        g,_ = get_round_window(2*N)
+        stft_complete = get_stft(signal, window=g, Nfft=2*N)
+        stft = stft_complete[0:N+1,:]
+
         for i in range(stft.shape[1]):
             stft[:,i] *= sg.windows.tukey(stft.shape[0],0.95)
 
-        signal, t = reconstruct_signal_2(np.ones(stft.shape), stft_padded, Npad)
+        signal = reconstruct_signal_3(np.ones_like(stft), stft_complete, window=g)
 
         if self.return_signal:
             signal = signal.view(Signal)    
@@ -1507,21 +1513,21 @@ class SignalBank:
         return signal           
 
 
-    def signal_speech(self, number=6, type='male'):
-        """_summary_
+    # def signal_speech(self, number=6, type='male'):
+    #     """_summary_
 
-        Args:
-            number (int, optional): _description_. Defaults to 6.
-            type (str, optional): _description_. Defaults to 'male'.
+    #     Args:
+    #         number (int, optional): _description_. Defaults to 6.
+    #         type (str, optional): _description_. Defaults to 'male'.
 
-        Returns:
-            _type_: _description_
-        """
-        filename = '../src/benchmark_demo/signals/{}_{}.wav'.format(number,type)
-        fs, x = wavfile.read(filename)
-        x = x/np.max(np.abs(x))
-        # print('Reading with scipy.io.wavfile.read:', x)
-        return x,fs
+    #     Returns:
+    #         _type_: _description_
+    #     """
+    #     filename = '../src/benchmark_demo/signals/{}_{}.wav'.format(number,type)
+    #     fs, x = wavfile.read(filename)
+    #     x = x/np.max(np.abs(x))
+    #     # print('Reading with scipy.io.wavfile.read:', x)
+    #     return x,fs
 
 
     #! Deprecated. 
