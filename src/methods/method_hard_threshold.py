@@ -4,7 +4,7 @@ from numpy import pi as pi
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
 
-def hard_thresholding(signal, coeff=0.75, window=None, Nfft=None, dict_output=False):
+def hard_thresholding(signal, coeff=3.0, window=None, Nfft=None, dict_output=False):
     
     if Nfft is None:
         Nfft = 2*len(signal)

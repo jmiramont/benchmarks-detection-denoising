@@ -622,15 +622,17 @@ class Benchmark:
         df = pd.concat(auxdic,axis = 0)
         return df
 
-    def generate_noise(self):
+    def generate_noise(self, N=None):
         """_summary_
 
         Returns:
             _type_: _description_
         """
-        noise_matrix = np.random.randn(self.repetitions,self.N)
+        if N is None:
+            N = self.N
+        noise_matrix = np.random.randn(self.repetitions,N)
         if self.complex_noise:
-            noise_matrix += 1j*np.random.randn(self.repetitions,self.N)
+            noise_matrix += 1j*np.random.randn(self.repetitions,N)
 
         return noise_matrix
 
