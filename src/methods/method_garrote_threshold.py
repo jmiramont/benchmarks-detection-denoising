@@ -4,8 +4,7 @@ from numpy import pi as pi
 import scipy.signal as sg
 from benchmark_demo.utilstf import *
 
-def hard_thresholding(signal, coeff=3.0, window=None, Nfft=None, dict_output=False):
-    
+def garrote_thresholding(signal, coeff=1.5, window=None, Nfft=None, dict_output=False):
     if Nfft is None:
         Nfft = 2*len(signal)
     
@@ -16,27 +15,28 @@ def hard_thresholding(signal, coeff=3.0, window=None, Nfft=None, dict_output=Fal
 
     stft = stft_whole[0:Nfft//2+1,:]
     gamma = np.median(np.abs(np.real(stft)))/0.6745
+
     thr = coeff*np.sqrt(2)*gamma
 
-    mask = np.abs(stft)
-    mask[mask<thr] = 0
-    mask[mask>=thr] = 1
+    aux = np.abs(stft)
+    aux[aux<=thr] = 0
+    aux[aux>thr] = aux[aux>thr]-(thr**2/aux[aux>thr])
+    aux = aux / np.abs(stft)
 
-    # mask[:] = 1
-    xr = np.real(reconstruct_signal_3(mask, stft_whole, window=window)) 
+    xr = np.real(reconstruct_signal_3(aux, stft_whole, window=window))
 
     if dict_output:
-        return {'xr': xr, 'mask': mask, 'stft':stft} 
+        return {'xr': xr, 'mask': aux} 
     else:
         return xr
 
 
 class NewMethod(MethodTemplate):
     def __init__(self):
-        self.id = 'thresholding_hard'
+        self.id = 'thresholding_garrote'
         self.task = 'denoising'
 
 
     def method(self, signal, *args, **kwargs):
-        signal_output = hard_thresholding(signal, *args, **kwargs)          
+        signal_output = garrote_thresholding(signal, *args, **kwargs)          
         return signal_output

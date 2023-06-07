@@ -24,11 +24,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Benchmark-demo
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Benchmark-demo
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -37,6 +41,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../methods.html">methods package</a></li>
 </ul>
 
         </div>
@@ -52,9 +57,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>methods.method_hard_threshold</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">methods.method_hard_threshold</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -70,30 +75,36 @@
 <span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="nn">sg</span>
 <span class="kn">from</span> <span class="nn">benchmark_demo.utilstf</span> <span class="kn">import</span> <span class="o">*</span>
 
-<div class="viewcode-block" id="hard_thresholding"><a class="viewcode-back" href="../../methods.html#methods.method_hard_threshold.hard_thresholding">[docs]</a><span class="k">def</span> <span class="nf">hard_thresholding</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">coeff</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dict_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="hard_thresholding"><a class="viewcode-back" href="../../methods.html#methods.method_hard_threshold.hard_thresholding">[docs]</a><span class="k">def</span> <span class="nf">hard_thresholding</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">coeff</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Nfft</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dict_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     
-    <span class="n">Nfft</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
-    <span class="n">g</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">get_round_window</span><span class="p">(</span><span class="n">Nfft</span><span class="p">)</span>
-    <span class="n">S</span><span class="p">,</span> <span class="n">stft</span><span class="p">,</span> <span class="n">stft_padded</span><span class="p">,</span> <span class="n">Npad</span> <span class="o">=</span> <span class="n">get_spectrogram</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Nfft</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Nfft</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>    
+        <span class="n">window</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">get_round_window</span><span class="p">(</span><span class="n">Nfft</span><span class="p">)</span>
+    
+    <span class="n">_</span><span class="p">,</span> <span class="n">stft_whole</span> <span class="o">=</span> <span class="n">get_spectrogram</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span><span class="n">Nfft</span><span class="o">=</span><span class="n">Nfft</span><span class="p">)</span>
 
+    <span class="n">stft</span> <span class="o">=</span> <span class="n">stft_whole</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">Nfft</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span>
     <span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">stft</span><span class="p">)))</span><span class="o">/</span><span class="mf">0.6745</span>
     <span class="n">thr</span> <span class="o">=</span> <span class="n">coeff</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">gamma</span>
+
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">stft</span><span class="p">)</span>
     <span class="n">mask</span><span class="p">[</span><span class="n">mask</span><span class="o">&lt;</span><span class="n">thr</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">mask</span><span class="p">[</span><span class="n">mask</span><span class="o">&gt;=</span><span class="n">thr</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># mask[:] = 1</span>
-    <span class="n">xr</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">reconstruct_signal_2</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">stft_padded</span><span class="p">,</span> <span class="n">Npad</span><span class="p">)</span>
+    <span class="n">xr</span> <span class="o">=</span> <span class="n">reconstruct_signal_3</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">stft_whole</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">)</span> 
 
     <span class="k">if</span> <span class="n">dict_output</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;xr&#39;</span><span class="p">:</span> <span class="n">xr</span><span class="p">,</span> <span class="s1">&#39;mask&#39;</span><span class="p">:</span> <span class="n">mask</span><span class="p">}</span> 
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;xr&#39;</span><span class="p">:</span> <span class="n">xr</span><span class="p">,</span> <span class="s1">&#39;mask&#39;</span><span class="p">:</span> <span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;stft&#39;</span><span class="p">:</span><span class="n">stft</span><span class="p">}</span> 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">xr</span></div>
 
 
 <div class="viewcode-block" id="NewMethod"><a class="viewcode-back" href="../../methods.html#methods.method_hard_threshold.NewMethod">[docs]</a><span class="k">class</span> <span class="nc">NewMethod</span><span class="p">(</span><span class="n">MethodTemplate</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;hard_thresholding&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;thresholding_hard&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>
 
 

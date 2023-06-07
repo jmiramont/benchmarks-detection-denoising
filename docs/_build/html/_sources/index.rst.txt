@@ -11,6 +11,7 @@ Welcome to Benchmark-demo's documentation!
    :caption: Contents:
 
    modules
+   methods
 
 Indices and tables
 ==================

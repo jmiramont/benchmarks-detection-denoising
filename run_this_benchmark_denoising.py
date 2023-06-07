@@ -77,5 +77,4 @@ if __name__ == "__main__":
     # results_interpreter.save_csv_files()
     results_interpreter.save_report()
     # results_interpreter.get_summary_plots(size=(3,2))
-
-  
+    

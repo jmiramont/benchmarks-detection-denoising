@@ -102,7 +102,8 @@ class ComputeStatistics():
         else:
             self.spatstat = spatstat
         
-        self.spatstat.import_package("core", "geom", update=False)
+        #self.spatstat.import_package("core", "geom", update=False)
+        self.spatstat.import_package("explore", "geom", update=False)
         
 
     def compute_Lest(self, pos, r_des):
@@ -122,7 +123,8 @@ class ComputeStatistics():
         u_r, v_r, b_u, b_v = compute_positions_and_bounds(pos)
         ppp_r = self.spatstat.geom.ppp(u_r, v_r, b_u, b_v)
         numpy2ri.deactivate()
-        L_r = self.spatstat.core.Lest(ppp_r, r=radi) 
+        #L_r = self.spatstat.core.Lest(ppp_r, r=radi)
+        L_r = self.spatstat.explore.Lest(ppp_r, r=radi)  
 
         radius = np.array(L_r.rx2('r')) 
         Lborder = np.array(L_r.rx2('border'))
@@ -151,7 +153,8 @@ class ComputeStatistics():
         u_r, v_r, b_u, b_v = compute_positions_and_bounds(pos)        
         ppp_r = self.spatstat.geom.ppp(u_r, v_r, b_u, b_v)
         numpy2ri.deactivate()
-        F_r = self.spatstat.core.Fest(ppp_r, r=radius_r) 
+        F_r = self.spatstat.explore.Fest(ppp_r, r=radius_r) 
+        
         # F_r = self.spatstat.core.Fest(ppp_r) 
         radius = np.array(F_r.rx2('r')) 
         Fborder = np.array(F_r.rx2(correction))
@@ -507,7 +510,7 @@ def generate_white_noise_zeros_pp(N, nsim, complex_noise=False, parallel=False):
     # R packages.
     rbase = importr('base')
     spatstat = SpatstatInterface(update=False)
-    spatstat.import_package("core", "geom", update=False)
+    spatstat.import_package("geom", update=False)
     parallel_list = [[N,Nfft] for i in range(nsim)]
 
     white_noise_func = lambda params: get_white_noise_zeros(params, 
@@ -563,7 +566,7 @@ def compute_rank_envelope_test(signal,
 
     # Initialize interface with R.
     spatstat = SpatstatInterface(update=False)
-    spatstat.import_package("core", "geom", update=False)
+    spatstat.import_package("explore", "geom", update=False)
     # spatstat_random = importr('spatstat.random')
     rbase = importr('base')
     package_GET = importr('GET')
@@ -615,7 +618,7 @@ def compute_rank_envelope_test(signal,
         extra_args['transform'] = rbase.expression(extra_args['transform'])
 
     # Compute simulated envelopes:
-    envelopes = spatstat.core.envelope(ppp_r, 
+    envelopes = spatstat.explore.envelope(ppp_r, 
                                     fun=fun, 
                                     nsim=nsim, 
                                     savefuns=True,
@@ -709,6 +712,7 @@ def compute_scale(signal, **test_params):
         with open('ppp_simulations_N_{}_Nsim_{}.mcsim'.format(N,nsim), 'rb') as handle:
             ppp_simulation = pickle.load(handle)
     except:
+        print('MC Simulation running...')
         list_ppp = generate_white_noise_zeros_pp(N, nsim=nsim)
         ppp_simulation = {'list_ppp':list_ppp,
                     'N' : N,

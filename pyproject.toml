@@ -25,12 +25,12 @@ tabulate = "^0.8.9"
 PyYAML = "^6.0"
 plotly = "^5.10.0"
 typeguard = "^2.13.3"
-matlabengine = { version = "9.12.16", optional = true }
+matlabengine = { version = "9.13.6", optional = true }
 ipykernel = {version = "^6.6.1", optional = true}
 Sphinx = {version = "^4.5.0", optional = true}
 sphinx-rtd-theme = {version = "^1.0.0", optional = true}
 rpy2 = { version = "^3.5.4", optional = true }
-spatstat-interface = { version = "^0.1.2", optional = true }
+spatstat-interface = { version = "^1.0.1", optional = true }
 numba = "^0.56.2"
 librosa = "^0.9.2"
 

@@ -27,11 +27,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Benchmark-demo
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Benchmark-demo
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -49,9 +53,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-benchmark_demo">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="methods.html">methods package</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">methods package</a></li>
 </ul>
 
         </div>
@@ -67,9 +71,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">src</a> &raquo;</li>
-      <li>benchmark_demo package</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">benchmark_demo package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/benchmark_demo.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -136,12 +140,9 @@ are NOT saved.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="benchmark_demo.Benchmark.Benchmark.add_snr_block">
-<span class="sig-name descname"><span class="pre">add_snr_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#Benchmark.add_snr_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.Benchmark.add_snr_block" title="Permalink to this definition"></a></dt>
-<dd><p>Creates K realizations of the signal x with white Gaussian noise, with SNR
-equal to ‘snr’. SNR is defined as SNR (dB) = 10 * log10(Ex/En), where Ex and En
-are the energy of the signal and that of the noise respectively.</p>
-</dd></dl>
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.Benchmark.add_new_method">
+<span class="sig-name descname"><span class="pre">add_new_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methods</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#Benchmark.add_new_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.Benchmark.add_new_method" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.Benchmark.Benchmark.check_methods_output">
@@ -167,8 +168,32 @@ and shape.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.Benchmark.Benchmark.dic2df">
 <span class="sig-name descname"><span class="pre">dic2df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mydic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#Benchmark.dic2df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.Benchmark.dic2df" title="Permalink to this definition"></a></dt>
-<dd><p>This function transforms a dictionary of arbitrary depth into a pandas’
-DataFrame object.</p>
+<dd><p>_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mydic</strong> (<em>_type_</em>) – _description_</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.Benchmark.generate_noise">
+<span class="sig-name descname"><span class="pre">generate_noise</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#Benchmark.generate_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.Benchmark.generate_noise" title="Permalink to this definition"></a></dt>
+<dd><p>_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>_description_</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>_type_</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -193,11 +218,14 @@ DataFrame object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.Benchmark.Benchmark.inner_loop">
-<span class="sig-name descname"><span class="pre">inner_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">benchmark_parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#Benchmark.inner_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.Benchmark.inner_loop" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inner_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">benchmark_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#Benchmark.inner_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.Benchmark.inner_loop" title="Permalink to this definition"></a></dt>
 <dd><p>Main loop of the Benchmark.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>benchmark_parameters</strong> (<em>tuple</em>) – Tuple or list with the parameters of the benchmark.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>benchmark_parameters</strong> (<em>tuple</em>) – Tuple or list with the parameters of the benchmark.</p></li>
+<li><p><strong>timer</strong> (<em>bool</em>) – If true, measures the time of execution.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Return a numpy array, the shape of which depends on the selected task.</p>
@@ -282,16 +310,57 @@ are NOT saved.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.Benchmark.sigmerge">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sigmerge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#Benchmark.sigmerge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.Benchmark.sigmerge" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.Benchmark.Benchmark.snr_comparison">
-<span class="sig-name descname"><span class="pre">snr_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_hat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#Benchmark.snr_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.Benchmark.snr_comparison" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">snr_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_hat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#Benchmark.snr_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.Benchmark.snr_comparison" title="Permalink to this definition"></a></dt>
 <dd><p>Quality reconstruction factor for denoising performance characterization.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.compare_instf_block">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.Benchmark.</span></span><span class="sig-name descname"><span class="pre">compare_instf_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#compare_instf_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.compare_instf_block" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.compare_qrf_block">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.Benchmark.</span></span><span class="sig-name descname"><span class="pre">compare_qrf_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#compare_qrf_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.compare_qrf_block" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.compute_qrf">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.Benchmark.</span></span><span class="sig-name descname"><span class="pre">compute_qrf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_hat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#compute_qrf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.compute_qrf" title="Permalink to this definition"></a></dt>
+<dd><p>Quality reconstruction factor</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.corr_comps">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.Benchmark.</span></span><span class="sig-name descname"><span class="pre">corr_comps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#corr_comps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.corr_comps" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.Benchmark.detection_perf_function">
 <span class="sig-prename descclassname"><span class="pre">benchmark_demo.Benchmark.</span></span><span class="sig-name descname"><span class="pre">detection_perf_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detection_output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#detection_perf_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.detection_perf_function" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.get_args_and_kwargs">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.Benchmark.</span></span><span class="sig-name descname"><span class="pre">get_args_and_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#get_args_and_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.get_args_and_kwargs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.mse">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.Benchmark.</span></span><span class="sig-name descname"><span class="pre">mse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#mse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.mse" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.Benchmark.order_components">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.Benchmark.</span></span><span class="sig-name descname"><span class="pre">order_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Xest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minormax='max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric=&lt;function</span> <span class="pre">corr_comps&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/Benchmark.html#order_components"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.Benchmark.order_components" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>
@@ -404,11 +473,13 @@ where x is the noiseless signal and x_r is de denoised estimation of x.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_snr_plot_bars">
-<span class="sig-name descname"><span class="pre">get_snr_plot_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/ResultsInterpreter.html#ResultsInterpreter.get_snr_plot_bars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_snr_plot_bars" title="Permalink to this definition"></a></dt>
-<dd><p>Generates a Quality Reconstruction Factor (QRF) vs. SNRin plot. The QRF is
-computed as:
-QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]
-where x is the noiseless signal and x_r is de denoised estimation of x.</p>
+<span class="sig-name descname"><span class="pre">get_snr_plot_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errbar_fun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('ci',</span> <span class="pre">95)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errbar_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/ResultsInterpreter.html#ResultsInterpreter.get_snr_plot_bars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_snr_plot_bars" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a Quality Reconstruction Factor (QRF) vs. SNRin barplot.
+The QRF is computed as:</p>
+<blockquote>
+<div><p>QRF = 20 log ( norm(x) / norm(x-x_r)) [dB]</p>
+</div></blockquote>
+<p>where x is the noiseless signal and x_r is de denoised estimation of x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -445,18 +516,34 @@ of all methods for all noise conditions.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_summary_plots">
-<span class="sig-name descname"><span class="pre">get_summary_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(3,</span> <span class="pre">3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savetofile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/ResultsInterpreter.html#ResultsInterpreter.get_summary_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_summary_plots" title="Permalink to this definition"></a></dt>
-<dd><p>Generates individual QRF plots for each signal, displaying the performance
-of all methods for all noise conditions.</p>
+<span class="sig-name descname"><span class="pre">get_summary_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_rearr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(3,</span> <span class="pre">3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savetofile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_crit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errbar_fun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('ci',</span> <span class="pre">95)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errbar_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lines'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'absolute'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/ResultsInterpreter.html#ResultsInterpreter.get_summary_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.ResultsInterpreter.ResultsInterpreter.get_summary_plots" title="Permalink to this definition"></a></dt>
+<dd><p>Generates individual performance plots for each signal, displaying the
+performance measure of all methods for all noise conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>size</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Size of the figure in inches. Defaults to (3,3).</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Size (in inches) of the figures. Defaults to (3,3).</p></li>
+<li><p><strong>savetofile</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save or not the figures.</p></li>
+<li><p><strong>True.</strong> (<em>Defaults to</em>) – </p></li>
+<li><p><strong>filename</strong> (<em>_type_</em><em>, </em><em>optional</em>) – Path and file name to save the figures. If None</p></li>
+<li><p><strong>None.</strong> (<em>plots all the methods. Defaults to</em>) – </p></li>
+<li><p><strong>filter_str</strong> (<em>_type_</em><em>, </em><em>optional</em>) – A string, or a list of strings, to select</p></li>
+<li><p><strong>None</strong> (<em>the methods to plot. If</em>) – </p></li>
+<li><p><strong>None.</strong> – </p></li>
+<li><p><strong>filter_crit</strong> (<em>str</em><em>, </em><em>optional</em>) – A criterion to use the strings passed in</p></li>
+<li><p><strong>'all'</strong> (<em>filter_str. If</em>) – </p></li>
+<li><p><strong>strings</strong> (<em>only choose those methods where all the</em>) – </p></li>
+<li><p><strong>'any'</strong> (<em>appear in the &quot;Method&quot; column of the resuls DataFrame. If</em>) – </p></li>
+<li><p><strong>column.</strong> (<em>select the methods for wich any of the strings appear in the mentioned</em>) – </p></li>
+<li><p><strong>'all'.</strong> (<em>Defaults to</em>) – </p></li>
+<li><p><strong>plot_type</strong> (<em>str</em><em>, </em><em>optional</em>) – _description_. Defaults to ‘lines’.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns a figure handle.</p>
+<dd class="field-even"><p>_description_</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Matplotlib.Figure</p>
+<dd class="field-odd"><p>_type_</p>
 </dd>
 </dl>
 </dd></dl>
@@ -535,8 +622,105 @@ object. The report is saved in a MardkedDown syntax to be viewed as a .md file.<
 <section id="module-benchmark_demo.SignalBank">
 <span id="benchmark-demo-signalbank-module"></span><h2>benchmark_demo.SignalBank module<a class="headerlink" href="#module-benchmark_demo.SignalBank" title="Permalink to this headline"></a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.Signal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">benchmark_demo.SignalBank.</span></span><span class="sig-name descname"><span class="pre">Signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instf=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'float'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#Signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.Signal" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
+<p>A class that emulates a signal by behaving like a Numpy array for practical
+purposes but containing information of the signal such as the number of components
+and their instantaneous frequency (IF). This class is used in two ways:</p>
+<p>1. As a way of creating more complicated signals (i.e. with more components) and
+automatically stablish the number of components and IF by just defining them for
+the more simple, monocomponent signals. This way, when linearly combining two signals
+all the information regarding the combined components and their instantaneous
+frequencies is saved and is accessible from the final signal.</p>
+<p>2. As a way of wrap up information of the signal when passed to a method in the
+Benchmark class. The idea is that methods called by this latter class only receive
+a signal and parameters for the method. Therefore, by encapsulating the information
+of the signal in the Signal object, the method can use it while keep treating the
+received signal as a regular numpy array.</p>
+<p>A Signal class object has four attributes that differentiate it from a regular
+numpy array:
+1. comps: A list with each of the individual components combined to produce the
+signal.
+2. insft: A list with each of the individual components’ instantenous frequency.
+The length of this list is the same as the comps list.
+3. ncomps: A numpy array indicating the number of components present in each time
+sample of the signal.
+4. total_comps: The total amount of components present within the duration of the
+signal. This is simply the length of comps.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">def</span> <span class="pre">add_comp(self,</span> <span class="pre">new_comp,</span> <span class="pre">\*\*kwargs)</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">def</span> <span class="pre">add_instf(self,</span> <span class="pre">new_instf,</span> <span class="pre">\*\*kwargs)</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.Signal.add_comp">
+<span class="sig-name descname"><span class="pre">add_comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_comp</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#Signal.add_comp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.Signal.add_comp" title="Permalink to this definition"></a></dt>
+<dd><p>Add a new component, potentially with its instantaneous frequency. This
+latter can be added later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_comp</strong> (<em>numpy.ndarray</em>) – New component to add.</p></li>
+<li><p><strong>instf</strong> (<em>numpy.ndarray</em>) – The instantaneous frequency corresponding to new_comp</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.Signal.add_instf">
+<span class="sig-name descname"><span class="pre">add_instf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_instf</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#Signal.add_instf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.Signal.add_instf" title="Permalink to this definition"></a></dt>
+<dd><p>Add a new instantaneous frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_instf</strong> (<em>numpy.ndarray</em>) – A vector with the instantaneous frequency.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.Signal.component_counter">
+<span class="sig-name descname"><span class="pre">component_counter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#Signal.component_counter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.Signal.component_counter" title="Permalink to this definition"></a></dt>
+<dd><p>This functions counts the number of components per time sample, and set the
+corresponding attribute self._ncomps.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.Signal.comps">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">comps</span></span><a class="headerlink" href="#benchmark_demo.SignalBank.Signal.comps" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.Signal.get_info">
+<span class="sig-name descname"><span class="pre">get_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#Signal.get_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.Signal.get_info" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.Signal.instf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instf</span></span><a class="headerlink" href="#benchmark_demo.SignalBank.Signal.instf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.Signal.ncomps">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ncomps</span></span><a class="headerlink" href="#benchmark_demo.SignalBank.Signal.ncomps" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.Signal.total_comps">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_comps</span></span><a class="headerlink" href="#benchmark_demo.SignalBank.Signal.total_comps" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">benchmark_demo.SignalBank.</span></span><span class="sig-name descname"><span class="pre">SignalBank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nsub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">benchmark_demo.SignalBank.</span></span><span class="sig-name descname"><span class="pre">SignalBank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nsub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_signal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Create a bank of signals. This class encapsulates the signal generation code,
 and returns different methods to generate signals as well as a dictionary of those
@@ -601,14 +785,14 @@ previous tone.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">def</span> <span class="pre">signal_tone_dumped(self):</span></span></dt>
-<dd><p>Generates a dumped tone whose normalized frequency is 0.25.</p>
+<span class="sig-name descname"><span class="pre">def</span> <span class="pre">signal_tone_damped(self):</span></span></dt>
+<dd><p>Generates a damped tone whose normalized frequency is 0.25.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">def</span> <span class="pre">signal_tone_sharp_attack(self):</span></span></dt>
-<dd><p>Generates a dumped tone that is modulated with a rectangular window.</p>
+<dd><p>Generates a damped tone that is modulated with a rectangular window.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -924,6 +1108,20 @@ whose instantaneous frequency coincide in one point of the time frequency plane.
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_damped_cos">
+<span class="sig-name descname"><span class="pre">signal_mc_damped_cos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_damped_cos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_damped_cos" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a multicomponent signal with different types of components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns a numpy array with the signal.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_double_cos_chirp">
 <span class="sig-name descname"><span class="pre">signal_mc_double_cos_chirp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_double_cos_chirp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_double_cos_chirp" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a multicomponent signal with two cosenoidal chirps.</p>
@@ -941,19 +1139,14 @@ whose instantaneous frequency coincide in one point of the time frequency plane.
 <dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_exp_chirps">
 <span class="sig-name descname"><span class="pre">signal_mc_exp_chirps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_exp_chirps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_exp_chirps" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a multicomponent signal comprising three exponential chirps.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Returns a numpy array with the signal.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray</p>
-</dd>
-</dl>
+<p>#     Returns:
+#         numpy.ndarray: Returns a numpy array with the signal.
+#</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_impulses">
-<span class="sig-name descname"><span class="pre">signal_mc_impulses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Nimpulses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_impulses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_impulses" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">signal_mc_impulses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Nimpulses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_impulses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_impulses" title="Permalink to this definition"></a></dt>
 <dd><p>Generates equispaced impulses in time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1016,6 +1209,23 @@ different frequency modulation parameters.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_multi_linear_2">
+<span class="sig-name descname"><span class="pre">signal_mc_multi_linear_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ncomps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_multi_linear_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_multi_linear_2" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a multicomponent signal with multiple linear chirps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ncomps</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of components. Defaults to 5.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a numpy array with the signal.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_on_off_2">
 <span class="sig-name descname"><span class="pre">signal_mc_on_off_2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_on_off_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_on_off_2" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -1047,7 +1257,7 @@ at different times.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_pure_tones">
-<span class="sig-name descname"><span class="pre">signal_mc_pure_tones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ncomps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_pure_tones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_pure_tones" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">signal_mc_pure_tones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ncomps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_pure_tones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_pure_tones" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a multicomponent signal comprising several pure tones harmonically
 separated, i.e. tones are ordered from lower to higher frequency and each one
 has an instantaneous frequency that is an entire multiple of that of the
@@ -1070,8 +1280,64 @@ previous tone.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture">
+<span class="sig-name descname"><span class="pre">signal_mc_synthetic_mixture</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_synthetic_mixture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a multicomponent signal with different types of components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns a numpy array with the signal.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture_2">
 <span class="sig-name descname"><span class="pre">signal_mc_synthetic_mixture_2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_synthetic_mixture_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture_2" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a multicomponent signal with different types of components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns a numpy array with the signal.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture_3">
+<span class="sig-name descname"><span class="pre">signal_mc_synthetic_mixture_3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_synthetic_mixture_3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture_3" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a multicomponent signal with different types of components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns a numpy array with the signal.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture_4">
+<span class="sig-name descname"><span class="pre">signal_mc_synthetic_mixture_4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_synthetic_mixture_4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture_4" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a multicomponent signal with different types of components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns a numpy array with the signal.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture_5">
+<span class="sig-name descname"><span class="pre">signal_mc_synthetic_mixture_5</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_mc_synthetic_mixture_5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_mc_synthetic_mixture_5" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a multicomponent signal with different types of components.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1101,9 +1367,9 @@ previous tone.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_tone_dumped">
-<span class="sig-name descname"><span class="pre">signal_tone_dumped</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_tone_dumped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_tone_dumped" title="Permalink to this definition"></a></dt>
-<dd><p>Generates a dumped tone whose normalized frequency is 0.25.</p>
+<dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_tone_damped">
+<span class="sig-name descname"><span class="pre">signal_tone_damped</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_tone_damped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_tone_damped" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a damped tone whose normalized frequency is 0.25.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Returns a numpy array with the signal.</p>
@@ -1117,7 +1383,7 @@ previous tone.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="benchmark_demo.SignalBank.SignalBank.signal_tone_sharp_attack">
 <span class="sig-name descname"><span class="pre">signal_tone_sharp_attack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/SignalBank.html#SignalBank.signal_tone_sharp_attack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.SignalBank.SignalBank.signal_tone_sharp_attack" title="Permalink to this definition"></a></dt>
-<dd><p>Generates a dumped tone that is modulated with a rectangular window.</p>
+<dd><p>Generates a damped tone that is modulated with a rectangular window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Returns a numpy array with the signal.</p>
@@ -1193,47 +1459,23 @@ length of the signal x.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="benchmark_demo.utilstf.extr2minth">
-<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">extr2minth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">th</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#extr2minth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.extr2minth" title="Permalink to this definition"></a></dt>
-<dd><p>Finds the local minima of the spectrogram matrix M.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>M</strong> (<em>_type_</em>) – Matrix with real values.</p></li>
-<li><p><strong>th</strong> (<em>_type_</em>) – A given threshold.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_description_</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>_type_</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.find_zeros_of_spectrogram">
 <span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">find_zeros_of_spectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#find_zeros_of_spectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.find_zeros_of_spectrogram" title="Permalink to this definition"></a></dt>
-<dd><p>Find the zeros of the spectrogram by searching for minima in a 3x3 submatrix of
-the spectrogram.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>S</strong> (<em>ndarray</em>) – The spectrogram of a signal.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A Mx2 array where each row contains the coordinates of a zero of
-the spectrogram.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pos(ndarray)</p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.utilstf.get_gauss_window">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">get_gauss_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Nfft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#get_gauss_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.get_gauss_window" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.utilstf.get_istft">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">get_istft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tfr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#get_istft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.get_istft" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.get_round_window">
-<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">get_round_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Nfft</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#get_round_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.get_round_window" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">get_round_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Nfft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#get_round_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.get_round_window" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a round Gaussian window, i.e. same essential support in time and
 frequency: g(n) = exp(-pi*(n/T)^2) for computing the Short-Time Fourier Transform.</p>
 <dl class="field-list simple">
@@ -1252,7 +1494,7 @@ T (float): The scale of the Gaussian window (T = sqrt(Nfft))</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.get_spectrogram">
-<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">get_spectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#get_spectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.get_spectrogram" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">get_spectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nfft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onesided</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#get_spectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.get_spectrogram" title="Permalink to this definition"></a></dt>
 <dd><p>Get the round spectrogram of the signal computed with a given window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1272,28 +1514,8 @@ Npad: Number of zeros added in the zero-padding process.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.get_stft">
-<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">get_stft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#get_stft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.get_stft" title="Permalink to this definition"></a></dt>
-<dd><p>Compute the STFT of the signal. Signal is padded with zeros.
-The outputs corresponds to the STFT with the regular size and also the
-zero padded version. The signal is zero padded to alleviate border effects.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>signal</strong> (<em>ndarray</em>) – The signal to analyse.</p></li>
-<li><p><strong>window</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – The window to use. If None, uses a rounded Gaussian</p></li>
-<li><p><strong>None.</strong> (<em>window. Defaults to</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns de stft of the signal.
-stft_padded(ndarray): Returns the stft of the zero-padded signal.
-Npad(int): Number of zeros padded on each side of the signal.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>stft(ndarray)</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">get_stft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nfft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#get_stft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.get_stft" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.hermite_fun">
@@ -1365,7 +1587,7 @@ This function is deprecated and conserved for retrocompatibility purposes only.<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.reconstruct_signal_2">
-<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">reconstruct_signal_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Npad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nfft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#reconstruct_signal_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.reconstruct_signal_2" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">reconstruct_signal_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Npad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nfft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#reconstruct_signal_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.reconstruct_signal_2" title="Permalink to this definition"></a></dt>
 <dd><p>Reconstruction using a mask given as parameter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1384,6 +1606,16 @@ This function is deprecated and conserved for retrocompatibility purposes only.<
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.utilstf.reconstruct_signal_3">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">reconstruct_signal_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#reconstruct_signal_3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.reconstruct_signal_3" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="benchmark_demo.utilstf.sigmerge">
+<span class="sig-prename descclassname"><span class="pre">benchmark_demo.utilstf.</span></span><span class="sig-name descname"><span class="pre">sigmerge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/benchmark_demo/utilstf.html#sigmerge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#benchmark_demo.utilstf.sigmerge" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="benchmark_demo.utilstf.snr_comparison">

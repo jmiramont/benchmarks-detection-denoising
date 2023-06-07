@@ -397,7 +397,7 @@ def delaunay_triangulation_denoising(signal,
 
     # Apply the reconstruction formula to the masked STFT to filter the signal.
     # signal_r, t = reconstruct_signal_2(mask, stft_padded, Npad, Nfft)
-    signal_r = reconstruct_signal_3(mask, stft, window=g)
+    signal_r = np.real(reconstruct_signal_3(mask, stft, window=g))
     # Return dictionary if requested, otherwise return the denoised signal.
     if return_dic:
         return {'s_r': signal_r,
@@ -444,7 +444,7 @@ def block_based_dt_denoising(signal,block_len=1024,**kwargs):
     print('Invertion...')
     g, T = get_round_window(2*block_len)
     stft = get_stft(signal, window = g, Nfft=2*block_len)
-    signal_r = reconstruct_signal_3(mask, stft, window=g)
+    signal_r = np.real(reconstruct_signal_3(mask, stft, window=g))
 
     return mask, stft, signal_r#+signal_mean
 

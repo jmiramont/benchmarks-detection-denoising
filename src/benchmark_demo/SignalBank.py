@@ -272,11 +272,11 @@ class SignalBank:
         def signal_mc_multi_linear(self, ncomps=5):
             Generates a multicomponent signal with multiple linear chirps.
    
-        def signal_tone_dumped(self):
-            Generates a dumped tone whose normalized frequency is 0.25.
+        def signal_tone_damped(self):
+            Generates a damped tone whose normalized frequency is 0.25.
     
         def signal_tone_sharp_attack(self):
-            Generates a dumped tone that is modulated with a rectangular window.
+            Generates a damped tone that is modulated with a rectangular window.
 
         def signal_cos_chirp(self, omega=1.5, a1=1, f0=0.25, a2=0.125, checkinstf=True):
             Generates a cosenoidal chirp, the instantenous frequency of which is given 
@@ -430,7 +430,7 @@ class SignalBank:
 
 # Monocomponent signals --------------------------------------------------------
 
-    def _signal_linear_chirp(self, a=None, b=None, instfreq = False):
+    def _signal_linear_chirp(self, a=None, b=None, phi=0, instfreq = False):
         """Returns a linear chirp, the instantaneous frequency of which is a linear
         function with slope "a" and initial normalized frequency "b".
 
@@ -465,7 +465,7 @@ class SignalBank:
 
         phase = np.cumsum(instf)
 
-        x = np.cos(2*pi*phase)*sg.tukey(Nsub,0.25) 
+        x = np.cos(2*pi*phase+phi)*sg.tukey(Nsub,0.25) 
         signal = np.zeros((N,))
         signal[tmin:tmax] = x
 
@@ -480,8 +480,8 @@ class SignalBank:
         else:
             return signal
       
-    def _signal_tone_dumped(self):
-        """Generates a dumped tone whose normalized frequency is 0.25.
+    def _signal_tone_damped(self):
+        """Generates a damped tone whose normalized frequency is 0.25.
 
         Returns:
             numpy.ndarray: Returns a numpy array with the signal.
@@ -499,14 +499,14 @@ class SignalBank:
         return e*chirp
 
     def _signal_tone_sharp_attack(self):
-        """Generates a dumped tone that is modulated with a rectangular window.
+        """Generates a damped tone that is modulated with a rectangular window.
 
         Returns:
             numpy.ndarray: Returns a numpy array with the signal.
         """
 
         N = self.N
-        dumpcos = self.signal_tone_dumped()
+        dumpcos = self.signal_tone_damped()
         indmax = np.argmax(dumpcos)
         dumpcos[0:indmax] = 0
         return dumpcos    
@@ -621,9 +621,8 @@ class SignalBank:
             return signal.view(np.ndarray)
         return signal
 
-
-    def signal_tone_dumped(self):
-        """Generates a dumped tone whose normalized frequency is 0.25.
+    def signal_tone_damped(self):
+        """Generates a damped tone whose normalized frequency is 0.25.
 
         Returns:
             numpy.ndarray: Returns a numpy array with the signal.
@@ -646,14 +645,14 @@ class SignalBank:
         return signal
 
     def signal_tone_sharp_attack(self):
-        """Generates a dumped tone that is modulated with a rectangular window.
+        """Generates a damped tone that is modulated with a rectangular window.
 
         Returns:
             numpy.ndarray: Returns a numpy array with the signal.
         """
 
         N = self.N
-        signal = self.signal_tone_dumped()
+        signal = self.signal_tone_damped()
         indmax = np.argmax(signal)
         signal[0:indmax] = 0
 
@@ -727,7 +726,8 @@ class SignalBank:
 
     def signal_mc_on_off_2(self):
         chirp1 = self._signal_linear_chirp(a=0.1, b=0.10, instfreq = False)
-        chirp2 = self._signal_linear_chirp(a=0.1, b=0.20, instfreq = False)
+        chirp2a = self._signal_linear_chirp(a=0.1, b=0.20, instfreq = False)
+        chirp2b = self._signal_linear_chirp(a=0.1, b=0.20, instfreq = False)
         chirp3 = self._signal_linear_chirp(a=0.1, b=0.30, instfreq = False)
 
         Nsub = self.N
@@ -748,33 +748,40 @@ class SignalBank:
         chirp1.comps[0][2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.25)    
         
 
-        chirp2[0:N9] = 0
-        chirp2.comps[0][0:N9] = 0
-        chirp2.instf[0][0:N9] = 0
-        chirp2[8*N9:-1] = 0
-        chirp2.comps[0][8*N9:-1] = 0
-        chirp2.instf[0][8*N9:-1] = 0
-        chirp2[4*N9:5*N9] = 0
-        chirp2.comps[0][4*N9:5*N9] = 0
-        chirp2.instf[0][4*N9:5*N9] = 0
-
-        
-        chirp2a = chirp2.copy()
+        chirp2a[0:N9] = 0
+        chirp2a.comps[0][0:N9] = 0
+        chirp2a.instf[0][0:N9] = 0
+        chirp2a[8*N9:-1] = 0
+        chirp2a.comps[0][8*N9:-1] = 0
+        chirp2a.instf[0][8*N9:-1] = 0
+        chirp2a[4*N9:5*N9] = 0
+        chirp2a.comps[0][4*N9:5*N9] = 0
+        chirp2a.instf[0][4*N9:5*N9] = 0
         chirp2a[N9:4*N9] = chirp2a[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
         chirp2a.comps[0][N9:4*N9] = chirp2a[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
         chirp2a._instf[0][5*N9:8*N9] = 0
+        chirp2a.comps[0][5*N9:8*N9] = 0
+        chirp2a[5*N9:8*N9] = 0
 
-        chirp2b = chirp2.copy()
+        chirp2b[0:N9] = 0
+        chirp2b.comps[0][0:N9] = 0
+        chirp2b.instf[0][0:N9] = 0
+        chirp2b[8*N9:-1] = 0
+        chirp2b.comps[0][8*N9:-1] = 0
+        chirp2b.instf[0][8*N9:-1] = 0
+        chirp2b[4*N9:5*N9] = 0
+        chirp2b.comps[0][4*N9:5*N9] = 0
+        chirp2b.instf[0][4*N9:5*N9] = 0
         chirp2b[5*N9:8*N9] = chirp2b[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25) 
         chirp2b.comps[0][5*N9:8*N9] = chirp2b[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25)
         chirp2b._instf[0][N9:4*N9] = 0
+        chirp2b.comps[0][N9:4*N9] = 0
+        chirp2b[N9:4*N9] = 0
 
-        signal = chirp1+chirp2a+chirp2b+chirp3
+        signal = chirp1+chirp2b+chirp2a+chirp3
 
-        #TODO: The total number of comps should be generated automatically.
         if not self.return_signal:
             signal = signal.view(np.ndarray)
-            # signal.total_ncomps = 4
 
         return signal
 
@@ -791,8 +798,8 @@ class SignalBank:
         a = self.fmax-self.fmin
         b = self.fmin
         
-        chirp1 = self._signal_linear_chirp(a = -a, b = 0.5 - b)
-        chirp2 = self._signal_linear_chirp(a = a, b = b)
+        chirp1 = 0.8*self._signal_linear_chirp(a = -0.31, b = 0.41, phi=0)
+        chirp2 = self._signal_linear_chirp(a = 0.35, b = 0.1, phi=0)
 
         signal = chirp1 + chirp2
 
@@ -801,7 +808,50 @@ class SignalBank:
         
         return signal
 
-    def signal_mc_pure_tones(self, ncomps=5, a1=None, b1=None):
+    # def signal_mc_crossing_chirps_2(self):
+    #     """Returns a multi component signal with two chirps crossing, i.e. two chirps 
+    #     whose instantaneous frequency coincide in one point of the time frequency plane.
+
+    #     Returns:
+    #         numpy.ndarray: Returns a numpy array with the signal.
+    #     """
+
+    #     N = self.N
+        
+    #     a = self.fmax-self.fmin
+    #     b = self.fmin
+        
+    #     chirp1 = self._signal_linear_chirp(a = -a, b = 0.5 - b)
+    #     chirp2 = self._signal_linear_chirp(a = a, b = b)
+
+    #     tmin = self.tmin
+    #     tmax = N-tmin
+    #     Nsub = tmax-tmin
+    #     tsub = np.arange(Nsub)
+    #     fmax = self.fmax
+        
+    #     signal = np.zeros((N,))
+    #     instf0 = np.zeros_like(signal)
+
+    #     omega = 1.5
+    #     f0 = 0.5 - b - a*tsub/Nsub
+    #     if0 = f0+ 0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
+    #     if0 = if0[np.where(if0<fmax)]            
+    #     self.check_inst_freq(if0)
+    #     phase0 = np.cumsum(if0)
+    #     x0 = np.zeros_like(signal)
+    #     x0[tmin:tmin+len(phase0)] = np.cos(2*pi*phase0)*sg.tukey(len(phase0),0.25)
+    #     instf0[tmin:tmin+len(if0)] = if0
+    #     chirp1 = Signal(x0, instf=instf0)
+        
+    #     signal = chirp1 + chirp2
+
+    #     if not self.return_signal:
+    #         return signal.view(np.ndarray)
+        
+    #     return signal        
+
+    def signal_mc_pure_tones(self, ncomps=5, a1=None, b1=None, c0=0.10):
         """Generates a multicomponent signal comprising several pure tones harmonically
         separated, i.e. tones are ordered from lower to higher frequency and each one
         has an instantaneous frequency that is an entire multiple of that of the
@@ -828,10 +878,10 @@ class SignalBank:
             if b1 < self.fmin:
                 b1 = self.fmin
 
-        signal = self._signal_linear_chirp(a = a1, b = b1)
+        signal = self._signal_linear_chirp(a = a1, b = b1 + c0)
         
         for i in range(1,ncomps):
-            chirp = self._signal_linear_chirp(a = a1*(i+1), b = b1*(i+1))
+            chirp = self._signal_linear_chirp(a = a1*(i+1), b = b1*(i+1) + c0)
             if np.max(chirp.instf[0]) >= max_freq:
                 break
             signal = signal + chirp
@@ -884,9 +934,9 @@ class SignalBank:
             numpy.ndarray: Returns a numpy array with the signal.
         """
 
-        a1=self.fmin/2
-        b1=self.fmin/2
-        signal = self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1)
+        a1=self.fmin/1.5
+        b1=self.fmin/3
+        signal = self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1, c0=0.1)
         
         if not self.return_signal:
             return signal.view(np.ndarray)
@@ -1155,6 +1205,77 @@ class SignalBank:
             return signal.view(np.ndarray)
         return signal           
 
+    def signal_mc_synthetic_mixture_5(self):
+        """Generates a multicomponent signal with different types of components.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+
+        N = self.N
+        tmin = self.tmin
+        tmax = self.tmax
+        Nsub = self.Nsub
+        tmid = Nsub//2
+        # tmid = tmid +(tmax-tmid)//5
+        tsub = np.arange(Nsub)
+        signal = np.zeros((N,))
+        
+        if1 = 1*self.fmin + 4.0*(tsub/Nsub-0.05)**2
+        if1 = if1[np.where(if1<self.fmax)]
+        if1 = if1[np.where(self.fmin<if1)]
+        phase1 = np.cumsum(if1)
+        x = np.cos(2*pi*phase1)*sg.windows.tukey(len(phase1),0.5)
+        chirp1 = np.zeros_like(signal)
+        chirp1[tmin:tmin+len(x)] = x
+        instf1 = np.zeros_like(signal)
+        instf1[tmin:tmin+len(x)] =  if1
+
+
+        N = self.N
+        tmin = 12*self.tmin
+        tmax = N-self.tmin
+        Nsub = tmax-tmin
+        tsub = np.arange(Nsub)
+        fmax = self.fmax
+        
+        signal = np.zeros((N,))
+        instf2 = np.zeros_like(signal)
+        omega = 4
+        f2 = 1.2*self.fmin + 0.1*tsub/Nsub
+        if2 = f2+0.035 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        if2 = if2[np.where(if2<fmax)]    
+        phase2 = np.cumsum(if2)
+        x2 = np.zeros_like(signal)
+        x2[tmin:tmin+len(phase2)] = np.cos(2*pi*phase2)*sg.tukey(len(phase2),0.25) 
+        instf2[tmin:tmin+len(if2)] = if2
+
+        tmin = 12*self.tmin
+        tmax = N-self.tmin
+        Nsub = tmax-tmin
+        tsub = np.arange(Nsub)                
+        instf3 = np.zeros_like(signal)
+        omega = 5
+        f3 = 1.2*self.fmin + 0.2*tsub/Nsub
+        if3 = f3+0.17 #+ 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        if3 = if3[np.where(if3<fmax)]    
+        phase3 = np.cumsum(if3)
+        x3 = np.zeros_like(signal)
+        x3[tmin:tmin+len(phase3)] = np.cos(2*pi*phase3)*sg.tukey(len(phase3),0.25) 
+        instf3[tmin:tmin+len(if3)] = if3
+
+
+
+        signal = (Signal(chirp1, instf=instf1) 
+                + Signal(x2, instf=instf2) 
+                + Signal(x3, instf=instf3)
+                # + Signal(chirp4, instf=None)
+                )
+        
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal   
+
 
     def signal_mc_synthetic_mixture_3(self):
         """Generates a multicomponent signal with different types of components.
@@ -1278,52 +1399,66 @@ class SignalBank:
             numpy.ndarray: Returns a numpy array with the signal.
         """
         
-        N = self.N
-        b1 = self.fmid/2
+        chirp1 = self._signal_linear_chirp(a=0, b=0.10, instfreq = False)
+        chirp2a = self._signal_linear_chirp(a=0, b=0.20, instfreq = False)
+        chirp2b = self._signal_linear_chirp(a=0, b=0.20, instfreq = False)
+        chirp3 = self._signal_linear_chirp(a=0, b=0.30, instfreq = False)
 
-        if b1 < self.fmin:
-            b1 = self.fmin
-
-        tmin = self.tmin
-        tmax = N-tmin
-        Nsub = tmax-tmin
-        
-        N3 = N//3
-        N4 = N//4
-        N7 = N//7
-        N9 = N//9
-        
-        chirp1, instf, tmin, _ = self._signal_linear_chirp(a=0, b=b1, instfreq=True)
-        chirp2, instf, tmin, _ = self._signal_linear_chirp(a=0, b=2*b1, instfreq=True)
-        chirp3, instf, tmin, _ = self._signal_linear_chirp(a=0, b=3*b1, instfreq=True)
+        Nsub = self.N
+        N3 = Nsub//3
+        N4 = Nsub//4
+        N7 = Nsub//7
+        N9 = Nsub//9
 
         chirp1[0:2*N7] = 0
+        chirp1.comps[0][0:2*N7] = 0
+        chirp1.instf[0][0:2*N7] = 0
+
         chirp1[5*N7:-1] = 0
-        chirp1[2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.5)    
-
-        chirp2[0:N9] = 0
-        chirp2._instf[0][0:N9] = 0
-        chirp2[4*N9:5*N9] = 0
-        chirp2._instf[0][4*N9:5*N9] = 0
-        chirp2[8*N9:-1] = 0
-        chirp2._instf[0][8*N9:-1] = 0
-
-        chirp2a = chirp2.copy()
-        chirp2a[N9:4*N9] = chirp2a[N9:4*N9]*sg.windows.tukey(3*N9,0.5)    
-        chirp2a[5*N9:8*N9] = 0
-        chirp2a._instf[0][5*N9:8*N9] = 0
-            
+        chirp1.comps[0][5*N7:-1] = 0
+        chirp1.instf[0][5*N7:-1] = 0
         
-        chirp2b = chirp2.copy()
-        chirp2b[5*N9:8*N9] = chirp2b[5*N9:8*N9]*sg.windows.tukey(3*N9,0.5)    
-        chirp2b[N9:4*N9] = 0
+        chirp1[2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.25)    
+        chirp1.comps[0][2*N7:5*N7] = chirp1[2*N7:5*N7]*sg.windows.tukey(3*N7,0.25)    
+        
+
+        chirp2a[0:N9] = 0
+        chirp2a.comps[0][0:N9] = 0
+        chirp2a.instf[0][0:N9] = 0
+        chirp2a[8*N9:-1] = 0
+        chirp2a.comps[0][8*N9:-1] = 0
+        chirp2a.instf[0][8*N9:-1] = 0
+        chirp2a[4*N9:5*N9] = 0
+        chirp2a.comps[0][4*N9:5*N9] = 0
+        chirp2a.instf[0][4*N9:5*N9] = 0
+        chirp2a[N9:4*N9] = chirp2a[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
+        chirp2a.comps[0][N9:4*N9] = chirp2a[N9:4*N9]*sg.windows.tukey(3*N9,0.25)    
+        chirp2a._instf[0][5*N9:8*N9] = 0
+        chirp2a.comps[0][5*N9:8*N9] = 0
+        chirp2a[5*N9:8*N9] = 0
+
+        chirp2b[0:N9] = 0
+        chirp2b.comps[0][0:N9] = 0
+        chirp2b.instf[0][0:N9] = 0
+        chirp2b[8*N9:-1] = 0
+        chirp2b.comps[0][8*N9:-1] = 0
+        chirp2b.instf[0][8*N9:-1] = 0
+        chirp2b[4*N9:5*N9] = 0
+        chirp2b.comps[0][4*N9:5*N9] = 0
+        chirp2b.instf[0][4*N9:5*N9] = 0
+        chirp2b[5*N9:8*N9] = chirp2b[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25) 
+        chirp2b.comps[0][5*N9:8*N9] = chirp2b[5*N9:8*N9]*sg.windows.tukey(3*N9,0.25)
         chirp2b._instf[0][N9:4*N9] = 0
+        chirp2b.comps[0][N9:4*N9] = 0
+        chirp2b[N9:4*N9] = 0
 
-        signal = chirp1+chirp2a+chirp2b+chirp3
-        # signal.total_comps=4
+        signal = chirp1+chirp2b+chirp2a+chirp3
 
+        #TODO: The total number of comps should be generated automatically.
         if not self.return_signal:
-            return signal.view(np.ndarray)
+            signal = signal.view(np.ndarray)
+            # signal.total_ncomps = 4
+
         return signal           
 
 
@@ -1479,7 +1614,7 @@ class SignalBank:
         
         exponents = [4, 3, 2]
         finits = [self.fmin, 1.8*self.fmin, 2.5*self.fmin]
-        fends = [0.3, 0.8, 1.2]
+        fends = [0.3, 0.8, 1.2] #[, 0.8]#, 1.2]
         ncomps = len(fends)
 
         max_freq = self.fmax
@@ -1491,26 +1626,96 @@ class SignalBank:
                                                          exponent=exponents[i],
                                                          r_instf=True)    
 
-            instf2 = instf            
+            instf2 = instf
+
             if instf[0] >= max_freq:
                 break
             
             instf[np.where(instf2 > max_freq)] = 0
-            instf2 = instf2[np.where(instf2 < max_freq)]
-            tukwin = sg.windows.tukey(len(instf2),0.25)
+            instf2 = instf2[np.where(instf2 <= max_freq)]
+            tukwin = sg.windows.tukey(len(instf2),0.5)
 
             self.check_inst_freq(instf2)
-            phase = np.cumsum(instf2*N)
+            phase = np.cumsum(instf2)
             x = np.cos(2*pi*phase)
-            tukwin = sg.windows.tukey(len(x),0.25)
+            tukwin = sg.windows.tukey(len(x),0.99)
+            
             x = x*tukwin
             aux[tmin:tmin+len(x)] = x
 
             signal = signal + Signal(aux, instf=instf)
-
+        
+        signal = signal - np.mean(signal)
         if not self.return_signal:
             return signal.view(np.ndarray)
         return signal           
+
+    def signal_mc_damped_cos(self):
+        """Generates a multicomponent signal with different types of components.
+
+        Returns:
+            numpy.ndarray: Returns a numpy array with the signal.
+        """
+
+        N = self.N
+        t = np.arange(N)/N
+        tmin = self.tmin
+        tmax = N-tmin
+        Nsub = tmax-tmin
+        tsub = np.arange(Nsub)
+        fmax = self.fmax
+        
+        signal = np.zeros((N,))
+        instf0 = np.zeros_like(signal)
+        instf1 = np.zeros_like(signal)
+        instf2 = np.zeros_like(signal)
+
+        omega = 5
+        f0 = 0.32 + 0.00*tsub/Nsub
+        if0 = f0 + np.exp(np.log(0.25)*tsub/Nsub) * 0.1*np.cos(2*pi*omega*tsub/Nsub - pi*omega)
+        
+        if1 = self.fmin + 0.1*tsub/Nsub    
+        # if2 = f2+0.02 + 0.02*np.cos(2*pi*omega*tsub/Nsub - pi*omega)    
+        # if0 = if0[np.where(if0<fmax)]    
+        # if1 = if1[np.where(if1<fmax)]    
+        # if2 = if2[np.where(if2<fmax)]    
+        
+        phase0 = np.cumsum(if0)
+        phase1 = np.cumsum(if1)
+        # phase2 = np.cumsum(if2)
+        
+        x0 = np.zeros_like(signal)
+        x1 = np.zeros_like(signal)
+        # x2 = np.zeros_like(signal)
+
+        eps = 1e-6
+        t = np.arange(Nsub)+eps
+        c = 1/Nsub/10
+        prec = 10e-1 # Precision at sample N for the envelope.
+        alfa = -np.log(prec*Nsub/((Nsub-c)**2))/Nsub
+        e = np.exp(-alfa*t)*((t-c)**2/t)
+        e[0] = 0
+        e = e/np.max(np.abs(e))
+
+        x0[tmin:tmin+len(phase0)] = np.cos(2*pi*phase0)*sg.tukey(len(phase0),0.25)
+        x1[tmin:tmin+len(phase1)] = np.cos(2*pi*phase1)*sg.tukey(len(phase1),0.25) 
+        # x2[tmin:tmin+len(phase2)] = np.cos(2*pi*phase2)*sg.tukey(len(phase2),0.25) 
+
+        instf0[tmin:tmin+len(if0)] = if0
+        instf1[tmin:tmin+len(if1)] = if1
+        # instf2[tmin:tmin+len(if2)] = if2
+
+        chirp0 = Signal(x0, instf=instf0)
+        chirp1 = Signal(x1, instf=instf1)
+        # chirp2 = Signal(x2, instf=instf2)
+
+        # signal = x0+x1+x2 
+
+        signal = chirp0+chirp1
+
+        if not self.return_signal:
+            return signal.view(np.ndarray)
+        return signal       
 
 
     # def signal_speech(self, number=6, type='male'):
@@ -1531,15 +1736,15 @@ class SignalBank:
 
 
     #! Deprecated. 
-    def signal_mc_harmonic(self):
-        return self.signal_mc_multi_linear()
+    # def signal_mc_harmonic(self):
+    #     return self.signal_mc_multi_linear()
 
-    def signal_mc_modulated_tones(self):
-        return self.signal_mc_multi_cos()
+    # def signal_mc_modulated_tones(self):
+    #     return self.signal_mc_multi_cos()
 
 
-    def signal_mc_modulated_tones_2(self):
-        return self.signal_mc_multi_cos_2()
+    # def signal_mc_modulated_tones_2(self):
+    #     return self.signal_mc_multi_cos_2()
 
     
 
