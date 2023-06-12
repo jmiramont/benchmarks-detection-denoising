@@ -11,6 +11,15 @@ authors = ["Juan Miramont <jmiramont@univ-nantes.fr>"]
 # # poetry config virtualenvs.in-project true --local
 # create = true
 # in-project = true
+# authors = ["Juan Miramont <jmiramont@univ-nantes.fr>"]
+
+# [virtualenvs]
+# # Create local virtualenv stored in .venv (Python version used depends on VSCode selected interpreter)
+# # https://python-poetry.org/docs/configuration/#virtualenvsin-project
+# # poetry config virtualenvs.create true --local
+# # poetry config virtualenvs.in-project true --local
+# create = true
+# in-project = true
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.10"

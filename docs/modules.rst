@@ -5,4 +5,4 @@ src
    :maxdepth: 4
 
    benchmark_demo
-   
+   methods
