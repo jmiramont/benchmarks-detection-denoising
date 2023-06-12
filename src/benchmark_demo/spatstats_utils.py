@@ -32,7 +32,7 @@ def compute_positions_and_bounds(pos):
 
         u_r = robjects.FloatVector(pos[:, 1])                       
         v_r = robjects.FloatVector(pos[:, 0])
-        bounds_u = np.array([np.min(pos[:, 1]), np.max(pos[:, 1])]) 
+        bounds_u = np.array([np.min(pos[:, 1]), np.max(pos[:, 1])])
         bounds_v = np.array([np.min(pos[:, 0]), np.max(pos[:, 0])])
         b_u = robjects.FloatVector(bounds_u)        
         b_v = robjects.FloatVector(bounds_v)
@@ -529,6 +529,8 @@ def generate_white_noise_zeros_pp(N, nsim, complex_noise=False, parallel=False):
         pos = np.array(pos)/T
         u_r, v_r, b_u, b_v = compute_positions_and_bounds(pos)
         ppp_noise = spatstat.geom.ppp(u_r, v_r, b_u, b_v)
+        # ppp_noise = spatstat.geom.ppp(u_r, v_r)
+        
         list_ppp = rbase.c(list_ppp, spatstat.geom.as_solist(ppp_noise))
 
     list_ppp = spatstat.geom.as_solist(list_ppp)
@@ -566,6 +568,7 @@ def compute_rank_envelope_test(signal,
 
     # Initialize interface with R.
     spatstat = SpatstatInterface(update=False)
+    #! "explore" instead of "core" for the new version of spatstat.
     spatstat.import_package("explore", "geom", update=False)
     # spatstat_random = importr('spatstat.random')
     rbase = importr('base')
@@ -630,12 +633,15 @@ def compute_rank_envelope_test(signal,
     # Crop envelopes if required.
     envelopes = package_GET.crop_curves(envelopes, r_min=rmin, r_max=rmax)
 
+    print(envelopes)
+
     # Compute the actual test now.
     res = package_GET.global_envelope_test(envelopes, 
                                             alpha=alpha, 
                                             type='rank', 
-                                            alternative = 'less') # <- We are doing 
-                                                                  # one-sided tests.
+                                            alternative = 'less', # <- We are doing
+                                            )                       # one-sided tests.  
+                                                                  
 
     # Get the attributes from the results of the test.
     res_attr = rbase.attributes(res)

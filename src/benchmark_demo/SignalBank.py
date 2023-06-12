@@ -1535,24 +1535,23 @@ class SignalBank:
         tmin = self.tmin
         tmax = N-tmin
         Nsub = tmax-tmin
-        dloc = Nsub/(Nimpulses+1)
-        
+        dloc = Nsub/(Nimpulses+1)        
         signal = np.zeros((N,))
         comps = []
+
+        T=np.sqrt(N)
+        t=np.arange(0,N)
+        p = 1/6
+        T2 = T*p
+        k = (T2**2+T**2)/(T*T2)**2
+        imp_fun = lambda t0: np.exp(-pi/(T2**2)*(t-t0)**2)*np.cos(2*pi*0.25*(t-t0))
+
         for i in range(Nimpulses):
             impulse = np.zeros((N,))
-            impulse[int((i+1)*dloc)+tmin] = 10
+            t0 = int((i+1)*dloc)+tmin
+            impulse = imp_fun(t0)
             comps.append(impulse.copy())
             signal += impulse
-
-        g,_ = get_round_window(2*N)
-        stft_complete = get_stft(signal, window=g, Nfft=2*N)
-        stft = stft_complete[0:N+1,:]
-
-        for i in range(stft.shape[1]):
-            stft[:,i] *= sg.windows.tukey(stft.shape[0],0.95)
-
-        signal = reconstruct_signal_3(np.ones_like(stft), stft_complete, window=g)
 
         if self.return_signal:
             signal = signal.view(Signal)    
@@ -1580,20 +1579,19 @@ class SignalBank:
         signal = np.zeros((N,))
         comps = []
 
+        T=np.sqrt(N)
+        t=np.arange(0,N)
+        p = 1/6
+        T2 = T*p
+        k = (T2**2+T**2)/(T*T2)**2
+        imp_fun = lambda t0: np.exp(-pi/(T2**2)*(t-t0)**2)*np.cos(2*pi*0.25*(t-t0))
+
         for i in range(Nimpulses):
             impulse = np.zeros((N,))
-            impulse[int((i+1)*dloc)+tmin] = 2*(i+1)
+            t0 = int((i+1)*dloc)+tmin
+            impulse = imp_fun(t0)*(i+1)
             comps.append(impulse.copy())
             signal += impulse
-
-        g,_ = get_round_window(2*N)
-        stft_complete = get_stft(signal, window=g, Nfft=2*N)
-        stft = stft_complete[0:N+1,:]
-
-        for i in range(stft.shape[1]):
-            stft[:,i] *= sg.windows.tukey(stft.shape[0],0.95)
-
-        signal = reconstruct_signal_3(np.ones_like(stft), stft_complete, window=g)
 
         if self.return_signal:
             signal = signal.view(Signal)    
@@ -1601,6 +1599,7 @@ class SignalBank:
             signal._instf = comps
 
         return signal
+
 
     def signal_mc_exp_chirps(self):
         """Generates a multicomponent signal comprising three exponential chirps.
