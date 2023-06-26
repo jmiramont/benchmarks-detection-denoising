@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>methods.method_empty_space &mdash; Benchmarks of Multicomponent Signal Methods  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Benchmarks of Multicomponent Signal Methods
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">benchmark_demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../methods.html">methods package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Benchmarks of Multicomponent Signal Methods</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">methods.method_empty_space</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for methods.method_empty_space</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">benchmark_demo.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">KDTree</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">ConvexHull</span><span class="p">,</span> <span class="n">Delaunay</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">spst</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="nn">sg</span>
+<span class="kn">from</span> <span class="nn">benchmark_demo.utilstf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">benchmark_demo.spatstats_utils</span> <span class="kn">import</span> <span class="n">compute_scale</span>
+<span class="c1"># from numba import njit</span>
+
+
+<div class="viewcode-block" id="find_center_empty_balls"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.find_center_empty_balls">[docs]</a><span class="k">def</span> <span class="nf">find_center_empty_balls</span><span class="p">(</span><span class="n">Sww</span><span class="p">,</span> <span class="n">pos_exp</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">radi_seg</span><span class="p">):</span>
+    <span class="c1"># define a kd-tree with zeros</span>
+    <span class="n">kdpos</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">pos_exp</span><span class="p">)</span>
+
+    <span class="c1"># define a grid corresponding to the time-frequency paving</span>
+    <span class="n">vecx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Sww</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">vecy</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Sww</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">vecy</span><span class="p">,</span> <span class="n">vecx</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">kdpos</span><span class="o">.</span><span class="n">query_ball_point</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">radi_seg</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">empty_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vecx</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vecy</span><span class="p">)):</span>
+            <span class="n">empty_mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">empty_mask</span></div>
+
+<span class="c1"># def paint_empty_balls(Sww, pos_exp, a, radi_seg):</span>
+<span class="c1">#     radi_seg = int(np.floor(radi_seg * a))</span>
+<span class="c1">#     # define a kd-tree with zeros</span>
+<span class="c1">#     kdpos = KDTree((pos_exp*a).astype(int))</span>
+
+<span class="c1">#     # define a grid corresponding to the time-frequency paving</span>
+<span class="c1">#     vecx = (np.arange(0, Sww.shape[0]))</span>
+<span class="c1">#     vecy = (np.arange(0, Sww.shape[1]))</span>
+<span class="c1">#     g = np.transpose(np.meshgrid(vecy, vecx))</span>
+<span class="c1">#     g.resize(Sww.size,2)</span>
+<span class="c1">#     # Find the TF points without zeros around in a radius of T.</span>
+<span class="c1">#     result = kdpos.query_ball_point(g, radi_seg).T</span>
+
+<span class="c1">#     # Create a circular patch to move:</span>
+<span class="c1">#     gridTree = KDTree(g)</span>
+<span class="c1">#     ref_point = np.array((Sww.shape[1]//2, Sww.shape[0]//2))</span>
+<span class="c1">#     idx = gridTree.query_ball_point(ref_point, radi_seg)</span>
+<span class="c1">#     patch_idx = np.floor(g[idx]).astype(int) - ref_point</span>
+
+<span class="c1">#     # Paint balls of radius T around those points.</span>
+<span class="c1">#     mask = np.zeros_like(Sww)</span>
+<span class="c1">#     for point in g[np.where([result[i] == [] for i in range(len(result))])]:</span>
+<span class="c1">#         aux_patch = patch_idx + point</span>
+<span class="c1">#         aux_patch = np.delete(aux_patch, np.where(np.logical_or(aux_patch[:,0]&lt;0, aux_patch[:,0]&gt;=Sww.shape[1])), axis=0)</span>
+<span class="c1">#         aux_patch = np.delete(aux_patch, np.where(np.logical_or(aux_patch[:,1]&lt;0, aux_patch[:,1]&gt;=Sww.shape[0])), axis=0)          </span>
+<span class="c1">#         for idx in aux_patch:</span>
+<span class="c1">#             mask[idx[1],idx[0]] = True</span>
+
+
+<span class="c1">#     return mask    </span>
+
+
+<div class="viewcode-block" id="get_convex_hull"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.get_convex_hull">[docs]</a><span class="k">def</span> <span class="nf">get_convex_hull</span><span class="p">(</span><span class="n">Sww</span><span class="p">,</span> <span class="n">pos_exp</span><span class="p">,</span> <span class="n">empty_mask</span><span class="p">,</span> <span class="n">radi_expand</span><span class="p">):</span>
+    <span class="c1"># extract region of interest</span>
+    <span class="n">Nfft</span> <span class="o">=</span> <span class="n">Sww</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">fmin</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1">#int(np.sqrt(Nfft))//2</span>
+    <span class="n">fmax</span> <span class="o">=</span> <span class="n">empty_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">fmin</span>
+    <span class="n">tmin</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1">#int(np.sqrt(Nfft))//2</span>
+    <span class="n">tmax</span> <span class="o">=</span> <span class="n">empty_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tmin</span>
+
+    <span class="n">sub_empty</span> <span class="o">=</span> <span class="n">empty_mask</span><span class="p">[</span><span class="n">fmin</span><span class="p">:</span><span class="n">fmax</span><span class="p">,</span> <span class="n">tmin</span><span class="p">:</span><span class="n">tmax</span><span class="p">]</span>
+    <span class="n">vecx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sub_empty</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">vecy</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sub_empty</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">vecx</span><span class="p">,</span> <span class="n">vecy</span><span class="p">))</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sub_empty</span><span class="p">)</span>
+    <span class="n">kdpos</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="c1"># result = kdpos.query_ball_point(g, radi_expand*np.sqrt(Nfft))</span>
+    <span class="n">sub_empty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sub_empty</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sub_empty</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sub_empty</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">kdpos</span><span class="o">.</span><span class="n">query_ball_point</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">],</span> <span class="n">radi_expand</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nfft</span><span class="p">))</span>
+            <span class="n">sub_empty</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sub_empty</span><span class="p">)</span>
+    <span class="c1"># points = np.array([u, v]).T</span>
+    <span class="c1"># hull_d = Delaunay(points) # for convenience</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Sww</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">mask</span><span class="p">[</span><span class="n">fmin</span><span class="p">:</span><span class="n">fmax</span><span class="p">,</span> <span class="n">tmin</span><span class="p">:</span><span class="n">tmax</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_empty</span>
+    <span class="k">return</span> <span class="n">mask</span> <span class="c1">#,hull_d, </span></div>
+
+
+<div class="viewcode-block" id="empty_space_denoising"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.empty_space_denoising">[docs]</a><span class="k">def</span> <span class="nf">empty_space_denoising</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span>
+                            <span class="n">radi_seg</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+                            <span class="n">radi_expand</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">adapt_thr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">test_params</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">return_dic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="p">):</span>
+
+    <span class="n">radi_expand</span> <span class="o">=</span> <span class="n">radi_seg</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+    <span class="n">Nfft</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">N</span>
+
+        <span class="c1"># Compute and adaptive threshold if its required, otherwise use &quot;LB&quot;</span>
+    <span class="k">if</span> <span class="n">adapt_thr</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">test_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_params</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s1">&#39;fun&#39;</span><span class="p">:</span><span class="s1">&#39;Fest&#39;</span><span class="p">,</span> 
+                            <span class="s1">&#39;correction&#39;</span><span class="p">:</span><span class="s1">&#39;rs&#39;</span><span class="p">,</span> 
+                            <span class="s1">&#39;transform&#39;</span><span class="p">:</span><span class="s1">&#39;asin(sqrt(.))&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;rmin&#39;</span><span class="p">:</span><span class="mf">0.65</span><span class="p">,</span>
+                            <span class="s1">&#39;rmax&#39;</span><span class="p">:</span><span class="mf">1.05</span><span class="p">,</span>                            
+                        <span class="p">}</span>
+        
+        <span class="n">scale_pp</span> <span class="o">=</span> <span class="n">compute_scale</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="o">**</span><span class="n">test_params</span><span class="p">)</span>
+        <span class="n">radi_seg</span> <span class="o">=</span> <span class="n">scale_pp</span> <span class="c1"># Override LB</span>
+        <span class="n">radi_expand</span> <span class="o">=</span> <span class="n">scale_pp</span>
+
+    
+    <span class="n">g</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">get_round_window</span><span class="p">(</span><span class="n">Nfft</span><span class="p">)</span>
+    <span class="n">stft</span> <span class="o">=</span> <span class="n">get_stft</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="n">g</span><span class="p">,</span> <span class="n">Nfft</span><span class="o">=</span><span class="n">Nfft</span><span class="p">)</span>
+    <span class="c1"># Computes the spectrogram and its zeros.</span>
+    <span class="n">Sww</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">stft</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">Nfft</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,:])</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">find_zeros_of_spectrogram</span><span class="p">(</span><span class="n">Sww</span><span class="p">)</span>
+    <span class="n">pos_aux</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">pos_aux</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">a</span>
+    <span class="n">pos_aux</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">a</span>
+    <span class="n">empty_mask</span> <span class="o">=</span> <span class="n">find_center_empty_balls</span><span class="p">(</span><span class="n">Sww</span><span class="p">,</span> <span class="n">pos_aux</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">radi_seg</span><span class="o">=</span><span class="n">radi_seg</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">get_convex_hull</span><span class="p">(</span><span class="n">Sww</span><span class="p">,</span> <span class="n">pos_aux</span><span class="p">,</span> <span class="n">empty_mask</span><span class="p">,</span> <span class="n">radi_expand</span><span class="o">=</span><span class="n">radi_expand</span><span class="p">)</span>
+    <span class="c1"># mask = paint_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)</span>
+    <span class="n">xr</span> <span class="o">=</span> <span class="n">reconstruct_signal_3</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">stft</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">g</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_dic</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;s_r&#39;</span><span class="p">:</span> <span class="n">xr</span><span class="p">,</span>
+                <span class="s1">&#39;mask&#39;</span><span class="p">:</span> <span class="n">mask</span><span class="p">,</span>
+                <span class="s1">&#39;zeros&#39;</span><span class="p">:</span><span class="n">pos</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xr</span></div>
+
+
+<div class="viewcode-block" id="NewMethod"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.NewMethod">[docs]</a><span class="k">class</span> <span class="nc">NewMethod</span><span class="p">(</span><span class="n">MethodTemplate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;empty_space&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>
+
+<div class="viewcode-block" id="NewMethod.method"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.NewMethod.method">[docs]</a>    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">signal_output</span> <span class="o">=</span> <span class="n">empty_space_denoising</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>    
+        <span class="k">return</span> <span class="n">signal_output</span></div>
+    
+<div class="viewcode-block" id="NewMethod.get_parameters"><a class="viewcode-back" href="../../methods.html#methods.method_empty_space.NewMethod.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>            <span class="c1"># Use it to parametrize your method.</span>
+        <span class="k">return</span> <span class="p">[{</span><span class="s1">&#39;adapt_thr&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},]</span>    <span class="c1"># Use adaptive threshold.</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Juan Manuel Miramont-Taurel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

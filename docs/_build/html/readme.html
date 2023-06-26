@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A benchmark of signal denoising/ detection methods &mdash; Benchmarks of Multicomponent Signal Methods  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Benchmarks of Multicomponent Signal Methods
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">A benchmark of signal denoising/ detection methods</a><ul>
+<li><a class="reference internal" href="#documentation-and-results">Documentation and Results</a></li>
+<li><a class="reference internal" href="#related-work">Related work</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#what-is-this-benchmark">What is this benchmark?</a><ul>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-to-use-this-benchmark">How to use this benchmark?</a></li>
+<li><a class="reference internal" href="#benchmarking-your-own-method-online">Benchmarking your own method online</a><ul>
+<li><a class="reference internal" href="#installation-using-poetry">Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code></a></li>
+<li><a class="reference internal" href="#adding-your-own-method">Adding your own method</a><ul>
+<li><a class="reference internal" href="#using-a-template-file-for-your-method">Using a template file for your method</a></li>
+<li><a class="reference internal" href="#checking-everything-is-in-order-with-pytest">Checking everything is in order with <code class="docutils literal notranslate"><span class="pre">pytest</span></code></a></li>
+<li><a class="reference internal" href="#create-a-pull-request">Create a pull request</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#benchmarking-your-method-in-your-computer">Benchmarking your method in your computer</a><ul>
+<li><a class="reference internal" href="#configuring-the-benchmark-parameters">Configuring the benchmark parameters</a></li>
+<li><a class="reference internal" href="#documenting-your-method">Documenting your method</a></li>
+<li><a class="reference internal" href="#matlab-implemented-methods">Matlab-implemented methods</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Benchmarks of Multicomponent Signal Methods</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">A benchmark of signal denoising/ detection methods</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/readme.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="a-benchmark-of-signal-denoising-detection-methods">
+<h1>A benchmark of signal denoising/ detection methods<a class="headerlink" href="#a-benchmark-of-signal-denoising-detection-methods" title="Permalink to this heading"></a></h1>
+<section id="documentation-and-results">
+<h2>Documentation and Results<a class="headerlink" href="#documentation-and-results" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/jmiramont/benchmark-test/actions/workflows/local_tests.yml"><img alt="Last Benchmark" src="https://github.com/jmiramont/benchmark-test/actions/workflows/local_tests.yml/badge.svg" /></a>
+<a class="reference internal" href="#results/results_denoising.md"><span class="xref myst"><img alt="Results" src="docs/readme_figures/results_badge.svg" /></span></a>
+<a class="reference external" href="https://jmiramont.github.io/benchmark-test/"><img alt="Documentation" src="docs/readme_figures/docs_badge.svg" /></a></p>
+</section>
+<section id="related-work">
+<h2>Related work<a class="headerlink" href="#related-work" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/jmiramont/gretsi_2022_benchmark"><img alt="Gretsi 22" src="docs/readme_figures/gretsi_badge.svg" /></a></p>
+</section>
+</section>
+<section id="what-is-this-benchmark">
+<h1>What is this benchmark?<a class="headerlink" href="#what-is-this-benchmark" title="Permalink to this heading"></a></h1>
+<p>The goal of this benchmark is to keep an updated, public comparison between different methods for signal denoising / detecting. You can <a class="reference internal" href="#benchmarking-your-own-method-online"><span class="std std-ref">upload your own method</span></a> using a template file for the configuration of the benchmark and following the instructions below to make a pull request. After this, your method will be compared against others, for different signals, and noise conditions (you can also <a class="reference internal" href="#results/results_denoising.md"><span class="xref myst">check the current methods and results</span></a>). Do not hesitate to contact us should you find any trouble with the instructions :).</p>
+<p>If you prefer, <a class="reference internal" href="#benchmarking-your-method-in-your-computer"><span class="std std-ref">you can download this repository as a toolbox, and run your own benchmarks</span></a> in your computer. This can be useful to make unbiased, researcher independent contrasts between your method and others. Additionally, you can explore different parameters of your method and use <a class="reference internal" href="#notebooks/demo_signal_bank.ipynb"><span class="xref myst">more than 20 different signals</span></a>. As a result, you will obtain a series of <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files with all the information you need to build figures for your articles and reports.</p>
+<p>This benchmarks is an effort to provide the signal processing practitioners with a tool that makes research more efficient and transparent. We need your help to make it a valuable tool for the community, please do not hesitate to give us your feedback!</p>
+<!-- The methods to compare, the tests, and the performance evaluation functions were conceived as different modules, so that one can assess new methods without modifying the tests or the signals. On the one hand, the tests and the performance evaluation functions are encapsulated in the class `Benchmark`. On the other hand, the signals used in this benchmark are generated by the methods in the class `SignalBank`. The only restriction this poses is that the methods should receive a signal (and a perhaps a series of parameters) and output a denoised signal or a boolean variable indicating the presence (or not) of a signal. -->
+<p>The following block diagram depicts the relationship between the different block. The inward arrows represent the input of the user, who have to provide a number methods and (possibly) different parameters for them.</p>
+<p><img alt="Block Diagram" src="docs/readme_figures/block_diagram.svg" /></p>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#how-to-use-this-benchmark"><span class="std std-ref">How to use this benchmark?</span></a></p></li>
+<li><p><a class="reference internal" href="#benchmarking-your-own-method-online"><span class="std std-ref">Benchmarking your own method online</span></a></p></li>
+<li><p><a class="reference internal" href="#benchmarking-your-method-in-your-computer"><span class="std std-ref">Benchmarking your own method in your computer</span></a></p></li>
+<li><p><a class="reference internal" href="#matlab-implemented-methods"><span class="std std-ref">Matlab-implemented methods</span></a></p></li>
+</ul>
+</section>
+</section>
+<section id="how-to-use-this-benchmark">
+<h1>How to use this benchmark?<a class="headerlink" href="#how-to-use-this-benchmark" title="Permalink to this heading"></a></h1>
+<p>You can use this benchmark to test a new method against others. There are at least two ways of doing this:</p>
+<ol class="arabic simple">
+<li><p>You can either <strong><a class="reference internal" href="#benchmarking-your-own-method-online"><span class="std std-ref">make a new fork of this repository</span></a></strong> and make a pull request with a new method to test. A workflow using GitHub actions will automatically detect your new method, run an online benchmark and update the results.</p></li>
+<li><p>You can clone this repository and <strong><a class="reference internal" href="#benchmarking-your-method-in-your-computer"><span class="std std-ref">benchmark your own method locally</span></a></strong>, i.e. in your computer. This will allow you to run the benchmark with all the modifications you want (exploring different parameters for you method, type of signals, number of repetitions, etc.).</p></li>
+</ol>
+<p>The <a class="reference internal" href="#./notebooks/"><span class="xref myst"><em>notebooks</em></span></a> folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, <a class="reference internal" href="#./notebooks/demo_benchmark.ipynb"><span class="xref myst"><em>demo_benchmark.ipynb</em></span></a> gives two minimal working examples to introduce the basic functionality of the <code class="docutils literal notranslate"><span class="pre">Benchmark</span></code> class, and the notebook <a class="reference internal" href="#./notebooks/demo_signal_bank.ipynb"><span class="xref myst"><em>demo_signal_bank.ipynb</em></span></a> showcases the signals produced by the <code class="docutils literal notranslate"><span class="pre">SignalBank</span></code> class.</p>
+<p>The instructions below will help you to add a new method and run the benchmark afterwards.</p>
+</section>
+<section id="benchmarking-your-own-method-online">
+<h1>Benchmarking your own method online<a class="headerlink" href="#benchmarking-your-own-method-online" title="Permalink to this heading"></a></h1>
+<p>First you should have a local copy of this repository to add and modify files.
+For this, <a class="reference external" href="https://docs.github.com/en/get-started/quickstart/fork-a-repo">fork this repository</a>, for example by using the “Fork” button above:</p>
+<p><img alt="Repository header" src="docs/readme_figures/header_repo.png" /></p>
+<p>This will create a copy of the repository in your own GitHub account, the URL of which should look like</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>https://github.com/YOUR-USERNAME/benchmark-test
+</pre></div>
+</div>
+<p>Now, let’s create a local copy, i.e. in your computer, of the repository you have just forked. Open a terminal in a directory of your preference and use</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/YOUR-USERNAME/benchmark-test.git
+</pre></div>
+</div>
+<p>When a repository is forked, a copy of all the branches existing in the original one are also created. It would be better if you create a new branch to work in your own changes, mainly adding your new method to be tested. For this, create a new branch using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>branch<span class="w"> </span>new_method
+git<span class="w"> </span>checkout<span class="w"> </span>new_method
+</pre></div>
+</div>
+<section id="installation-using-poetry">
+<h2>Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code><a class="headerlink" href="#installation-using-poetry" title="Permalink to this heading"></a></h2>
+<p><em>Remark for conda users:</em></p>
+<p><em>If you have <a class="reference external" href="https://www.anaconda.com/"><code class="docutils literal notranslate"><span class="pre">Anaconda</span></code></a> or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html"><code class="docutils literal notranslate"><span class="pre">Miniconda</span></code></a> installed please disable the auto-activation of the base environment and your conda environment using:</em></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>config<span class="w"> </span>--set<span class="w"> </span>auto_activate_base<span class="w"> </span><span class="nb">false</span>
+conda<span class="w"> </span>deactivate
+</pre></div>
+</div>
+<p>Before starting to make changes in the repository, we need to install the basic dependencies of the benchmark. With that in mind, we use <a class="reference external" href="https://python-poetry.org/docs/"><code class="docutils literal notranslate"><span class="pre">poetry</span></code></a>, a tool for dependency management and packaging in python. First install <code class="docutils literal notranslate"><span class="pre">poetry</span></code> following the steps described <a class="reference external" href="https://python-poetry.org/docs/#installation">here</a>. Once you’re done with this, open a terminal in the directory where you clone the benchmark (or use the console in your preferred IDE). Then, make <code class="docutils literal notranslate"><span class="pre">poetry</span></code> create a virtual environment and install all the current dependencies of the benchmark using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>
+</pre></div>
+</div>
+<p>Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add all your dependencies by modifying the <code class="docutils literal notranslate"><span class="pre">.toml</span></code> file in the folder, under the <code class="docutils literal notranslate"><span class="pre">[tool.poetry.dependencies]</span></code> section. For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>tool.poetry.dependencies<span class="o">]</span>
+<span class="nv">python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;=3.8,&lt;3.11&quot;</span>
+<span class="nv">numpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;^1.22.0&quot;</span>
+<span class="nv">matplotlib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;^3.5.1&quot;</span>
+<span class="nv">pandas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;^1.3.5&quot;</span>
+</pre></div>
+</div>
+<p>A more convenient and interactive way to do this interactively is by using <code class="docutils literal notranslate"><span class="pre">poetry</span></code>, for example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>add<span class="w"> </span>numpy
+</pre></div>
+</div>
+<p>and following the instructions prompted in the console.</p>
+<p>Afer this, run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>update
+</pre></div>
+</div>
+<p>to update the .lock file in the folder.</p>
+<p><em>Remark: Notice that the use of <code class="docutils literal notranslate"><span class="pre">poetry</span></code> for adding the dependencies of your packet is key for running the benchmark using <a class="reference internal" href="#./.github/workflows"><span class="xref myst">GitHub Actions</span></a>, please consider this while adding your method.</em></p>
+</section>
+<section id="adding-your-own-method">
+<h2>Adding your own method<a class="headerlink" href="#adding-your-own-method" title="Permalink to this heading"></a></h2>
+<p>A new method can be tested against others by adding a file into the folder <a class="reference internal" href="#./src/methods"><span class="xref myst">src/methods</span></a> containing the definition of a class with some specific characteristics. We shall see how to do this in the following sections.</p>
+<p>First, the function implementing your method must have the following signature:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">a_new_method</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>Methods should receive an <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> numpy array representing a signal, where and <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of their time samples. Additionally, they should receive a second parameter <code class="docutils literal notranslate"><span class="pre">params</span></code> to allow testing different combinations of input parameters. The shape and type of the output depends on the task (<em>denoising</em> or <em>detection</em>):</p>
+<ul class="simple">
+<li><p>For Denoising: The output must be a numpy array and have the same shape as the input.</p></li>
+<li><p>For Detection: The output must be a boolean variable where <code class="docutils literal notranslate"><span class="pre">False</span></code> indicates no presence of a signal, and <code class="docutils literal notranslate"><span class="pre">True</span></code> that a signal has been detected.</p></li>
+</ul>
+<p>In the following section, we will see how to create a class that compartmentalize your method and outline the instructions to run the benchmark.</p>
+<section id="using-a-template-file-for-your-method">
+<h3>Using a template file for your method<a class="headerlink" href="#using-a-template-file-for-your-method" title="Permalink to this heading"></a></h3>
+<p>Either your method is implemented in python or matlab, you must create a new <code class="docutils literal notranslate"><span class="pre">.py</span></code> file the name of which must start with <em>method_</em> and have certain content to be automatically discovered by the toolbox. The file should encapsulate your method in a new class. This is much easier than it sounds :). To make it simpler, <a class="reference internal" href="#./new_method_example/method_new_basic_template.py"><span class="xref myst">a file called <em>method_new_basic_template.py</em> is made available</span></a> which you can use as a template. You just have to fill in the parts that implement your method. Matlab users can also find a template <a class="reference internal" href="#./new_method_example/method_new_basic_template_matlab.py"><span class="xref myst">here</span></a>.</p>
+<p>Let’s analyze the contents of the template file <a class="reference internal" href="#./new_method_example/method_new_basic_template.py"><span class="xref myst"><em>method_new_basic_template.py</em></span></a>, which is divided in three sections. In the first section, you can import a function with your method or implement everything in the same file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; First section ----------------------------------------------------------------------</span>
+<span class="sd">| Import here all the modules you need.</span>
+<span class="sd">| Remark: Make sure that neither of those modules starts with &quot;method_&quot;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">methods.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span> <span class="c1"># Import the template!</span>
+</pre></div>
+</div>
+<p>Additionally, the <a class="reference external" href="https://docs.python.org/3/library/abc.html">abstract class</a> <code class="docutils literal notranslate"><span class="pre">MethodTemplate</span></code> is imported here. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes, by forcing the implementation of certain <em>abstract</em> methods. We will see later that the class that encapsulates your method must inherit from this template.</p>
+<p>The second section of the file should include all the functions your method needs to work. This functions could also be defined in a separate module imported in the previous section as well. Although it is not mandatory to add them here, but we recommend it so as to keep everything in a single file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Second section ---------------------------------------------------------------------</span>
+<span class="sd">| Put here all the functions that your method uses.</span>
+<span class="sd">| </span>
+<span class="sd">| def a_function_of_my_method(signal,params):</span>
+<span class="sd">|   ...</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>In the third and final section, your method is encapsulated in a new class called <code class="docutils literal notranslate"><span class="pre">NewMethod</span></code> (you can change this name if you prefer to, but it is not strictly necessary). As mentioned before, the only requisite for the class that represents your method is that it inherits from the <a class="reference external" href="https://docs.python.org/3/library/abc.html">abstract class</a> <code class="docutils literal notranslate"><span class="pre">MethodTemplate</span></code>. This simply means that you will have to implement the class constructor and a class function called -unsurprisingly- <code class="docutils literal notranslate"><span class="pre">method()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Third section ----------------------------------------------------------------------</span>
+<span class="sd">| Create here a new class that will encapsulate your method.</span>
+<span class="sd">| This class should inherit the abstract class MethodTemplate.</span>
+<span class="sd">| You must then implement the class function: </span>
+
+<span class="sd">def method(self, signal, params)</span>
+<span class="sd">    ...</span>
+<span class="sd">| which should receive the signals and any parameters that you desire to pass to your</span>
+<span class="sd">| method.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="k">class</span> <span class="nc">NewMethod</span><span class="p">(</span><span class="n">MethodTemplate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;a_new_method&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>  <span class="c1"># Should be either &#39;denoising&#39; or &#39;detection&#39;</span>
+
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span> <span class="c1"># Implement this method.</span>
+        <span class="o">...</span>
+
+    <span class="c1"># def get_parameters(self):            # Use it to parametrize your method.</span>
+    <span class="c1">#     return [None,]</span>
+
+</pre></div>
+</div>
+<p>The constructor function <code class="docutils literal notranslate"><span class="pre">__init__(self)</span></code> must initialize the attributes <code class="docutils literal notranslate"><span class="pre">self.id</span></code> and <code class="docutils literal notranslate"><span class="pre">self.task</span></code>. The first is a string to identify your method in the benchmark. The second is the name of the task your method is devoted to. This can be either <code class="docutils literal notranslate"><span class="pre">'denoising'</span></code> or <code class="docutils literal notranslate"><span class="pre">'detection'</span></code>. Notice that if you fail to use such names this will prevent you from benchmarking your method.</p>
+<p>Lastly, as anticipated above, you have to implement the class function <code class="docutils literal notranslate"><span class="pre">method(self,</span> <span class="pre">signals,</span> <span class="pre">params)</span></code>. This function may act as a wrapper of your method, i.e. you implement your method elsewhere and call it from this function, or you could implement it directly here. This is up to you :).</p>
+<p>If you want to test your method using different sets of parameters, you can also implement the function <code class="docutils literal notranslate"><span class="pre">get_parameters()</span></code> to return a list with the desired input parameters (you can find an example of this <a class="reference internal" href="#./new_method_example/method_new_with_parameters.py"><span class="xref myst">here</span></a>).</p>
+<p><em>Remark: Do not modify the abstract class <code class="docutils literal notranslate"><span class="pre">MethodTemplate</span></code></em>.</p>
+<p>Finally, <strong>you have to move the file</strong> with all the modifications to the folder <a class="reference internal" href="#./src/methods"><span class="xref myst">/src/methods</span></a>. Changing the name of the file is possible, but keep in mind that <strong>the file’s name must start with “<em>method_</em>” to be recognizable</strong>.</p>
+</section>
+<section id="checking-everything-is-in-order-with-pytest">
+<h3>Checking everything is in order with <code class="docutils literal notranslate"><span class="pre">pytest</span></code><a class="headerlink" href="#checking-everything-is-in-order-with-pytest" title="Permalink to this heading"></a></h3>
+<p>Once your dependencies are ready, you should check that everything is in order using the <code class="docutils literal notranslate"><span class="pre">pytest</span></code> testing suit. To do this, simply run the following in a console located in your local version of the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>run<span class="w"> </span>pytest
+</pre></div>
+</div>
+<p>This will check a series of important points for running the benchmark online, mainly:</p>
+<ol class="arabic simple">
+<li><p>Your method class inherits the <code class="docutils literal notranslate"><span class="pre">MethodTemplate</span></code> abstract class.</p></li>
+<li><p>The inputs and outputs of your method follows the required format according to the designated task.</p></li>
+</ol>
+<p>Once the tests are passed, you can now either create a pull request to run the benchmark remotely, or run the benchmark locally.</p>
+</section>
+<section id="create-a-pull-request">
+<h3>Create a pull request<a class="headerlink" href="#create-a-pull-request" title="Permalink to this heading"></a></h3>
+<p>In order to run the benchmark remotely, you can request the addition of your method for benchmarking along with other existing ones. This can be done by creating a <a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests">Pull Request</a>. First, you need to update the remote version of your fork, now that you have added your new method and tested that it is working with <code class="docutils literal notranslate"><span class="pre">pytest</span></code>. To do this, commit the changes and then push them to your remote repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>commit<span class="w"> </span>--all<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Uploading a new method&quot;</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>new_method
+</pre></div>
+</div>
+<p>Now you can create a <a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">new pull request</a> by using the “Contribute” button from the fork we have created before:</p>
+<p><img alt="Start a pull request." src="docs/readme_figures/start_a_pull_request.png" /></p>
+<p>and then “Open a Pull Request”. There you will need to select the branch where your changes are going to be made in the original repository of the benchmark. Please choose here “new_methods_branch”:</p>
+<p><img alt="Choose the right branch." src="docs/readme_figures/pull_request_branch.png" /></p>
+<p>Finally, send the pull request by clicking on “Create pull request”:</p>
+<p><img alt="Create you pull request." src="docs/readme_figures/finishing_pull_request.png" /></p>
+<p>You can also add an small comment in the “Write” field. A short explanation of the new method and related references (notes, articles, etc.) will be appreciated.</p>
+<p>Once this is done, the benchmark is run remotely using <a class="reference internal" href="#./.github/workflows"><span class="xref myst">GitHub Actions</span></a> provided that the pull request is approved.</p>
+<p><em>Remark: Notice that <code class="docutils literal notranslate"><span class="pre">pytest</span></code> is also run again in this workflow. Therefore, keep in mind that if your method didn’t pass the tests locally, it won’t pass them at this stage either, and the pull request will not be approved</em>.</p>
+</section>
+</section>
+</section>
+<section id="benchmarking-your-method-in-your-computer">
+<h1>Benchmarking your method in your computer<a class="headerlink" href="#benchmarking-your-method-in-your-computer" title="Permalink to this heading"></a></h1>
+<p>Running the benchmark in your own computer can be useful if you want to use a different set of parameters of the experiments. In order to do this, you should update the configuration files <code class="docutils literal notranslate"><span class="pre">config_denoising.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">config_detection.yaml</span></code> with parameters of your choice.</p>
+<p>You should first either <a class="reference external" href="https://github.com/jmiramont/benchmark-test/archive/refs/heads/main.zip">download</a> or clone this repository in your computer. Once you have done this, go to the folder where you cloned the repository and install the toolbox using <code class="docutils literal notranslate"><span class="pre">poetry</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install
+</pre></div>
+</div>
+<section id="configuring-the-benchmark-parameters">
+<h2>Configuring the benchmark parameters<a class="headerlink" href="#configuring-the-benchmark-parameters" title="Permalink to this heading"></a></h2>
+<p>In the configuration files you can change:</p>
+<ol class="arabic simple">
+<li><p>The length of the simulation.</p></li>
+<li><p>The signals you use.</p></li>
+<li><p>The number of times each simulation is run.</p></li>
+<li><p>The signal-to-noise ratios (SNRs, in dB) used in each simulation.</p></li>
+<li><p>The parallelization parameters (if needed).</p></li>
+</ol>
+<p>The following example shows how to select a length of simulation of 512 time samples, with SNRs of 0, 10, 20 and 30 dB, repeating each experiment 30 times and using a parallel pool of five workers. Notice that the signals to use during the experiments are selected by the <code class="docutils literal notranslate"><span class="pre">signal_id</span></code> given by the <code class="docutils literal notranslate"><span class="pre">SignalBank</span></code> class (in this case, a linear chirp and an exponential chirp).</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># ------------------------------------------------------------------</span>
+<span class="c1"># Configuration file for benchmarking denoising methods:</span>
+<span class="c1"># ------------------------------------------------------------------</span>
+<span class="nt">N</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
+<span class="nt">SNRin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">20</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">30</span><span class="p p-Indicator">]</span>
+<span class="nt">repetitions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">parallelize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">signal_names</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;LinearChirp&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;ExpChirp&#39;</span><span class="p p-Indicator">,]</span><span class="w"> </span><span class="c1"># Use signal_id of SignalBank class.     </span>
+</pre></div>
+</div>
+<p>Once the configuration is ready, you can use the following command to run the benchmark using <code class="docutils literal notranslate"><span class="pre">poetry</span></code> (assuming <a class="reference internal" href="#installation-using-poetry"><span class="std std-ref">all you dependencies have been added to the .toml file and installed</span></a>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>run_this_benchmark.py
+</pre></div>
+</div>
+</section>
+<section id="documenting-your-method">
+<h2>Documenting your method<a class="headerlink" href="#documenting-your-method" title="Permalink to this heading"></a></h2>
+<p>For documenting your code, please add docstrings following <a class="reference external" href="https://peps.python.org/pep-0257/#:~:text=The%20aim%20of%20this%20PEP,conventions%2C%20not%20laws%20or%20syntax.">PEP257</a>. A docstring must be added at the beginning of the definition of classes and functions. The minimum information required is:</p>
+<ul class="simple">
+<li><p>Summary of the class/function.</p></li>
+<li><p>Brief description of input/output parameters.</p></li>
+<li><p>Any possible exception raised from your method.</p></li>
+</ul>
+</section>
+<section id="matlab-implemented-methods">
+<h2>Matlab-implemented methods<a class="headerlink" href="#matlab-implemented-methods" title="Permalink to this heading"></a></h2>
+<p>Benchmarking matlab-based methods is possible thanks to the incorporated matlab’s python engine, that allows communication between python and a matlab’s session.</p>
+<p>Matlab python’s engine is only compatible with certain python versions, depending on the local Matlab version you are running. If you are interested in using the benchmark locally, i.e. in your computer, <a class="reference external" href="https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/python-compatibility.pdf">check that your version of matlab and python are compatible</a>.</p>
+<p>Once you’ve checked your python and matlab versions are compatible, you can install the matlab engine in the <a class="reference internal" href="#installation-using-poetry"><span class="std std-ref">virtual environment created before</span></a> using poetry</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>-E<span class="w"> </span>matlab_tools
+</pre></div>
+</div>
+<p>We now can see how to benchmark a method implemented in Matlab by slightly modifying the instructions given before to create the file that represents your method. A template file is given <a class="reference internal" href="#./new_method_example/method_new_basic_template_matlab.py"><span class="xref myst">here</span></a> for interested users. Let us highlight the main differences in this template.</p>
+<p>First, in the first section of the file, you must import the class <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code>, which will simply act as an interface between python and a Matlab session where your method will be run:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">methods.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span><span class="p">,</span> <span class="n">MatlabInterface</span>
+<span class="c1"># You must import the MethodTemplate abstract class and the MatlabInterface class.</span>
+
+</pre></div>
+</div>
+<p>Then, you must  <strong>move the <code class="docutils literal notranslate"><span class="pre">.m</span></code> with your method to the folder <code class="docutils literal notranslate"><span class="pre">src\methods</span></code></strong>. After this you can now create a <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> instance that represents your method, by passing a string to the <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> creator. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># After moving a file called &#39;my_matlab_method.m&#39; to src\methods, create an interface with the matlab engine by passing the name of the function file (without the .m extension). Then get the matlab function as:</span>
+<span class="n">mlint</span> <span class="o">=</span> <span class="n">MatlabInterface</span><span class="p">(</span><span class="s1">&#39;my_matlab_method&#39;</span><span class="p">)</span> 
+<span class="n">matlab_function</span> <span class="o">=</span> <span class="n">mlint</span><span class="o">.</span><span class="n">matlab_function</span> <span class="c1"># A python function handler to the method.</span>
+</pre></div>
+</div>
+<p>Now you are ready to complete the third section of the file. You can use this exactly as it is in the template file, provided you have done all the precedent steps.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NewMethod</span><span class="p">(</span><span class="n">MethodTemplate</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;a_matlab_method&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>
+        
+
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A class method encapsulating a matlab function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signals (numpy array): A signal.</span>
+<span class="sd">            params: Any number of positional parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signal_output</span> <span class="o">=</span> <span class="n">matlab_function</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span> <span class="c1"># Only positional args.</span>
+
+        <span class="k">return</span> <span class="n">signal_output</span>
+
+</pre></div>
+</div>
+<p><em>Remark: The <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> class will cast the input parameters in the appropriate Matlab types.</em></p>
+<p><em>Remark 2: A Matlab method must comply with the output parameters shapes expected by the toolbox. Matlab vectors of double type numbers will be casted into numpy arrays of floats, and Matlab’s boolean types will be casted into python booleans. If your method returns more than one parameter, only the first one returned is taken</em>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Juan Manuel Miramont-Taurel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>methods.method_global_mad_test &mdash; Benchmarks of Multicomponent Signal Methods  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Benchmarks of Multicomponent Signal Methods
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">benchmark_demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../methods.html">methods package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Benchmarks of Multicomponent Signal Methods</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">methods.method_global_mad_test</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for methods.method_global_mad_test</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">benchmark_demo.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span> <span class="c1"># You must import the MethodTemplate abstract class.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">| Import here all the modules you need.</span>
+<span class="sd">| Remark: Make sure that neither of those modules starts with &quot;method_&quot;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">benchmark_demo.spatstats_utils</span> <span class="kn">import</span> <span class="n">compute_global_mad_test</span>
+
+<span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">| Put here all the functions that your method uses.</span>
+<span class="sd">| Remark: Make sure that this file starts with &quot;method_&quot;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">&quot;&quot;&quot; Create here a new class that will encapsulate your method.</span>
+<span class="sd">This class should inherit the abstract class MethodTemplate.</span>
+<span class="sd">By doing this, you must then implement the class method: </span>
+
+<span class="sd">def method(self, signal, params)</span>
+
+<span class="sd">which should receive the signals and any parameters</span>
+<span class="sd">that you desire to pass to your method.You can use this file as an example.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NewMethod"><a class="viewcode-back" href="../../methods.html#methods.method_global_mad_test.NewMethod">[docs]</a><span class="k">class</span> <span class="nc">NewMethod</span><span class="p">(</span><span class="n">MethodTemplate</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;global_mad_test&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;detection&#39;</span>
+
+        <span class="c1"># A shared class attribute</span>
+        <span class="c1"># print(&#39;Creating Compute Statistics object...&#39;)</span>
+        <span class="c1"># self.sc = ComputeStatistics()</span>
+        <span class="c1"># print(&#39;Finished.&#39;)</span>
+
+<div class="viewcode-block" id="NewMethod.method"><a class="viewcode-back" href="../../methods.html#methods.method_global_mad_test.NewMethod.method">[docs]</a>    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="c1"># Implement this method.</span>
+        <span class="n">reject_H0</span> <span class="o">=</span> <span class="n">compute_global_mad_test</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">reject_H0</span></div>
+        
+        
+<div class="viewcode-block" id="NewMethod.get_parameters"><a class="viewcode-back" href="../../methods.html#methods.method_global_mad_test.NewMethod.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>            <span class="c1"># Use it to parametrize your method.</span>
+        <span class="k">return</span> <span class="p">[</span>
+                <span class="c1"># {&#39;statistic&#39;:&#39;L&#39;,},                </span>
+                <span class="p">{</span><span class="s1">&#39;statistic&#39;</span><span class="p">:</span><span class="s1">&#39;Frs&#39;</span><span class="p">,</span>     <span class="s1">&#39;MC_reps&#39;</span><span class="p">:</span><span class="mi">2499</span><span class="p">},</span>
+                <span class="p">{</span><span class="s1">&#39;statistic&#39;</span><span class="p">:</span><span class="s1">&#39;Frs_vs&#39;</span><span class="p">,</span>  <span class="s1">&#39;MC_reps&#39;</span><span class="p">:</span><span class="mi">2499</span><span class="p">},</span>
+                <span class="p">]</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Juan Manuel Miramont-Taurel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -10,6 +10,7 @@
 
 [![Gretsi 22](docs/readme_figures/gretsi_badge.svg)](https://github.com/jmiramont/gretsi_2022_benchmark)
 
+
 # What is this benchmark?
 
 The goal of this benchmark is to keep an updated, public comparison between different methods for signal denoising / detecting. You can [upload your own method](#benchmarking-your-own-method-online) using a template file for the configuration of the benchmark and following the instructions below to make a pull request. After this, your method will be compared against others, for different signals, and noise conditions (you can also [check the current methods and results](results/results_denoising.md)). Do not hesitate to contact us should you find any trouble with the instructions :).

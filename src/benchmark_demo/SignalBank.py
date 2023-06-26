@@ -851,7 +851,7 @@ class SignalBank:
         
     #     return signal        
 
-    def signal_mc_pure_tones(self, ncomps=5, a1=None, b1=None, c0=0.10):
+    def signal_mc_pure_tones(self, ncomps=5, a1=None, b1=None, c0=0.0):
         """Generates a multicomponent signal comprising several pure tones harmonically
         separated, i.e. tones are ordered from lower to higher frequency and each one
         has an instantaneous frequency that is an entire multiple of that of the
@@ -934,9 +934,9 @@ class SignalBank:
             numpy.ndarray: Returns a numpy array with the signal.
         """
 
-        a1=self.fmin/1.5
+        a1=self.fmin/2
         b1=self.fmin/3
-        signal = self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1, c0=0.1)
+        signal = self.signal_mc_pure_tones(ncomps=ncomps, a1=a1, b1=b1, c0=0.0)
         
         if not self.return_signal:
             return signal.view(np.ndarray)
