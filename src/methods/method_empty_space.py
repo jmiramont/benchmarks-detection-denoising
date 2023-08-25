@@ -1,11 +1,11 @@
-from benchmark_tools.benchmark_utils import MethodTemplate
+from mcsm_benchmarks.benchmark_utils import MethodTemplate
 from scipy.spatial import KDTree
 from scipy.spatial import ConvexHull, Delaunay
 import numpy as np
 import scipy.stats as spst
 import scipy.signal as sg
-from benchmark_tools.utilstf import *
-from benchmark_tools.spatstats_utils import compute_scale
+from src.utilities.utilstf import *
+from src.utilities.spatstats_utils import compute_scale
 # from numba import njit
 
 

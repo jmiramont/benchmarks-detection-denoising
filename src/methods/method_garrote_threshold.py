@@ -1,8 +1,8 @@
-from benchmark_tools.benchmark_utils import MethodTemplate
+from mcsm_benchmarks.benchmark_utils import MethodTemplate
 import numpy as np
 from numpy import pi as pi
 import scipy.signal as sg
-from benchmark_tools.utilstf import *
+from src.utilities.utilstf import *
 
 def garrote_thresholding(signal, coeff=1.5, window=None, Nfft=None, dict_output=False):
     if Nfft is None:

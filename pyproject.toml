@@ -2,7 +2,8 @@
 name = "benchmark-demo"
 version = "0.1.0"
 description = "A benchmark for testing tf methods."
-authors = ["Juan Miramont <jmiramont@univ-nantes.fr>"]
+authors = ["Juan Manuel Miramont-Taurel <jmiramontt@univ-lille.fr>"]
+packages = [{include = "src"}]
 
 # [virtualenvs]
 # # Create local virtualenv stored in .venv (Python version used depends on VSCode selected interpreter)
@@ -34,12 +35,13 @@ tabulate = "^0.8.9"
 PyYAML = "^6.0"
 plotly = "^5.10.0"
 typeguard = "^2.13.3"
-matlabengine = { version = "9.13.6", optional = true }
-ipykernel = {version = "^6.6.1", optional = true}
-rpy2 = { version = "^3.5.4", optional = true }
-spatstat-interface = { version = "^1.0.1", optional = true }
-numba = "^0.56.2"
+matlabengine = "9.13.6"
+rpy2 = "^3.5.4"
+spatstat-interface = "^1.0.1"
 librosa = "^0.9.2"
+mcsm-benchmarks = {git = "git@github.com:jmiramont/mcsm-benchmarks.git"}
+
+ipykernel = {version = "^6.6.1", optional = true}
 Sphinx = {version = ">=6,<8", optional = true}
 sphinx-rtd-theme = {version = "^1.0.0", optional = true}
 nbsphinx = { version = "^0.9.2",  optional = true }

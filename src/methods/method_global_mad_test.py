@@ -1,11 +1,11 @@
-from benchmark_tools.benchmark_utils import MethodTemplate # You must import the MethodTemplate abstract class.
+from mcsm_benchmarks.benchmark_utils import MethodTemplate # You must import the MethodTemplate abstract class.
 
 """
 | Import here all the modules you need.
 | Remark: Make sure that neither of those modules starts with "method_".
 """
 import numpy as np
-from benchmark_tools.spatstats_utils import compute_global_mad_test
+from src.utilities.spatstats_utils import compute_global_mad_test
 
 """ 
 | Put here all the functions that your method uses.

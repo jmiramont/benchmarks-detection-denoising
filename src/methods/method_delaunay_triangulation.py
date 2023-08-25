@@ -1,8 +1,8 @@
-from benchmark_tools.benchmark_utils import MethodTemplate
-from benchmark_tools.utilstf import *
-from scipy.spatial import ConvexHull, Delaunay
-import matplotlib.pyplot as plt
-from benchmark_tools.spatstats_utils import compute_scale, ComputeStatistics
+from mcsm_benchmarks.benchmark_utils import MethodTemplate
+from src.utilities.utilstf import *
+from scipy.spatial import Delaunay
+# import matplotlib.pyplot as plt
+from src.utilities.spatstats_utils import compute_scale
 import matplotlib.path as mpltPath
 
 def points_in_triangles(S,TRI,vertices):
