@@ -1,0 +1,137 @@
+Licenses of the PEASS subjective database
+http://bass-db.gforge.inria.fr/peass/
+
+This is a joint work by Valentin Emiya (INRIA, France), Emmanuel Vincent (INRIA, France), Niklas Harlander (University of Oldenburg, Germany), Volker Hohmann (University of Oldenburg, Germany).
+
+All audio files are modified versions of audio files from SiSEC 2008 (http://sisec2008.wiki.irisa.fr/).
+
+File PEASS-subjdata.mat (subjective measures) is made available under the terms of the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 license (http://creativecommons.org/licenses/by-nc-sa/3.0/). The author is Valentin Emiya.
+
+Files:
+
+    * exp01_anchorArtif.wav
+    * exp01_anchorDistTarget.wav
+    * exp01_anchorInterf.wav
+    * exp01_InterfSrc1.wav
+    * exp01_InterfSrc2.wav
+    * exp01_target.wav
+    * exp01_test5.wav
+    * exp01_test6.wav
+    * exp01_test7.wav
+    * exp01_test8.wav
+    * exp02_anchorArtif.wav
+    * exp02_anchorDistTarget.wav
+    * exp02_anchorInterf.wav
+    * exp02_InterfSrc1.wav
+    * exp02_target.wav
+    * exp02_test5.wav
+    * exp02_test6.wav
+    * exp02_test7.wav
+    * exp02_test8.wav
+
+The mixture/source image audio files above are licensed for research use only by their author Hiroshi Sawada. All other audio files are made available under the terms of the Creative Commons Attribution-NonCommercial-ShareAlike 2.0 license (http://creativecommons.org/licenses/by-nc-sa/2.0/). The authors are Scott Douglas, Intae Lee and Francesco Nesta for the source estimates; Shoko Araki and Emmanuel Vincent for mixture signals; Valentin Emiya for the modifications of each file.
+
+Files:
+
+    * exp03_anchorArtif.wav
+    * exp03_anchorDistTarget.wav
+    * exp03_anchorInterf.wav
+    * exp03_InterfSrc1.wav
+    * exp03_target.wav
+    * exp03_test5.wav
+    * exp03_test6.wav
+    * exp03_test7.wav
+    * exp03_test8.wav
+    * exp05_anchorArtif.wav
+    * exp05_anchorDistTarget.wav
+    * exp05_anchorInterf.wav
+    * exp05_InterfSrc1.wav
+    * exp05_InterfSrc2.wav
+    * exp05_target.wav
+    * exp05_test5.wav
+    * exp05_test6.wav
+    * exp05_test7.wav
+    * exp05_test8.wav
+    * exp06_anchorArtif.wav
+    * exp06_anchorDistTarget.wav
+    * exp06_anchorInterf.wav
+    * exp06_InterfSrc1.wav
+    * exp06_InterfSrc2.wav
+    * exp06_target.wav
+    * exp06_test5.wav
+    * exp06_test6.wav
+    * exp06_test7.wav
+    * exp06_test8.wav
+    * exp07_anchorArtif.wav
+    * exp07_anchorDistTarget.wav
+    * exp07_anchorInterf.wav
+    * exp07_InterfSrc1.wav
+    * exp07_target.wav
+    * exp07_test5.wav
+    * exp07_test6.wav
+    * exp07_test7.wav
+    * exp07_test8.wav
+    * exp09_anchorArtif.wav
+    * exp09_anchorDistTarget.wav
+    * exp09_anchorInterf.wav
+    * exp09_InterfSrc1.wav
+    * exp09_InterfSrc2.wav
+    * exp09_target.wav
+    * exp09_test5.wav
+    * exp09_test6.wav
+    * exp09_test7.wav
+    * exp09_test8.wav
+    * exp10_anchorArtif.wav
+    * exp10_anchorDistTarget.wav
+    * exp10_anchorInterf.wav
+    * exp10_InterfSrc1.wav
+    * exp10_InterfSrc2.wav
+    * exp10_target.wav
+    * exp10_test5.wav
+    * exp10_test6.wav
+    * exp10_test7.wav
+    * exp10_test8.wav
+
+All above audio files are made available under the terms of the Creative Commons Attribution-NonCommercial-ShareAlike 2.0 license (http://creativecommons.org/licenses/by-nc-sa/2.0/). The authors are Hendrik Kayser and Jorn Anemuller part of the original dataset; Glen Phillips, Mark Engelberg, Psycho Voyager, Nine Inch Nails and Ali Farka Toure for music source signals; Simon Arberet, Maximo Cobos, Zaher Elchami, Cedric Fevotte, Michael Mandel, Andrew Nesbit, Alexey Ozerov, Emmanuel Vincent and Ron Weiss for the source estimates; Shoko Araki and Emmanuel Vincent for mixture signals; Valentin Emiya for the modifications of each file. Part of the original dataset was supported by the European Commission under IP DIRAC.
+
+Files:
+
+    * exp04_anchorArtif.wav
+    * exp04_anchorDistTarget.wav
+    * exp04_anchorInterf.wav
+    * exp04_myInterfSrc01.wav
+    * exp04_myInterfSrc02.wav
+    * exp04_myInterfSrc03.wav
+    * exp04_myInterfSrc04.wav
+    * exp04_myInterfSrc05.wav
+    * exp04_myInterfSrc06.wav
+    * exp04_target.wav
+    * exp04_test5.wav
+    * exp04_test6.wav
+    * exp04_test7.wav
+    * exp04_test8.wav
+
+All original files are copyrighted material from Bearlin (Ignasi Calvo and Jordi Rabascall). However, the use of these audio files for scientific research purposes is granted if credit is given to them as follows:
+
+    * Artist: Bearlin (Ignasi Calvo & Jordi Rabascall)
+    * Song: Roads
+    * Producer: Sergi Vila & Bearlin
+    * Website: www.bearlin.net
+
+Using these audio files for any purposes that are not scientific research is explicitly prohibited.
+
+All other audio files are made available under the terms of the Creative Commons Attribution-NonCommercial-ShareAlike 2.0 license (http://creativecommons.org/licenses/by-nc-sa/2.0/). The authors are Alexey Ozerov, Cedric Fevotte, Maximo Cobos, Pablo Cancela for the source estimates; Shoko Araki and Emmanuel Vincent for mixture signals; Valentin Emiya for the modifications of each file.
+Files:
+
+    * exp08_anchorArtif.wav
+    * exp08_anchorDistTarget.wav
+    * exp08_anchorInterf.wav
+    * exp08_InterfSrc1.wav
+    * exp08_target.wav
+    * exp08_test5.wav
+    * exp08_test6.wav
+    * exp08_test7.wav
+    * exp08_test8.wav
+
+Original audio files are licensed under Creative Commons Attribution Noncommercial 3.0 (http://creativecommons.org/licenses/by-nc/3.0/). All other audio files are made available under the terms of the Creative Commons Attribution-NonCommercial-ShareAlike 2.0 license (http://creativecommons.org/licenses/by-nc-sa/2.0/). The authors are Alexey Ozerov, Cedric Fevotte, Maximo Cobos, Pablo Cancela for the source estimates; Shoko Araki and Emmanuel Vincent for mixture signals; Valentin Emiya for the modifications of each file.
+ 
