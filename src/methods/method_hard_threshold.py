@@ -1,8 +1,8 @@
-from benchmark_demo.benchmark_utils import MethodTemplate
+from benchmark_tools.benchmark_utils import MethodTemplate
 import numpy as np
 from numpy import pi as pi
 import scipy.signal as sg
-from benchmark_demo.utilstf import *
+from benchmark_tools.utilstf import *
 
 def hard_thresholding(signal, coeff=3.0, window=None, Nfft=None, dict_output=False):
     

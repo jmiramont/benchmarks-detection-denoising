@@ -1,4 +1,4 @@
-from benchmark_demo.Benchmark import Benchmark
+from benchmark_tools.Benchmark import Benchmark
 # import numpy as np
 # import pytest
 

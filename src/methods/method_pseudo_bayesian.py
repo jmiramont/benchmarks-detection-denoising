@@ -1,4 +1,4 @@
-from benchmark_demo.benchmark_utils import MethodTemplate, MatlabInterface
+from benchmark_tools.benchmark_utils import MethodTemplate, MatlabInterface
 import os
 # import sys
 # sys.path.append("methods")

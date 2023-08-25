@@ -1,11 +1,11 @@
-from benchmark_demo.benchmark_utils import MethodTemplate
+from benchmark_tools.benchmark_utils import MethodTemplate
 from scipy.spatial import KDTree
 from scipy.spatial import ConvexHull, Delaunay
 import numpy as np
 import scipy.stats as spst
 import scipy.signal as sg
-from benchmark_demo.utilstf import *
-from benchmark_demo.spatstats_utils import compute_scale
+from benchmark_tools.utilstf import *
+from benchmark_tools.spatstats_utils import compute_scale
 # from numba import njit
 
 
@@ -127,7 +127,7 @@ def empty_space_denoising(signal,
     empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
     mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=radi_expand)
     # mask = paint_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
-    xr = reconstruct_signal_3(mask, stft, window=g)
+    xr = np.real(reconstruct_signal_3(mask, stft, window=g))
 
     if return_dic:
         return {'s_r': xr,

@@ -1,11 +1,11 @@
-from benchmark_demo.benchmark_utils import MethodTemplate # You must import the MethodTemplate abstract class.
+from benchmark_tools.benchmark_utils import MethodTemplate # You must import the MethodTemplate abstract class.
 
 """
 | Import here all the modules you need.
 | Remark: Make sure that neither of those modules starts with "method_".
 """
 import numpy as np
-from benchmark_demo.spatstats_utils import *
+from benchmark_tools.spatstats_utils import *
 
 """ 
 | Put here all the functions that your method uses.

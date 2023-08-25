@@ -4,10 +4,10 @@ import importlib
 import inspect
 from methods import *
 import pytest
-from benchmark_demo.SignalBank import SignalBank
-from benchmark_demo.utilstf import add_snr
-from benchmark_demo.benchmark_utils import MethodTemplate
-from benchmark_demo.Benchmark import get_args_and_kwargs
+from benchmark_tools.SignalBank import SignalBank
+from benchmark_tools.utilstf import add_snr
+from benchmark_tools.benchmark_utils import MethodTemplate
+from benchmark_tools.Benchmark import get_args_and_kwargs
 
 #---------------------------------------------------------------------------------------
 """ This collects all the methods in the folder "methods" and make a list of them.
