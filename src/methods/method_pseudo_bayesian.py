@@ -1,4 +1,5 @@
-from mcsm_benchmarks.benchmark_utils import MethodTemplate, MatlabInterface
+from mcsm_benchmarks.benchmark_utils import MethodTemplate
+from mcsm_benchmarks.MatlabInterface import MatlabInterface
 import os
 # import sys
 # sys.path.append("methods")

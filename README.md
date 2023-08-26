@@ -1,32 +1,19 @@
-# A Toolbox for Benchmarking of Multi-Component Signal Methods
+# Benchmarks of Multi-Component Signal Detection and Denoising Methods
 
-We introduce a public, open-source, Python-based toolbox for benchmarking multi-component signal analysis methods, implemented either in Python or Matlab.
-
-The goal of this toolbox is providing the signal-processing community with a common framework that allows researcher-independent comparisons between methods and favors reproducible research.
-
-- [A Toolbox for Benchmarking of Multi-Component Signal Methods](#a-toolbox-for-benchmarking-of-multi-component-signal-methods)
-  - [Published Benchmarks](#published-benchmarks)
+- [Benchmarks of Multi-Component Signal Detection and Denoising Methods](#benchmarks-of-multi-component-signal-detection-and-denoising-methods)
+  - [Relevant Files](#relevant-files)
+- [Benchmarking a new method](#benchmarking-a-new-method)
   - [Installation using ```poetry```](#installation-using-poetry)
   - [Adding a new method to benchmark](#adding-a-new-method-to-benchmark)
     - [Python-based methods](#python-based-methods)
-    - [Matlab-based methods](#matlab-based-methods)
+    - [Matlab-based method](#matlab-based-method)
   - [Running the benchmark with new methods](#running-the-benchmark-with-new-methods)
   - [Changing the benchmark configuration](#changing-the-benchmark-configuration)
   - [Adding dependencies](#adding-dependencies)
-  - [Modify ```matlabengine``` module version](#modify-matlabengine-module-version)
+    - [Modify ```matlabengine``` module version](#modify-matlabengine-module-version)
   - [Size of outputs according to the task](#size-of-outputs-according-to-the-task)
 
-## Published Benchmarks
-
-| Task                                  | Description | Results |
-|-----------------------                |----------|----------|
-|   Signal Detection                    |   Detection of a linear chirp in a mixture with white Gaussian noise.   |   Link   |
-|   Signal Denoising    |   Denoising of synthetic multi-component signals with several time-frequency configurations.   |   Link   |
-
-<!-- |   Mode retrieval  |   Reconstruction of individual components.   |   Link   | -->
-<!-- |   Instantaneous Frequency Estimation  |   Instantaneous frequency estimation of each component of several signals with different time-frequency configurations.    |   Link   | -->
-
-<!-- ## Relevant Files
+## Relevant Files
 
 The folder [```notebooks```](notebooks) holds a number Python notebooks:
 
@@ -34,36 +21,36 @@ The folder [```notebooks```](notebooks) holds a number Python notebooks:
 - Minimal working examples of the methods used in the paper (in Python).
 - [```.csv``` files with the results](results)
 
-Additionally, the directory [```src/methods```](src/methods) contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files ```mwe_*.m```). -->
+Additionally, the directory [```src/methods```](src/methods) contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files ```mwe_*.m```).
 
-<!-- [![Last Benchmark](https://github.com/jmiramont/benchmark-test/actions/workflows/local_tests.yml/badge.svg)](https://github.com/jmiramont/benchmark-test/actions/workflows/local_tests.yml)
-[![Results](https://github.com/jmiramont/mcsm-benchmarks/blob/main/docs/readme_figures/results_badge.svg)](results/results_denoising.md)
-[![Documentation](https://github.com/jmiramont/mcsm-benchmarks/blob/main/docs/readme_figures/docs_badge.svg)](https://jmiramont.github.io/benchmark-test/) -->
+# Benchmarking a new method
 
-You can clone the main repository and benchmark your own method locally, i.e. in your computer. This will allow you to run the benchmarks with all the modifications you want (adding your method, exploring different parameters, change the signals, number of repetitions, etc.).
+You can use the code in this repository to test a new method against others, which is based on the freely-available, Python-based, [benchmarking toolbox introduced here.](https://github.com/jmiramont/mcsm-benchmarks)
+You can clone this repository and benchmark your own method locally, i.e. in your computer. This will allow you to run the benchmarks with all the modifications you want (exploring different parameters, type of signals, number of repetitions, etc.).
 
-The [*notebooks*](https://github.com/jmiramont/mcsm-benchmarks/tree/main/notebooks) folder contains a number of minimal working examples to understand how this toolbox works and how you could use it for your project. In particular, [*demo_benchmark.ipynb*](./notebooks/demo_benchmark.ipynb) gives two minimal working examples to introduce the basic functionality of the `Benchmark` class, and the notebook [*demo_signal_bank.ipynb*](./notebooks/demo_signal_bank.ipynb) showcases the signals produced by the `SignalBank` class.
+The [*notebooks*](./notebooks/) folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, [*demo_benchmark.ipynb*](./notebooks/demo_benchmark.ipynb) gives two minimal working examples to introduce the basic functionality of the `Benchmark` class, and the notebook [*demo_signal_bank.ipynb*](./notebooks/demo_signal_bank.ipynb) showcases the signals produced by the `SignalBank` class.
 
-The instructions below will help you to add a new method and re-run a benchmark with your method afterwards.
+The instructions below will help you to add a new method and run the benchmark afterwards.
 
-First you should have a local copy of this repository in order to add and modify files.
-Open a terminal in a directory of your preference and use
+First you should have a local copy of this repository to add and modify files. Open a terminal in a directory of your preference and use
 
 ```bash
-git clone https://github.com/jmiramont/mcsm-benchmarks.git
+git clone https://github.com/jmiramont/benchmarks_eusipco2023.git
 ```
 
 ## Installation using ```poetry```
 
 We use [```poetry```](https://python-poetry.org/docs/), a tool for dependency management and packaging in python to install the benchmarking framework. You can install ```poetry``` following the steps described [here](https://python-poetry.org/docs/#installation).
-In order to install the benchmarking tool, open a terminal in the directory where you clone the benchmark (or use the console in your preferred IDE). Then, make ```poetry``` create a virtual environment and install all the current dependencies of the benchmark using:
+Then, make ```poetry``` create a virtual environment and install all the current dependencies of the benchmark using:
 
 ```bash
 poetry install
 ```
 
-Benchmarking Matlab-implemented methods is possible thanks to the incorporated [Matlab's Python engine](https://fr.mathworks.com/help/matlab/matlab-engine-for-python.html), that allows communication between python and a Matlab's session. This module's version must be compatible with your local Matlab installation, please [modify the dependencies for this package accordingly](#adding-dependencies).
+Benchmarking Matlab-implemented methods is possible thanks to the incorporated [Matlab's Python engine](https://fr.mathworks.com/help/matlab/matlab-engine-for-python.html), that allows communication between python and a Matlab's session. This module's version must be compatible with your local Matlab installation, please  [modify the dependencies for this package accordingly](#adding-dependencies).
 Additionally, Matlab's Python engine is only compatible with certain Python versions, depending on the local Matlab installation you are running. [Check that your versions of matlab and Python are compatible](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/python-compatibility.pdf).
+
+*Remark: The detection tests used in this benchmark are based on R's ```spatstat``` package and Python's [```spatstat-interface```](https://pypi.org/project/spatstat-interface/). You should have R in your system as well a recent Matlab installation in order to run the benchmark from scratch. However, you can add your method and only run the benchmark for it without installing additional dependencies.*
 
 *Remark for conda users:*
 
@@ -97,7 +84,7 @@ In the first section of the template file [*method_new_basic_template.py*](./new
 | Import here all the modules you need.
 | Remark: Make sure that neither of those modules starts with "method_".
 """
-from methods.benchmark_utils import MethodTemplate # Import the template class!
+from mcsm_benchmarks.benchmark_utils import MethodTemplate # Import the template class!
 ```
 
 <!-- Additionally, the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate` is imported here. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes, by forcing the implementation of certain *abstract* methods. We will see later that the class that encapsulates your method must inherit from this template. -->
@@ -146,11 +133,11 @@ Lastly, you have to implement the class function ```method(self, signals, *args,
 
 If you want to test your method using different sets of parameters, you can also implement the function `get_parameters()` to return a list with the desired input parameters (you can find an example of this [here](./new_method_example/method_new_with_parameters.py)).
 
-*Remark: Do not modify the abstract class `MethodTemplate`*.
+<!-- *Remark: Do not modify the abstract class `MethodTemplate`*. -->
 
 Finally, **you have to move the file** with all the modifications to the folder [/src/methods](./src/methods). Changing the name of the file is possible, but keep in mind that **the file's name must start with "*method_*" to be recognizable**.
 
-### Matlab-based methods
+### Matlab-based method
 
 The Matlab function implementing your method must have a particular signature. For example, for a method with two input parameters should be:
 
@@ -171,7 +158,7 @@ from methods.benchmark_utils import MethodTemplate, MatlabInterface
 
 ```
 
-*Remark: Do not modify the abstract class `MethodTemplate`*.
+<!-- *Remark: Do not modify the abstract class `MethodTemplate`*. -->
 
 Then, you must  **move the ```.m``` file with your method to the folder ```src\methods```**. A convenient and neat way of doing this is by creating a folder with all the ```.m``` files related to your method, for example called ```a_matlab_method_utils```. After this you can now create a ```MatlabInterface``` instance that represents your method, by passing a string to the ```MatlabInterface``` creator with the name of the previously defined function. For example:
 
@@ -216,7 +203,7 @@ The constructor function ```__init__(self)``` must initialize the attributes ```
 
 *Remark: The ```MatlabInterface``` class will cast the input parameters in the appropriate Matlab types.*
 
-*Remark 2: A Matlab method must comply with the [output parameters shapes expected by the toolbox](#benchmarking-your-own-method). Matlab vectors of double type numbers will be casted into numpy arrays of floats, and Matlab's boolean types will be casted into python booleans. If your method returns more than one parameter, only the first one returned is taken*.
+*Remark 2: A Matlab method must comply with the [output parameters shapes expected by the toolbox](#benchmarking-your-own-method). Matlab vectors of double type numbers will be cast into numpy arrays of floats, and Matlab's boolean types will be cast into python booleans. If your method returns more than one parameter, only the first one returned is taken*.
 
 ## Running the benchmark with new methods
 
@@ -277,13 +264,13 @@ poetry update
 
 to update the .lock file in the folder.
 
-## Modify ```matlabengine``` module version
+### Modify ```matlabengine``` module version
 
 Check the version of the ```matlabengine``` module you have to install to use run the benchmarks in the next table:
 
 | Matlab Version | Python Version | ```matlabengine``` version |   |
 |----------------|----------------|----------------------------|---|
-| 2022b          | 3.8, 3.9, 3.10 | 9.13.16                    |   |
+| 2022b          | 3.8, 3.9, 3.10 | 9.13.6                    |   |
 | 2022a          | 3.8, 3.9       | 9.12.17                    |   |
 | 2021b          | 3.7, 3.8, 3.9  | 9.11.19                    |   |
 
@@ -295,10 +282,10 @@ matlabengine = "9.12.17"
 
 Make sure to change the version with the one corresponding to your Python and Matlab current versions. If you have an older version of Matlab or Python, you can search for the correct version of the ```matlabengine``` module [here](https://pypi.org/project/matlabengine/#history).
 
-After this, run
+Afer this, run
 
 ```bash
-poetry lock
+poetry update
 ```
 
 <!-- ### Checking everything is in order with ```pytest```
@@ -321,6 +308,5 @@ Once the tests are passed, you can now either create a pull request to run the b
 
 The shape and type of the output depends on the task.
 
-- For Denoising: The output must be a vector array with the same length as the signal.
-- For Mode Retrieval: The output must be an array of size ```[J,N]```, where ```J``` is the number of components, and ```N``` is the length of the signal.
-- For Instantaneous Frequency: The output must be an array of size ```[J,N]```, where ```J``` is the number of components, and ```N``` is the length of the signal. Each row of the array represents the estimation of the instantaneous frequency of the signal.
+- For Signal Denoising: The output must be a vector array with the same length as the signal.
+- For Signal Detection: The output of the method must be a boolean variable indicating if a signal has been detected (true) or not (false).
