@@ -23,4 +23,4 @@ using_signals: [ #'LinearChirp','CosChirp',]           # Single-component signal
 
 
 # Run again the same benchmark but with new methods:
-# add_new_methods: True
+add_new_methods: True

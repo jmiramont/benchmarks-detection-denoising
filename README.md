@@ -26,7 +26,7 @@ Additionally, the directory [```src/methods```](src/methods) contains several fo
 # Benchmarking a new method
 
 You can use the code in this repository to test a new method against others, which is based on the freely-available, Python-based, [benchmarking toolbox introduced here.](https://github.com/jmiramont/mcsm-benchmarks)
-You can clone this repository and benchmark your own method locally, i.e. in your computer. This will allow you to run the benchmarks with all the modifications you want (exploring different parameters, type of signals, number of repetitions, etc.).
+Clone this repository and benchmark your own method locally, i.e. in your computer. This will allow you to run the benchmarks with all the modifications you want (exploring different parameters, type of signals, number of repetitions, etc.).
 
 The [*notebooks*](./notebooks/) folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, [*demo_benchmark.ipynb*](./notebooks/demo_benchmark.ipynb) gives two minimal working examples to introduce the basic functionality of the `Benchmark` class, and the notebook [*demo_signal_bank.ipynb*](./notebooks/demo_signal_bank.ipynb) showcases the signals produced by the `SignalBank` class.
 
@@ -35,7 +35,7 @@ The instructions below will help you to add a new method and run the benchmark a
 First you should have a local copy of this repository to add and modify files. Open a terminal in a directory of your preference and use
 
 ```bash
-git clone https://github.com/jmiramont/benchmarks_eusipco2023.git
+git clone https://github.com/jmiramont/benchmark-test.git
 ```
 
 ## Installation using ```poetry```

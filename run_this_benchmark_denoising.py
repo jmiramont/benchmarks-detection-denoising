@@ -2,7 +2,7 @@ if __name__ == "__main__":
     # from unittest import result
     import importlib
     from methods import *
-    from benchmark_tools.benchmark_utils import MethodTemplate as MethodTemplate
+    from mcsm_benchmarks.benchmark_utils import MethodTemplate as MethodTemplate
     import time
     import inspect
     
@@ -25,9 +25,9 @@ if __name__ == "__main__":
                 list_of_methods.append(method_class())
 
 
-    from benchmark_tools.Benchmark import *
+    from mcsm_benchmarks.Benchmark import Benchmark
     import numpy as np
-    from benchmark_tools.ResultsInterpreter import ResultsInterpreter
+    from mcsm_benchmarks.ResultsInterpreter import ResultsInterpreter
     import yaml
 
 
