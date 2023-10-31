@@ -1,8 +1,8 @@
 if __name__ == "__main__":
     # from unittest import result
     import importlib
-    from methods import *
-    from benchmark_tools.benchmark_utils import MethodTemplate as MethodTemplate
+    from src.methods import *
+    from mcsm_benchmarks.benchmark_utils import MethodTemplate as MethodTemplate
     import time
     import inspect
     
@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     list_of_methods = list()    
     for mod_name in modules:
-        mod = importlib.import_module('methods.' + mod_name)
+        mod = importlib.import_module('src.methods.' + mod_name)
         classes_in_mod = inspect.getmembers(mod, inspect.isclass)
         for a_class in classes_in_mod:
             method_class = getattr(mod, a_class[0])
@@ -25,11 +25,12 @@ if __name__ == "__main__":
                 list_of_methods.append(method_class())
 
 
-    from benchmark_tools.Benchmark import *
+    from mcsm_benchmarks.Benchmark import Benchmark
     import numpy as np
-    from benchmark_tools.ResultsInterpreter import ResultsInterpreter
+    from mcsm_benchmarks.ResultsInterpreter import ResultsInterpreter
     import yaml
-
+    import pickle
+    import os
 
     dictionary_of_methods = dict()
     dictionary_of_parameters = dict()
@@ -74,7 +75,7 @@ if __name__ == "__main__":
     benchmark.save_to_file(filename = 'results/last_benchmark_detection')
     results_interpreter = ResultsInterpreter(benchmark)
     # results_interpreter.save_csv_files()
-    results_interpreter.save_report()
+    results_interpreter.save_report(bars=True)
     # results_interpreter.get_summary_plots(size=(3,2))
 
   

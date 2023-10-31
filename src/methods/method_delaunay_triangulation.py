@@ -366,7 +366,7 @@ def delaunay_triangulation_denoising(signal,
         # LB = compute_scale_triangles(signal, longest_edges, mc_reps=99, alpha=0.01)
         # print('Threshold:{}'.format(LB))
 
-    area_thr =  0.3 #LB/8
+    area_thr =  0 #0.3 #LB/8
 
     # print(area_triangle)
     # Select triangles that fulfill all the conditions

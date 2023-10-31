@@ -1,13 +1,13 @@
-from ctypes import sizeof
+# from ctypes import sizeof
 import numpy as np
 import importlib
 import inspect
 from methods import *
 import pytest
-from benchmark_tools.SignalBank import SignalBank
-from benchmark_tools.utilstf import add_snr
-from benchmark_tools.benchmark_utils import MethodTemplate
-from benchmark_tools.Benchmark import get_args_and_kwargs
+from mcsm_benchmarks.SignalBank import SignalBank
+# from mcsm_benchmarks.utilstf import add_snr
+from mcsm_benchmarks.benchmark_utils import MethodTemplate
+from mcsm_benchmarks.Benchmark import get_args_and_kwargs
 
 #---------------------------------------------------------------------------------------
 """ This collects all the methods in the folder "methods" and make a list of them.

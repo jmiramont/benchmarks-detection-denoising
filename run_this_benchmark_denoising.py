@@ -1,7 +1,7 @@
 if __name__ == "__main__":
     # from unittest import result
     import importlib
-    from methods import *
+    from src.methods import *
     from mcsm_benchmarks.benchmark_utils import MethodTemplate as MethodTemplate
     import time
     import inspect
@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     list_of_methods = list()    
     for mod_name in modules:
-        mod = importlib.import_module('methods.' + mod_name)
+        mod = importlib.import_module('src.methods.' + mod_name)
         classes_in_mod = inspect.getmembers(mod, inspect.isclass)
         for a_class in classes_in_mod:
             method_class = getattr(mod, a_class[0])
@@ -29,7 +29,8 @@ if __name__ == "__main__":
     import numpy as np
     from mcsm_benchmarks.ResultsInterpreter import ResultsInterpreter
     import yaml
-
+    import pickle
+    import os
 
     dictionary_of_methods = dict()
     dictionary_of_parameters = dict()
@@ -52,10 +53,13 @@ if __name__ == "__main__":
 
     if 'add_new_methods' in config.keys():
         if config['add_new_methods']:
-            
-            filename = 'results\last_benchmark'
+            # filename = 'results\last_benchmark'
+            filename = os.path.join('results','last_benchmark_denoising')
             with open(filename + '.pkl', 'rb') as f:
-                benchmark = pickle.load(f)
+                benchmark_dict = pickle.load(f)
+                benchmark = Benchmark(**benchmark_dict)
+                benchmark.elapsed_time = {}
+
             benchmark.add_new_method(config['methods'],config['parameters']) 
         else:
             config.pop('add_new_methods') 
@@ -72,9 +76,9 @@ if __name__ == "__main__":
     print(df)
     
     # Save the benchmark to a file. Notice that only the methods_ids are saved.
-    benchmark.save_to_file(filename = 'results/last_benchmark')
+    benchmark.save_to_file(filename = 'results/last_benchmark_denoising')
     results_interpreter = ResultsInterpreter(benchmark)
     # results_interpreter.save_csv_files()
-    results_interpreter.save_report()
+    results_interpreter.save_report(bars=True)
     # results_interpreter.get_summary_plots(size=(3,2))
     

@@ -12,27 +12,27 @@ if nargin<3 || isempty(use_sst)
 end
 
 if nargin<4 || isempty(ds)
-    ds = 3;    % variance of the random walk in the temporal model
+    ds    = 5;    % variance of the random walk in the temporal model
 end
 
 if nargin<5 || isempty(beta)
-    beta  = 0.4;
+    beta  = 0.6;
 end
 
 if nargin<6 || isempty(alpha)
-    alpha = 0.4;
+    alpha = 0.5;
 end
 
 if nargin<7 || isempty(div)
-    div = 4;                         % 1 = KL
+    div   = 2;                         % 1 = KL
 end
 
 if nargin<8 || isempty(Pnei)
-    Pnei = 48;
+    Pnei = 55;
 end
 
 if nargin<9 || isempty(PneiMask)
-    PneiMask = 48;
+    PneiMask = 4;
 end
 
 if nargin<10 || isempty(M)
@@ -40,7 +40,7 @@ if nargin<10 || isempty(M)
 end
 
 if nargin<11 || isempty(L)
-    L = 10; % round(sqrt((N/8)));
+    L = round(sqrt((N/8)));
 end
 
 detect = 0;
@@ -66,7 +66,7 @@ end
 % Generate a combined mask of all components.
 mask_total = sum(mask,3);
 mask_total(mask_total~=0) = 1;
-% save(mask_total,'mask_total')
+
 % Recover components and signal
 x_hat = zeros(N,Ncomp);
 

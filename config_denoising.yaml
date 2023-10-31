@@ -1,26 +1,19 @@
 N: 1024
 # Nsub: None
-SNRin: [-5, 0, 10, 20, 30]
-repetitions: 30
-parallelize: 5
-verbosity: 4  
-using_signals: [ #'LinearChirp','CosChirp',]           # Single-component signals
-#                #'ToneSharpAttack', ToneDumped,                  # Dumped and Sharps attacks
-#                # 'McCrossingChirps',                             # Crossing-components  
+SNRin: [-5, 0, 10, 20]
+repetitions: 100
+parallelize: False
+verbosity: 5 
+signal_ids: [   
                 'McMultiLinear', 
                 'McMultiLinear2',                       # Multi-Component signals  
-#                 'McMultiCos2',                                  # Multi-Component Non-Harmonic  
                 'McSyntheticMixture',
                 'McSyntheticMixture2',
                 'McSyntheticMixture3',
                 'McSyntheticMixture4',
                 'HermiteFunction',                              # Hermite type signals  
-                # 'McTripleImpulse',
-#                 #'McOnOffTones',
-                # 'McOnOff2'                      # Modes that born and die
               ]
 
 
-
 # Run again the same benchmark but with new methods:
-add_new_methods: True
+add_new_methods: False
