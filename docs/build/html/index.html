@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Benchmarks of Multi-Component Signal Detection and Denoising Methods &#8212; Benchmarks of Multicomponent Signal Methods  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="benchmarks-of-multi-component-signal-detection-and-denoising-methods">
+<h1>Benchmarks of Multi-Component Signal Detection and Denoising Methods<a class="headerlink" href="#benchmarks-of-multi-component-signal-detection-and-denoising-methods" title="Permalink to this heading">¶</a></h1>
+<section id="published-benchmarks">
+<h2>Published benchmarks<a class="headerlink" href="#published-benchmarks" title="Permalink to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Task</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Link</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Signal Detection</p></td>
+<td><p>Detection of signals in white Gaussian noise</p></td>
+<td><p><a class="reference internal" href="#"><span class="xref myst">Link</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Signal Denoising</p></td>
+<td><p>Denoising of synthetic multi-component signals with several time-frequency configurations.</p></td>
+<td><p>Link</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="relevant-files">
+<h2>Relevant Files<a class="headerlink" href="#relevant-files" title="Permalink to this heading">¶</a></h2>
+<p>The folder <a class="reference internal" href="#notebooks"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">notebooks</span></code></span></a> holds a number Python notebooks:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#notebooks/display_results.ipynb"><span class="xref myst">Summary of results and figures from the paper</span></a></p></li>
+<li><p>Minimal working examples of the methods used in the paper (in Python).</p></li>
+<li><p><a class="reference internal" href="#results"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.csv</span></code> files with the results</span></a></p></li>
+</ul>
+<p>Additionally, the directory <a class="reference internal" href="#src/methods"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">src/methods</span></code></span></a> contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files <code class="docutils literal notranslate"><span class="pre">mwe_*.m</span></code>).</p>
+</section>
+<section id="index">
+<h2>Index<a class="headerlink" href="#index" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#benchmarks-of-multi-component-signal-detection-and-denoising-methods"><span class="std std-ref">Benchmarks of Multi-Component Signal Detection and Denoising Methods</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#published-benchmarks"><span class="std std-ref">Published benchmarks</span></a></p></li>
+<li><p><a class="reference internal" href="#relevant-files"><span class="std std-ref">Relevant Files</span></a></p></li>
+<li><p><a class="reference internal" href="#index"><span class="std std-ref">Index</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#benchmarking-a-new-method"><span class="std std-ref">Benchmarking a new method</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#installation-using-poetry"><span class="std std-ref">Installation using poetry</span></a></p></li>
+<li><p><a class="reference internal" href="#adding-a-new-method-to-benchmark"><span class="std std-ref">Adding a new method to benchmark</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#python-based-methods"><span class="std std-ref">Python-based methods</span></a></p></li>
+<li><p><a class="reference internal" href="#matlab-based-method"><span class="std std-ref">Matlab-based method</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#running-the-benchmark-with-new-methods"><span class="std std-ref">Running the benchmark with new methods</span></a></p></li>
+<li><p><a class="reference internal" href="#changing-the-benchmark-configuration"><span class="std std-ref">Changing the benchmark configuration</span></a></p></li>
+<li><p><a class="reference internal" href="#adding-dependencies"><span class="std std-ref">Adding dependencies</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#modify-matlabengine-module-version"><span class="std std-ref">Modify matlabengine module version</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#size-of-outputs-according-to-the-task"><span class="std std-ref">Size of outputs according to the task</span></a></p></li>
+<li><p><a class="reference internal" href="#reproducing-current-benchmarks"><span class="std std-ref">Reproducing current benchmarks</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#re-run-detection-benchmark"><span class="std std-ref">Re-run Detection Benchmark</span></a></p></li>
+<li><p><a class="reference internal" href="#re-run-denoising-benchmarks"><span class="std std-ref">Re-run Denoising Benchmarks</span></a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="benchmarking-a-new-method">
+<h1>Benchmarking a new method<a class="headerlink" href="#benchmarking-a-new-method" title="Permalink to this heading">¶</a></h1>
+<p>You can use the code in this repository to test a new method against others, which is based on the freely-available, Python-based, <a class="reference external" href="https://github.com/jmiramont/mcsm-benchmarks">benchmarking toolbox introduced here.</a>
+Clone this repository and benchmark your own method locally, i.e. in your computer. This will allow you to run the benchmarks with all the modifications you want (exploring different parameters, type of signals, number of repetitions, etc.).</p>
+<p>The <a class="reference internal" href="#./notebooks/"><span class="xref myst"><em>notebooks</em></span></a> folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, <a class="reference internal" href="#./notebooks/demo_benchmark.ipynb"><span class="xref myst"><em>demo_benchmark.ipynb</em></span></a> gives two minimal working examples to introduce the basic functionality of the <code class="docutils literal notranslate"><span class="pre">Benchmark</span></code> class, and the notebook <a class="reference internal" href="#./notebooks/demo_signal_bank.ipynb"><span class="xref myst"><em>demo_signal_bank.ipynb</em></span></a> showcases the signals produced by the <code class="docutils literal notranslate"><span class="pre">SignalBank</span></code> class.</p>
+<p>The instructions below will help you to add a new method and run the benchmark afterwards.</p>
+<p>First you should have a local copy of this repository to add and modify files. Open a terminal in a directory of your preference and use</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jmiramont/benchmark-test.git
+</pre></div>
+</div>
+<section id="installation-using-poetry">
+<h2>Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code><a class="headerlink" href="#installation-using-poetry" title="Permalink to this heading">¶</a></h2>
+<p>We use <a class="reference external" href="https://python-poetry.org/docs/"><code class="docutils literal notranslate"><span class="pre">poetry</span></code></a>, a tool for dependency management and packaging in python to install the benchmarking framework. You can install <code class="docutils literal notranslate"><span class="pre">poetry</span></code> following the steps described <a class="reference external" href="https://python-poetry.org/docs/#installation">here</a>.
+Then, make <code class="docutils literal notranslate"><span class="pre">poetry</span></code> create a virtual environment and install the main dependencies of the benchmarks using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--only<span class="w"> </span>main
+</pre></div>
+</div>
+<p>Benchmarking Matlab-implemented methods is possible thanks to the incorporated <a class="reference external" href="https://fr.mathworks.com/help/matlab/matlab-engine-for-python.html">Matlab’s Python engine</a>, that allows communication between python and a Matlab’s session. This module’s version must be compatible with your local Matlab installation, please  <a class="reference internal" href="#adding-dependencies"><span class="std std-ref">modify the dependencies for this package accordingly</span></a>.
+Additionally, Matlab’s Python engine is only compatible with certain Python versions, depending on the local Matlab installation you are running. <a class="reference external" href="https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/python-compatibility.pdf">Check that your versions of matlab and Python are compatible</a>.</p>
+<p><em>Remark for conda users:</em></p>
+<p><em>If you have <a class="reference external" href="https://www.anaconda.com/"><code class="docutils literal notranslate"><span class="pre">Anaconda</span></code></a> or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html"><code class="docutils literal notranslate"><span class="pre">Miniconda</span></code></a> installed please disable the auto-activation of the base environment and your conda environment using:</em></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>config<span class="w"> </span>--set<span class="w"> </span>auto_activate_base<span class="w"> </span><span class="nb">false</span>
+conda<span class="w"> </span>deactivate
+</pre></div>
+</div>
+<p>You can now add your new method. You can run the benchmarks for only new added approaches.
+However, if you want to reproduce the current results, <a class="reference internal" href="#reproducing-current-benchmarks"><span class="std std-ref">you will need extra dependencies</span></a>.</p>
+</section>
+<section id="adding-a-new-method-to-benchmark">
+<h2>Adding a new method to benchmark<a class="headerlink" href="#adding-a-new-method-to-benchmark" title="Permalink to this heading">¶</a></h2>
+<p>Whether your method is implemented in Python or Matlab, you must create a new <code class="docutils literal notranslate"><span class="pre">.py</span></code> file the name of which must start with <em>method_</em> and have certain content to be automatically discovered by the toolbox. The purpose of this file is to encapsulate your method in a new class. This is much easier than it sounds :). To make it simpler, <a class="reference internal" href="#./new_method_example/method_new_basic_template.py"><span class="xref myst">a file called <em>method_new_basic_template.py</em> is made available</span></a> (for Python users) which you can use as a template. You just have to fill in the parts that implement your method. Matlab users can also find a template <a class="reference internal" href="#./new_method_example/method_new_basic_template_matlab.py"><span class="xref myst">here</span></a>.
+A new method can then be tested against others by adding this file into the folder <a class="reference internal" href="#./src/methods"><span class="xref myst">src/methods</span></a>. We shall see how to do this using a template file in the following sections.</p>
+<section id="python-based-methods">
+<h3>Python-based methods<a class="headerlink" href="#python-based-methods" title="Permalink to this heading">¶</a></h3>
+<p>First, the function implementing your method must have the following signature if you’re working in python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">a_new_method</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>Methods should receive an <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> numpy array representing a discrete-time signal, where and <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of time samples. Additionally, they should receive a variable number of input arguments to allow testing different combinations of input parameters. The ouput of the function must be a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array of <a class="reference internal" href="#size-of-outputs-according-to-the-task"><span class="std std-ref">predefined dimensions according to the task.</span></a></p>
+<p>In the first section of the template file <a class="reference internal" href="#./new_method_example/method_new_basic_template.py"><span class="xref myst"><em>method_new_basic_template.py</em></span></a>, you can import a function with your method or implement everything in the same file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; First section ----------------------------------------------------------------------</span>
+<span class="sd">| Import here all the modules you need.</span>
+<span class="sd">| Remark: Make sure that neither of those modules starts with &quot;method_&quot;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">mcsm_benchmarks.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span> <span class="c1"># Import the template class!</span>
+</pre></div>
+</div>
+<!-- Additionally, the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate` is imported here. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes, by forcing the implementation of certain *abstract* methods. We will see later that the class that encapsulates your method must inherit from this template. -->
+<p>The second section of the file should include all the functions your method needs to work. This functions could also be defined in a separate module imported in the previous section as well.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Second section ---------------------------------------------------------------------</span>
+<span class="sd">| Put here all the functions that your method uses.</span>
+<span class="sd">|</span>
+<span class="sd">| def a_function_of_my_method(signal, *args, **kwargs):</span>
+<span class="sd">|   ...</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>In the third and final section, your method is encapsulated in a new class called <code class="docutils literal notranslate"><span class="pre">NewMethod</span></code> (you can change this name if you prefer to, but it is not strictly necessary). The only requisite for the class that represents your method is that it inherits from the <a class="reference external" href="https://docs.python.org/3/library/abc.html">abstract class</a> <code class="docutils literal notranslate"><span class="pre">MethodTemplate</span></code>. This simply means that you will have to implement the class constructor and a class function called -unsurprisingly- <code class="docutils literal notranslate"><span class="pre">method()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Third section ----------------------------------------------------------------------</span>
+<span class="sd">| Create here a new class that will encapsulate your method.</span>
+<span class="sd">| This class should inherit the abstract class MethodTemplate.</span>
+<span class="sd">| You must then implement the class function:</span>
+
+<span class="sd">def method(self, signal, params)</span>
+<span class="sd">    ...</span>
+<span class="sd">| which should receive the signals and any parameters that you desire to pass to your</span>
+<span class="sd">| method.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="k">class</span> <span class="nc">NewMethod</span><span class="p">(</span><span class="n">MethodTemplate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;a_new_method&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>  <span class="c1"># Should be either &#39;denoising&#39; or &#39;detection&#39;</span>
+
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span> <span class="c1"># Implement this method.</span>
+        <span class="o">...</span>
+
+    <span class="c1"># def get_parameters(self):            # Use it to parametrize your method.</span>
+    <span class="c1">#     return [None,]</span>
+
+</pre></div>
+</div>
+<p>The constructor function <code class="docutils literal notranslate"><span class="pre">__init__(self)</span></code> must initialize the attributes <code class="docutils literal notranslate"><span class="pre">self.id</span></code> and <code class="docutils literal notranslate"><span class="pre">self.task</span></code>. The first is a string to identify your method in the benchmark. The second is the name of the task your method is devoted to.</p>
+<p>Lastly, you have to implement the class function <code class="docutils literal notranslate"><span class="pre">method(self,</span> <span class="pre">signals,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>. This function may act as a wrapper of your method, i.e. you implement your method elsewhere and call it from this function passing all the parameters in the process, or you could implement it directly here.</p>
+<p>If you want to test your method using different sets of parameters, you can also implement the function <code class="docutils literal notranslate"><span class="pre">get_parameters()</span></code> to return a list with the desired input parameters (you can find an example of this <a class="reference internal" href="#./new_method_example/method_new_with_parameters.py"><span class="xref myst">here</span></a>).</p>
+<!-- *Remark: Do not modify the abstract class `MethodTemplate`*. -->
+<p>Finally, <strong>you have to move the file</strong> with all the modifications to the folder <a class="reference internal" href="#./src/methods"><span class="xref myst">/src/methods</span></a>. Changing the name of the file is possible, but keep in mind that <strong>the file’s name must start with “<em>method_</em>” to be recognizable</strong>.</p>
+</section>
+<section id="matlab-based-method">
+<h3>Matlab-based method<a class="headerlink" href="#matlab-based-method" title="Permalink to this heading">¶</a></h3>
+<p>The Matlab function implementing your method must have a particular signature. For example, for a method with two input parameters should be:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function</span><span class="w"> </span>[X]<span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="nf">a_matlab_method</span><span class="p">(</span>signal, param_1, param_2<span class="p">)</span>
+</pre></div>
+</div>
+<p>Your method can have all the (positional) input arguments you need. The ouput of the function must be a Matlab matrix of <a class="reference internal" href="#size-of-outputs-according-to-the-task"><span class="std std-ref">predefined dimensions according to the task.</span></a></p>
+<p>We now can see how to benchmark a method implemented in Matlab. A template file is given <a class="reference internal" href="#./new_method_example/method_new_basic_template_matlab.py"><span class="xref myst">here</span></a> for interested users.</p>
+<p>In the first section of the file, the class <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> is imported, which will simply act as an interface between Python and a Matlab session where your method will be run:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">methods.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span><span class="p">,</span> <span class="n">MatlabInterface</span>
+<span class="c1"># You must import the MethodTemplate abstract class and the MatlabInterface class.</span>
+
+</pre></div>
+</div>
+<!-- *Remark: Do not modify the abstract class `MethodTemplate`*. -->
+<p>Then, you must  <strong>move the <code class="docutils literal notranslate"><span class="pre">.m</span></code> file with your method to the folder <code class="docutils literal notranslate"><span class="pre">src\methods</span></code></strong>. A convenient and neat way of doing this is by creating a folder with all the <code class="docutils literal notranslate"><span class="pre">.m</span></code> files related to your method, for example called <code class="docutils literal notranslate"><span class="pre">a_matlab_method_utils</span></code>. After this you can now create a <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> instance that represents your method, by passing a string to the <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> creator with the name of the previously defined function. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># After moving a file called &#39;a_matlab_method.m&#39; to src\methods, create an interface with the Matlab&#39;s Python engine by passing the name of the file (without the .m extension). Then get the matlab function as:</span>
+<span class="n">mlint</span> <span class="o">=</span> <span class="n">MatlabInterface</span><span class="p">(</span><span class="s1">&#39;a_matlab_method&#39;</span><span class="p">)</span>
+<span class="n">matlab_function</span> <span class="o">=</span> <span class="n">mlint</span><span class="o">.</span><span class="n">matlab_function</span> <span class="c1"># A python function handler to the method.</span>
+
+<span class="c1"># Paths to additional code for the method to add to Matlab path variable.</span>
+<span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;src\methods</span><span class="se">\n</span><span class="s1">ew_method_utils&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;..\src\methods</span><span class="se">\n</span><span class="s1">ew_method_utils&#39;</span>
+        <span class="p">]</span>
+</pre></div>
+</div>
+<p>The last lines make sure that if you created a new folder named <code class="docutils literal notranslate"><span class="pre">new_method_utils</span></code> inside <code class="docutils literal notranslate"><span class="pre">src\methods</span></code> with the files related to your Matlab-implemented approach, these are available to the Matlab session.</p>
+<p>Now we are ready to complete the third section of the file. This can be used exactly as it is in the template file, provided you have done all the precedent steps.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NewMethod</span><span class="p">(</span><span class="n">MethodTemplate</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;a_matlab_method&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>
+
+
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A class method encapsulating a matlab function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signals (numpy array): A signal.</span>
+<span class="sd">            params: Any number of positional parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signal_output</span> <span class="o">=</span> <span class="n">matlab_function</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span> <span class="c1"># Only positional args.</span>
+
+        <span class="k">return</span> <span class="n">signal_output</span>
+
+</pre></div>
+</div>
+<p>The constructor function <code class="docutils literal notranslate"><span class="pre">__init__(self)</span></code> must initialize the attributes <code class="docutils literal notranslate"><span class="pre">self.id</span></code> and <code class="docutils literal notranslate"><span class="pre">self.task</span></code>. The first is a string to identify your method in the benchmark. The second is the name of the task your method is devoted to.</p>
+<p><em>Remark: The <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> class will cast the input parameters in the appropriate Matlab types.</em></p>
+<p><em>Remark 2: A Matlab method must comply with the <a class="reference internal" href="#size-of-outputs-according-to-the-task"><span class="std std-ref">output parameters shapes expected by the toolbox</span></a>. Matlab vectors of double type numbers will be cast into numpy arrays of floats, and Matlab’s boolean types will be cast into python booleans. If your method returns more than one parameter, only the first one returned is taken</em>.</p>
+</section>
+</section>
+<section id="running-the-benchmark-with-new-methods">
+<h2>Running the benchmark with new methods<a class="headerlink" href="#running-the-benchmark-with-new-methods" title="Permalink to this heading">¶</a></h2>
+<p>Once the new methods are added, you can run a benchmark by executing the files <code class="docutils literal notranslate"><span class="pre">run_this_benchmark_*.py</span></code> located in the repository.
+You can do this using the local environment created with <code class="docutils literal notranslate"><span class="pre">poetry</span></code> by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>run_this_benchmark_denoising.py
+</pre></div>
+</div>
+<p>This will run the benchmark using new added methods, avoiding previously explored ones and saving time. You can change this from the configuration file <a class="reference internal" href="#./config_benchmarks.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">config_benchmarks.yaml</span></code></span></a> located in the repository.</p>
+</section>
+<section id="changing-the-benchmark-configuration">
+<h2>Changing the benchmark configuration<a class="headerlink" href="#changing-the-benchmark-configuration" title="Permalink to this heading">¶</a></h2>
+<p>The benchmark parameters can be modified using the <a class="reference internal" href="#./config_benchmarks.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">config_benchmarks.yaml</span></code></span></a> file. Each line of this file define an input parameter of the benchmark:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">N</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span><span class="w"> </span><span class="c1"># Number of time samples</span>
+<span class="nt">SNRin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-20</span><span class="p p-Indicator">,</span><span class="nv">-10</span><span class="p p-Indicator">,</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nv">10</span><span class="p p-Indicator">,</span><span class="nv">20</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># Values of SNR to evaluate.</span>
+<span class="nt">repetitions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"> </span><span class="c1">#</span>
+<span class="nt">parallelize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w">  </span><span class="c1"># If False, run the benchmark in a serialized way. If True or int, runs the benchmark in parallel with the indicated number of cores.</span>
+<span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w">    </span><span class="c1"># Controls the messages appearing in the console.</span>
+<span class="nt">using_signals</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span>
+<span class="w">                </span><span class="s">&#39;McDampedCos&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">                </span><span class="s">&#39;McCrossingChirps&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">                </span><span class="s">&#39;McSyntheticMixture5&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">              </span><span class="p p-Indicator">]</span>
+
+<span class="nt">add_new_methods</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"> </span><span class="c1"># Run again the same benchmark but with new methods:</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-dependencies">
+<h2>Adding dependencies<a class="headerlink" href="#adding-dependencies" title="Permalink to this heading">¶</a></h2>
+<p>Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add all your dependencies by modifying the <code class="docutils literal notranslate"><span class="pre">.toml</span></code> file in the folder, under the <code class="docutils literal notranslate"><span class="pre">[tool.poetry.dependencies]</span></code> section. For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>tool.poetry.dependencies<span class="o">]</span>
+<span class="nv">python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;=3.8,&lt;3.11&quot;</span>
+<span class="nv">numpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;^1.22.0&quot;</span>
+<span class="nv">matplotlib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;^3.5.1&quot;</span>
+<span class="nv">pandas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;^1.3.5&quot;</span>
+</pre></div>
+</div>
+<p>A more convenient and interactive way to do this interactively is by using <code class="docutils literal notranslate"><span class="pre">poetry</span></code>, for example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>add<span class="w"> </span>numpy
+</pre></div>
+</div>
+<p>and following the instructions prompted in the console.</p>
+<p>Afer this, run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>update
+</pre></div>
+</div>
+<p>to update the .lock file in the folder.</p>
+<section id="modify-matlabengine-module-version">
+<h3>Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version<a class="headerlink" href="#modify-matlabengine-module-version" title="Permalink to this heading">¶</a></h3>
+<p>Check the version of the <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module you have to install to use run the benchmarks in the next table:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Matlab Version</p></th>
+<th class="head"><p>Python Version</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> version</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2022b</p></td>
+<td><p>3.8, 3.9, 3.10</p></td>
+<td><p>9.13.6</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>2022a</p></td>
+<td><p>3.8, 3.9</p></td>
+<td><p>9.12.17</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>2021b</p></td>
+<td><p>3.7, 3.8, 3.9</p></td>
+<td><p>9.11.19</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>Then, look for the <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> line in <a class="reference internal" href="#./pyproject.toml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code></span></a>, it should look like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">matlabengine</span> <span class="o">=</span> <span class="s2">&quot;9.12.17&quot;</span>
+</pre></div>
+</div>
+<p>Make sure to change the version with the one corresponding to your Python and Matlab current versions. If you have an older version of Matlab or Python, you can search for the correct version of the <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module <a class="reference external" href="https://pypi.org/project/matlabengine/#history">here</a>.</p>
+<p>Afer this, run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>update
+</pre></div>
+</div>
+<!-- ### Checking everything is in order with ```pytest```
+
+Once your dependencies are ready, you should check that everything is in order using the ```pytest``` testing suit. To do this, simply run the following in a console located in your local version of the repository:
+
+```bash
+poetry run pytest
+```
+
+This will check a series of important points for running the benchmark online, mainly:
+
+1. Your method class inherits the ```MethodTemplate``` abstract class.
+2. The inputs and outputs of your method follows the required format according to the designated task.
+
+Once the tests are passed, you can now either create a pull request to run the benchmark remotely, or [run the benchmark locally](#running-this-benchmark-locally).
+ -->
+</section>
+</section>
+<section id="size-of-outputs-according-to-the-task">
+<h2>Size of outputs according to the task<a class="headerlink" href="#size-of-outputs-according-to-the-task" title="Permalink to this heading">¶</a></h2>
+<p>The shape and type of the output depends on the task.</p>
+<ul class="simple">
+<li><p>For Signal Denoising: The output must be a vector array with the same length as the signal.</p></li>
+<li><p>For Signal Detection: The output of the method must be a boolean variable indicating if a signal has been detected (true) or not (false).</p></li>
+</ul>
+</section>
+<section id="reproducing-current-benchmarks">
+<h2>Reproducing current benchmarks<a class="headerlink" href="#reproducing-current-benchmarks" title="Permalink to this heading">¶</a></h2>
+<section id="re-run-detection-benchmark">
+<h3>Re-run Detection Benchmark<a class="headerlink" href="#re-run-detection-benchmark" title="Permalink to this heading">¶</a></h3>
+<p>The detection tests used in this benchmark are based on R’s <code class="docutils literal notranslate"><span class="pre">spatstat</span></code> and <code class="docutils literal notranslate"><span class="pre">GET</span></code> packages and Python’s <a class="reference external" href="https://pypi.org/project/spatstat-interface/"><code class="docutils literal notranslate"><span class="pre">spatstat-interface</span></code></a>. If you want to rerun the tests, you should have R installed in your system and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="w"> </span>rtools
+</pre></div>
+</div>
+</section>
+<section id="re-run-denoising-benchmarks">
+<h3>Re-run Denoising Benchmarks<a class="headerlink" href="#re-run-denoising-benchmarks" title="Permalink to this heading">¶</a></h3>
+<p>Similarly, some denoising methods used in this benchmark are implemented in Matlab. You must have a recent Matlab installation in order to run the benchmark from scratch including these methods and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="w"> </span>matlab_tools
+</pre></div>
+</div>
+<p>If you want to run all benchmarks, use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="w"> </span><span class="s2">&quot;rtools, matlab_tools&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Benchmarks of Multicomponent Signal Methods</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Juan Manuel Miramont-Taurel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
