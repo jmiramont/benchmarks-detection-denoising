@@ -1,7 +1,27 @@
 # Benchmarks of Multi-Component Signal Detection and Denoising Methods
 
+## Published benchmarks
+
+| Task | Description | Link |
+|----------|----------|----------|
+|   Signal Detection |   Detection of signals in white Gaussian noise  |   [Link]()  |
+|   Signal Denoising  |   Denoising of synthetic multi-component signals with several time-frequency configurations.   |  Link   |
+
+## Relevant Files
+
+The folder [```notebooks```](notebooks) holds a number Python notebooks:
+
+- [Summary of results and figures from the paper](notebooks/display_results.ipynb)
+- Minimal working examples of the methods used in the paper (in Python).
+- [```.csv``` files with the results](results)
+
+Additionally, the directory [```src/methods```](src/methods) contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files ```mwe_*.m```).
+
+## Index
 - [Benchmarks of Multi-Component Signal Detection and Denoising Methods](#benchmarks-of-multi-component-signal-detection-and-denoising-methods)
+  - [Published benchmarks](#published-benchmarks)
   - [Relevant Files](#relevant-files)
+  - [Index](#index)
 - [Benchmarking a new method](#benchmarking-a-new-method)
   - [Installation using ```poetry```](#installation-using-poetry)
   - [Adding a new method to benchmark](#adding-a-new-method-to-benchmark)
@@ -15,16 +35,6 @@
   - [Reproducing current benchmarks](#reproducing-current-benchmarks)
     - [Re-run Detection Benchmark](#re-run-detection-benchmark)
     - [Re-run Denoising Benchmarks](#re-run-denoising-benchmarks)
-
-## Relevant Files
-
-The folder [```notebooks```](notebooks) holds a number Python notebooks:
-
-- [Summary of results and figures from the paper](notebooks/display_results.ipynb)
-- Minimal working examples of the methods used in the paper (in Python).
-- [```.csv``` files with the results](results)
-
-Additionally, the directory [```src/methods```](src/methods) contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files ```mwe_*.m```).
 
 # Benchmarking a new method
 

@@ -44,15 +44,23 @@ optional = true
 [tool.poetry.group.notebooks.dependencies]
 ipykernel = "^6.25.2"
 
-# Development dependencies
-[tool.poetry.group.dev.dependencies]
-ipykernel = "^6.25.2"
+# Install Docs dependencies "poetry install --with docs"
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
 Sphinx = {version = ">=6,<8"}
 sphinx-rtd-theme = {version = "^1.0.0"}
 nbsphinx = { version = "^0.9.2"}
 sphinxcontrib-bibtex = { version = "^2.5.0"}
 myst-parser = { version = "^2.0.0"}
 sphinx-copybutton = { version = "^0.5.2"}
+
+
+# Development dependencies
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.25.2"
+
 
 [build-system]
 requires = ["poetry-core"]
