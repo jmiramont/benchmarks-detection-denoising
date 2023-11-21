@@ -77,13 +77,17 @@ jobs:
       - name: Create .nojekyll file.
         run: | 
           > .nojekyll
+      
+      - name: Move reports to docs folder for html
+        run: | 
+          mv results/results_denoising.md docs/source    
         
       - name: Deploy documentation to gh-pages branch
         uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
           BRANCH: gh-pages
-          FOLDER: docs/_build/html
+          FOLDER: docs/build/html
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish results
