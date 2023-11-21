@@ -4,8 +4,8 @@
 
 | Task | Description | Link |
 |----------|----------|----------|
-|   Signal Detection |   Detection of signals in white Gaussian noise  |   [Link]()  |
-|   Signal Denoising  |   Denoising of synthetic multi-component signals with several time-frequency configurations.   |  Link   |
+|   Signal Detection |   Detection of signals in white Gaussian noise  |   [Link](https://jmiramont.github.io/benchmark-test/results_detection.html)  |
+|   Signal Denoising  |   Denoising of synthetic multi-component signals with several time-frequency configurations.   |  [Link](https://jmiramont.github.io/benchmark-test/results_denoising.html)   |
 
 ## Relevant Files
 
