@@ -12,6 +12,9 @@
   - [Adding dependencies](#adding-dependencies)
     - [Modify ```matlabengine``` module version](#modify-matlabengine-module-version)
   - [Size of outputs according to the task](#size-of-outputs-according-to-the-task)
+  - [Reproducing current benchmarks](#reproducing-current-benchmarks)
+    - [Re-run Detection Benchmark](#re-run-detection-benchmark)
+    - [Re-run Denoising Benchmarks](#re-run-denoising-benchmarks)
 
 ## Relevant Files
 
@@ -41,16 +44,14 @@ git clone https://github.com/jmiramont/benchmark-test.git
 ## Installation using ```poetry```
 
 We use [```poetry```](https://python-poetry.org/docs/), a tool for dependency management and packaging in python to install the benchmarking framework. You can install ```poetry``` following the steps described [here](https://python-poetry.org/docs/#installation).
-Then, make ```poetry``` create a virtual environment and install all the current dependencies of the benchmark using:
+Then, make ```poetry``` create a virtual environment and install the main dependencies of the benchmarks using:
 
 ```bash
-poetry install
+poetry install --only main
 ```
 
 Benchmarking Matlab-implemented methods is possible thanks to the incorporated [Matlab's Python engine](https://fr.mathworks.com/help/matlab/matlab-engine-for-python.html), that allows communication between python and a Matlab's session. This module's version must be compatible with your local Matlab installation, please  [modify the dependencies for this package accordingly](#adding-dependencies).
 Additionally, Matlab's Python engine is only compatible with certain Python versions, depending on the local Matlab installation you are running. [Check that your versions of matlab and Python are compatible](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/python-compatibility.pdf).
-
-*Remark: The detection tests used in this benchmark are based on R's ```spatstat``` package and Python's [```spatstat-interface```](https://pypi.org/project/spatstat-interface/). You should have R in your system as well a recent Matlab installation in order to run the benchmark from scratch. However, you can add your method and only run the benchmark for it without installing additional dependencies.*
 
 *Remark for conda users:*
 
@@ -60,6 +61,9 @@ Additionally, Matlab's Python engine is only compatible with certain Python vers
 conda config --set auto_activate_base false
 conda deactivate
 ```
+
+You can now add your new method. You can run the benchmarks for only new added approaches.
+However, if you want to reproduce the current results, [you will need extra dependencies](#reproducing-current-benchmarks).
 
 ## Adding a new method to benchmark
 
@@ -203,7 +207,7 @@ The constructor function ```__init__(self)``` must initialize the attributes ```
 
 *Remark: The ```MatlabInterface``` class will cast the input parameters in the appropriate Matlab types.*
 
-*Remark 2: A Matlab method must comply with the [output parameters shapes expected by the toolbox](#benchmarking-your-own-method). Matlab vectors of double type numbers will be cast into numpy arrays of floats, and Matlab's boolean types will be cast into python booleans. If your method returns more than one parameter, only the first one returned is taken*.
+*Remark 2: A Matlab method must comply with the [output parameters shapes expected by the toolbox](#size-of-outputs-according-to-the-task). Matlab vectors of double type numbers will be cast into numpy arrays of floats, and Matlab's boolean types will be cast into python booleans. If your method returns more than one parameter, only the first one returned is taken*.
 
 ## Running the benchmark with new methods
 
@@ -310,3 +314,27 @@ The shape and type of the output depends on the task.
 
 - For Signal Denoising: The output must be a vector array with the same length as the signal.
 - For Signal Detection: The output of the method must be a boolean variable indicating if a signal has been detected (true) or not (false).
+
+## Reproducing current benchmarks
+
+### Re-run Detection Benchmark
+
+The detection tests used in this benchmark are based on R's ```spatstat``` and ```GET``` packages and Python's [```spatstat-interface```](https://pypi.org/project/spatstat-interface/). If you want to rerun the tests, you should have R installed in your system and run:
+
+```bash
+poetry install --with rtools
+```
+
+### Re-run Denoising Benchmarks
+
+Similarly, some denoising methods used in this benchmark are implemented in Matlab. You must have a recent Matlab installation in order to run the benchmark from scratch including these methods and run:
+
+```bash
+poetry install --with matlab_tools
+```
+
+If you want to run all benchmarks, use:
+
+```bash
+poetry install --with "rtools, matlab_tools"
+```
