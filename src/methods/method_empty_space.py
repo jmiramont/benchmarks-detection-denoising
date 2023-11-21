@@ -26,39 +26,7 @@ def find_center_empty_balls(Sww, pos_exp, a, radi_seg):
 
     return empty_mask
 
-# def paint_empty_balls(Sww, pos_exp, a, radi_seg):
-#     radi_seg = int(np.floor(radi_seg * a))
-#     # define a kd-tree with zeros
-#     kdpos = KDTree((pos_exp*a).astype(int))
-
-#     # define a grid corresponding to the time-frequency paving
-#     vecx = (np.arange(0, Sww.shape[0]))
-#     vecy = (np.arange(0, Sww.shape[1]))
-#     g = np.transpose(np.meshgrid(vecy, vecx))
-#     g.resize(Sww.size,2)
-#     # Find the TF points without zeros around in a radius of T.
-#     result = kdpos.query_ball_point(g, radi_seg).T
-
-#     # Create a circular patch to move:
-#     gridTree = KDTree(g)
-#     ref_point = np.array((Sww.shape[1]//2, Sww.shape[0]//2))
-#     idx = gridTree.query_ball_point(ref_point, radi_seg)
-#     patch_idx = np.floor(g[idx]).astype(int) - ref_point
-
-#     # Paint balls of radius T around those points.
-#     mask = np.zeros_like(Sww)
-#     for point in g[np.where([result[i] == [] for i in range(len(result))])]:
-#         aux_patch = patch_idx + point
-#         aux_patch = np.delete(aux_patch, np.where(np.logical_or(aux_patch[:,0]<0, aux_patch[:,0]>=Sww.shape[1])), axis=0)
-#         aux_patch = np.delete(aux_patch, np.where(np.logical_or(aux_patch[:,1]<0, aux_patch[:,1]>=Sww.shape[0])), axis=0)          
-#         for idx in aux_patch:
-#             mask[idx[1],idx[0]] = True
-
-
-#     return mask    
-
-
-def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand):
+def get_mask_from_centers(Sww, empty_mask, radi_expand):
     # extract region of interest
     Nfft = Sww.shape[1]
     fmin = 0 #int(np.sqrt(Nfft))//2
@@ -71,7 +39,8 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand):
     vecy = (np.arange(0, sub_empty.shape[1]))
     g = np.transpose(np.meshgrid(vecx, vecy))
     u, v = np.where(sub_empty)
-    kdpos = KDTree(np.array([u, v]).T)
+
+    kdpos = KDTree(np.array([u, v]).T,compact_nodes=True)
     # result = kdpos.query_ball_point(g, radi_expand*np.sqrt(Nfft))
     sub_empty = np.zeros(sub_empty.shape, dtype=bool)
     for i in range(sub_empty.shape[1]):
@@ -86,6 +55,59 @@ def get_convex_hull(Sww, pos_exp, empty_mask, radi_expand):
     mask[fmin:fmax, tmin:tmax] = sub_empty
     return mask #,hull_d, 
 
+
+def points_in_empty_ball(radius, center, tree, mascara=None):
+    """_summary_
+
+    Args:
+        S (_type_): _description_
+        TRI (_type_): _description_
+        vertices (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    
+    # Get submasc
+    minX=np.max([center[0]-radius,0])
+    maxX=np.min([center[0]+radius,mascara.shape[0]])
+    minY=np.max([center[1]-radius,0])
+    maxY=np.min([center[1]+radius,mascara.shape[1]])
+
+    vecx = (np.arange(minX, maxX))
+    vecy = (np.arange(minY, maxY))
+    g = np.transpose(np.meshgrid(vecx, vecy))
+
+    submasc=mascara[minX:maxX,minY:maxY]
+    # result = tree.query_ball_point(g, radius)
+
+    for i in range(submasc.shape[0]):
+        for j in range(submasc.shape[1]):
+            punto=[minX+i,minY+j]
+            result = tree.query_ball_point(punto, radius)
+            submasc[i, j] = len(result) > 0
+
+
+    mascara[minX:maxX,minY:maxY]=submasc
+    return mascara
+
+
+def get_mask_from_centers_2(Sww, empty_mask, radi_expand):
+    # extract region of interest
+    Nfft = Sww.shape[1]
+    fmin = 0 #int(np.sqrt(Nfft))//2
+    # fmax = empty_mask.shape[0] - fmin
+    tmin = 0 #int(np.sqrt(Nfft))//2
+    # tmax = empty_mask.shape[1] - tmin
+    mask = np.zeros_like(Sww)
+    # sub_empty = empty_mask[fmin:fmax, tmin:tmax]
+    u, v = np.where(empty_mask)
+    kdpos = KDTree(np.array([u, v]).T,compact_nodes=True)
+    
+    for i in range(len(u)):
+        points_in_empty_ball(int(radi_expand*np.sqrt(Nfft)), [u[i], v[i]] , kdpos, mascara=mask)
+    
+    return mask
 
 def empty_space_denoising(signal,
                             radi_seg=0.9,
@@ -124,8 +146,8 @@ def empty_space_denoising(signal,
     pos_aux = pos.copy()
     pos_aux[:,0] = pos[:,1]/a
     pos_aux[:,1] = pos[:,0]/a
-    empty_mask = find_center_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
-    mask = get_convex_hull(Sww, pos_aux, empty_mask, radi_expand=radi_expand)
+    centers = find_center_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
+    mask = get_mask_from_centers(Sww, centers, radi_expand=radi_expand)
     # mask = paint_empty_balls(Sww, pos_aux, a, radi_seg=radi_seg)
     xr = np.real(reconstruct_signal_3(mask, stft, window=g))
 

@@ -78,7 +78,7 @@ if __name__ == "__main__":
     # Save the benchmark to a file. Notice that only the methods_ids are saved.
     benchmark.save_to_file(filename = 'results/last_benchmark_denoising')
     results_interpreter = ResultsInterpreter(benchmark)
-    # results_interpreter.save_csv_files()
-    results_interpreter.save_report(bars=True)
-    # results_interpreter.get_summary_plots(size=(3,2))
+    results_interpreter.save_report(path='results')
+    results_interpreter.get_html_figures(path='results/denoising/figures/html',bars=True)
+    results_interpreter.get_csv_files(path='results/denoising/csv_files')
     
