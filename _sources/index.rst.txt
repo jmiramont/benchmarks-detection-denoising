@@ -1,14 +1,24 @@
-.. Benchmark-demo documentation master file, created by
-   sphinx-quickstart on Tue Apr 26 11:14:57 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to Benchmark-demo's documentation!
-==========================================
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
 
 .. toctree::
-   :maxdepth: 2
    :caption: Contents:
+   :maxdepth: 2
+   :hidden:
+
+   readme_link
+
+.. toctree::
+   :caption: Notebooks:
+   :titlesonly:
+   :hidden:
+
+   notebooks_link
+
+.. toctree::
+   :caption: Packages:
+   :titlesonly:
+   :hidden:
 
    modules
 
