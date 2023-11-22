@@ -87,7 +87,7 @@ jobs:
       
       - name: Move reports to docs folder for html
         run: |
-          cd ..
+          # cd ..
           cp -r results docs/build/html
         
       - name: Deploy documentation to gh-pages branch
