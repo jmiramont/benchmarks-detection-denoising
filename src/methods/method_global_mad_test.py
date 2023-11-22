@@ -43,4 +43,6 @@ class NewMethod(MethodTemplate):
                 # {'statistic':'L',},                
                 {'statistic':'Frs',     'MC_reps':2499},
                 {'statistic':'Frs_vs',  'MC_reps':2499},
+                {'statistic':'Frs',     'MC_reps':199},
+                {'statistic':'Frs_vs',  'MC_reps':199},
                 ]

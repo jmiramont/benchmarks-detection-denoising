@@ -46,6 +46,8 @@ class NewMethod(MethodTemplate):
                 {'statistic':'Frs_vs',  'pnorm': 2, 'rmax': 1.0, 'MC_reps' : 2499,},
                 {'statistic':'Frs',     'pnorm': 2, 'rmax': 2.0, 'MC_reps' : 2499,},
                 {'statistic':'Frs_vs',  'pnorm': 2, 'rmax': 2.0, 'MC_reps' : 2499,},
+                {'statistic':'Frs',     'pnorm': 2, 'rmax': 1.0, 'MC_reps' : 199,},
+                {'statistic':'Frs_vs',  'pnorm': 2, 'rmax': 1.0, 'MC_reps' : 199,},
                 # {'statistic':'Frs', 'pnorm': 2, 'rmax': 5.0},
                 # {'statistic':'L', 'pnorm': np.inf, 'rmax': 0.5},
                 # {'statistic':'L', 'pnorm': np.inf, 'rmax': 1.0},

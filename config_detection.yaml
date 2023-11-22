@@ -1,8 +1,8 @@
 N: 256
 Nsub: 128
-SNRin: [-5, 0, 5, 10]
+SNRin: [-5, 0,] #[-5, 0, 5, 10]
 signal_ids: ['LinearChirp',]
-repetitions: 10
-verbosity: 4
-parallelize: True
+repetitions: 3
+verbosity: 5
+parallelize: 8
 # add_new_methods: True
