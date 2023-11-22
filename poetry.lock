@@ -1291,7 +1291,7 @@ traitlets = "*"
 [[package]]
 name = "mcsm-benchmarks"
 version = "0.1.0"
-description = "A benchmarking toolbox for Multi-Component Signal Methods."
+description = "MCSM-Benchs: A benchmarking toolbox for Multi-Component Signal Methods."
 optional = false
 python-versions = ">=3.8,<3.11"
 files = []
@@ -1312,7 +1312,7 @@ tabulate = "^0.8.9"
 type = "git"
 url = "https://github.com/jmiramont/mcsm-benchmarks.git"
 reference = "HEAD"
-resolved_reference = "fdd5b5d0356dc9e25aacbca66ce6c8ded25c91d6"
+resolved_reference = "8033b3eb16a65841337ae21468f102dbbb4b4136"
 
 [[package]]
 name = "mdit-py-plugins"
