@@ -70,9 +70,9 @@ jobs:
       #----------------------------------------------
       #    deploy documentation
       #----------------------------------------------  
-      - name: Create .nojekyll file.
-        run: | 
-          > .nojekyll 
+      # - name: Create .nojekyll file.
+      #   run: | 
+      #     > .nojekyll 
       
       - name: Move reports to docs folder for html
         run: | 
@@ -89,6 +89,7 @@ jobs:
         run: |
           # cd ..
           cp -r results docs/build/html
+          > docs/build/html/.nojekyll
         
       - name: Deploy documentation to gh-pages branch
         uses: s0/git-publish-subdir-action@develop
