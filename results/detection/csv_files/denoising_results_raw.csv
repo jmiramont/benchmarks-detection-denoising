@@ -1,0 +1,41 @@
+,Method,Parameter,Signal_id,Repetition,5
+30,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,0,False
+31,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,1,True
+32,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,2,False
+33,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,3,True
+34,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,4,True
+10,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,0,False
+11,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,1,True
+12,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,2,False
+13,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,3,True
+14,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,4,True
+20,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,0,False
+21,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,1,True
+22,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,2,False
+23,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,3,True
+24,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,4,True
+35,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,0,False
+36,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,1,True
+37,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,2,False
+38,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,3,True
+39,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,4,True
+15,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,0,False
+16,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,1,True
+17,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,2,False
+18,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,3,True
+19,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'envelope': {'transform': 'asin(sqrt(.))'}}",LinearChirp,4,True
+25,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,0,False
+26,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,1,True
+27,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,2,True
+28,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,3,True
+29,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05, 'global_envelope_test': {'alternative': 'less'}}",LinearChirp,4,True
+5,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05}",LinearChirp,0,False
+6,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05}",LinearChirp,1,True
+7,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05}",LinearChirp,2,False
+8,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05}",LinearChirp,3,True
+9,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs', 'rmin': 0.65, 'rmax': 1.05}",LinearChirp,4,True
+0,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs'}",LinearChirp,0,False
+1,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs'}",LinearChirp,1,True
+2,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs'}",LinearChirp,2,False
+3,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs'}",LinearChirp,3,True
+4,global_rank_env_test,"{'fun': 'Fest', 'correction': 'rs'}",LinearChirp,4,True
