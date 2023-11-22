@@ -78,7 +78,7 @@ jobs:
         run: | 
           cp results/results_denoising.md docs/source
           cp results/results_detection.md docs/source
-          cp results docs
+          cp -r results docs
       
       - name: Build docs
         run: |
