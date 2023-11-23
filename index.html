@@ -1,217 +1,252 @@
 <!DOCTYPE html>
-<html lang="en-gb">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-<title>Benchmarks of Multi-Component Signal Detection and Denoising Methods</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous"/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css" integrity="sha256-8uHMIn1ru0GS5KO+zf7Zccf8Uw12IA5DrdEcmMuWLFM=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/css/tooltipster.bundle.min.css" integrity="sha256-Qc4lCfqZWYaHF5hgEOFrYzSIX9Rrxk0NPHRac+08QeQ=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css" integrity="sha256-Wa1I4jhSXeWd3N6RhfPlkqr1WlT+zS3Vh2YGCg0129E=" crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Code+Pro|Source+Sans+Pro|Source+Serif+Pro|Roboto|Roboto+Mono" rel="stylesheet">
-<link href="https://fonts.red-dove.com/iosevka-ss09-regular/webfont.css" rel="stylesheet">
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
 
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/css/sizzle.css" type="text/css" />
-    <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.6/underscore-min.js" integrity="sha512-2V49R8ndaagCOnwmj8QnbT1Gz/rie17UouD9Re5WxbzRVUGoftCu5IuqqtAM9+UC3fwfHCSJR1hkzNQh/2wdtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/js/tooltipster.bundle.min.js" integrity="sha256-v8akIv8SCqn5f3mbVB7vEWprIizxPh6oV0yhao/dbB4=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        LINK_SUFFIX: '.html',
-        HAS_SOURCE:  false,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-      $(document).data('sizzle', {on_load: []});
-    </script>
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>Benchmarks of Multi-Component Signal Detection and Denoising Methods &#8212; Benchmarks of Multicomponent Signal Methods  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="app-data.js"></script>
-<link rel="index" title="Index" href="genindex.html" />
-<link rel="search" title="Search" href="search.html" />
-
-</head>
-<body class="full-height test">
-<noscript>
-  <div>
-    <div id="noscript-message">JavaScript is not enabled. It is needed for this website to work.</div>
-  </div>
-</noscript>
-<div id="whole-page" class="container-fluid content full-height">
-  <div id="header-row" class="row">
-    <div id="header-container" class="col-md-12">
-      <div id="hdr-left">
-        <i class="fa fa-bars menu-toggle"></i>
-        
-<span class="text-logo">Benchmarks of Multicomponent Signal Methods  documentation</span>
-
-      </div>
-      <div id="hdr-centre" class="text-center stretch">
-        <h3 title="Benchmarks of Multi-Component Signal Detection and Denoising Methods">Benchmarks of Multi-Component Signal Detection and Denoising Methods</h3>
-        <h6>Benchmarks of Multi-Component Signal Detection and Denoising Methods</h6>
-      </div>
-      <div id="hdr-search">
-        
-<div class="input-group" title="Enter something to search for and then either press Enter or click the magnifying glass">
-  <input type="text" class="form-control search-query" placeholder="Search docs ...">
-  <div class="input-group-addon">
-    <i class="fa fa-search"></i>
-  </div>
-</div>
-      </div>
-
-      <div id="hdr-index">
-        <a href="genindex.html" class="btn btn-default" title="Go to the index"><i class="fa fa-list"></i></a>
-      </div>
-
-      <div id="hdr-source">
-        <a href="_sources/index.rst.txt" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
-      </div>
-
-      <div id="hdr-right">
-        
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
   
-      </div>
-      <div id="alt-hdr-right">
+   
 
-
-
-        <a href="search.html"><i class="fa fa-search mr-8"></i></a>
-
-
-        <a href="genindex.html"><i class="fa fa-list mr-8"></i></a>
-
-
-      </div>
-    </div>
-  </div>
-
-  <div id="content-row" class="row">
-    <div id="page-content" class="col-md-12 flex-col">
-      <div id="content-container">
-        <div id="nav">
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#index" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="#" title="Benchmarks of Multicomponent Signal Methods  documentation"
+           class="md-header-nav__button md-logo">
           
-  <div class="navsidebar">
-    <div id="sidebar-search">
-      
-<div class="input-group" title="Enter something to search for and then either press Enter or click the magnifying glass">
-  <input type="text" class="form-control search-query" placeholder="Search docs ...">
-  <div class="input-group-addon">
-    <i class="fa fa-search"></i>
-  </div>
-</div>
-    </div>
-      <div class="sidebar-block">
-        <div class="sidebar-tocheading">
-          <div class="pull-left">
-            <h2>Table Of Contents</h2>
-          </div>
-          <div class="pull-right" title="Hide this sidebar (hover at left edge to bring it back)"><i class="fa fa-chevron-left hidetoc"></i></div>
-        </div>
-        <div class="sidebar-toc">
-      
-          <div id="toc-filter" title="Type in here to show only matching topics">
-            <input class="form-control" id="toc-filter-query" placeholder="Filter by title ...">
-          </div>
-      
-        
-  
-  <div class="localtoc">
-    <ul>
-<li><a class="lvl-1 reference internal" href="#benchmarks-of-multi-component-signal-detection-and-denoising-methods">Benchmarks of Multi-Component Signal Detection and Denoising Methods</a><ul>
-<li><a class="lvl-2 reference internal" href="#published-benchmarks">Published benchmarks</a></li>
-<li><a class="lvl-2 reference internal" href="#relevant-files">Relevant Files</a></li>
-<li><a class="lvl-2 reference internal" href="#index">Index</a></li>
-</ul>
-</li>
-<li><a class="lvl-1 reference internal" href="#benchmarking-a-new-method">Benchmarking a new method</a><ul>
-<li><a class="lvl-2 reference internal" href="#installation-using-poetry">Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code></a></li>
-<li><a class="lvl-2 reference internal" href="#adding-a-new-method-to-benchmark">Adding a new method to benchmark</a><ul>
-<li><a class="lvl-3 reference internal" href="#python-based-methods">Python-based methods</a></li>
-<li><a class="lvl-3 reference internal" href="#matlab-based-method">Matlab-based method</a></li>
-</ul>
-</li>
-<li><a class="lvl-2 reference internal" href="#running-the-benchmark-with-new-methods">Running the benchmark with new methods</a></li>
-<li><a class="lvl-2 reference internal" href="#changing-the-benchmark-configuration">Changing the benchmark configuration</a></li>
-<li><a class="lvl-2 reference internal" href="#adding-dependencies">Adding dependencies</a><ul>
-<li><a class="lvl-3 reference internal" href="#modify-matlabengine-module-version">Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version</a></li>
-</ul>
-</li>
-<li><a class="lvl-2 reference internal" href="#size-of-outputs-according-to-the-task">Size of outputs according to the task</a></li>
-<li><a class="lvl-2 reference internal" href="#reproducing-current-benchmarks">Reproducing current benchmarks</a><ul>
-<li><a class="lvl-3 reference internal" href="#re-run-detection-benchmark">Re-run Detection Benchmark</a></li>
-<li><a class="lvl-3 reference internal" href="#re-run-denoising-benchmarks">Re-run Denoising Benchmarks</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="lvl-1 reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-
-  </div>
-  
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Benchmarks of Multicomponent Signal Methods  documentation</span>
+          <span class="md-header-nav__topic"> Benchmarks of Multi-Component Signal Detection and Denoising Methods </span>
         </div>
       </div>
-  </div>
-        </div>
-        <div id="content" tabindex="0" class="stretch">
-          <div id="mnav">
-            
-  
-  <div class="localtoc">
-    <ul>
-<li><a class="lvl-1 reference internal" href="#benchmarks-of-multi-component-signal-detection-and-denoising-methods">Benchmarks of Multi-Component Signal Detection and Denoising Methods</a><ul>
-<li><a class="lvl-2 reference internal" href="#published-benchmarks">Published benchmarks</a></li>
-<li><a class="lvl-2 reference internal" href="#relevant-files">Relevant Files</a></li>
-<li><a class="lvl-2 reference internal" href="#index">Index</a></li>
-</ul>
-</li>
-<li><a class="lvl-1 reference internal" href="#benchmarking-a-new-method">Benchmarking a new method</a><ul>
-<li><a class="lvl-2 reference internal" href="#installation-using-poetry">Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code></a></li>
-<li><a class="lvl-2 reference internal" href="#adding-a-new-method-to-benchmark">Adding a new method to benchmark</a><ul>
-<li><a class="lvl-3 reference internal" href="#python-based-methods">Python-based methods</a></li>
-<li><a class="lvl-3 reference internal" href="#matlab-based-method">Matlab-based method</a></li>
-</ul>
-</li>
-<li><a class="lvl-2 reference internal" href="#running-the-benchmark-with-new-methods">Running the benchmark with new methods</a></li>
-<li><a class="lvl-2 reference internal" href="#changing-the-benchmark-configuration">Changing the benchmark configuration</a></li>
-<li><a class="lvl-2 reference internal" href="#adding-dependencies">Adding dependencies</a><ul>
-<li><a class="lvl-3 reference internal" href="#modify-matlabengine-module-version">Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version</a></li>
-</ul>
-</li>
-<li><a class="lvl-2 reference internal" href="#size-of-outputs-according-to-the-task">Size of outputs according to the task</a></li>
-<li><a class="lvl-2 reference internal" href="#reproducing-current-benchmarks">Reproducing current benchmarks</a><ul>
-<li><a class="lvl-3 reference internal" href="#re-run-detection-benchmark">Re-run Detection Benchmark</a></li>
-<li><a class="lvl-3 reference internal" href="#re-run-denoising-benchmarks">Re-run Denoising Benchmarks</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="lvl-1 reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-
-  </div>
-  
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
           </div>
-          <div class="body">
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="#" class="md-tabs__link">Benchmarks of Multicomponent Signal Methods  documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="#" title="Benchmarks of Multicomponent Signal Methods documentation" class="md-nav__button md-logo">
+      
+        <img src="_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="#"
+       title="Benchmarks of Multicomponent Signal Methods documentation">Benchmarks of Multicomponent Signal Methods  documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#index--page-root" class="md-nav__link">Benchmarks of Multi-Component Signal Detection and Denoising Methods</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#published-benchmarks" class="md-nav__link">Published benchmarks</a>
+        </li>
+        <li class="md-nav__item"><a href="#relevant-files" class="md-nav__link">Relevant Files</a>
+        </li>
+        <li class="md-nav__item"><a href="#index" class="md-nav__link">Index</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#benchmarking-a-new-method" class="md-nav__link">Benchmarking a new method</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#installation-using-poetry" class="md-nav__link">Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#adding-a-new-method-to-benchmark" class="md-nav__link">Adding a new method to benchmark</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#python-based-methods" class="md-nav__link">Python-based methods</a>
+        </li>
+        <li class="md-nav__item"><a href="#matlab-based-method" class="md-nav__link">Matlab-based method</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#running-the-benchmark-with-new-methods" class="md-nav__link">Running the benchmark with new methods</a>
+        </li>
+        <li class="md-nav__item"><a href="#changing-the-benchmark-configuration" class="md-nav__link">Changing the benchmark configuration</a>
+        </li>
+        <li class="md-nav__item"><a href="#adding-dependencies" class="md-nav__link">Adding dependencies</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#modify-matlabengine-module-version" class="md-nav__link">Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#size-of-outputs-according-to-the-task" class="md-nav__link">Size of outputs according to the task</a>
+        </li>
+        <li class="md-nav__item"><a href="#reproducing-current-benchmarks" class="md-nav__link">Reproducing current benchmarks</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#re-run-detection-benchmark" class="md-nav__link">Re-run Detection Benchmark</a>
+        </li>
+        <li class="md-nav__item"><a href="#re-run-denoising-benchmarks" class="md-nav__link">Re-run Denoising Benchmarks</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#indices-and-tables" class="md-nav__link">Indices and tables</a>
+        </li>
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="_sources/index.rst.txt">Show Source</a> </li>
+
+<li id="searchbox" class="md-nav__item"></li>
+
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
             
   <section id="benchmarks-of-multi-component-signal-detection-and-denoising-methods">
-<h1>Benchmarks of Multi-Component Signal Detection and Denoising Methods<a class="headerlink" href="#benchmarks-of-multi-component-signal-detection-and-denoising-methods" title="Permalink to this heading">¶</a></h1>
+<h1 id="index--page-root">Benchmarks of Multi-Component Signal Detection and Denoising Methods<a class="headerlink" href="#index--page-root" title="Permalink to this heading">¶</a></h1>
 <section id="published-benchmarks">
-<h2>Published benchmarks<a class="headerlink" href="#published-benchmarks" title="Permalink to this heading">¶</a></h2>
+<h2 id="published-benchmarks">Published benchmarks<a class="headerlink" href="#published-benchmarks" title="Permalink to this heading">¶</a></h2>
 <table>
 <thead>
 <tr class="row-odd"><th class="head"><p>Task</p></th>
@@ -232,7 +267,7 @@
 </table>
 </section>
 <section id="relevant-files">
-<h2>Relevant Files<a class="headerlink" href="#relevant-files" title="Permalink to this heading">¶</a></h2>
+<h2 id="relevant-files">Relevant Files<a class="headerlink" href="#relevant-files" title="Permalink to this heading">¶</a></h2>
 <p>The folder <a class="reference internal" href="#notebooks"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">notebooks</span></code></span></a> holds a number Python notebooks:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#notebooks/display_results.ipynb"><span class="xref myst">Summary of results and figures from the paper</span></a></p></li>
@@ -242,7 +277,7 @@
 <p>Additionally, the directory <a class="reference internal" href="#src/methods"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">src/methods</span></code></span></a> contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files <code class="docutils literal notranslate"><span class="pre">mwe_*.m</span></code>).</p>
 </section>
 <section id="index">
-<h2>Index<a class="headerlink" href="#index" title="Permalink to this heading">¶</a></h2>
+<h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="#benchmarks-of-multi-component-signal-detection-and-denoising-methods"><span class="std std-ref">Benchmarks of Multi-Component Signal Detection and Denoising Methods</span></a></p>
 <ul>
@@ -280,7 +315,7 @@
 </section>
 </section>
 <section id="benchmarking-a-new-method">
-<h1>Benchmarking a new method<a class="headerlink" href="#benchmarking-a-new-method" title="Permalink to this heading">¶</a></h1>
+<h1 id="benchmarking-a-new-method">Benchmarking a new method<a class="headerlink" href="#benchmarking-a-new-method" title="Permalink to this heading">¶</a></h1>
 <p>You can use the code in this repository to test a new method against others, which is based on the freely-available, Python-based, <a class="reference external" href="https://github.com/jmiramont/mcsm-benchmarks">benchmarking toolbox introduced here.</a>
 Clone this repository and benchmark your own method locally, i.e. in your computer. This will allow you to run the benchmarks with all the modifications you want (exploring different parameters, type of signals, number of repetitions, etc.).</p>
 <p>The <a class="reference internal" href="#./notebooks/"><span class="xref myst"><em>notebooks</em></span></a> folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, <a class="reference internal" href="#./notebooks/demo_benchmark.ipynb"><span class="xref myst"><em>demo_benchmark.ipynb</em></span></a> gives two minimal working examples to introduce the basic functionality of the <code class="docutils literal notranslate"><span class="pre">Benchmark</span></code> class, and the notebook <a class="reference internal" href="#./notebooks/demo_signal_bank.ipynb"><span class="xref myst"><em>demo_signal_bank.ipynb</em></span></a> showcases the signals produced by the <code class="docutils literal notranslate"><span class="pre">SignalBank</span></code> class.</p>
@@ -290,7 +325,7 @@ Clone this repository and benchmark your own method locally, i.e. in your comput
 </pre></div>
 </div>
 <section id="installation-using-poetry">
-<h2>Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code><a class="headerlink" href="#installation-using-poetry" title="Permalink to this heading">¶</a></h2>
+<h2 id="installation-using-poetry">Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code><a class="headerlink" href="#installation-using-poetry" title="Permalink to this heading">¶</a></h2>
 <p>We use <a class="reference external" href="https://python-poetry.org/docs/"><code class="docutils literal notranslate"><span class="pre">poetry</span></code></a>, a tool for dependency management and packaging in python to install the benchmarking framework. You can install <code class="docutils literal notranslate"><span class="pre">poetry</span></code> following the steps described <a class="reference external" href="https://python-poetry.org/docs/#installation">here</a>.
 Then, make <code class="docutils literal notranslate"><span class="pre">poetry</span></code> create a virtual environment and install the main dependencies of the benchmarks using:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--only<span class="w"> </span>main
@@ -308,11 +343,11 @@ conda<span class="w"> </span>deactivate
 However, if you want to reproduce the current results, <a class="reference internal" href="#reproducing-current-benchmarks"><span class="std std-ref">you will need extra dependencies</span></a>.</p>
 </section>
 <section id="adding-a-new-method-to-benchmark">
-<h2>Adding a new method to benchmark<a class="headerlink" href="#adding-a-new-method-to-benchmark" title="Permalink to this heading">¶</a></h2>
+<h2 id="adding-a-new-method-to-benchmark">Adding a new method to benchmark<a class="headerlink" href="#adding-a-new-method-to-benchmark" title="Permalink to this heading">¶</a></h2>
 <p>Whether your method is implemented in Python or Matlab, you must create a new <code class="docutils literal notranslate"><span class="pre">.py</span></code> file the name of which must start with <em>method_</em> and have certain content to be automatically discovered by the toolbox. The purpose of this file is to encapsulate your method in a new class. This is much easier than it sounds :). To make it simpler, <a class="reference internal" href="#./new_method_example/method_new_basic_template.py"><span class="xref myst">a file called <em>method_new_basic_template.py</em> is made available</span></a> (for Python users) which you can use as a template. You just have to fill in the parts that implement your method. Matlab users can also find a template <a class="reference internal" href="#./new_method_example/method_new_basic_template_matlab.py"><span class="xref myst">here</span></a>.
 A new method can then be tested against others by adding this file into the folder <a class="reference internal" href="#./src/methods"><span class="xref myst">src/methods</span></a>. We shall see how to do this using a template file in the following sections.</p>
 <section id="python-based-methods">
-<h3>Python-based methods<a class="headerlink" href="#python-based-methods" title="Permalink to this heading">¶</a></h3>
+<h3 id="python-based-methods">Python-based methods<a class="headerlink" href="#python-based-methods" title="Permalink to this heading">¶</a></h3>
 <p>First, the function implementing your method must have the following signature if you’re working in python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">a_new_method</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="o">...</span>
@@ -320,25 +355,25 @@ A new method can then be tested against others by adding this file into the fold
 </div>
 <p>Methods should receive an <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> numpy array representing a discrete-time signal, where and <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of time samples. Additionally, they should receive a variable number of input arguments to allow testing different combinations of input parameters. The ouput of the function must be a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array of <a class="reference internal" href="#size-of-outputs-according-to-the-task"><span class="std std-ref">predefined dimensions according to the task.</span></a></p>
 <p>In the first section of the template file <a class="reference internal" href="#./new_method_example/method_new_basic_template.py"><span class="xref myst"><em>method_new_basic_template.py</em></span></a>, you can import a function with your method or implement everything in the same file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; First section ----------------------------------------------------------------------</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">""" First section ----------------------------------------------------------------------</span>
 <span class="sd">| Import here all the modules you need.</span>
-<span class="sd">| Remark: Make sure that neither of those modules starts with &quot;method_&quot;.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">| Remark: Make sure that neither of those modules starts with "method_".</span>
+<span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">mcsm_benchmarks.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span> <span class="c1"># Import the template class!</span>
 </pre></div>
 </div>
 <!-- Additionally, the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate` is imported here. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes, by forcing the implementation of certain *abstract* methods. We will see later that the class that encapsulates your method must inherit from this template. -->
 <p>The second section of the file should include all the functions your method needs to work. This functions could also be defined in a separate module imported in the previous section as well.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Second section ---------------------------------------------------------------------</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">""" Second section ---------------------------------------------------------------------</span>
 <span class="sd">| Put here all the functions that your method uses.</span>
 <span class="sd">|</span>
 <span class="sd">| def a_function_of_my_method(signal, *args, **kwargs):</span>
 <span class="sd">|   ...</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 </pre></div>
 </div>
 <p>In the third and final section, your method is encapsulated in a new class called <code class="docutils literal notranslate"><span class="pre">NewMethod</span></code> (you can change this name if you prefer to, but it is not strictly necessary). The only requisite for the class that represents your method is that it inherits from the <a class="reference external" href="https://docs.python.org/3/library/abc.html">abstract class</a> <code class="docutils literal notranslate"><span class="pre">MethodTemplate</span></code>. This simply means that you will have to implement the class constructor and a class function called -unsurprisingly- <code class="docutils literal notranslate"><span class="pre">method()</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Third section ----------------------------------------------------------------------</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">""" Third section ----------------------------------------------------------------------</span>
 <span class="sd">| Create here a new class that will encapsulate your method.</span>
 <span class="sd">| This class should inherit the abstract class MethodTemplate.</span>
 <span class="sd">| You must then implement the class function:</span>
@@ -347,12 +382,12 @@ A new method can then be tested against others by adding this file into the fold
 <span class="sd">    ...</span>
 <span class="sd">| which should receive the signals and any parameters that you desire to pass to your</span>
 <span class="sd">| method.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="k">class</span> <span class="nc">NewMethod</span><span class="p">(</span><span class="n">MethodTemplate</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;a_new_method&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>  <span class="c1"># Should be either &#39;denoising&#39; or &#39;detection&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">'a_new_method'</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">'denoising'</span>  <span class="c1"># Should be either 'denoising' or 'detection'</span>
 
     <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span> <span class="c1"># Implement this method.</span>
         <span class="o">...</span>
@@ -369,7 +404,7 @@ A new method can then be tested against others by adding this file into the fold
 <p>Finally, <strong>you have to move the file</strong> with all the modifications to the folder <a class="reference internal" href="#./src/methods"><span class="xref myst">/src/methods</span></a>. Changing the name of the file is possible, but keep in mind that <strong>the file’s name must start with “<em>method_</em>” to be recognizable</strong>.</p>
 </section>
 <section id="matlab-based-method">
-<h3>Matlab-based method<a class="headerlink" href="#matlab-based-method" title="Permalink to this heading">¶</a></h3>
+<h3 id="matlab-based-method">Matlab-based method<a class="headerlink" href="#matlab-based-method" title="Permalink to this heading">¶</a></h3>
 <p>The Matlab function implementing your method must have a particular signature. For example, for a method with two input parameters should be:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function</span><span class="w"> </span>[X]<span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="nf">a_matlab_method</span><span class="p">(</span>signal, param_1, param_2<span class="p">)</span>
 </pre></div>
@@ -385,14 +420,14 @@ A new method can then be tested against others by adding this file into the fold
 </div>
 <!-- *Remark: Do not modify the abstract class `MethodTemplate`*. -->
 <p>Then, you must  <strong>move the <code class="docutils literal notranslate"><span class="pre">.m</span></code> file with your method to the folder <code class="docutils literal notranslate"><span class="pre">src\methods</span></code></strong>. A convenient and neat way of doing this is by creating a folder with all the <code class="docutils literal notranslate"><span class="pre">.m</span></code> files related to your method, for example called <code class="docutils literal notranslate"><span class="pre">a_matlab_method_utils</span></code>. After this you can now create a <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> instance that represents your method, by passing a string to the <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> creator with the name of the previously defined function. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># After moving a file called &#39;a_matlab_method.m&#39; to src\methods, create an interface with the Matlab&#39;s Python engine by passing the name of the file (without the .m extension). Then get the matlab function as:</span>
-<span class="n">mlint</span> <span class="o">=</span> <span class="n">MatlabInterface</span><span class="p">(</span><span class="s1">&#39;a_matlab_method&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># After moving a file called 'a_matlab_method.m' to src\methods, create an interface with the Matlab's Python engine by passing the name of the file (without the .m extension). Then get the matlab function as:</span>
+<span class="n">mlint</span> <span class="o">=</span> <span class="n">MatlabInterface</span><span class="p">(</span><span class="s1">'a_matlab_method'</span><span class="p">)</span>
 <span class="n">matlab_function</span> <span class="o">=</span> <span class="n">mlint</span><span class="o">.</span><span class="n">matlab_function</span> <span class="c1"># A python function handler to the method.</span>
 
 <span class="c1"># Paths to additional code for the method to add to Matlab path variable.</span>
 <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;src\methods</span><span class="se">\n</span><span class="s1">ew_method_utils&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;..\src\methods</span><span class="se">\n</span><span class="s1">ew_method_utils&#39;</span>
+        <span class="s1">'src\methods</span><span class="se">\n</span><span class="s1">ew_method_utils'</span><span class="p">,</span>
+        <span class="s1">'..\src\methods</span><span class="se">\n</span><span class="s1">ew_method_utils'</span>
         <span class="p">]</span>
 </pre></div>
 </div>
@@ -401,17 +436,17 @@ A new method can then be tested against others by adding this file into the fold
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NewMethod</span><span class="p">(</span><span class="n">MethodTemplate</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;a_matlab_method&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;denoising&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">'a_matlab_method'</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="s1">'denoising'</span>
 
 
     <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; A class method encapsulating a matlab function.</span>
+<span class="w">        </span><span class="sd">""" A class method encapsulating a matlab function.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            signals (numpy array): A signal.</span>
 <span class="sd">            params: Any number of positional parameters.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">signal_output</span> <span class="o">=</span> <span class="n">matlab_function</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span> <span class="c1"># Only positional args.</span>
 
         <span class="k">return</span> <span class="n">signal_output</span>
@@ -424,7 +459,7 @@ A new method can then be tested against others by adding this file into the fold
 </section>
 </section>
 <section id="running-the-benchmark-with-new-methods">
-<h2>Running the benchmark with new methods<a class="headerlink" href="#running-the-benchmark-with-new-methods" title="Permalink to this heading">¶</a></h2>
+<h2 id="running-the-benchmark-with-new-methods">Running the benchmark with new methods<a class="headerlink" href="#running-the-benchmark-with-new-methods" title="Permalink to this heading">¶</a></h2>
 <p>Once the new methods are added, you can run a benchmark by executing the files <code class="docutils literal notranslate"><span class="pre">run_this_benchmark_*.py</span></code> located in the repository.
 You can do this using the local environment created with <code class="docutils literal notranslate"><span class="pre">poetry</span></code> by running:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>run_this_benchmark_denoising.py
@@ -433,7 +468,7 @@ You can do this using the local environment created with <code class="docutils l
 <p>This will run the benchmark using new added methods, avoiding previously explored ones and saving time. You can change this from the configuration file <a class="reference internal" href="#./config_benchmarks.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">config_benchmarks.yaml</span></code></span></a> located in the repository.</p>
 </section>
 <section id="changing-the-benchmark-configuration">
-<h2>Changing the benchmark configuration<a class="headerlink" href="#changing-the-benchmark-configuration" title="Permalink to this heading">¶</a></h2>
+<h2 id="changing-the-benchmark-configuration">Changing the benchmark configuration<a class="headerlink" href="#changing-the-benchmark-configuration" title="Permalink to this heading">¶</a></h2>
 <p>The benchmark parameters can be modified using the <a class="reference internal" href="#./config_benchmarks.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">config_benchmarks.yaml</span></code></span></a> file. Each line of this file define an input parameter of the benchmark:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">N</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span><span class="w"> </span><span class="c1"># Number of time samples</span>
 <span class="nt">SNRin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-20</span><span class="p p-Indicator">,</span><span class="nv">-10</span><span class="p p-Indicator">,</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nv">10</span><span class="p p-Indicator">,</span><span class="nv">20</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># Values of SNR to evaluate.</span>
@@ -441,9 +476,9 @@ You can do this using the local environment created with <code class="docutils l
 <span class="nt">parallelize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w">  </span><span class="c1"># If False, run the benchmark in a serialized way. If True or int, runs the benchmark in parallel with the indicated number of cores.</span>
 <span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w">    </span><span class="c1"># Controls the messages appearing in the console.</span>
 <span class="nt">using_signals</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span>
-<span class="w">                </span><span class="s">&#39;McDampedCos&#39;</span><span class="p p-Indicator">,</span>
-<span class="w">                </span><span class="s">&#39;McCrossingChirps&#39;</span><span class="p p-Indicator">,</span>
-<span class="w">                </span><span class="s">&#39;McSyntheticMixture5&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">                </span><span class="s">'McDampedCos'</span><span class="p p-Indicator">,</span>
+<span class="w">                </span><span class="s">'McCrossingChirps'</span><span class="p p-Indicator">,</span>
+<span class="w">                </span><span class="s">'McSyntheticMixture5'</span><span class="p p-Indicator">,</span>
 <span class="w">              </span><span class="p p-Indicator">]</span>
 
 <span class="nt">add_new_methods</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"> </span><span class="c1"># Run again the same benchmark but with new methods:</span>
@@ -451,13 +486,13 @@ You can do this using the local environment created with <code class="docutils l
 </div>
 </section>
 <section id="adding-dependencies">
-<h2>Adding dependencies<a class="headerlink" href="#adding-dependencies" title="Permalink to this heading">¶</a></h2>
+<h2 id="adding-dependencies">Adding dependencies<a class="headerlink" href="#adding-dependencies" title="Permalink to this heading">¶</a></h2>
 <p>Your method might need particular modules as dependencies that are not currently listed in the dependencies of the default benchmark. You can add all your dependencies by modifying the <code class="docutils literal notranslate"><span class="pre">.toml</span></code> file in the folder, under the <code class="docutils literal notranslate"><span class="pre">[tool.poetry.dependencies]</span></code> section. For example:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>tool.poetry.dependencies<span class="o">]</span>
-<span class="nv">python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;=3.8,&lt;3.11&quot;</span>
-<span class="nv">numpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;^1.22.0&quot;</span>
-<span class="nv">matplotlib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;^3.5.1&quot;</span>
-<span class="nv">pandas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;^1.3.5&quot;</span>
+<span class="nv">python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.8,&lt;3.11"</span>
+<span class="nv">numpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"^1.22.0"</span>
+<span class="nv">matplotlib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"^3.5.1"</span>
+<span class="nv">pandas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"^1.3.5"</span>
 </pre></div>
 </div>
 <p>A more convenient and interactive way to do this interactively is by using <code class="docutils literal notranslate"><span class="pre">poetry</span></code>, for example:</p>
@@ -471,28 +506,28 @@ You can do this using the local environment created with <code class="docutils l
 </div>
 <p>to update the .lock file in the folder.</p>
 <section id="modify-matlabengine-module-version">
-<h3>Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version<a class="headerlink" href="#modify-matlabengine-module-version" title="Permalink to this heading">¶</a></h3>
+<h3 id="modify-matlabengine-module-version">Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version<a class="headerlink" href="#modify-matlabengine-module-version" title="Permalink to this heading">¶</a></h3>
 <p>Check the version of the <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module you have to install to use run the benchmarks in the next table:</p>
 <table>
 <thead>
-<tr class="row-even"><th class="head"><p>Matlab Version</p></th>
+<tr class="row-odd"><th class="head"><p>Matlab Version</p></th>
 <th class="head"><p>Python Version</p></th>
 <th class="head"><p><code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> version</p></th>
 <th class="head"><p></p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-odd"><td><p>2022b</p></td>
+<tr class="row-even"><td><p>2022b</p></td>
 <td><p>3.8, 3.9, 3.10</p></td>
 <td><p>9.13.6</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>2022a</p></td>
+<tr class="row-odd"><td><p>2022a</p></td>
 <td><p>3.8, 3.9</p></td>
 <td><p>9.12.17</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p>2021b</p></td>
+<tr class="row-even"><td><p>2021b</p></td>
 <td><p>3.7, 3.8, 3.9</p></td>
 <td><p>9.11.19</p></td>
 <td><p></p></td>
@@ -500,7 +535,7 @@ You can do this using the local environment created with <code class="docutils l
 </tbody>
 </table>
 <p>Then, look for the <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> line in <a class="reference internal" href="#./pyproject.toml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code></span></a>, it should look like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">matlabengine</span> <span class="o">=</span> <span class="s2">&quot;9.12.17&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">matlabengine</span> <span class="o">=</span> <span class="s2">"9.12.17"</span>
 </pre></div>
 </div>
 <p>Make sure to change the version with the one corresponding to your Python and Matlab current versions. If you have an older version of Matlab or Python, you can search for the correct version of the <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module <a class="reference external" href="https://pypi.org/project/matlabengine/#history">here</a>.</p>
@@ -526,7 +561,7 @@ Once the tests are passed, you can now either create a pull request to run the b
 </section>
 </section>
 <section id="size-of-outputs-according-to-the-task">
-<h2>Size of outputs according to the task<a class="headerlink" href="#size-of-outputs-according-to-the-task" title="Permalink to this heading">¶</a></h2>
+<h2 id="size-of-outputs-according-to-the-task">Size of outputs according to the task<a class="headerlink" href="#size-of-outputs-according-to-the-task" title="Permalink to this heading">¶</a></h2>
 <p>The shape and type of the output depends on the task.</p>
 <ul class="simple">
 <li><p>For Signal Denoising: The output must be a vector array with the same length as the signal.</p></li>
@@ -534,22 +569,22 @@ Once the tests are passed, you can now either create a pull request to run the b
 </ul>
 </section>
 <section id="reproducing-current-benchmarks">
-<h2>Reproducing current benchmarks<a class="headerlink" href="#reproducing-current-benchmarks" title="Permalink to this heading">¶</a></h2>
+<h2 id="reproducing-current-benchmarks">Reproducing current benchmarks<a class="headerlink" href="#reproducing-current-benchmarks" title="Permalink to this heading">¶</a></h2>
 <section id="re-run-detection-benchmark">
-<h3>Re-run Detection Benchmark<a class="headerlink" href="#re-run-detection-benchmark" title="Permalink to this heading">¶</a></h3>
+<h3 id="re-run-detection-benchmark">Re-run Detection Benchmark<a class="headerlink" href="#re-run-detection-benchmark" title="Permalink to this heading">¶</a></h3>
 <p>The detection tests used in this benchmark are based on R’s <code class="docutils literal notranslate"><span class="pre">spatstat</span></code> and <code class="docutils literal notranslate"><span class="pre">GET</span></code> packages and Python’s <a class="reference external" href="https://pypi.org/project/spatstat-interface/"><code class="docutils literal notranslate"><span class="pre">spatstat-interface</span></code></a>. If you want to rerun the tests, you should have R installed in your system and run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="w"> </span>rtools
 </pre></div>
 </div>
 </section>
 <section id="re-run-denoising-benchmarks">
-<h3>Re-run Denoising Benchmarks<a class="headerlink" href="#re-run-denoising-benchmarks" title="Permalink to this heading">¶</a></h3>
+<h3 id="re-run-denoising-benchmarks">Re-run Denoising Benchmarks<a class="headerlink" href="#re-run-denoising-benchmarks" title="Permalink to this heading">¶</a></h3>
 <p>Similarly, some denoising methods used in this benchmark are implemented in Matlab. You must have a recent Matlab installation in order to run the benchmark from scratch including these methods and run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="w"> </span>matlab_tools
 </pre></div>
 </div>
 <p>If you want to run all benchmarks, use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="w"> </span><span class="s2">&quot;rtools, matlab_tools&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="w"> </span><span class="s2">"rtools, matlab_tools"</span>
 </pre></div>
 </div>
 </section>
@@ -562,7 +597,7 @@ Once the tests are passed, you can now either create a pull request to run the b
 <div class="toctree-wrapper compound">
 </div>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<h1 id="indices-and-tables">Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -571,409 +606,37 @@ Once the tests are passed, you can now either create a pull request to run the b
 </section>
 
 
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2023, Juan Manuel Miramont-Taurel.
+              
           </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
         </div>
       </div>
     </div>
-  </div>
-  <div id="footer-row" class="row">
-
-    <div class="col-md-12">
-        <span title="Built on 2023-11-22" class="pull-right">&copy; Copyright 2023, Juan Manuel Miramont-Taurel.
-        Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2 and the
-        <a href="https://pypi.org/project/sphinx-sizzle-theme/"
-
-           title="0.1.3/579ed3af [2023-08-31T22:56:32]"
-
-        >Sizzle</a> theme.</span>
-    </div>
-
-  </div>
-</div>
-
-<div id="tooltips" class="hidden">
-</div>
-
-<script>
-$(document).ready(function() {
-  'use strict';
-  var $search = $('.search-query');
-
-  var $filter = $('#toc-filter-query');
-  var $toclist = $('.sidebar-toc > ul').find('li');
-
-  if ($toclist.length === 0) {
-    $toclist = $('.localtoc > ul').find('li');
-  }
-
-
-  var $nav = $('#nav');
-
-  //$('#whole-page').removeClass('hidden');
-  var nav_width = $nav.width();
-
-
-  var search_url = 'search.html';
-
-  function perform_search(e) {
-    var $elem;
-
-    if (e.type === 'keypress') {
-      $elem = $(e.target);
-    }
-    else if (e.type === 'click') {
-      $elem = $(e.target).parents('.input-group').find('input');
-    }
-    var q = $elem.val().trim();
-
-    if (q) {
-      var url = search_url + '?q=' + q + '&check_keywords=yes&area=default';
-
-      location.href = url;
-    }
-  }
-
-
-  function apply_filter() {
-    var s = $filter.val().trim().toLowerCase();
-
-    $toclist.find('a').removeClass('hidden');
-    $toclist.each(function() {
-      var $this = $(this);
-      var $link = $this.find('> a');
-      var t = $link.text().toLowerCase();
-      var show = t.indexOf(s) >= 0;
-
-      if (!show) {
-        $link.addClass('hidden');
-      }
-    });
-  }
-
-  $filter.on('keyup', function(e) {
-    apply_filter();
-  });
-
-
-
-  $search.on('keypress', function(e) {
-    if (e.which == 13) {
-      perform_search(e);
-    }
-  });
-  $search.parents('.input-group').find('.input-group-addon').on('click', perform_search);
-  $(document).on('click', '.summary .fa-caret-right', function(e) {
-    var $elem = $(e.target).parents('li');
-    var $next = $elem.next();
-    $elem.addClass('hidden');
-    $next.removeClass('hidden');
-  });
-  $(document).on('click', '.detail .fa-caret-down', function(e) {
-    var $elem = $(e.target).parents('li');
-    var $prev = $elem.prev();
-    $elem.addClass('hidden');
-    $prev.removeClass('hidden');
-  });
-
-  $('#content').on('click', function() {
-    $('#mnav').hide();
-  });
-
-  var counter = 0;
-  var timer = null;
-
-  function show_nav() {
-    $('#content').off('mousemove', track_mouse);
-    if (timer !== null) {
-      clearTimeout(timer);
-      timer = null;
-    }
-    $nav.show();
-  }
-
-  function track_mouse(e) {
-    var x = e.clientX;
-
-    if (x < 15) {
-      ++counter;
-      if (timer === null) {
-        timer = setTimeout(show_nav, 2000);
-      }
-    }
-    else {
-      counter = 0;
-    }
-    if (counter >= 20) {
-      show_nav();
-    }
-  };
-
-  function hide_nav() {
-    $nav.hide();
-    counter = 0;
-    $('#content').on('mousemove', track_mouse);
-  }
-
-  $('.hidetoc').on('click', hide_nav);
-
-  $(document).on('keyup', function(e) {
-    if (e.ctrlKey) {
-      if (e.which == 37) {      // Ctrl+left arrow
-        hide_nav();
-      }
-      else if (e.which == 39) { // Ctrl+right arrow
-        show_nav();
-      }
-    }
-  });
-
-  $('.menu-toggle').on('click', function(e) {
-    $('#mnav').toggle();
-  });
-
-  function scroll_nav(frag) {
-    var sel = '#nav ' + (frag ? 'a[href="' + frag + '"]' : '.toctree-l1 a.current');
-
-    var $link = $(sel);
-
-    if ($link.length > 0) {
-      $link[0].scrollIntoView({block: 'center'});
-    }
-  }
-
-  // If the navigator is long, then the item we clicked on to get here might
-  // not be in view. Try to scroll it into the view - a slight delay is needed
-  // to get it to sync properly with other stuff going on (as the page has just
-  // loaded). Hence the setTimeout with a timeout of 0.
-
-  function do_scroll() {
-    scroll_nav(window.location.hash);
-  }
-
-  setTimeout(do_scroll, 0);
-
-  function adjust_size() {
-    // we need to set the height explicitly so that scrolling regions in the
-    // content area work properly.
-    var h = $('#page-content').height();
-
-    $('#nav, #content').height(h);
-    if ($('#nav').is(':visible')) {
-      $('#mnav').hide();
-    }
-  }
-
-  adjust_size();
-
-  $(window).on('resize', adjust_size);
-
-  function focus_content() {
-    $('#content').focus();  // so that keyboard can be used to scroll, etc.
-  }
-
-  setTimeout(focus_content, 150);
-
-  var sizzle = $(document).data('sizzle');
-
-  function make_tooltip(id, h, b) {
-    var $e = $('<div>').attr('id', id);
-    var $b = $('<div>').addClass('tc-body').html(b);
-
-    if (h) {
-      var $h = $('<div>').addClass('tc-heading').html(h);
-      $e.append($h);
-    }
-    $e.append($b);
-    return $e;
-  }
-
-  var default_tt_options = {
-    theme: ['tooltipster-light', 'tooltipster-light-customized'],
-    interactive: true,
-    maxWidth: 600,
-    contentCloning: true
-  };
-
-  function activate_tooltips() {
-    var $tt = $('.tt');
-
-    //console.log('tt links:', $tt.length);
-    $tt.tooltipster(default_tt_options);
-  }
-
-
-
-  function add_glossary_tooltips() {
-    var links = $('a');  // can qualify with .reference.internal
-    var glinks = {};
-    var pat = /(.*)\.html#(term-.*)$/;
-    var found = false;  // links in this document
-
-    $.each(links, function(i, link) {
-        var $link = $(link);
-        var href = $link.attr('href');
-        var m = href.match(pat);
-
-        if (m) {
-          var s = m[1].replace(/^(\.\.\/)+/, '');
-
-          if (s === sizzle.app_data.glossary.document) {
-            var k = m[2];
-
-            if (k in glinks) {
-              glinks[k].push($link);
-            }
-            else {
-              glinks[k] = [$link];
-            }
-            found = true;
-          }
-        }
-    });
-    if (found) {
-      var $t = $('#tooltips');
-      var data = sizzle.app_data.glossary.terms;
-
-      $.each(glinks, function(k, v) {
-        var d = data[k];
-
-        if (d) {  // as a sanity check
-          var s = 'tc-'+ k;
-          var $e = make_tooltip(s, d.term, d.defn);
-          $t.append($e);
-
-          $.each(v, function(i, link) {
-            link.addClass('tt').attr('data-tooltip-content', '#' + s);
-          });
-        }
-      });
-    }
-  }
-
-  if (sizzle.app_data && sizzle.app_data.glossary &&
-      sizzle.app_data.glossary.document) {
-    add_glossary_tooltips();
-  }
-
-
-
-
-  function add_custom_tooltips() {
-    if (!sizzle.app_data) {
-      return;
-    }
-
-    var info_tips = sizzle.app_data.custom_data['info-tips'] || {};
-    var hover_tips = sizzle.app_data.custom_data['hovers'] || {};
-
-    if ($.isEmptyObject(info_tips) && $.isEmptyObject(hover_tips)) {
-      return;
-    }
-
-    var tt_options = $.extend({contentAsHTML: true}, default_tt_options);
-
-    if (!$.isEmptyObject(info_tips)) {
-      $('.tc-info').each(function() {
-        var $elem = $(this).prev();
-        var classes = $elem.attr('class');
-        var m = /\btci-([\S]+)/.exec(classes);
-
-        if (m !== null) {
-          var key = m[1];
-
-          if (key in info_tips) {
-            var v = info_tips[key];
-            var tt = $elem.tooltipster(tt_options).tooltipster('content', v);
-          }
-        }
-      });
-    }
-    if (!$.isEmptyObject(hover_tips)) {
-      var current_origin, current_instance;
-
-      var h_options = {
-        functionBefore: function(instance, helper) {
-          current_instance = instance;
-          current_origin = helper.origin;
-          //console.log('before', current_instance, current_origin);
-        },
-        functionAfter: function(instance, helper) {
-          current_instance = null;
-          current_origin = null;
-          //console.log('after', current_instance, current_origin);
-        }
-      };
-
-      var ht_options = $.extend(h_options, tt_options);
-      $('.hover').each(function() {
-        var $e = $(this);
-        var ref = $e.data('hoverref');
-
-        if (ref) {
-          var tip = hover_tips[ref];
-
-          if (tip) {
-            $e.tooltipster(ht_options).tooltipster('content', tip);
-            //if (/encrypt_and_sign/.test(ref)) { console.log(tip); }
-          }
-        }
-      });
-/*
-      $(document).on('click', '.hovertip a.hoverlink', function(e) {
-        if (!sizzle.app_data) {
-          return;
-        }
-        var $this = $(this);
-        var $content = $this.parent('.tooltipster-content');
-        var ref = $this.data('href');
-        var hover_tips = sizzle.app_data.custom_data['hovers'] || {};
-        var tip = hover_tips[ref];
-
-        if (tip && current_instance) {
-          current_instance.content(tip);
-        }
-
-      });
- */
-    }
-  }
-
-  add_custom_tooltips();
-
-  setTimeout(activate_tooltips, 1000);
-
-
-  // Clipboard copy for code blocks with captions
-
-  $('.code-block-caption').each(function() {
-    var $cap = $(this);
-    var $btn = $('<span class="clip-copy"><span class="copied hidden">Copied!</span><i class="fa fa-clipboard" title="Copy contents"></i></span>');
-    var $code = $cap.parent().find('.highlight');
-
-    $cap.append($btn);
-    $btn.find('.fa-clipboard').data('clip-text', $code.text());
-  });
-
-  var clipboard = new ClipboardJS('.code-block-caption .fa-clipboard', {
-    'text': function(trigger) {
-      return $(trigger).data('clip-text');
-    }
-  });
-
-  clipboard.on('success', function(e) {
-    var $copied = $(e.trigger).prev();
-
-    $copied.removeClass('hidden');
-
-    setTimeout(function() {$copied.addClass('hidden'); }, 1000);
-  });
-
-  if (sizzle.on_load) {
-    sizzle.on_load.forEach(function(f) {
-      f();
-    });
-  }
-});
-</script>
-</body>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
 </html>
