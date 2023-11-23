@@ -28,7 +28,7 @@ SNRin values:
 ## Mean results tables: 
 
 Results shown here are the mean and standard deviation of                             the estimated detection power.                             Best performances are **bolded**. 
-### Signal: LinearChirp  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/denoising/figures/html/plot_LinearChirp.html)    [[Get .csv]](/results/denoising/csv_files/results_LinearChirp.csv)
+### Signal: LinearChirp  [[View Plot]](https://jmiramont.github.io/benchmark-test/results/detection/figures/html/plot_LinearChirp.html)    [[Get .csv]](/results/detection/csv_files/results_LinearChirp.csv)
 |    | Method + Param                                                                                                    | SNRin=-5dB (mean)   |   SNRin=-5dB (std) | SNRin=0dB (mean)   |   SNRin=0dB (std) | SNRin=5dB (mean)   |   SNRin=5dB (std) | SNRin=10dB (mean)   |   SNRin=10dB (std) |
 |---:|:------------------------------------------------------------------------------------------------------------------|:--------------------|-------------------:|:-------------------|------------------:|:-------------------|------------------:|:--------------------|-------------------:|
 |  0 | monte_carlo_test{'statistic': 'Frs', 'pnorm': 2, 'rmax': 0.5, 'MC_reps': 2499}                                    | 0.05                |               0.21 | 0.07               |              0.26 | 0.14               |              0.35 | 0.29                |               0.45 |
