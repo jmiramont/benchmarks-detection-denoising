@@ -1,4 +1,4 @@
-# Benchmarks of Multi-Component Signal Detection and Denoising Methods
+# Benchmarking signal detection and denoising methods in the time-frequency plane
 
 ## Published benchmarks
 
