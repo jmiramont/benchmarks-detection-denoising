@@ -10,7 +10,7 @@ signal_ids: [
                 'McSyntheticMixture',
                 'McSyntheticMixture2',
                 'McSyntheticMixture3',
-                'McSyntheticMixture4',
+                # 'McSyntheticMixture4',
                 'HermiteFunction',                              # Hermite type signals  
               ]
 

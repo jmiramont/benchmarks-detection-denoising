@@ -1,6 +1,7 @@
 from mcsm_benchmarks.benchmark_utils import MethodTemplate
 from mcsm_benchmarks.MatlabInterface import MatlabInterface
 import os
+import numpy as np
 # import sys
 # sys.path.append("methods")
 # You must import the MethodTemplate abstract class and the MatlabInterface class.
@@ -9,12 +10,13 @@ import os
 # (without the .m extension). Then get the matlab function as:
 
 # Paths to additional code for the method to add to Matlab path variable.
-# paths = ['src\methods\pseudobay_method_utils',
-#         '..\src\methods\pseudobay_method_utils'
+
+# paths = [   os.path.join('src','methods','pseudobay_method_utils'),
+#             os.path.join('..','src','methods','pseudobay_method_utils')
 #         ]
 
-paths = [   os.path.join('src','methods','pseudobay_method_utils'),
-            os.path.join('..','src','methods','pseudobay_method_utils')
+paths = [   os.path.join('src','methods','PB_method_utils'),
+            os.path.join('..','src','methods','PB_method_utils')
         ]
 
 
@@ -45,7 +47,10 @@ class NewMethod(MethodTemplate):
         signal_output = matlab_function(signal, nc, *params) # Only positional args.
         return signal_output
 
-    # def get_parameters(self):            # Use it to parametrize your method.
-    #     return (((25,),{}),)    
-        
-# xr = pb_method(x, Ncomp, use_sst, ds, beta, alpha, div, Pnei, PneiMask)
+  # pb_method(x, Ncomp, use_sst, ds, beta, alpha, div, Pnei, PneiMask, M, L,return_comps, return_instf)
+    def get_parameters(self):                       
+        return (
+            ([], [], [], 0.4, 0.4, [], [], [], [], []), # 
+            ([], [], [], 0.4, 0.2, [], [], [], [], []), # 
+            )    
+    

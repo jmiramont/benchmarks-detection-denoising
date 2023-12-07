@@ -6,25 +6,22 @@ if nargin <3 || isempty(use_sst)
     use_sst=true;
 end
 
-if nargin<4 || isempty(Pnei)
-    Pnei=33;
-end
-
 if nargin<5 || isempty(M)
-    M=N;
+    M=2*N;
 end
 
 if nargin<6 || isempty(L)
-    L=11;
+    L=ceil(sqrt(M)/sqrt(2*pi)/2);
+    % disp(L)
 end
 
-% Time-frequency representation parameters
-% M       = 500;       %% Number of frequential bin
-% L       = 20;        %% analysis window size (in bin)
 
-% % Tfr parameter
-% L = 30;
-% M = 500;
+if nargin<4 || isempty(Pnei)
+    Pnei = round(3*M/2/pi/L); % One std dev in freq.
+    % disp(Pnei)
+end
+
+
 [tfr,stfr]  = tfrsgab2(x, M, L);
 reconstruct_func = @(atfr,L,M)rectfrgab(atfr, L, M);
 
