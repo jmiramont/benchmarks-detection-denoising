@@ -241,7 +241,9 @@
         </li>
         <li class="md-nav__item"><a href="#changing-the-benchmark-configuration" class="md-nav__link">Changing the benchmark configuration</a>
         </li>
-        <li class="md-nav__item"><a href="#adding-dependencies" class="md-nav__link">Adding dependencies</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#adding-dependencies" class="md-nav__link">Adding dependencies</a>
+        </li>
+        <li class="md-nav__item"><a href="#adding-your-own-method-to-the-online-benchmark" class="md-nav__link">Adding your own method to the online benchmark</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#modify-matlabengine-module-version" class="md-nav__link">Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version</a>
         </li></ul>
@@ -300,18 +302,13 @@
 </section>
 <section id="relevant-files">
 <h2 id="relevant-files">Relevant Files<a class="headerlink" href="#relevant-files" title="Permalink to this heading">¶</a></h2>
-<p>The folder <a class="reference internal" href="#notebooks"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">notebooks</span></code></span></a> holds a number Python notebooks:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#notebooks/display_results.ipynb"><span class="xref myst">Summary of results and figures from the paper</span></a></p></li>
-<li><p>Minimal working examples of the methods used in the paper (in Python).</p></li>
-<li><p><a class="reference internal" href="#results"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.csv</span></code> files with the results</span></a></p></li>
-</ul>
+<p>The folder <a class="reference internal" href="#notebooks"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">notebooks</span></code></span></a> holds a number Python notebooks with minimal working examples of the methods used in the paper (in Python).</p>
 <p>Additionally, the directory <a class="reference internal" href="#src/methods"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">src/methods</span></code></span></a> contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files <code class="docutils literal notranslate"><span class="pre">mwe_*.m</span></code>).</p>
 </section>
 <section id="index">
 <h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Benchmarks of Multi-Component Signal Detection and Denoising Methods</p>
+<li><p><a class="reference internal" href="#benchmarking-signal-detection-and-denoising-methods-in-the-time-frequency-plane"><span class="std std-ref">Benchmarking signal detection and denoising methods in the time-frequency plane</span></a></p>
 <ul>
 <li><p><a class="reference internal" href="#published-benchmarks"><span class="std std-ref">Published benchmarks</span></a></p></li>
 <li><p><a class="reference internal" href="#relevant-files"><span class="std std-ref">Relevant Files</span></a></p></li>
@@ -329,7 +326,8 @@
 </li>
 <li><p><a class="reference internal" href="#running-the-benchmark-with-new-methods"><span class="std std-ref">Running the benchmark with new methods</span></a></p></li>
 <li><p><a class="reference internal" href="#changing-the-benchmark-configuration"><span class="std std-ref">Changing the benchmark configuration</span></a></p></li>
-<li><p><a class="reference internal" href="#adding-dependencies"><span class="std std-ref">Adding dependencies</span></a></p>
+<li><p><a class="reference internal" href="#adding-dependencies"><span class="std std-ref">Adding dependencies</span></a></p></li>
+<li><p><a class="reference internal" href="#adding-your-own-method-to-the-online-benchmark"><span class="std std-ref">Adding your own method to the online benchmark</span></a></p>
 <ul>
 <li><p><a class="reference internal" href="#modify-matlabengine-module-version"><span class="std std-ref">Modify matlabengine module version</span></a></p></li>
 </ul>
@@ -537,6 +535,39 @@ You can do this using the local environment created with <code class="docutils l
 </pre></div>
 </div>
 <p>to update the .lock file in the folder.</p>
+</section>
+<section id="adding-your-own-method-to-the-online-benchmark">
+<h2 id="adding-your-own-method-to-the-online-benchmark">Adding your own method to the online benchmark<a class="headerlink" href="#adding-your-own-method-to-the-online-benchmark" title="Permalink to this heading">¶</a></h2>
+<p>For this, <a class="reference external" href="https://docs.github.com/en/get-started/quickstart/fork-a-repo">fork this repository</a>, for example by using the “Fork” button above:</p>
+<p><img alt="Repository header" src="docs/readme_figures/header_repo.png"/></p>
+<p>This will create a copy of the repository in your own GitHub account, the URL of which should look like</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>https://github.com/YOUR-USERNAME/benchmark-test
+</pre></div>
+</div>
+<p>Now, let’s create a local copy, i.e. in your computer, of the repository you have just forked. Open a terminal in a directory of your preference and use</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/YOUR-USERNAME/benchmark-test.git
+</pre></div>
+</div>
+<p>When a repository is forked, a copy of all the branches existing in the original one are also created. It would be better if you create a new branch to work in your own changes, mainly adding your new method to be tested. For this, create a new branch using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>branch<span class="w"> </span>new_method
+git<span class="w"> </span>checkout<span class="w"> </span>new_method
+</pre></div>
+</div>
+<p>Now you can follow the instructions to <a class="reference internal" href="#adding-a-new-method-to-benchmark"><span class="std std-ref">add your method to the benchmark</span></a>, in this case in a local copy of this repository, in order to be able to add and modify files.</p>
+<p>After this, you can get your approach added to the benchmark via a <a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests">Pull Request</a>. First, you need to update the remote version of your fork, now that you have added your new method and tested that it is working with <code class="docutils literal notranslate"><span class="pre">pytest</span></code>. To do this, commit the changes and then push them to your remote repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>commit<span class="w"> </span>--all<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Uploading a new method"</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>new_method
+</pre></div>
+</div>
+<p>Now you can create a <a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">new pull request</a> by using the “Contribute” button from the fork created before:</p>
+<p><img alt="Start a pull request." src="docs/readme_figures/start_a_pull_request.png"/></p>
+<p>and then <em>“Open a Pull Request”</em>. There you will need to select the branch where your changes are going to be made in the original repository of the benchmark.
+Please choose here “new_methods_branch”:</p>
+<p><img alt="Choose the right branch." src="docs/readme_figures/pull_request_branch.png"/></p>
+<p>Finally, send the pull request by clicking on <em>“Create pull request”</em>:</p>
+<p><img alt="Create you pull request." src="docs/readme_figures/finishing_pull_request.png"/></p>
+<p>You can add an short comment in the “Write” field.</p>
+<p>An explanation of the new method and related references (notes, articles, etc.) will be appreciated.</p>
 <section id="modify-matlabengine-module-version">
 <h3 id="modify-matlabengine-module-version">Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version<a class="headerlink" href="#modify-matlabengine-module-version" title="Permalink to this heading">¶</a></h3>
 <p>Check the version of the <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module you have to install to use run the benchmarks in the next table:</p>
