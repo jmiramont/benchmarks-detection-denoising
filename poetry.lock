@@ -1417,7 +1417,6 @@ develop = false
 
 [package.dependencies]
 matplotlib = "^3.5.1"
-nbformat = "^5.9.2"
 numpy = "^1.22.0"
 pandas = "^1.4.4"
 plotly = "^5.10.0"
@@ -1430,7 +1429,7 @@ tabulate = "^0.8.9"
 type = "git"
 url = "https://github.com/jmiramont/mcsm-benchmarks.git"
 reference = "HEAD"
-resolved_reference = "1a8103071e27e99ad097ddf2bd4b1a16d31af0d3"
+resolved_reference = "7bfcbb4f3da1d70710cc438e2c5671417e84c819"
 
 [[package]]
 name = "mdit-py-plugins"

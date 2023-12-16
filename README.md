@@ -9,16 +9,12 @@
 
 ## Relevant Files
 
-The folder [```notebooks```](notebooks) holds a number Python notebooks:
-
-- [Summary of results and figures from the paper](notebooks/display_results.ipynb)
-- Minimal working examples of the methods used in the paper (in Python).
-- [```.csv``` files with the results](results)
+The folder [```notebooks```](notebooks) holds a number Python notebooks with minimal working examples of the methods used in the paper (in Python).
 
 Additionally, the directory [```src/methods```](src/methods) contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files ```mwe_*.m```).
 
 ## Index
-- [Benchmarks of Multi-Component Signal Detection and Denoising Methods](#benchmarks-of-multi-component-signal-detection-and-denoising-methods)
+- [Benchmarking signal detection and denoising methods in the time-frequency plane](#benchmarking-signal-detection-and-denoising-methods-in-the-time-frequency-plane)
   - [Published benchmarks](#published-benchmarks)
   - [Relevant Files](#relevant-files)
   - [Index](#index)
@@ -30,6 +26,7 @@ Additionally, the directory [```src/methods```](src/methods) contains several fo
   - [Running the benchmark with new methods](#running-the-benchmark-with-new-methods)
   - [Changing the benchmark configuration](#changing-the-benchmark-configuration)
   - [Adding dependencies](#adding-dependencies)
+  - [Adding your own method to the online benchmark](#adding-your-own-method-to-the-online-benchmark)
     - [Modify ```matlabengine``` module version](#modify-matlabengine-module-version)
   - [Size of outputs according to the task](#size-of-outputs-according-to-the-task)
   - [Reproducing current benchmarks](#reproducing-current-benchmarks)
@@ -277,6 +274,57 @@ poetry update
 ```
 
 to update the .lock file in the folder.
+
+## Adding your own method to the online benchmark
+
+For this, [fork this repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo), for example by using the "Fork" button above:
+
+![Repository header](docs/readme_figures/header_repo.png)
+
+This will create a copy of the repository in your own GitHub account, the URL of which should look like
+
+```bash
+https://github.com/YOUR-USERNAME/benchmark-test
+```
+
+Now, let's create a local copy, i.e. in your computer, of the repository you have just forked. Open a terminal in a directory of your preference and use
+
+```bash
+git clone https://github.com/YOUR-USERNAME/benchmark-test.git
+```
+
+When a repository is forked, a copy of all the branches existing in the original one are also created. It would be better if you create a new branch to work in your own changes, mainly adding your new method to be tested. For this, create a new branch using:
+
+```bash
+git branch new_method
+git checkout new_method
+```
+
+Now you can follow the instructions to [add your method to the benchmark](#adding-a-new-method-to-benchmark), in this case in a local copy of this repository, in order to be able to add and modify files.
+
+After this, you can get your approach added to the benchmark via a [Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests). First, you need to update the remote version of your fork, now that you have added your new method and tested that it is working with ```pytest```. To do this, commit the changes and then push them to your remote repository:
+
+```bash
+git commit --all -m "Uploading a new method"
+git push origin new_method
+```
+
+Now you can create a [new pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) by using the "Contribute" button from the fork created before:
+
+![Start a pull request.](docs/readme_figures/start_a_pull_request.png)
+
+and then *"Open a Pull Request"*. There you will need to select the branch where your changes are going to be made in the original repository of the benchmark. 
+Please choose here "new_methods_branch":
+
+![Choose the right branch.](docs/readme_figures/pull_request_branch.png)
+
+Finally, send the pull request by clicking on *"Create pull request"*:
+
+![Create you pull request.](docs/readme_figures/finishing_pull_request.png)
+
+You can add an short comment in the "Write" field.
+
+An explanation of the new method and related references (notes, articles, etc.) will be appreciated.
 
 ### Modify ```matlabengine``` module version
 
