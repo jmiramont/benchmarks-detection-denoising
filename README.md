@@ -177,8 +177,8 @@ matlab_function = mlint.matlab_function # A python function handler to the metho
 
 # Paths to additional code for the method to add to Matlab path variable.
 paths = [
-        'src\methods\new_method_utils',
-        '..\src\methods\new_method_utils'
+        'src\methods\a_matlab_method_utils',
+        '..\src\methods\a_matlab_method_utils'
         ]
 ```
 
