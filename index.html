@@ -222,11 +222,9 @@
         <li class="md-nav__item"><a href="#relevant-files" class="md-nav__link">Relevant Files</a>
         </li>
         <li class="md-nav__item"><a href="#index" class="md-nav__link">Index</a>
-        </li></ul>
-            </nav>
         </li>
-        <li class="md-nav__item"><a href="#benchmarking-a-new-method" class="md-nav__link">Benchmarking a new method</a><nav class="md-nav">
-              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#benchmarking-a-new-method" class="md-nav__link">Benchmarking a new method</a>
+        </li>
         <li class="md-nav__item"><a href="#installation-using-poetry" class="md-nav__link">Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#adding-a-new-method-to-benchmark" class="md-nav__link">Adding a new method to benchmark</a><nav class="md-nav">
@@ -313,10 +311,7 @@
 <li><p><a class="reference internal" href="#published-benchmarks"><span class="std std-ref">Published benchmarks</span></a></p></li>
 <li><p><a class="reference internal" href="#relevant-files"><span class="std std-ref">Relevant Files</span></a></p></li>
 <li><p><a class="reference internal" href="#index"><span class="std std-ref">Index</span></a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#benchmarking-a-new-method"><span class="std std-ref">Benchmarking a new method</span></a></p>
-<ul>
+<li><p><a class="reference internal" href="#benchmarking-a-new-method"><span class="std std-ref">Benchmarking a new method</span></a></p></li>
 <li><p><a class="reference internal" href="#installation-using-poetry"><span class="std std-ref">Installation using poetry</span></a></p></li>
 <li><p><a class="reference internal" href="#adding-a-new-method-to-benchmark"><span class="std std-ref">Adding a new method to benchmark</span></a></p>
 <ul>
@@ -343,17 +338,17 @@
 </li>
 </ul>
 </section>
-</section>
 <section id="benchmarking-a-new-method">
-<h1 id="benchmarking-a-new-method">Benchmarking a new method<a class="headerlink" href="#benchmarking-a-new-method" title="Permalink to this heading">¶</a></h1>
-<p>You can use the code in this repository to test a new method against others, which is based on the freely-available, Python-based, <a class="reference external" href="https://github.com/jmiramont/mcsm-benchmarks">benchmarking toolbox introduced here.</a>
+<h2 id="benchmarking-a-new-method">Benchmarking a new method<a class="headerlink" href="#benchmarking-a-new-method" title="Permalink to this heading">¶</a></h2>
+<p>You can use the code in this repository to test a new method against others, which is based on the freely-available, Python-based, <a class="reference external" href="https://github.com/jmiramont/mcsm-benchs">benchmarking toolbox introduced here.</a>
 Clone this repository and benchmark your own method locally, i.e. in your computer. This will allow you to run the benchmarks with all the modifications you want (exploring different parameters, type of signals, number of repetitions, etc.).</p>
 <p>The <a class="reference internal" href="#./notebooks/"><span class="xref myst"><em>notebooks</em></span></a> folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, <a class="reference internal" href="#./notebooks/demo_benchmark.ipynb"><span class="xref myst"><em>demo_benchmark.ipynb</em></span></a> gives two minimal working examples to introduce the basic functionality of the <code class="docutils literal notranslate"><span class="pre">Benchmark</span></code> class, and the notebook <a class="reference internal" href="#./notebooks/demo_signal_bank.ipynb"><span class="xref myst"><em>demo_signal_bank.ipynb</em></span></a> showcases the signals produced by the <code class="docutils literal notranslate"><span class="pre">SignalBank</span></code> class.</p>
 <p>The instructions below will help you to add a new method and run the benchmark afterwards.</p>
 <p>First you should have a local copy of this repository to add and modify files. Open a terminal in a directory of your preference and use</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jmiramont/benchmark-test.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jmiramont/benchmarks-detection-denoising
 </pre></div>
 </div>
+</section>
 <section id="installation-using-poetry">
 <h2 id="installation-using-poetry">Installation using <code class="docutils literal notranslate"><span class="pre">poetry</span></code><a class="headerlink" href="#installation-using-poetry" title="Permalink to this heading">¶</a></h2>
 <p>We use <a class="reference external" href="https://python-poetry.org/docs/"><code class="docutils literal notranslate"><span class="pre">poetry</span></code></a>, a tool for dependency management and packaging in python to install the benchmarking framework. You can install <code class="docutils literal notranslate"><span class="pre">poetry</span></code> following the steps described <a class="reference external" href="https://python-poetry.org/docs/#installation">here</a>.
@@ -389,7 +384,7 @@ A new method can then be tested against others by adding this file into the fold
 <span class="sd">| Import here all the modules you need.</span>
 <span class="sd">| Remark: Make sure that neither of those modules starts with "method_".</span>
 <span class="sd">"""</span>
-<span class="kn">from</span> <span class="nn">mcsm_benchmarks.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span> <span class="c1"># Import the template class!</span>
+<span class="kn">from</span> <span class="nn">mcsm_benchs.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span>
 </pre></div>
 </div>
 <!-- Additionally, the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate` is imported here. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes, by forcing the implementation of certain *abstract* methods. We will see later that the class that encapsulates your method must inherit from this template. -->
@@ -430,7 +425,6 @@ A new method can then be tested against others by adding this file into the fold
 <p>The constructor function <code class="docutils literal notranslate"><span class="pre">__init__(self)</span></code> must initialize the attributes <code class="docutils literal notranslate"><span class="pre">self.id</span></code> and <code class="docutils literal notranslate"><span class="pre">self.task</span></code>. The first is a string to identify your method in the benchmark. The second is the name of the task your method is devoted to.</p>
 <p>Lastly, you have to implement the class function <code class="docutils literal notranslate"><span class="pre">method(self,</span> <span class="pre">signals,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>. This function may act as a wrapper of your method, i.e. you implement your method elsewhere and call it from this function passing all the parameters in the process, or you could implement it directly here.</p>
 <p>If you want to test your method using different sets of parameters, you can also implement the function <code class="docutils literal notranslate"><span class="pre">get_parameters()</span></code> to return a list with the desired input parameters (you can find an example of this <a class="reference internal" href="#./new_method_example/method_new_with_parameters.py"><span class="xref myst">here</span></a>).</p>
-<!-- *Remark: Do not modify the abstract class `MethodTemplate`*. -->
 <p>Finally, <strong>you have to move the file</strong> with all the modifications to the folder <a class="reference internal" href="#./src/methods"><span class="xref myst">/src/methods</span></a>. Changing the name of the file is possible, but keep in mind that <strong>the file’s name must start with “<em>method_</em>” to be recognizable</strong>.</p>
 </section>
 <section id="matlab-based-method">
@@ -443,12 +437,12 @@ A new method can then be tested against others by adding this file into the fold
 <p>We now can see how to benchmark a method implemented in Matlab. A template file is given <a class="reference internal" href="#./new_method_example/method_new_basic_template_matlab.py"><span class="xref myst">here</span></a> for interested users.</p>
 <p>In the first section of the file, the class <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> is imported, which will simply act as an interface between Python and a Matlab session where your method will be run:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-<span class="kn">from</span> <span class="nn">methods.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span><span class="p">,</span> <span class="n">MatlabInterface</span>
+<span class="kn">from</span> <span class="nn">mcsm_benchs.benchmark_utils</span> <span class="kn">import</span> <span class="n">MethodTemplate</span>
+<span class="kn">from</span> <span class="nn">mcsm_benchs.MatlabInterface</span> <span class="kn">import</span> <span class="n">MatlabInterface</span>
 <span class="c1"># You must import the MethodTemplate abstract class and the MatlabInterface class.</span>
 
 </pre></div>
 </div>
-<!-- *Remark: Do not modify the abstract class `MethodTemplate`*. -->
 <p>Then, you must  <strong>move the <code class="docutils literal notranslate"><span class="pre">.m</span></code> file with your method to the folder <code class="docutils literal notranslate"><span class="pre">src\methods</span></code></strong>. A convenient and neat way of doing this is by creating a folder with all the <code class="docutils literal notranslate"><span class="pre">.m</span></code> files related to your method, for example called <code class="docutils literal notranslate"><span class="pre">a_matlab_method_utils</span></code>. After this you can now create a <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> instance that represents your method, by passing a string to the <code class="docutils literal notranslate"><span class="pre">MatlabInterface</span></code> creator with the name of the previously defined function. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># After moving a file called 'a_matlab_method.m' to src\methods, create an interface with the Matlab's Python engine by passing the name of the file (without the .m extension). Then get the matlab function as:</span>
 <span class="n">mlint</span> <span class="o">=</span> <span class="n">MatlabInterface</span><span class="p">(</span><span class="s1">'a_matlab_method'</span><span class="p">)</span>
@@ -561,8 +555,8 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 </div>
 <p>Now you can create a <a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">new pull request</a> by using the “Contribute” button from the fork created before:</p>
 <p><img alt="Start a pull request." src="docs/readme_figures/start_a_pull_request.png"/></p>
-<p>and then <em>“Open a Pull Request”</em>. There you will need to select the branch where your changes are going to be made in the original repository of the benchmark.
-Please choose here “new_methods_branch”:</p>
+<p>and then <em>“Open a Pull Request”</em>. There you will need to select the branch where your changes are going to be made in the original repository of the benchmark.</p>
+<p>Please choose here “new_methods_branch”:</p>
 <p><img alt="Choose the right branch." src="docs/readme_figures/pull_request_branch.png"/></p>
 <p>Finally, send the pull request by clicking on <em>“Create pull request”</em>:</p>
 <p><img alt="Create you pull request." src="docs/readme_figures/finishing_pull_request.png"/></p>
