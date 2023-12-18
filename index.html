@@ -489,11 +489,12 @@ You can do this using the local environment created with <code class="docutils l
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>run_this_benchmark_denoising.py
 </pre></div>
 </div>
-<p>This will run the benchmark using new added methods, avoiding previously explored ones and saving time. You can change this from the configuration file <a class="reference internal" href="#./config_benchmarks.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">config_benchmarks.yaml</span></code></span></a> located in the repository.</p>
+<p>This will run the benchmark using new added methods, avoiding previously explored ones and saving time. You can change this from the configuration files as explained in the next section.</p>
 </section>
 <section id="changing-the-benchmark-configuration">
 <h2 id="changing-the-benchmark-configuration">Changing the benchmark configuration<a class="headerlink" href="#changing-the-benchmark-configuration" title="Permalink to this heading">¶</a></h2>
-<p>The benchmark parameters can be modified using the <a class="reference internal" href="#./config_benchmarks.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">config_benchmarks.yaml</span></code></span></a> file. Each line of this file define an input parameter of the benchmark:</p>
+<p>The benchmark parameters can be modified using the  files <a class="reference internal" href="#./config_denoising.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">config_denoising.yaml</span></code></span></a> and <a class="reference internal" href="#./config_detection.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">config_detection.yaml</span></code></span></a> located in the repository.
+Each line of this file define an input parameter of the benchmark:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">N</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span><span class="w"> </span><span class="c1"># Number of time samples</span>
 <span class="nt">SNRin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-20</span><span class="p p-Indicator">,</span><span class="nv">-10</span><span class="p p-Indicator">,</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="nv">10</span><span class="p p-Indicator">,</span><span class="nv">20</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># Values of SNR to evaluate.</span>
 <span class="nt">repetitions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"> </span><span class="c1">#</span>
@@ -535,7 +536,7 @@ You can do this using the local environment created with <code class="docutils l
 <p>For this, <a class="reference external" href="https://docs.github.com/en/get-started/quickstart/fork-a-repo">fork this repository</a>, for example by using the “Fork” button above:</p>
 <p><img alt="Repository header" src="docs/readme_figures/header_repo.png"/></p>
 <p>This will create a copy of the repository in your own GitHub account, the URL of which should look like</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>https://github.com/YOUR-USERNAME/benchmark-test
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>https://github.com/YOUR-USERNAME/benchmarks-detection-denoising
 </pre></div>
 </div>
 <p>Now, let’s create a local copy, i.e. in your computer, of the repository you have just forked. Open a terminal in a directory of your preference and use</p>
@@ -556,7 +557,7 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <p>Now you can create a <a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">new pull request</a> by using the “Contribute” button from the fork created before:</p>
 <p><img alt="Start a pull request." src="docs/readme_figures/start_a_pull_request.png"/></p>
 <p>and then <em>“Open a Pull Request”</em>. There you will need to select the branch where your changes are going to be made in the original repository of the benchmark.</p>
-<p>Please choose here “new_methods_branch”:</p>
+<p>Please choose here `new_methods``:</p>
 <p><img alt="Choose the right branch." src="docs/readme_figures/pull_request_branch.png"/></p>
 <p>Finally, send the pull request by clicking on <em>“Create pull request”</em>:</p>
 <p><img alt="Create you pull request." src="docs/readme_figures/finishing_pull_request.png"/></p>
