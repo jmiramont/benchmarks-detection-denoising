@@ -241,11 +241,9 @@
         </li>
         <li class="md-nav__item"><a href="#adding-dependencies" class="md-nav__link">Adding dependencies</a>
         </li>
-        <li class="md-nav__item"><a href="#adding-your-own-method-to-the-online-benchmark" class="md-nav__link">Adding your own method to the online benchmark</a><nav class="md-nav">
-              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#adding-your-own-method-to-the-online-benchmark" class="md-nav__link">Adding your own method to the online benchmark</a>
+        </li>
         <li class="md-nav__item"><a href="#modify-matlabengine-module-version" class="md-nav__link">Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version</a>
-        </li></ul>
-            </nav>
         </li>
         <li class="md-nav__item"><a href="#size-of-outputs-according-to-the-task" class="md-nav__link">Size of outputs according to the task</a>
         </li>
@@ -322,11 +320,8 @@
 <li><p><a class="reference internal" href="#running-the-benchmark-with-new-methods"><span class="std std-ref">Running the benchmark with new methods</span></a></p></li>
 <li><p><a class="reference internal" href="#changing-the-benchmark-configuration"><span class="std std-ref">Changing the benchmark configuration</span></a></p></li>
 <li><p><a class="reference internal" href="#adding-dependencies"><span class="std std-ref">Adding dependencies</span></a></p></li>
-<li><p><a class="reference internal" href="#adding-your-own-method-to-the-online-benchmark"><span class="std std-ref">Adding your own method to the online benchmark</span></a></p>
-<ul>
+<li><p><a class="reference internal" href="#adding-your-own-method-to-the-online-benchmark"><span class="std std-ref">Adding your own method to the online benchmark</span></a></p></li>
 <li><p><a class="reference internal" href="#modify-matlabengine-module-version"><span class="std std-ref">Modify matlabengine module version</span></a></p></li>
-</ul>
-</li>
 <li><p><a class="reference internal" href="#size-of-outputs-according-to-the-task"><span class="std std-ref">Size of outputs according to the task</span></a></p></li>
 <li><p><a class="reference internal" href="#reproducing-current-benchmarks"><span class="std std-ref">Reproducing current benchmarks</span></a></p>
 <ul>
@@ -540,7 +535,7 @@ Each line of this file define an input parameter of the benchmark:</p>
 </pre></div>
 </div>
 <p>Now, let’s create a local copy, i.e. in your computer, of the repository you have just forked. Open a terminal in a directory of your preference and use</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/YOUR-USERNAME/benchmark-test.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/YOUR-USERNAME/benchmarks-detection-denoising
 </pre></div>
 </div>
 <p>When a repository is forked, a copy of all the branches existing in the original one are also created. It would be better if you create a new branch to work in your own changes, mainly adding your new method to be tested. For this, create a new branch using:</p>
@@ -563,8 +558,9 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <p><img alt="Create you pull request." src="docs/readme_figures/finishing_pull_request.png"/></p>
 <p>You can add an short comment in the “Write” field.</p>
 <p>An explanation of the new method and related references (notes, articles, etc.) will be appreciated.</p>
+</section>
 <section id="modify-matlabengine-module-version">
-<h3 id="modify-matlabengine-module-version">Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version<a class="headerlink" href="#modify-matlabengine-module-version" title="Permalink to this heading">¶</a></h3>
+<h2 id="modify-matlabengine-module-version">Modify <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module version<a class="headerlink" href="#modify-matlabengine-module-version" title="Permalink to this heading">¶</a></h2>
 <p>Check the version of the <code class="docutils literal notranslate"><span class="pre">matlabengine</span></code> module you have to install to use run the benchmarks in the next table:</p>
 <table>
 <thead>
@@ -616,7 +612,6 @@ This will check a series of important points for running the benchmark online, m
 
 Once the tests are passed, you can now either create a pull request to run the benchmark remotely, or [run the benchmark locally](#running-this-benchmark-locally).
  -->
-</section>
 </section>
 <section id="size-of-outputs-according-to-the-task">
 <h2 id="size-of-outputs-according-to-the-task">Size of outputs according to the task<a class="headerlink" href="#size-of-outputs-according-to-the-task" title="Permalink to this heading">¶</a></h2>
