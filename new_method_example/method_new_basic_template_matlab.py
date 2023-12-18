@@ -8,8 +8,8 @@ Remark: Make sure that this file starts with "method_".
 | Import here all the modules you need.
 | Remark: Make sure that neither of those modules starts with "method_".
 """
-from mcsm_benchmarks.benchmark_utils import MethodTemplate
-from mcsm_benchmarks.MatlabInterface import MatlabInterface
+from mcsm_benchs.benchmark_utils import MethodTemplate
+from mcsm_benchs.MatlabInterface import MatlabInterface
 
 
 """ Second section ---------------------------------------------------------------------

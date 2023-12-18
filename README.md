@@ -18,7 +18,7 @@ Additionally, the directory [```src/methods```](src/methods) contains several fo
   - [Published benchmarks](#published-benchmarks)
   - [Relevant Files](#relevant-files)
   - [Index](#index)
-- [Benchmarking a new method](#benchmarking-a-new-method)
+  - [Benchmarking a new method](#benchmarking-a-new-method)
   - [Installation using ```poetry```](#installation-using-poetry)
   - [Adding a new method to benchmark](#adding-a-new-method-to-benchmark)
     - [Python-based methods](#python-based-methods)
@@ -33,9 +33,9 @@ Additionally, the directory [```src/methods```](src/methods) contains several fo
     - [Re-run Detection Benchmark](#re-run-detection-benchmark)
     - [Re-run Denoising Benchmarks](#re-run-denoising-benchmarks)
 
-# Benchmarking a new method
+## Benchmarking a new method
 
-You can use the code in this repository to test a new method against others, which is based on the freely-available, Python-based, [benchmarking toolbox introduced here.](https://github.com/jmiramont/mcsm-benchmarks)
+You can use the code in this repository to test a new method against others, which is based on the freely-available, Python-based, [benchmarking toolbox introduced here.](https://github.com/jmiramont/mcsm-benchs)
 Clone this repository and benchmark your own method locally, i.e. in your computer. This will allow you to run the benchmarks with all the modifications you want (exploring different parameters, type of signals, number of repetitions, etc.).
 
 The [*notebooks*](./notebooks/) folder contains a number of minimal working examples to understand how this benchmark works and how you could use it for your project. In particular, [*demo_benchmark.ipynb*](./notebooks/demo_benchmark.ipynb) gives two minimal working examples to introduce the basic functionality of the `Benchmark` class, and the notebook [*demo_signal_bank.ipynb*](./notebooks/demo_signal_bank.ipynb) showcases the signals produced by the `SignalBank` class.
@@ -45,7 +45,7 @@ The instructions below will help you to add a new method and run the benchmark a
 First you should have a local copy of this repository to add and modify files. Open a terminal in a directory of your preference and use
 
 ```bash
-git clone https://github.com/jmiramont/benchmark-test.git
+git clone https://github.com/jmiramont/benchmarks-detection-denoising
 ```
 
 ## Installation using ```poetry```
@@ -95,7 +95,7 @@ In the first section of the template file [*method_new_basic_template.py*](./new
 | Import here all the modules you need.
 | Remark: Make sure that neither of those modules starts with "method_".
 """
-from mcsm_benchmarks.benchmark_utils import MethodTemplate # Import the template class!
+from mcsm_benchs.benchmark_utils import MethodTemplate
 ```
 
 <!-- Additionally, the [abstract class](https://docs.python.org/3/library/abc.html) `MethodTemplate` is imported here. Abstract classes are not implemented, but they serve the purpose of establishing a template for new classes, by forcing the implementation of certain *abstract* methods. We will see later that the class that encapsulates your method must inherit from this template. -->
@@ -144,8 +144,6 @@ Lastly, you have to implement the class function ```method(self, signals, *args,
 
 If you want to test your method using different sets of parameters, you can also implement the function `get_parameters()` to return a list with the desired input parameters (you can find an example of this [here](./new_method_example/method_new_with_parameters.py)).
 
-<!-- *Remark: Do not modify the abstract class `MethodTemplate`*. -->
-
 Finally, **you have to move the file** with all the modifications to the folder [/src/methods](./src/methods). Changing the name of the file is possible, but keep in mind that **the file's name must start with "*method_*" to be recognizable**.
 
 ### Matlab-based method
@@ -164,12 +162,11 @@ In the first section of the file, the class ```MatlabInterface``` is imported, w
 
 ```python
 
-from methods.benchmark_utils import MethodTemplate, MatlabInterface
+from mcsm_benchs.benchmark_utils import MethodTemplate
+from mcsm_benchs.MatlabInterface import MatlabInterface
 # You must import the MethodTemplate abstract class and the MatlabInterface class.
 
 ```
-
-<!-- *Remark: Do not modify the abstract class `MethodTemplate`*. -->
 
 Then, you must  **move the ```.m``` file with your method to the folder ```src\methods```**. A convenient and neat way of doing this is by creating a folder with all the ```.m``` files related to your method, for example called ```a_matlab_method_utils```. After this you can now create a ```MatlabInterface``` instance that represents your method, by passing a string to the ```MatlabInterface``` creator with the name of the previously defined function. For example:
 
@@ -313,7 +310,8 @@ Now you can create a [new pull request](https://docs.github.com/en/pull-requests
 
 ![Start a pull request.](docs/readme_figures/start_a_pull_request.png)
 
-and then *"Open a Pull Request"*. There you will need to select the branch where your changes are going to be made in the original repository of the benchmark. 
+and then *"Open a Pull Request"*. There you will need to select the branch where your changes are going to be made in the original repository of the benchmark.
+
 Please choose here "new_methods_branch":
 
 ![Choose the right branch.](docs/readme_figures/pull_request_branch.png)
