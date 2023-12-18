@@ -1429,7 +1429,7 @@ tabulate = "^0.8.9"
 type = "git"
 url = "https://github.com/jmiramont/mcsm-benchs.git"
 reference = "HEAD"
-resolved_reference = "d8e02a378248322e50b978b030c18df8569f70cc"
+resolved_reference = "f2a109e96c3527ae448915d11bf31bccadd605c5"
 
 [[package]]
 name = "mdit-py-plugins"
