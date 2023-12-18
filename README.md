@@ -27,7 +27,7 @@ Additionally, the directory [```src/methods```](src/methods) contains several fo
   - [Changing the benchmark configuration](#changing-the-benchmark-configuration)
   - [Adding dependencies](#adding-dependencies)
   - [Adding your own method to the online benchmark](#adding-your-own-method-to-the-online-benchmark)
-    - [Modify ```matlabengine``` module version](#modify-matlabengine-module-version)
+  - [Modify ```matlabengine``` module version](#modify-matlabengine-module-version)
   - [Size of outputs according to the task](#size-of-outputs-according-to-the-task)
   - [Reproducing current benchmarks](#reproducing-current-benchmarks)
     - [Re-run Detection Benchmark](#re-run-detection-benchmark)
@@ -288,7 +288,7 @@ https://github.com/YOUR-USERNAME/benchmarks-detection-denoising
 Now, let's create a local copy, i.e. in your computer, of the repository you have just forked. Open a terminal in a directory of your preference and use
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/benchmark-test.git
+git clone https://github.com/YOUR-USERNAME/benchmarks-detection-denoising
 ```
 
 When a repository is forked, a copy of all the branches existing in the original one are also created. It would be better if you create a new branch to work in your own changes, mainly adding your new method to be tested. For this, create a new branch using:
@@ -325,7 +325,7 @@ You can add an short comment in the "Write" field.
 
 An explanation of the new method and related references (notes, articles, etc.) will be appreciated.
 
-### Modify ```matlabengine``` module version
+## Modify ```matlabengine``` module version
 
 Check the version of the ```matlabengine``` module you have to install to use run the benchmarks in the next table:
 
