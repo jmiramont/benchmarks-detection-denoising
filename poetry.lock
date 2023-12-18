@@ -1429,7 +1429,7 @@ tabulate = "^0.8.9"
 type = "git"
 url = "https://github.com/jmiramont/mcsm-benchs.git"
 reference = "HEAD"
-resolved_reference = "1ad758588e3d1f18a42663061774e4556fd3d086"
+resolved_reference = "d8e02a378248322e50b978b030c18df8569f70cc"
 
 [[package]]
 name = "mdit-py-plugins"
@@ -3182,4 +3182,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.11"
-content-hash = "68602ba97f1e2996e66adf09b4b36cd13bb600678f3d1e13a6bfe19a8a1e6a4b"
+content-hash = "ebfbaf581774c23ca6190cbe514a007000ce98df2aee45dca9bb21f1427faafe"
