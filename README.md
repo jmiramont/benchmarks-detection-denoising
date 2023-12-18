@@ -222,11 +222,12 @@ You can do this using the local environment created with ```poetry``` by running
 poetry run python run_this_benchmark_denoising.py
 ```
 
-This will run the benchmark using new added methods, avoiding previously explored ones and saving time. You can change this from the configuration file [```config_benchmarks.yaml```](./config_benchmarks.yaml) located in the repository.
+This will run the benchmark using new added methods, avoiding previously explored ones and saving time. You can change this from the configuration files as explained in the next section.
 
 ## Changing the benchmark configuration
 
-The benchmark parameters can be modified using the [```config_benchmarks.yaml```](./config_benchmarks.yaml) file. Each line of this file define an input parameter of the benchmark:
+The benchmark parameters can be modified using the  files [```config_denoising.yaml```](./config_denoising.yaml) and [```config_detection.yaml```](./config_detection.yaml) located in the repository.
+Each line of this file define an input parameter of the benchmark:
 
 ```yaml
 N: 1024 # Number of time samples
@@ -281,7 +282,7 @@ For this, [fork this repository](https://docs.github.com/en/get-started/quicksta
 This will create a copy of the repository in your own GitHub account, the URL of which should look like
 
 ```bash
-https://github.com/YOUR-USERNAME/benchmark-test
+https://github.com/YOUR-USERNAME/benchmarks-detection-denoising
 ```
 
 Now, let's create a local copy, i.e. in your computer, of the repository you have just forked. Open a terminal in a directory of your preference and use
@@ -312,7 +313,7 @@ Now you can create a [new pull request](https://docs.github.com/en/pull-requests
 
 and then *"Open a Pull Request"*. There you will need to select the branch where your changes are going to be made in the original repository of the benchmark.
 
-Please choose here "new_methods_branch":
+Please choose here `new_methods``:
 
 ![Choose the right branch.](docs/readme_figures/pull_request_branch.png)
 

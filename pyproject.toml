@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "benchmark-demo"
 version = "0.1.0"
-description = "A benchmark for testing tf methods."
+description = "Open-source, collaborative benchmarks of signal detection and denoising methods in the time-frequency plane."
 authors = ["Juan Manuel Miramont-Taurel <jmiramontt@univ-lille.fr>"]
 packages = [{include = "src"}]
 
@@ -19,7 +19,6 @@ tabulate = "^0.8.9"
 PyYAML = "^6.0"
 plotly = "^5.10.0"
 typeguard = "^2.13.3"
-librosa = "^0.9.2"
 mcsm-benchs = {git = "https://github.com/jmiramont/mcsm-benchs.git"}
 
 # Install R-based tools with "poetry install --with rtools"
@@ -43,6 +42,7 @@ optional = true
 
 [tool.poetry.group.notebooks.dependencies]
 ipykernel = "^6.25.2"
+librosa = "^0.9.2"
 
 # Install Docs dependencies "poetry install --with docs"
 [tool.poetry.group.docs]
@@ -61,7 +61,6 @@ sphinx-material = "^0.0.36"
 
 # Development dependencies
 [tool.poetry.group.dev.dependencies]
-ipykernel = "^6.25.2"
 
 [build-system]
 requires = ["poetry-core"]
