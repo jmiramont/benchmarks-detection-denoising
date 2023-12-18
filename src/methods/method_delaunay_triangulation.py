@@ -1,4 +1,4 @@
-from mcsm_benchmarks.benchmark_utils import MethodTemplate
+from mcsm_benchs.benchmark_utils import MethodTemplate
 from src.utilities.utilstf import *
 from scipy.spatial import Delaunay
 # import matplotlib.pyplot as plt

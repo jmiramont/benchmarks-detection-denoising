@@ -1,5 +1,5 @@
-from mcsm_benchmarks.benchmark_utils import MethodTemplate
-from mcsm_benchmarks.MatlabInterface import MatlabInterface
+from mcsm_benchs.benchmark_utils import MethodTemplate
+from mcsm_benchs.MatlabInterface import MatlabInterface
 import os
 import numpy as np
 # import sys

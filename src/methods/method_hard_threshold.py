@@ -1,4 +1,4 @@
-from mcsm_benchmarks.benchmark_utils import MethodTemplate
+from mcsm_benchs.benchmark_utils import MethodTemplate
 import numpy as np
 from numpy import pi as pi
 import scipy.signal as sg

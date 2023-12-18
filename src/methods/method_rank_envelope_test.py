@@ -1,4 +1,4 @@
-from mcsm_benchmarks.benchmark_utils import MethodTemplate # You must import the MethodTemplate abstract class.
+from mcsm_benchs.benchmark_utils import MethodTemplate # You must import the MethodTemplate abstract class.
 
 """
 | Import here all the modules you need.

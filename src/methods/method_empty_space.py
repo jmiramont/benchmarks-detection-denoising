@@ -1,4 +1,4 @@
-from mcsm_benchmarks.benchmark_utils import MethodTemplate
+from mcsm_benchs.benchmark_utils import MethodTemplate
 from scipy.spatial import KDTree
 from scipy.spatial import ConvexHull, Delaunay
 import numpy as np
