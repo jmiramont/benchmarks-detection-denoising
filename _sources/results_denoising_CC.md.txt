@@ -47,7 +47,7 @@ SNRin values:
 
 ## Mean results tables: 
 
-Results shown here are the mean and standard deviation of                               the Quality Reconstruction Factor.                               Best performances are **bolded**. 
+Results shown here are the mean and standard deviation of                               the performance metric.                               Best performances are **bolded**. 
 ### Signal: McMultiLinear[[View Plot]](https://jmiramont.github.io/benchmarks-detection-denoising/results/denoising_CC/plot_McMultiLinear.html)    [[Get .csv]](https://jmiramont.github.io/benchmarks-detection-denoising/results/denoising_CC/results_McMultiLinear.csv)
 |    | Method + Param                                                   | SNRin=-5dB (mean)   |   SNRin=-5dB (std) | SNRin=0dB (mean)   |   SNRin=0dB (std) | SNRin=10dB (mean)   |   SNRin=10dB (std) | SNRin=20dB (mean)   |   SNRin=20dB (std) |
 |---:|:-----------------------------------------------------------------|:--------------------|-------------------:|:-------------------|------------------:|:--------------------|-------------------:|:--------------------|-------------------:|
