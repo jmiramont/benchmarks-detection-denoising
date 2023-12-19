@@ -76,8 +76,9 @@ jobs:
       
       - name: Move reports to docs folder for html
         run: | 
-          cp results/results_denoising.md docs/source
-          cp results/results_detection.md docs/source
+          # cp results/results_denoising.md docs/source
+          # cp results/results_detection.md docs/source
+          cp results/*.md docs/source
           
       - name: Build docs
         run: |
