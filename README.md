@@ -10,9 +10,9 @@
 
 ## Relevant Files
 
-The folder [```notebooks```](notebooks) holds a number Python notebooks with minimal working examples of the methods used in the paper (in Python).
+The folder [```notebooks```](notebooks) holds a number Python notebooks with minimal working examples of the methods used in the paper (in Python), and the code used to generate the figures in the paper.
 
-Additionally, the directory [```src/methods```](src/methods) contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files ```mwe_*.m```).
+<!-- Additionally, the directory [```src/methods```](src/methods) contains several folders where minimal working examples of the Matlab implemented methods can be found, each one named after their corresponding method (files ```mwe_*.m```). -->
 
 ## Index
 - [Benchmarking signal detection and denoising methods in the time-frequency plane](#benchmarking-signal-detection-and-denoising-methods-in-the-time-frequency-plane)
