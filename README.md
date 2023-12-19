@@ -6,7 +6,7 @@
 |----------|----------|----------|
 |   Signal Detection |   Detection of signals in white Gaussian noise  |   [Link](https://jmiramont.github.io/benchmarks-detection-denoising/results_detection.html)  |
 |   Signal Denoising  |   Denoising of synthetic multi-component signals with several time-frequency configurations, with two performance metrics: Quality Reconstruction Factor (QRF) and Correlation (CC)   |  [Link QRF](https://jmiramont.github.io/benchmarks-detection-denoising/results_denoising.html) [Link CC](https://jmiramont.github.io/benchmarks-detection-denoising/results_denoising_CC.html)  |
-|   Signal Denoising  |   Comparing short-time Fourier transform thresholding based on spectrogram zeros against statistical thresholding  |  [Link APS](https://jmiramont.github.io/benchmarks-detection-denoising/results_denoising_APS.html) |
+|   Signal Denoising  |   Comparing short-time Fourier transform thresholding based on spectrogram zeros against statistical thresholding  |  [Link APS](https://jmiramont.github.io/benchmarks-detection-denoising/results_musical_noise_APS.html) |
 
 ## Relevant Files
 
