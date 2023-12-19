@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>Benchmark Report &#8212; Benchmarks of Multicomponent Signal Methods  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=green data-md-color-accent=light-green>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#results_musical_noise_APS" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="Benchmarks of Multicomponent Signal Methods  documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Benchmarks of MCS detection and denoising methods</span>
+          <span class="md-header-nav__topic"> Benchmark Report </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://github.com/jmiramont/mcsm-benchmarks" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    MCSM-Benchs
+  </div>
+</a>
+          </div>
+        </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Benchmarks of Multicomponent Signal Methods  documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="Benchmarks of Multicomponent Signal Methods documentation" class="md-nav__button md-logo">
+      
+        <img src="_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="index.html"
+       title="Benchmarks of Multicomponent Signal Methods documentation">Benchmarks of MCS detection and denoising methods</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://github.com/jmiramont/mcsm-benchmarks" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    MCSM-Benchs
+  </div>
+</a>
+    </div>
+  
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#results-musical-noise-aps--page-root" class="md-nav__link">Benchmark Report</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#configuration" class="md-nav__link">Configuration</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#methods" class="md-nav__link">Methods</a>
+        </li>
+        <li class="md-nav__item"><a href="#signals" class="md-nav__link">Signals</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#mean-results-tables" class="md-nav__link">Mean results tables:</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#signal-signal1-view-plot-get-csv" class="md-nav__link">Signal: Signal1[View Plot]    [Get .csv]</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="_sources/results_musical_noise_APS.md.txt">Show Source</a> </li>
+
+<li id="searchbox" class="md-nav__item"></li>
+
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="benchmark-report">
+<h1 id="results-musical-noise-aps--page-root">Benchmark Report<a class="headerlink" href="#results-musical-noise-aps--page-root" title="Permalink to this heading">¶</a></h1>
+<section id="configuration">
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">¶</a></h2>
+<p>Length of signals: 8192</p>
+<p>Repetitions: 50</p>
+<p>SNRin values:
+0,
+10,
+20,
+30,</p>
+<section id="methods">
+<h3 id="methods">Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>ht</p></li>
+<li><p>gt</p></li>
+<li><p>dt</p></li>
+</ul>
+</section>
+<section id="signals">
+<h3 id="signals">Signals<a class="headerlink" href="#signals" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Signal1</p></li>
+</ul>
+</section>
+</section>
+<section id="mean-results-tables">
+<h2 id="mean-results-tables">Mean results tables:<a class="headerlink" href="#mean-results-tables" title="Permalink to this heading">¶</a></h2>
+<p>Results shown here are the mean and standard deviation of                               the Quality Reconstruction Factor.                               Best performances are <strong>bolded</strong>.</p>
+<section id="signal-signal1-view-plot-get-csv">
+<h3 id="signal-signal1-view-plot-get-csv">Signal: Signal1<a class="reference external" href="https://jmiramont.github.io/benchmarks-detection-denoising/results/denoising_mn/aps/plot_Signal1.html">[View Plot]</a> <a class="reference external" href="https://jmiramont.github.io/benchmarks-detection-denoising/results/denoising_mn/aps/results_Signal1.csv">[Get .csv]</a><a class="headerlink" href="#signal-signal1-view-plot-get-csv" title="Permalink to this heading">¶</a></h3>
+<table>
+<thead>
+<tr class="row-odd"><th class="head text-right"><p></p></th>
+<th class="head text-left"><p>Method + Param</p></th>
+<th class="head text-left"><p>SNRin=0dB (mean)</p></th>
+<th class="head text-right"><p>SNRin=0dB (std)</p></th>
+<th class="head text-left"><p>SNRin=10dB (mean)</p></th>
+<th class="head text-right"><p>SNRin=10dB (std)</p></th>
+<th class="head text-left"><p>SNRin=20dB (mean)</p></th>
+<th class="head text-right"><p>SNRin=20dB (std)</p></th>
+<th class="head text-left"><p>SNRin=30dB (mean)</p></th>
+<th class="head text-right"><p>SNRin=30dB (std)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-right"><p>0</p></td>
+<td class="text-left"><p>ht{‘coeff’: 0.25}</p></td>
+<td class="text-left"><p><strong>85.48</strong></p></td>
+<td class="text-right"><p>1.39</p></td>
+<td class="text-left"><p><strong>86.74</strong></p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p><strong>86.74</strong></p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p><strong>86.74</strong></p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>1</p></td>
+<td class="text-left"><p>ht{‘coeff’: 0.5}</p></td>
+<td class="text-left"><p>84.94</p></td>
+<td class="text-right"><p>1.62</p></td>
+<td class="text-left"><p>86.60</p></td>
+<td class="text-right"><p>1.00</p></td>
+<td class="text-left"><p>85.37</p></td>
+<td class="text-right"><p>2.39</p></td>
+<td class="text-left"><p>79.24</p></td>
+<td class="text-right"><p>5.32</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>2</p></td>
+<td class="text-left"><p>ht{‘coeff’: 0.75}</p></td>
+<td class="text-left"><p>47.78</p></td>
+<td class="text-right"><p>7.18</p></td>
+<td class="text-left"><p>27.05</p></td>
+<td class="text-right"><p>9.33</p></td>
+<td class="text-left"><p>17.69</p></td>
+<td class="text-right"><p>8.88</p></td>
+<td class="text-left"><p>10.75</p></td>
+<td class="text-right"><p>6.63</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>3</p></td>
+<td class="text-left"><p>ht{‘coeff’: 1.0}</p></td>
+<td class="text-left"><p>9.87</p></td>
+<td class="text-right"><p>6.07</p></td>
+<td class="text-left"><p>4.55</p></td>
+<td class="text-right"><p>3.89</p></td>
+<td class="text-left"><p>3.28</p></td>
+<td class="text-right"><p>2.49</p></td>
+<td class="text-left"><p>2.11</p></td>
+<td class="text-right"><p>1.98</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>4</p></td>
+<td class="text-left"><p>ht{‘coeff’: 1.25}</p></td>
+<td class="text-left"><p>2.51</p></td>
+<td class="text-right"><p>2.55</p></td>
+<td class="text-left"><p>1.83</p></td>
+<td class="text-right"><p>1.57</p></td>
+<td class="text-left"><p>0.84</p></td>
+<td class="text-right"><p>1.04</p></td>
+<td class="text-left"><p>2.70</p></td>
+<td class="text-right"><p>4.85</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>5</p></td>
+<td class="text-left"><p>ht{‘coeff’: 1.5}</p></td>
+<td class="text-left"><p>1.05</p></td>
+<td class="text-right"><p>1.09</p></td>
+<td class="text-left"><p>0.57</p></td>
+<td class="text-right"><p>0.69</p></td>
+<td class="text-left"><p>2.23</p></td>
+<td class="text-right"><p>4.70</p></td>
+<td class="text-left"><p>40.52</p></td>
+<td class="text-right"><p>28.80</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>6</p></td>
+<td class="text-left"><p>ht{‘coeff’: 1.75}</p></td>
+<td class="text-left"><p>0.55</p></td>
+<td class="text-right"><p>0.56</p></td>
+<td class="text-left"><p>1.04</p></td>
+<td class="text-right"><p>1.44</p></td>
+<td class="text-left"><p>20.18</p></td>
+<td class="text-right"><p>20.13</p></td>
+<td class="text-left"><p>81.82</p></td>
+<td class="text-right"><p>13.64</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>7</p></td>
+<td class="text-left"><p>ht{‘coeff’: 2.0}</p></td>
+<td class="text-left"><p>0.77</p></td>
+<td class="text-right"><p>0.78</p></td>
+<td class="text-left"><p>10.01</p></td>
+<td class="text-right"><p>9.85</p></td>
+<td class="text-left"><p>66.22</p></td>
+<td class="text-right"><p>24.83</p></td>
+<td class="text-left"><p>86.65</p></td>
+<td class="text-right"><p>0.60</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>8</p></td>
+<td class="text-left"><p>ht{‘coeff’: 2.25}</p></td>
+<td class="text-left"><p>4.01</p></td>
+<td class="text-right"><p>6.66</p></td>
+<td class="text-left"><p>43.32</p></td>
+<td class="text-right"><p>30.78</p></td>
+<td class="text-left"><p>82.02</p></td>
+<td class="text-right"><p>16.57</p></td>
+<td class="text-left"><p>86.70</p></td>
+<td class="text-right"><p>0.28</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>9</p></td>
+<td class="text-left"><p>ht{‘coeff’: 2.5}</p></td>
+<td class="text-left"><p>15.82</p></td>
+<td class="text-right"><p>10.66</p></td>
+<td class="text-left"><p>69.15</p></td>
+<td class="text-right"><p>25.77</p></td>
+<td class="text-left"><p>85.20</p></td>
+<td class="text-right"><p>10.36</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>10</p></td>
+<td class="text-left"><p>ht{‘coeff’: 2.75}</p></td>
+<td class="text-left"><p>21.75</p></td>
+<td class="text-right"><p>8.37</p></td>
+<td class="text-left"><p>77.32</p></td>
+<td class="text-right"><p>11.70</p></td>
+<td class="text-left"><p>85.92</p></td>
+<td class="text-right"><p>5.75</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>11</p></td>
+<td class="text-left"><p>ht{‘coeff’: 3.0}</p></td>
+<td class="text-left"><p>21.46</p></td>
+<td class="text-right"><p>5.07</p></td>
+<td class="text-left"><p>71.60</p></td>
+<td class="text-right"><p>10.26</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>12</p></td>
+<td class="text-left"><p>ht{‘coeff’: 3.25}</p></td>
+<td class="text-left"><p>15.72</p></td>
+<td class="text-right"><p>3.85</p></td>
+<td class="text-left"><p>63.59</p></td>
+<td class="text-right"><p>5.76</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>13</p></td>
+<td class="text-left"><p>ht{‘coeff’: 3.5}</p></td>
+<td class="text-left"><p>9.37</p></td>
+<td class="text-right"><p>3.27</p></td>
+<td class="text-left"><p>53.91</p></td>
+<td class="text-right"><p>6.36</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>14</p></td>
+<td class="text-left"><p>ht{‘coeff’: 3.75}</p></td>
+<td class="text-left"><p>4.95</p></td>
+<td class="text-right"><p>2.94</p></td>
+<td class="text-left"><p>43.77</p></td>
+<td class="text-right"><p>7.59</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>15</p></td>
+<td class="text-left"><p>ht{‘coeff’: 4.0}</p></td>
+<td class="text-left"><p>3.04</p></td>
+<td class="text-right"><p>2.62</p></td>
+<td class="text-left"><p>33.47</p></td>
+<td class="text-right"><p>7.91</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>16</p></td>
+<td class="text-left"><p>ht{‘coeff’: 4.25}</p></td>
+<td class="text-left"><p>2.16</p></td>
+<td class="text-right"><p>2.38</p></td>
+<td class="text-left"><p>25.41</p></td>
+<td class="text-right"><p>8.11</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>17</p></td>
+<td class="text-left"><p>ht{‘coeff’: 4.5}</p></td>
+<td class="text-left"><p>1.94</p></td>
+<td class="text-right"><p>1.68</p></td>
+<td class="text-left"><p>19.18</p></td>
+<td class="text-right"><p>6.55</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>18</p></td>
+<td class="text-left"><p>ht{‘coeff’: 4.75}</p></td>
+<td class="text-left"><p>1.92</p></td>
+<td class="text-right"><p>1.79</p></td>
+<td class="text-left"><p>17.41</p></td>
+<td class="text-right"><p>7.67</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>19</p></td>
+<td class="text-left"><p>ht{‘coeff’: 5.0}</p></td>
+<td class="text-left"><p>1.68</p></td>
+<td class="text-right"><p>1.69</p></td>
+<td class="text-left"><p>13.85</p></td>
+<td class="text-right"><p>4.91</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>20</p></td>
+<td class="text-left"><p>ht{‘coeff’: 5.25}</p></td>
+<td class="text-left"><p>1.53</p></td>
+<td class="text-right"><p>2.11</p></td>
+<td class="text-left"><p>10.88</p></td>
+<td class="text-right"><p>4.10</p></td>
+<td class="text-left"><p>86.73</p></td>
+<td class="text-right"><p>0.04</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>21</p></td>
+<td class="text-left"><p>ht{‘coeff’: 5.5}</p></td>
+<td class="text-left"><p>6.65</p></td>
+<td class="text-right"><p>20.32</p></td>
+<td class="text-left"><p>8.86</p></td>
+<td class="text-right"><p>3.46</p></td>
+<td class="text-left"><p>86.62</p></td>
+<td class="text-right"><p>0.24</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>22</p></td>
+<td class="text-left"><p>ht{‘coeff’: 5.75}</p></td>
+<td class="text-left"><p>37.57</p></td>
+<td class="text-right"><p>41.86</p></td>
+<td class="text-left"><p>7.16</p></td>
+<td class="text-right"><p>2.84</p></td>
+<td class="text-left"><p>86.04</p></td>
+<td class="text-right"><p>0.61</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>23</p></td>
+<td class="text-left"><p>gt{‘coeff’: 0.25}</p></td>
+<td class="text-left"><p>85.48</p></td>
+<td class="text-right"><p>1.39</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>24</p></td>
+<td class="text-left"><p>gt{‘coeff’: 0.5}</p></td>
+<td class="text-left"><p>84.94</p></td>
+<td class="text-right"><p>1.62</p></td>
+<td class="text-left"><p>86.60</p></td>
+<td class="text-right"><p>1.00</p></td>
+<td class="text-left"><p>85.37</p></td>
+<td class="text-right"><p>2.39</p></td>
+<td class="text-left"><p>79.24</p></td>
+<td class="text-right"><p>5.32</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>25</p></td>
+<td class="text-left"><p>gt{‘coeff’: 0.75}</p></td>
+<td class="text-left"><p>47.78</p></td>
+<td class="text-right"><p>7.18</p></td>
+<td class="text-left"><p>27.05</p></td>
+<td class="text-right"><p>9.33</p></td>
+<td class="text-left"><p>17.69</p></td>
+<td class="text-right"><p>8.88</p></td>
+<td class="text-left"><p>10.75</p></td>
+<td class="text-right"><p>6.63</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>26</p></td>
+<td class="text-left"><p>gt{‘coeff’: 1.0}</p></td>
+<td class="text-left"><p>9.87</p></td>
+<td class="text-right"><p>6.07</p></td>
+<td class="text-left"><p>4.55</p></td>
+<td class="text-right"><p>3.89</p></td>
+<td class="text-left"><p>3.28</p></td>
+<td class="text-right"><p>2.49</p></td>
+<td class="text-left"><p>2.11</p></td>
+<td class="text-right"><p>1.98</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>27</p></td>
+<td class="text-left"><p>gt{‘coeff’: 1.25}</p></td>
+<td class="text-left"><p>2.51</p></td>
+<td class="text-right"><p>2.55</p></td>
+<td class="text-left"><p>1.83</p></td>
+<td class="text-right"><p>1.57</p></td>
+<td class="text-left"><p>0.84</p></td>
+<td class="text-right"><p>1.04</p></td>
+<td class="text-left"><p>2.70</p></td>
+<td class="text-right"><p>4.85</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>28</p></td>
+<td class="text-left"><p>gt{‘coeff’: 1.5}</p></td>
+<td class="text-left"><p>1.05</p></td>
+<td class="text-right"><p>1.09</p></td>
+<td class="text-left"><p>0.57</p></td>
+<td class="text-right"><p>0.69</p></td>
+<td class="text-left"><p>2.23</p></td>
+<td class="text-right"><p>4.70</p></td>
+<td class="text-left"><p>40.52</p></td>
+<td class="text-right"><p>28.80</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>29</p></td>
+<td class="text-left"><p>gt{‘coeff’: 1.75}</p></td>
+<td class="text-left"><p>0.55</p></td>
+<td class="text-right"><p>0.56</p></td>
+<td class="text-left"><p>1.04</p></td>
+<td class="text-right"><p>1.44</p></td>
+<td class="text-left"><p>20.18</p></td>
+<td class="text-right"><p>20.13</p></td>
+<td class="text-left"><p>81.82</p></td>
+<td class="text-right"><p>13.64</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>30</p></td>
+<td class="text-left"><p>gt{‘coeff’: 2.0}</p></td>
+<td class="text-left"><p>0.77</p></td>
+<td class="text-right"><p>0.78</p></td>
+<td class="text-left"><p>10.01</p></td>
+<td class="text-right"><p>9.85</p></td>
+<td class="text-left"><p>66.22</p></td>
+<td class="text-right"><p>24.83</p></td>
+<td class="text-left"><p>86.65</p></td>
+<td class="text-right"><p>0.60</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>31</p></td>
+<td class="text-left"><p>gt{‘coeff’: 2.25}</p></td>
+<td class="text-left"><p>4.01</p></td>
+<td class="text-right"><p>6.66</p></td>
+<td class="text-left"><p>43.32</p></td>
+<td class="text-right"><p>30.78</p></td>
+<td class="text-left"><p>82.02</p></td>
+<td class="text-right"><p>16.57</p></td>
+<td class="text-left"><p>86.70</p></td>
+<td class="text-right"><p>0.28</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>32</p></td>
+<td class="text-left"><p>gt{‘coeff’: 2.5}</p></td>
+<td class="text-left"><p>15.82</p></td>
+<td class="text-right"><p>10.66</p></td>
+<td class="text-left"><p>69.15</p></td>
+<td class="text-right"><p>25.77</p></td>
+<td class="text-left"><p>85.20</p></td>
+<td class="text-right"><p>10.36</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>33</p></td>
+<td class="text-left"><p>gt{‘coeff’: 2.75}</p></td>
+<td class="text-left"><p>21.75</p></td>
+<td class="text-right"><p>8.37</p></td>
+<td class="text-left"><p>77.32</p></td>
+<td class="text-right"><p>11.70</p></td>
+<td class="text-left"><p>85.92</p></td>
+<td class="text-right"><p>5.75</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>34</p></td>
+<td class="text-left"><p>gt{‘coeff’: 3.0}</p></td>
+<td class="text-left"><p>21.46</p></td>
+<td class="text-right"><p>5.07</p></td>
+<td class="text-left"><p>71.60</p></td>
+<td class="text-right"><p>10.26</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>35</p></td>
+<td class="text-left"><p>gt{‘coeff’: 3.25}</p></td>
+<td class="text-left"><p>15.72</p></td>
+<td class="text-right"><p>3.85</p></td>
+<td class="text-left"><p>63.59</p></td>
+<td class="text-right"><p>5.76</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>36</p></td>
+<td class="text-left"><p>gt{‘coeff’: 3.5}</p></td>
+<td class="text-left"><p>9.37</p></td>
+<td class="text-right"><p>3.27</p></td>
+<td class="text-left"><p>53.91</p></td>
+<td class="text-right"><p>6.36</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>37</p></td>
+<td class="text-left"><p>gt{‘coeff’: 3.75}</p></td>
+<td class="text-left"><p>4.95</p></td>
+<td class="text-right"><p>2.94</p></td>
+<td class="text-left"><p>43.77</p></td>
+<td class="text-right"><p>7.59</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>38</p></td>
+<td class="text-left"><p>gt{‘coeff’: 4.0}</p></td>
+<td class="text-left"><p>3.04</p></td>
+<td class="text-right"><p>2.62</p></td>
+<td class="text-left"><p>33.47</p></td>
+<td class="text-right"><p>7.91</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>39</p></td>
+<td class="text-left"><p>gt{‘coeff’: 4.25}</p></td>
+<td class="text-left"><p>2.16</p></td>
+<td class="text-right"><p>2.38</p></td>
+<td class="text-left"><p>25.41</p></td>
+<td class="text-right"><p>8.11</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>40</p></td>
+<td class="text-left"><p>gt{‘coeff’: 4.5}</p></td>
+<td class="text-left"><p>1.94</p></td>
+<td class="text-right"><p>1.68</p></td>
+<td class="text-left"><p>19.18</p></td>
+<td class="text-right"><p>6.55</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>41</p></td>
+<td class="text-left"><p>gt{‘coeff’: 4.75}</p></td>
+<td class="text-left"><p>1.92</p></td>
+<td class="text-right"><p>1.79</p></td>
+<td class="text-left"><p>17.41</p></td>
+<td class="text-right"><p>7.67</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>42</p></td>
+<td class="text-left"><p>gt{‘coeff’: 5.0}</p></td>
+<td class="text-left"><p>1.68</p></td>
+<td class="text-right"><p>1.69</p></td>
+<td class="text-left"><p>13.85</p></td>
+<td class="text-right"><p>4.91</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>43</p></td>
+<td class="text-left"><p>gt{‘coeff’: 5.25}</p></td>
+<td class="text-left"><p>1.53</p></td>
+<td class="text-right"><p>2.11</p></td>
+<td class="text-left"><p>10.88</p></td>
+<td class="text-right"><p>4.10</p></td>
+<td class="text-left"><p>86.73</p></td>
+<td class="text-right"><p>0.04</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>44</p></td>
+<td class="text-left"><p>gt{‘coeff’: 5.5}</p></td>
+<td class="text-left"><p>6.65</p></td>
+<td class="text-right"><p>20.32</p></td>
+<td class="text-left"><p>8.86</p></td>
+<td class="text-right"><p>3.46</p></td>
+<td class="text-left"><p>86.62</p></td>
+<td class="text-right"><p>0.24</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>45</p></td>
+<td class="text-left"><p>gt{‘coeff’: 5.75}</p></td>
+<td class="text-left"><p>37.57</p></td>
+<td class="text-right"><p>41.86</p></td>
+<td class="text-left"><p>7.16</p></td>
+<td class="text-right"><p>2.84</p></td>
+<td class="text-left"><p>86.04</p></td>
+<td class="text-right"><p>0.61</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>46</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.0}</p></td>
+<td class="text-left"><p>85.44</p></td>
+<td class="text-right"><p>1.41</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>47</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.1}</p></td>
+<td class="text-left"><p>84.98</p></td>
+<td class="text-right"><p>1.58</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>48</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.2000000000000002}</p></td>
+<td class="text-left"><p>75.79</p></td>
+<td class="text-right"><p>4.78</p></td>
+<td class="text-left"><p>84.70</p></td>
+<td class="text-right"><p>2.88</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+<td class="text-left"><p>86.74</p></td>
+<td class="text-right"><p>0.00</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>49</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.3000000000000003}</p></td>
+<td class="text-left"><p>38.30</p></td>
+<td class="text-right"><p>7.54</p></td>
+<td class="text-left"><p>46.72</p></td>
+<td class="text-right"><p>8.39</p></td>
+<td class="text-left"><p>68.96</p></td>
+<td class="text-right"><p>7.50</p></td>
+<td class="text-left"><p>81.22</p></td>
+<td class="text-right"><p>4.52</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>50</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.4000000000000004}</p></td>
+<td class="text-left"><p>8.26</p></td>
+<td class="text-right"><p>4.54</p></td>
+<td class="text-left"><p>8.90</p></td>
+<td class="text-right"><p>5.48</p></td>
+<td class="text-left"><p>20.76</p></td>
+<td class="text-right"><p>10.18</p></td>
+<td class="text-left"><p>41.29</p></td>
+<td class="text-right"><p>12.93</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>51</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.5000000000000004}</p></td>
+<td class="text-left"><p>1.54</p></td>
+<td class="text-right"><p>1.40</p></td>
+<td class="text-left"><p>2.20</p></td>
+<td class="text-right"><p>2.05</p></td>
+<td class="text-left"><p>4.95</p></td>
+<td class="text-right"><p>3.80</p></td>
+<td class="text-left"><p>11.10</p></td>
+<td class="text-right"><p>6.67</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>52</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.6000000000000005}</p></td>
+<td class="text-left"><p>0.53</p></td>
+<td class="text-right"><p>0.61</p></td>
+<td class="text-left"><p>0.68</p></td>
+<td class="text-right"><p>1.01</p></td>
+<td class="text-left"><p>1.43</p></td>
+<td class="text-right"><p>1.40</p></td>
+<td class="text-left"><p>2.98</p></td>
+<td class="text-right"><p>3.21</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>53</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.7000000000000006}</p></td>
+<td class="text-left"><p>0.58</p></td>
+<td class="text-right"><p>0.50</p></td>
+<td class="text-left"><p>0.46</p></td>
+<td class="text-right"><p>0.54</p></td>
+<td class="text-left"><p>0.41</p></td>
+<td class="text-right"><p>0.37</p></td>
+<td class="text-left"><p>0.69</p></td>
+<td class="text-right"><p>0.68</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>54</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.8000000000000007}</p></td>
+<td class="text-left"><p>1.09</p></td>
+<td class="text-right"><p>0.75</p></td>
+<td class="text-left"><p>0.56</p></td>
+<td class="text-right"><p>0.53</p></td>
+<td class="text-left"><p>0.87</p></td>
+<td class="text-right"><p>1.81</p></td>
+<td class="text-left"><p>1.40</p></td>
+<td class="text-right"><p>3.20</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>55</p></td>
+<td class="text-left"><p>dt{‘LB’: 1.9000000000000008}</p></td>
+<td class="text-left"><p>1.25</p></td>
+<td class="text-right"><p>0.78</p></td>
+<td class="text-left"><p>3.33</p></td>
+<td class="text-right"><p>3.66</p></td>
+<td class="text-left"><p>8.80</p></td>
+<td class="text-right"><p>8.59</p></td>
+<td class="text-left"><p>17.45</p></td>
+<td class="text-right"><p>14.77</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>56</p></td>
+<td class="text-left"><p>dt{‘LB’: 2.000000000000001}</p></td>
+<td class="text-left"><p>0.47</p></td>
+<td class="text-right"><p>0.37</p></td>
+<td class="text-left"><p>8.88</p></td>
+<td class="text-right"><p>4.79</p></td>
+<td class="text-left"><p>18.97</p></td>
+<td class="text-right"><p>10.30</p></td>
+<td class="text-left"><p>36.75</p></td>
+<td class="text-right"><p>15.01</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>57</p></td>
+<td class="text-left"><p>dt{‘LB’: 2.100000000000001}</p></td>
+<td class="text-left"><p>0.13</p></td>
+<td class="text-right"><p>0.19</p></td>
+<td class="text-left"><p>4.86</p></td>
+<td class="text-right"><p>1.57</p></td>
+<td class="text-left"><p>26.78</p></td>
+<td class="text-right"><p>12.68</p></td>
+<td class="text-left"><p>44.61</p></td>
+<td class="text-right"><p>16.22</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>58</p></td>
+<td class="text-left"><p>dt{‘LB’: 2.200000000000001}</p></td>
+<td class="text-left"><p>0.08</p></td>
+<td class="text-right"><p>0.08</p></td>
+<td class="text-left"><p>0.95</p></td>
+<td class="text-right"><p>0.87</p></td>
+<td class="text-left"><p>28.02</p></td>
+<td class="text-right"><p>6.28</p></td>
+<td class="text-left"><p>47.11</p></td>
+<td class="text-right"><p>18.41</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2023, Juan Manuel Miramont-Taurel.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>
