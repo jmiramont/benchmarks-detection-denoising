@@ -2,7 +2,7 @@ if __name__ == "__main__":
     # from unittest import result
     import importlib
     from src.methods import *
-    from mcsm_benchmarks.benchmark_utils import MethodTemplate as MethodTemplate
+    from mcsm_benchs.benchmark_utils import MethodTemplate as MethodTemplate
     import time
     import inspect
     
@@ -25,9 +25,9 @@ if __name__ == "__main__":
                 list_of_methods.append(method_class())
 
 
-    from mcsm_benchmarks.Benchmark import Benchmark
+    from mcsm_benchs.Benchmark import Benchmark
     import numpy as np
-    from mcsm_benchmarks.ResultsInterpreter import ResultsInterpreter
+    from mcsm_benchs.ResultsInterpreter import ResultsInterpreter
     import yaml
     import pickle
     import os
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     config['task'] = 'denoising'
 
     # Using CC as performance metric
-    from mcsm_benchmarks.Benchmark import corr_comps
+    from mcsm_benchs.Benchmark import corr_comps
     config['obj_fun'] = lambda x, xest,**kwargs: corr_comps(x, xest)
 
     if 'add_new_methods' in config.keys():

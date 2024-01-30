@@ -22,6 +22,7 @@ typeguard = "^2.13.3"
 mcsm-benchs = {git = "https://github.com/jmiramont/mcsm-benchs.git"}
 
 # Install R-based tools with "poetry install --with rtools"
+nbformat = "^5.9.2"
 [tool.poetry.group.rtools]
 optional = true
 
